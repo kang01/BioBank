@@ -1132,6 +1132,7 @@
             }
             if (tubeInBox){
                 tube.id = tubeInBox.id;
+                tube.frozenTubeId =  tubeInBox.frozenTubeId,
                 tube.sampleCode = tubeInBox.sampleCode;
                 tube.sampleTempCode = tubeInBox.sampleTempCode;
                 tube.sampleTypeId = tubeInBox.sampleTypeId;
@@ -1429,8 +1430,8 @@
             }
             //清空被分装的盒子数
             for(var k = 0; k < selectTubeList.length; k++){
-                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleCode = "";
-                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTempCode = "";
+                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleCode = null;
+                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTempCode = null;
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeId = vm.box.sampleType.id;
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeName = vm.box.sampleType.sampleTypeName;
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeCode = vm.box.sampleType.sampleTypeCode;

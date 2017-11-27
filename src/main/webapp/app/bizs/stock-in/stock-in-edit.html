@@ -49,14 +49,14 @@
                 </span>
             </div>
         </div>
-        <div class="col-md-2">
-            <label>
-                接收人
-            </label>
-            <selectize options='vm.receiverOptions' config="vm.receiverConfig"
-                       ng-model="vm.entity.receiveName" ng-disabled="true"></selectize>
-            <input type="hidden" class="form-control" ng-model="vm.entity.receiveName">
-        </div>
+        <!--<div class="col-md-2">-->
+            <!--<label>-->
+                <!--接收人-->
+            <!--</label>-->
+            <!--<selectize options='vm.receiverOptions' config="vm.receiverConfig"-->
+                       <!--ng-model="vm.entity.receiveName" ng-disabled="true"></selectize>-->
+            <!--<input type="hidden" class="form-control" ng-model="vm.entity.receiveName">-->
+        <!--</div>-->
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -202,7 +202,7 @@
                             <!--<button type="button" class="btn btn-default" ng-click="vm.selectSampleAll()">全选</button>-->
                             <button type="button" class="btn btn-default btn-xs" ng-click="vm.splitBox()">分　　装</button>
                             <button type="button" class="btn btn-default btn-xs" ng-click="vm.recover()">复　　原</button>
-                            <!--<button type="button" class="btn btn-default btn-xs" ng-click="vm.editBoxOperate()">编　　辑</button>-->
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.editBoxOperate()">编　　辑</button>
                             <button type="button" class="btn btn-default btn-xs" ng-click="vm.closeBox()">关　　闭</button>
                             <button type="button" class="btn btn-primary btn-xs" ng-click="vm.saveBox()">保存分装结果</button>
                         </div>

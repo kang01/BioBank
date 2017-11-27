@@ -101,6 +101,9 @@
                 case '7002': status = '已入库'; break;
                 case '7090': status = '已作废'; break;
             }
+            if(data.projectSiteCode == "null"){
+                $('td:eq(2)', row).html("");
+            }
             $('td:eq(1)', row).html(transportCodes);
             if(data.storeKeeper2){
                 $("td:eq(6)", row).text([data.storeKeeper1, data.storeKeeper2].join(";"));

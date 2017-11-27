@@ -3,11 +3,15 @@
     <h3 class="modal-title" id="modal-title">
         <span ng-if="vm.status == 2">关闭分装</span>
         <span ng-if="vm.status == 1">关闭冻存盒</span>
+        <span ng-if="vm.status == 3">提示</span>
+        <span ng-if="vm.status == 4">提示</span>
     </h3>
 </div>
 <div class="modal-body" id="modal-body">
     <p ng-if="vm.status == 2">关闭分装功能，确定保存分装数据？</p>
     <p ng-if="vm.status == 1">关闭冻存盒操作，确定保存数据？</p>
+    <p ng-if="vm.status == 3">是否保存分装操作，确定后将跳转到编辑界面？</p>
+    <p ng-if="vm.status == 4">是否保存编辑操作，确定后将跳转到分装界面？</p>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">保存</button>

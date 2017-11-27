@@ -512,6 +512,7 @@
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
             DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", 'auto'),
+            DTColumnBuilder.newColumn('lockFlag').withTitle('是否锁定').withOption("width", '80'),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60").withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
@@ -540,10 +541,17 @@
             if(data.projectCode){
                 projectName = data.projectCode+","+data.projectName;
             }
+            var lock;
+            if(data.lockFlag){
+                lock = "是";
+            }else{
+                lock = "否";
+            }
             var status = "";
             status = MasterData.getFrozenBoxStatus(data.status);
             $('td:eq(4)', row).html(projectName);
-            $('td:eq(11)', row).html(status);
+            $('td:eq(11)', row).html(lock);
+            $('td:eq(12)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

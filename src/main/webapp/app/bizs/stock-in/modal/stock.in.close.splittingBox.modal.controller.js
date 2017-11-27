@@ -15,7 +15,7 @@
         vm.status = items.status;
 
         vm.cancel = function () {
-            $uibModalInstance.close(false);
+            $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
             $uibModalInstance.close(true);

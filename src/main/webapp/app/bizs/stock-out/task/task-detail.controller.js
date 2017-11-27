@@ -748,11 +748,12 @@
                     }else{
                         for(var i = 0; i < vm.aRemarkArray.length; i++){
                             if(vm.aRemarkArray[i].sampleCode || vm.aRemarkArray[i].sampleTempCode){
-                                if(vm.aRemarkArray[i].memo){
-                                    vm.aRemarkArray[i].memo = vm.aRemarkArray[i].memo + "\r\n"+memo;
-                                }else{
-                                    vm.aRemarkArray[i].memo = memo;
-                                }
+                                // if(vm.aRemarkArray[i].memo){
+                                //     vm.aRemarkArray[i].memo = vm.aRemarkArray[i].memo + "\r\n"+memo;
+                                // }else{
+                                //     vm.aRemarkArray[i].memo = memo;
+                                // }
+                                vm.aRemarkArray[i].memo = memo;
                             }
                         }
 
@@ -807,7 +808,7 @@
             modalInstance.result.then(function (abnormalReason) {
                 for(var i = 0; i < vm.aRemarkArray.length; i++){
                     if(vm.aRemarkArray[i].sampleCode || vm.aRemarkArray[i].sampleTempCode){
-                        vm.aRemarkArray[i].memo = vm.aRemarkArray[i].memo + abnormalReason;
+                        vm.aRemarkArray[i].memo = vm.aRemarkArray[i].memo + "\r\n"+ abnormalReason;
                         vm.aRemarkArray[i].status = "3004";
                     }
                 }

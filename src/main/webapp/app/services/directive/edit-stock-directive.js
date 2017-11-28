@@ -1308,7 +1308,7 @@
                 //是否可以编辑
                 vm.editFlag = true;
                 //编辑界面关闭
-                $scope.showFlag = false;
+                // $scope.showFlag = false;
                 //4:分装操作
                 if(status == 4){
                     $scope.stockInBox.frozenTubeDTOS =  data.frozenTubeDTOS;

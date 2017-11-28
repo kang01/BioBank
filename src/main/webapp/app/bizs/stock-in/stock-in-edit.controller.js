@@ -1666,6 +1666,7 @@
 
                 //保存完更新入库盒子列表
                 _updateBoxList(data);
+                _fnDrawTube(vm.box);
                 //获取未满冻存盒
                 // vm.box.frozenTubeDTOS  =  vm.bySplitTubes;
                 //取未满盒子

@@ -1114,7 +1114,7 @@
                 sampleTypeCode: box.sampleType.sampleTypeCode,
                 sampleTypeName: box.sampleType.sampleTypeName,
                 backColorForClass:box.backColorForClass,
-                backColor:box.sampleType.backColor,
+                backColor:box.backColor,
                 frozenBoxId: box.id,
                 frozenBoxCode: box.frozenBoxCode,
                 status: null,
@@ -1132,7 +1132,7 @@
             }
             if (tubeInBox){
                 tube.id = tubeInBox.id;
-                tube.frozenTubeId =  tubeInBox.frozenTubeId,
+                tube.frozenTubeId =  tubeInBox.frozenTubeId;
                 tube.sampleCode = tubeInBox.sampleCode;
                 tube.sampleTempCode = tubeInBox.sampleTempCode;
                 tube.sampleTypeId = tubeInBox.sampleTypeId;
@@ -1176,8 +1176,8 @@
                         }
                         for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
                             if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
-                                vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId;
-                                vm.box.frozenTubeDTOS[m].sampleClassification.sampleClassificationCode = data[k].sampleClassificationCode;
+                                vm.box.frozenTubeDTOS[m].sampleClassificationId = data[k].sampleClassificationId;
+                                vm.box.frozenTubeDTOS[m].sampleClassificationCode = data[k].sampleClassificationCode;
                             }
                         }
                     }
@@ -1366,6 +1366,8 @@
                         tubeRows: rowNO,
                         frozenBoxCode:"",
                         frozenTubeId:"",
+                        sampleCode:null,
+                        sampleTempCode:null,
                         id:"",
                         selectTubeCode:vm.obox.frozenBoxCode
                     };
@@ -1437,6 +1439,7 @@
             for(var k = 0; k < selectTubeList.length; k++){
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleCode = null;
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTempCode = null;
+                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].frozenBoxCode = null;
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeId = vm.box.sampleType.id;
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeName = vm.box.sampleType.sampleTypeName;
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeCode = vm.box.sampleType.sampleTypeCode;
@@ -1466,8 +1469,9 @@
 
 
             }
-
-            hotRegisterer.getInstance('my-handsontable').render();
+            var tableCtrl = _getSplitingTubeTableCtrl();
+            tableCtrl.loadData(vm.frozenTubeArray);
+            // hotRegisterer.getInstance('my-handsontable').render();
             //分装数据
             for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
                 if(!vm.obox.stockInFrozenTubeList[i].frozenBoxCode){
@@ -1528,7 +1532,9 @@
                     }
                 });
             }
+            //绘制新管子集合，并且把盒子中已有管子放入这个管子集合
             _fnDrawSplitTube(rowCount,colCount);
+
             vm.stockInFrozenTubeList1 = _.each(vm.obox.stockInFrozenTubeList, function(t){ t.tubeColumns = +t.tubeColumns});
             //     for(var i = 0; i < vm.boxList.length; i++){
             //         if(obox.sampleClassification.id == vm.boxList[i].sampleClassification.id){
@@ -1617,7 +1623,7 @@
 
                 //更改被分装的盒子的样本数
                 var tubes = _.flattenDeep(angular.copy(vm.frozenTubeArray));
-                vm.bySplitTubes = tubes;
+                // vm.bySplitTubes = tubes;
                 //现有样本
                 var notEmptyTubes = [];
                 var notEmptyTubeLength;
@@ -1629,7 +1635,7 @@
                 notEmptyTubeLength = notEmptyTubes.length;
 
                 _.forEach(vm.stockInBox,function (tube) {
-                    if(tube.frozenBoxCode == tubes[0].frozenBoxCode){
+                    if(tube.frozenBoxCode == notEmptyTubes[0].frozenBoxCode){
                         tube.countOfSample = notEmptyTubeLength;
                     }
                 });
@@ -1651,14 +1657,18 @@
                 vm.dtOptions.withOption('data',vm.stockInBox)
                     .withOption('serverSide',false);
             }
+            // _updateBoxList();
+            vm.box.frozenTubeDTOS = _.flattenDeep(angular.copy(vm.frozenTubeArray));
+            // vm.bySplitTubes = tubes;
             BioBankBlockUi.blockUiStart();
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
                 toastr.success("分装成功!");
 
                 //保存完更新入库盒子列表
                 _updateBoxList(data);
+                _fnDrawTube(vm.box);
                 //获取未满冻存盒
-                vm.box.frozenTubeDTOS  =  vm.bySplitTubes;
+                // vm.box.frozenTubeDTOS  =  vm.bySplitTubes;
                 //取未满盒子
                 _fnIncompleteBox();
 
@@ -1893,17 +1903,15 @@
                 });
                 modalInstance.result.then(function (flag) {
                     if(flag) {
-                        // SplitedBoxService.saveSplit(vm.stockInCode, vm.box.frozenBoxCode, vm.boxList).then(function (data) {
-                        //
-                        //     toastr.success("保存成功!");
-                        // });
                         vm.saveBox();
                     }
                     vm.editFlag = true;
                     vm.showFlag = true;
                     vm.splittingBox = false;
                 },function () {
-
+                    vm.editFlag = true;
+                    vm.showFlag = true;
+                    vm.splittingBox = false;
                 });
             }
 

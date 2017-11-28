@@ -93,42 +93,55 @@
             }
             vm.selectAll = true;
         };
+        function _fnTransportSeach(sSource, aoData, fnCallback, oSettings) {
+            vm.selectAll = false;
+            vm.selected = {};
+            var data = {};
+            for(var i=0; aoData && i<aoData.length; ++i){
+                var oData = aoData[i];
+                data[oData.name] = oData.value;
+            }
+            var jqDt = this;
+            TransportRecordService.getJqDataTableValues(data, oSettings).then(function (res){
+                var json = res.data;
+                var error = json.error || json.sError;
+                if ( error ) {
+                    jqDt._fnLog( oSettings, 0, error );
+                }
+                oSettings.json = json;
+                fnCallback( json );
+            }).catch(function(res){
+                console.log(res);
+
+                var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+
+                if ( $.inArray( true, ret ) === -1 ) {
+                    if ( error == "parsererror" ) {
+                        jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                    }
+                    else if ( res.readyState === 4 ) {
+                        jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+                    }
+                }
+
+                jqDt._fnProcessingDisplay( oSettings, false );
+            });
+        }
+        var t;
         vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
             .withOption('order', [[1, 'desc' ]])
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
-                vm.selectAll = false;
-                vm.selected = {};
-                var data = {};
-                for(var i=0; aoData && i<aoData.length; ++i){
-                    var oData = aoData[i];
-                    data[oData.name] = oData.value;
+                if(!oSettings.oPreviousSearch.sSearch){
+                    _fnTransportSeach(sSource, aoData, fnCallback, oSettings);
+                }else{
+                    if(t){
+                        clearTimeout(t);
+                    }
+                    t=setTimeout(function () {
+                        _fnTransportSeach(sSource, aoData, fnCallback, oSettings);
+                    },1000);
                 }
-                var jqDt = this;
-                TransportRecordService.getJqDataTableValues(data, oSettings).then(function (res){
-                    var json = res.data;
-                    var error = json.error || json.sError;
-                    if ( error ) {
-                        jqDt._fnLog( oSettings, 0, error );
-                    }
-                    oSettings.json = json;
-                    fnCallback( json );
-                }).catch(function(res){
-                    console.log(res);
-
-                    var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
-
-                    if ( $.inArray( true, ret ) === -1 ) {
-                        if ( error == "parsererror" ) {
-                            jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
-                        }
-                        else if ( res.readyState === 4 ) {
-                            jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
-                        }
-                    }
-
-                    jqDt._fnProcessingDisplay( oSettings, false );
-                });
             })
             .withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {

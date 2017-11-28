@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StockOutHandoverBoxRepository extends JpaRepository<StockOutHandoverBox,Long> {
 
+    List<StockOutHandoverBox> findByStockOutHandoverId(Long id);
 }

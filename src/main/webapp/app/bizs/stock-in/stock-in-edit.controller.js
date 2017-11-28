@@ -1176,8 +1176,8 @@
                         }
                         for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
                             if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
-                                vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId;
-                                vm.box.frozenTubeDTOS[m].sampleClassification.sampleClassificationCode = data[k].sampleClassificationCode;
+                                vm.box.frozenTubeDTOS[m].sampleClassificationId = data[k].sampleClassificationId;
+                                vm.box.frozenTubeDTOS[m].sampleClassificationCode = data[k].sampleClassificationCode;
                             }
                         }
                     }

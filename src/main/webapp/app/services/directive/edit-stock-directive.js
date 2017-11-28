@@ -1238,6 +1238,8 @@
                 }
                 var tableCtrl = _getTableCtrl();
                 tableCtrl.loadData(vm.frozenTubeArray);
+                vm.obox.frozenTubeDTOS =  _.flattenDeep(angular.copy(vm.frozenTubeArray));
+                strBox = JSON.stringify(vm.obox);
                 // hotRegisterer.getInstance('my-handsontable').render();
             });
         }

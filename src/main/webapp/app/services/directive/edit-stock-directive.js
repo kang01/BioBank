@@ -41,10 +41,11 @@
         vm.obox = $scope.stockInBox;
         //入库单信息
         vm.entity = $scope.stockInInfo;
-
+        var oboxCopy;
         $scope.$watch('stockInBox',function () {
             //编辑的冻存盒数据
             vm.obox = $scope.stockInBox;
+            oboxCopy = angular.copy(vm.obox);
             //是否可以编辑
             vm.editFlag = Boolean($scope.editFlag);
             // _initFrozenBoxPanel();
@@ -1310,6 +1311,7 @@
                 $scope.showFlag = false;
                 //4:分装操作
                 if(status == 4){
+                    vm.obox.frozenTubeDTOS =  _.flattenDeep(angular.copy(vm.frozenTubeArray));
                     $scope.editToSpiltTube();
                 }
             }).error(function (data) {
@@ -1357,13 +1359,18 @@
                         }
 
                     },function () {
+                        // vm.box = oboxCopy;
+                        $scope.stockInBox = oboxCopy;
                         //编辑界面关闭
                         $scope.showFlag = false;
+                        //4:分装操作
+                        if(status == 4){
+                            $scope.editToSpiltTube();
+                        }
                     });
                 }else{
                     //编辑界面关闭
                     $scope.showFlag = false;
-
                     // vm.saveStockInFlag = false;
                     // $scope.reloadData();
                 }

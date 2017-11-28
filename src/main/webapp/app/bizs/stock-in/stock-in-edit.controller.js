@@ -1132,7 +1132,7 @@
             }
             if (tubeInBox){
                 tube.id = tubeInBox.id;
-                tube.frozenTubeId =  tubeInBox.frozenTubeId,
+                tube.frozenTubeId =  tubeInBox.frozenTubeId;
                 tube.sampleCode = tubeInBox.sampleCode;
                 tube.sampleTempCode = tubeInBox.sampleTempCode;
                 tube.sampleTypeId = tubeInBox.sampleTypeId;
@@ -1366,6 +1366,8 @@
                         tubeRows: rowNO,
                         frozenBoxCode:"",
                         frozenTubeId:"",
+                        sampleCode:null,
+                        sampleTempCode:null,
                         id:"",
                         selectTubeCode:vm.obox.frozenBoxCode
                     };
@@ -1437,6 +1439,7 @@
             for(var k = 0; k < selectTubeList.length; k++){
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleCode = null;
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTempCode = null;
+                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].frozenBoxCode = null;
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeId = vm.box.sampleType.id;
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeName = vm.box.sampleType.sampleTypeName;
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeCode = vm.box.sampleType.sampleTypeCode;
@@ -1893,17 +1896,15 @@
                 });
                 modalInstance.result.then(function (flag) {
                     if(flag) {
-                        // SplitedBoxService.saveSplit(vm.stockInCode, vm.box.frozenBoxCode, vm.boxList).then(function (data) {
-                        //
-                        //     toastr.success("保存成功!");
-                        // });
                         vm.saveBox();
                     }
                     vm.editFlag = true;
                     vm.showFlag = true;
                     vm.splittingBox = false;
                 },function () {
-
+                    vm.editFlag = true;
+                    vm.showFlag = true;
+                    vm.splittingBox = false;
                 });
             }
 

@@ -6255,7 +6255,7 @@ public class ImportSampleDataTest {
 
     //检查有两次出库记录的冻存盒编码
     @Test
-    public void checkRepeatStockOutRecord(){
+    public void checkRepeatStockOutRecord() throws ParseException {
         List<String> wrongBox = new ArrayList<>();
         List<Object> frozenBoxRecord = frozenBoxRepository.findFrozenBoxStockInAndOutRecord();
         List<String> frozenBoxCodeStr = frozenBoxRecord.stream().map(s->s.toString()).collect(Collectors.toList());
@@ -6272,6 +6272,17 @@ public class ImportSampleDataTest {
                         optName=opt;
                     }else{
                         wrongBox.add(obj[0].toString()+","+obj[1].toString()+","+obj[2].toString()+","+obj[3].toString());
+                        //删除出库冻存盒，删除出库样本，删除交接冻存盒，删除交接样本
+                        String frozenBoxCode = obj[1].toString();
+
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                        Date date = format.parse(obj[3].toString());
+
+                        ZonedDateTime zonedDateTime = date.toInstant().atZone(ZoneId.systemDefault());
+//                        StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findByFrozenBoxCodeAndCreatedDateGreaterThan(frozenBoxCode,zonedDateTime);
+//                        if(stockOutFrozenBox == null){
+//                            throw new BankServiceException("Not find");
+//                        }
                         log.info(opt);
                     }
                 }
@@ -6578,5 +6589,39 @@ public class ImportSampleDataTest {
             executedOperations[0]++;
             log.info("Finished:(%d/%d)"+ executedOperations[0]+"/" +allOperations);
         }
+    }
+
+
+    //合并交接单
+    @Test
+    public void combineStockOutHandover(){
+        List<StockOutHandover> stockOutHandoverList = stockOutHandoverRepository.findAll();
+       Map<String,List<StockOutHandover>> handoverListGroupByStockOutApplyAndHandoverTime =
+           stockOutHandoverList.stream().collect(Collectors.groupingBy(s->s.getStockOutApply().getId()+"&"+s.getStockOutTask().getId()+"&"+s.getHandoverTime()));
+       TreeMap<String,List<StockOutHandover>> handoverListTreeMapGroupByStockOutApplyAndHandoverTime = new TreeMap<>(handoverListGroupByStockOutApplyAndHandoverTime);
+        for(String key :handoverListTreeMapGroupByStockOutApplyAndHandoverTime.keySet()){
+           if(handoverListTreeMapGroupByStockOutApplyAndHandoverTime.get(key).size()==1){
+               continue;
+           }
+            List<StockOutHandover> alist = handoverListTreeMapGroupByStockOutApplyAndHandoverTime.get(key);
+           alist.sort(new Comparator<StockOutHandover>() {
+               @Override
+               public int compare(StockOutHandover o1, StockOutHandover o2) {
+                   return o1.getHandoverCode().compareTo(o2.getHandoverCode());
+               }
+           });
+
+            StockOutHandover stockOutHandover = alist.get(0);
+
+           for(StockOutHandover s : alist){
+               if(s.getId().equals(stockOutHandover.getId())){
+                   continue;
+               }
+               List<StockOutHandoverBox> stockOutHandoverBoxes = stockOutHandoverBoxRepository.findByStockOutHandoverId(s.getId());
+               stockOutHandoverBoxes.stream().forEach(b->b.stockOutHandover(stockOutHandover));
+               stockOutHandoverBoxRepository.save(stockOutHandoverBoxes);
+               stockOutHandoverRepository.delete(s);
+           }
+       }
     }
 }

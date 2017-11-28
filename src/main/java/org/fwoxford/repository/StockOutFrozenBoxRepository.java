@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -37,4 +38,6 @@ public interface StockOutFrozenBoxRepository extends JpaRepository<StockOutFroze
     List<StockOutFrozenBox> findByIdIn(List<Long> frozenBoxIds);
 
     StockOutFrozenBox findByFrozenBoxIdAndStockOutTaskId(Long frozenBoxId, Long taskId);
+
+//    StockOutFrozenBox findByFrozenBoxCodeAndCreatedDateGreaterThan(String frozenBoxCode, ZonedDateTime zonedDateTime);
 }

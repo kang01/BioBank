@@ -1057,6 +1057,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             StockInTubeForSave.setStockInBox(stockInBox);
             StockInTubeForSave = createFrozenTubeBySampleType(tubeDTO,StockInTubeForSave);
             StockInTubeForSave.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            StockInTubeForSave.setTubeColumns(tubeDTO.getTubeColumns());
+            StockInTubeForSave.setTubeRows(tubeDTO.getTubeRows());
             //盒内新增样本可以编辑样本本身和入库冻存管
             //如果是出库再回来，此时只能修改入库管信息，不能修改样本信息，样本信息只有在入库完成时可以编辑
             if(tubeDTO.getFrozenTubeState()==null||(tubeDTO.getFrozenTubeState()!=null&&(tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)||tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)))){

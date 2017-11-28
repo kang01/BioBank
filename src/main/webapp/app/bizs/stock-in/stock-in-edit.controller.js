@@ -1635,7 +1635,7 @@
                 notEmptyTubeLength = notEmptyTubes.length;
 
                 _.forEach(vm.stockInBox,function (tube) {
-                    if(tube.frozenBoxCode == tubes[0].frozenBoxCode){
+                    if(tube.frozenBoxCode == notEmptyTubes[0].frozenBoxCode){
                         tube.countOfSample = notEmptyTubeLength;
                     }
                 });
@@ -1657,6 +1657,7 @@
                 vm.dtOptions.withOption('data',vm.stockInBox)
                     .withOption('serverSide',false);
             }
+            // _updateBoxList();
             vm.box.frozenTubeDTOS = _.flattenDeep(angular.copy(vm.frozenTubeArray));
             // vm.bySplitTubes = tubes;
             BioBankBlockUi.blockUiStart();

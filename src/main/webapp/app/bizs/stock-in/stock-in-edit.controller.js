@@ -1114,7 +1114,7 @@
                 sampleTypeCode: box.sampleType.sampleTypeCode,
                 sampleTypeName: box.sampleType.sampleTypeName,
                 backColorForClass:box.backColorForClass,
-                backColor:box.sampleType.backColor,
+                backColor:box.backColor,
                 frozenBoxId: box.id,
                 frozenBoxCode: box.frozenBoxCode,
                 status: null,
@@ -1469,8 +1469,9 @@
 
 
             }
-
-            hotRegisterer.getInstance('my-handsontable').render();
+            var tableCtrl = _getSplitingTubeTableCtrl();
+            tableCtrl.loadData(vm.frozenTubeArray);
+            // hotRegisterer.getInstance('my-handsontable').render();
             //分装数据
             for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
                 if(!vm.obox.stockInFrozenTubeList[i].frozenBoxCode){
@@ -1531,7 +1532,9 @@
                     }
                 });
             }
+            //绘制新管子集合，并且把盒子中已有管子放入这个管子集合
             _fnDrawSplitTube(rowCount,colCount);
+
             vm.stockInFrozenTubeList1 = _.each(vm.obox.stockInFrozenTubeList, function(t){ t.tubeColumns = +t.tubeColumns});
             //     for(var i = 0; i < vm.boxList.length; i++){
             //         if(obox.sampleClassification.id == vm.boxList[i].sampleClassification.id){
@@ -1620,7 +1623,7 @@
 
                 //更改被分装的盒子的样本数
                 var tubes = _.flattenDeep(angular.copy(vm.frozenTubeArray));
-                vm.bySplitTubes = tubes;
+                // vm.bySplitTubes = tubes;
                 //现有样本
                 var notEmptyTubes = [];
                 var notEmptyTubeLength;
@@ -1654,6 +1657,8 @@
                 vm.dtOptions.withOption('data',vm.stockInBox)
                     .withOption('serverSide',false);
             }
+            vm.box.frozenTubeDTOS = _.flattenDeep(angular.copy(vm.frozenTubeArray));
+            // vm.bySplitTubes = tubes;
             BioBankBlockUi.blockUiStart();
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
                 toastr.success("分装成功!");
@@ -1661,7 +1666,7 @@
                 //保存完更新入库盒子列表
                 _updateBoxList(data);
                 //获取未满冻存盒
-                vm.box.frozenTubeDTOS  =  vm.bySplitTubes;
+                // vm.box.frozenTubeDTOS  =  vm.bySplitTubes;
                 //取未满盒子
                 _fnIncompleteBox();
 

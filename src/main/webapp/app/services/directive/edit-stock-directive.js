@@ -1311,7 +1311,7 @@
                 $scope.showFlag = false;
                 //4:分装操作
                 if(status == 4){
-                    vm.obox.frozenTubeDTOS =  _.flattenDeep(angular.copy(vm.frozenTubeArray));
+                    $scope.stockInBox.frozenTubeDTOS =  data.frozenTubeDTOS;
                     $scope.editToSpiltTube();
                 }
             }).error(function (data) {

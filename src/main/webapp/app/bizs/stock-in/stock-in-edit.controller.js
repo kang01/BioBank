@@ -1554,7 +1554,7 @@
         };
         //保存分装结果
         var saveBoxList = [];
-        vm.saveBox = function () {
+        vm.saveBox = function (status) {
             saveBoxList = [];
             for(var i = 0; i < vm.boxList.length; i++){
                 var objBox = {
@@ -1676,7 +1676,12 @@
                 if(!len){
                     vm.splittingBox = false;
                 }
-
+                //分装切换编辑保存
+                if(status == 3){
+                    vm.editFlag = true;
+                    vm.showFlag = true;
+                    vm.splittingBox = false;
+                }
                 vm.boxList = [];
                 vm.frozenBoxCode = "";
                 $(".box-selected").removeClass("box-selected");
@@ -1903,11 +1908,11 @@
                 });
                 modalInstance.result.then(function (flag) {
                     if(flag) {
-                        vm.saveBox();
+                        vm.saveBox(3);
                     }
-                    vm.editFlag = true;
-                    vm.showFlag = true;
-                    vm.splittingBox = false;
+                    // vm.editFlag = true;
+                    // vm.showFlag = true;
+                    // vm.splittingBox = false;
                 },function () {
                     vm.editFlag = true;
                     vm.showFlag = true;

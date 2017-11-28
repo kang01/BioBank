@@ -454,6 +454,19 @@
                             self.selectCell(0,0,row2,col2,true,true);
                         },200);
                     }
+                },
+                afterInit: function(){
+                    $(window).resize(function (event){
+                        var tableCtrl = _getTableCtrl();
+                        var tableSettings = tableCtrl.getSettings();
+                        var tableWrapper = tableCtrl.container;
+                        tableWrapper = $(tableWrapper).closest(".handsontable-layout");
+                        var maxWidth = tableWrapper.innerWidth() - 15;
+                        // var rowHeaderWidth = +tableSettings.rowHeaderWidth;
+                        // tableSettings.columnHeaderHeight = rowHeaderWidth;
+                        tableSettings.width = maxWidth;
+                        tableCtrl.updateSettings(tableSettings);
+                    });
                 }
             };
 
@@ -782,16 +795,16 @@
         var strBox;
         function _reloadTubesForTable(box){
 
-            var tableCtrl = _getTableCtrl();
-            var tableWidth = $(tableCtrl.container).width();
-            var settings = {
-                minCols: +box.frozenBoxTypeColumns,
-                minRows: +box.frozenBoxTypeRows
-            };
+            // var tableCtrl = _getTableCtrl();
+            // var tableWidth = $(tableCtrl.container).width();
+            // var settings = {
+           var minCols = +box.frozenBoxTypeColumns;
+           var minRows = +box.frozenBoxTypeRows;
+            // };
 
-            var rowHeaderWidth = 30;
+            // var rowHeaderWidth = 30;
             // 架子定位列表每列的宽度
-            var colWidth = (tableWidth - rowHeaderWidth) / settings.minCols;
+            // var colWidth = (tableWidth - rowHeaderWidth) / settings.minCols;
 
             // colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             // rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
@@ -799,16 +812,16 @@
             var tubesInTable = [];
             var colHeaders = [];
             var rowHeaders = [];
-            for (var i=0; i<settings.minRows; ++i){
+            for (var i=0; i<minRows; ++i){
                 var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
                 if(i > 7){
                     pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1);
                 }
                 var tubes = [];
                 rowHeaders.push(pos.tubeRows);
-                for (var j = 0; j < settings.minCols; ++j){
+                for (var j = 0; j < minCols; ++j){
                     pos.tubeColumns = j + 1 + "";
-                    if (colHeaders.length < settings.minCols){
+                    if (colHeaders.length < minCols){
                         colHeaders.push(pos.tubeColumns);
                     }
                     var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
@@ -834,12 +847,22 @@
 
             vm.frozenTubeArray = tubesInTable;
 
-            settings.rowHeaders = rowHeaders;
-            settings.colHeaders = colHeaders;
-            settings.colWidths = colWidth;
-            settings.manualColumnResize = colWidth;
-            tableCtrl.updateSettings(settings);
-            tableCtrl.loadData(tubesInTable);
+            var tableCtrl = _getTableCtrl();
+            var tableSettings = tableCtrl.getSettings();
+            var tableWrapper = tableCtrl.container;
+            tableWrapper = $(tableWrapper).closest(".handsontable-layout");
+            var maxWidth = tableWrapper.innerWidth() - 15;
+            var rowHeaderWidth = +tableSettings.rowHeaderWidth;
+            var colWidths = (maxWidth-rowHeaderWidth)/colHeaders.length;
+            tableSettings.minCols = minCols;
+            tableSettings.minRows = minRows;
+            tableSettings.rowHeaders = rowHeaders;
+            tableSettings.colHeaders = colHeaders;
+            // tableSettings.columnHeaderHeight = rowHeaderWidth;
+            // tableSettings.colWidths = colWidths;
+            tableSettings.width = maxWidth;
+            tableCtrl.updateSettings(tableSettings);
+            tableCtrl.loadData(vm.frozenTubeArray);
             _initSampleType();
             vm.obox.frozenTubeDTOS =  _.flattenDeep(angular.copy(vm.frozenTubeArray));
             strBox = JSON.stringify(vm.obox);
@@ -1302,6 +1325,7 @@
                     return
                 }
             }
+            _.remove(vm.obox.frozenTubeDTOS,{sampleCode:""});
             StockInInputService.saveStockInBox(vm.entity.stockInCode,vm.obox).success(function (data) {
                 toastr.success("保存冻存盒成功！");
                 _initBoxInfo();

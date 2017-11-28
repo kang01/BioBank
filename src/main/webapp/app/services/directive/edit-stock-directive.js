@@ -1328,8 +1328,12 @@
             _.remove(vm.obox.frozenTubeDTOS,{sampleCode:""});
             StockInInputService.saveStockInBox(vm.entity.stockInCode,vm.obox).success(function (data) {
                 toastr.success("保存冻存盒成功！");
-                _initBoxInfo();
+
+                $scope.stockInBox.frozenTubeDTOS =  data.frozenTubeDTOS;
                 $scope.reloadData();
+                _reloadTubesForTable(data);
+                // _initBoxInfo();
+
                 // $scope.showFlag = false;
                 //是否可以编辑
                 vm.editFlag = true;
@@ -1337,14 +1341,14 @@
                 // $scope.showFlag = false;
                 //4:分装操作
                 if(status == 4){
-                    $scope.stockInBox.frozenTubeDTOS =  data.frozenTubeDTOS;
+
                     $scope.editToSpiltTube();
                 }
             }).error(function (data) {
                 toastr.error(data.message);
-                $scope.reloadData();
+                // $scope.reloadData();
                 //是否可以编辑
-                vm.editFlag = false;
+                // vm.editFlag = false;
                 vm.repeatSampleArray = JSON.parse(data.params[0]);
                 var tableCtrl = _getTableCtrl();
                 tableCtrl.render();

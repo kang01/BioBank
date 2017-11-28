@@ -26,7 +26,7 @@
             'delete':{ method:'DELETE'}
         });
 
-        service.getJqDataTableValues = function(data, oSettings){
+        service.getJqDataTableValues = function(data){
             var ajaxUrl = 'api/res/stock-in-boxes/stock-in/' + data.stockInCode;
 
             var req = {

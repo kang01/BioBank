@@ -55,7 +55,7 @@
                             <div class="input-group">
                                 <input type="text" class="form-control"  ng-model="vm.obox.frozenBoxCode" ng-disabled="vm.editFlag" ng-blur="vm.frozenBoxForStockIn()" focus-me>
 
-                                <div class="input-group-addon" ng-click="vm.makeNewBoxCode()">生成</div>
+                                <div class="input-group-addon" ng-click="vm.makeNewBoxCode()" ng-disabled="!vm.editFlag">生成</div>
                             </div>
 
 

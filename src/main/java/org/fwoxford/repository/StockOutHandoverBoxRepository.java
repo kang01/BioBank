@@ -13,4 +13,6 @@ import java.util.List;
 public interface StockOutHandoverBoxRepository extends JpaRepository<StockOutHandoverBox,Long> {
 
     List<StockOutHandoverBox> findByStockOutHandoverId(Long id);
+
+    StockOutHandoverBox findByStockOutFrozenBoxId(Long id);
 }

@@ -39,5 +39,8 @@ public interface StockOutFrozenBoxRepository extends JpaRepository<StockOutFroze
 
     StockOutFrozenBox findByFrozenBoxIdAndStockOutTaskId(Long frozenBoxId, Long taskId);
 
-//    StockOutFrozenBox findByFrozenBoxCodeAndCreatedDateGreaterThan(String frozenBoxCode, ZonedDateTime zonedDateTime);
+    StockOutFrozenBox findByFrozenBoxCodeAndCreatedDateGreaterThan(String frozenBoxCode, ZonedDateTime zonedDateTime);
+
+    @Query(value = "select * from stock_out_box t where t.frozen_box_code = ?1 and to_char(t.created_date,'yyyy-MM-dd') = ?2",nativeQuery = true)
+    StockOutFrozenBox findByFrozenBoxCodeAndCreatedDateLike(String frozenBoxCode, String s);
 }

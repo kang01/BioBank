@@ -218,6 +218,36 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
             ", applyCode='" + applyCode + "'" +
             ", applyDate='" + applyDate + "'" +
             ", invalidReason='" + invalidReason + "'" +
+            ", countOfStockSample='" + countOfStockSample + "'" +
+            ", countOfHandOverSample='" + countOfHandOverSample + "'" +
+            ", checkTypeId='" + checkTypeId + "'" +
             '}';
+    }
+    private Integer countOfStockSample;
+    private Integer countOfHandOverSample;
+    private Long checkTypeId;
+
+    public Integer getCountOfStockSample() {
+        return countOfStockSample;
+    }
+
+    public void setCountOfStockSample(Integer countOfStockSample) {
+        this.countOfStockSample = countOfStockSample;
+    }
+
+    public Integer getCountOfHandOverSample() {
+        return countOfHandOverSample;
+    }
+
+    public void setCountOfHandOverSample(Integer countOfHandOverSample) {
+        this.countOfHandOverSample = countOfHandOverSample;
+    }
+
+    public Long getCheckTypeId() {
+        return checkTypeId;
+    }
+
+    public void setCheckTypeId(Long checkTypeId) {
+        this.checkTypeId = checkTypeId;
     }
 }

@@ -234,4 +234,41 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
             ", usedTime='" + usedTime + "'" +
             '}';
     }
+
+    /**
+     * 出库样本量
+     */
+    @Column(name = "count_of_stock_out_sample")
+    private Integer countOfStockOutSample;
+    /**
+     * 已交接样本量
+     */
+    @Column(name = "count_of_hand_over_sample")
+    private Integer countOfHandOverSample;
+
+    public Integer getCountOfStockOutSample() {
+        return countOfStockOutSample;
+    }
+
+    public StockOutTask countOfStockOutSample(Integer countOfStockOutSample) {
+        this.countOfStockOutSample = countOfStockOutSample;
+        return this;
+    }
+
+    public void setCountOfStockOutSample(Integer countOfStockOutSample) {
+        this.countOfStockOutSample = countOfStockOutSample;
+    }
+
+    public Integer getCountOfHandOverSample() {
+        return countOfHandOverSample;
+    }
+
+    public StockOutTask countOfHandOverSample(Integer countOfHandOverSample) {
+        this.countOfHandOverSample = countOfHandOverSample;
+        return this;
+    }
+
+    public void setCountOfHandOverSample(Integer countOfHandOverSample) {
+        this.countOfHandOverSample = countOfHandOverSample;
+    }
 }

@@ -191,55 +191,6 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         log.debug("Request to delete StockOutFrozenBox : {}", id);
         stockOutFrozenBoxRepository.delete(id);
     }
-
-
-
-
-    /**
-     *  获取指定任务的指定分页的出库盒子.
-     *  @param taskId The task id
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Page<StockOutFrozenBoxForTaskDataTableEntity> findAllByTask(Long taskId, Pageable pageable) {
-        log.debug("Request to get all StockOutFrozenBoxes");
-        Page<FrozenBox> result = frozenBoxRepository.findAllByTask(taskId, pageable);
-        return result.map(box -> {
-            StockOutFrozenBoxForTaskDataTableEntity dto = new StockOutFrozenBoxForTaskDataTableEntity();
-            dto.setId(box.getId());
-            dto.setFrozenBoxCode(box.getFrozenBoxCode());
-            dto.setFrozenBoxCode1D(box.getFrozenBoxCode1D());
-            dto.setSampleTypeName(box.getSampleTypeName());
-            String position =  BankUtil.getPositionString(box);
-            dto.setPosition(position);
-            Long count = stockOutTaskFrozenTubeRepository.countSampleByFrozenBoxAndTask(box.getId(),taskId);
-            dto.setCountOfSample(count);
-
-            return dto;
-        });
-    }
-
-    @Override
-    public Page<StockOutFrozenBoxForTaskDataTableEntity> findAllByrequirementIds(List<Long> ids, Pageable pageable) {
-        Page<FrozenBox> result = frozenBoxRepository.findAllByrequirementIds(ids, pageable);
-
-        return result.map(frozenBox -> {
-            StockOutFrozenBoxForTaskDataTableEntity dto = new StockOutFrozenBoxForTaskDataTableEntity();
-            dto.setId(frozenBox.getId());
-            dto.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-            dto.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
-            dto.setSampleTypeName(frozenBox.getSampleTypeName());
-            String position =  BankUtil.getPositionString(frozenBox);
-            dto.setPosition(position);
-            Long countOfSample = stockOutPlanFrozenTubeRepository.countByFrozenBoxIdAndRequirement(ids,frozenBox.getId());
-            dto.setCountOfSample(countOfSample);
-
-            return dto;
-        });
-    }
-
     @Override
     public List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId) {
         List<StockOutFrozenBoxForTaskDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();

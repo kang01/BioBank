@@ -6,11 +6,15 @@
     <!--
         Added the view for entity StockOutHandoverForDataTableEntity.
     -->
-    <changeSet id="20170514000000-2" author="jhipster">
+    <changeSet id="20171127154000-1" author="jhipster">
         <dropView viewName="view_stock_out_handover"/>
+    </changeSet>
+
+    <changeSet id="20171127154000-2" author="jhipster">
+
         <createView viewName="view_stock_out_handover">
             SELECT t.id,t.handover_code,p.apply_code,
-            (SELECT COUNT(td.id) FROM stock_out_handover_details td LEFT JOIN stock_out_handover_box hb ON td.stock_out_handover_box_id=hb.id WHERE hb.STOCK_OUT_HANDOVER_ID = t.id) as count_of_sample,
+            t.count_of_handover_sample as count_of_sample,
             p.purpose_of_sample ,t.handover_time,
             t.receiver_name,
             (u.last_name||u.first_name) as deliver_name,
@@ -19,5 +23,6 @@
             LEFT OUTER JOIN stock_out_apply p ON t.stock_out_apply_id = p.id
             LEFT OUTER JOIN jhi_user u ON t.HANDOVER_PERSON_ID = u.id
         </createView>
+
     </changeSet>
 </databaseChangeLog>

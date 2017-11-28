@@ -49,16 +49,6 @@ public interface StockOutFrozenBoxService {
      */
     void delete(Long id);
 
-    /**
-     *  获取指定任务的指定分页的出库盒子.
-     *  @param taskId The task id
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    Page<StockOutFrozenBoxForTaskDataTableEntity> findAllByTask(Long taskId, Pageable pageable);
-
-    Page<StockOutFrozenBoxForTaskDataTableEntity> findAllByrequirementIds(List<Long> ids, Pageable pageRequest);
-
     List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId);
 
     List<StockOutFrozenBoxDTO> createFrozenBoxForStockOut(List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTO, Long taskId);

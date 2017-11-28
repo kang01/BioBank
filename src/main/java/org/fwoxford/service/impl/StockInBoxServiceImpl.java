@@ -1085,9 +1085,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setCountOfSample(countOfStockInTube);
         stockInBoxRepository.save(stockInBox);
         stockInTubeRepository.save(stockInTubes);
-        stockInBoxDTO.setId(stockInBox.getId());
-        stockInBoxDTO.setFrozenTubeDTOS(stockInTubeMapper.stockInTubesToStockInTubeDTOsForSampleType(stockInTubes));
-        return stockInBoxDTO;
+        StockInBoxDTO inBoxDTO = stockInBoxMapper.stockInBoxToStockInBoxDTO(stockInBox);
+        inBoxDTO.setFrozenTubeDTOS(stockInTubeMapper.stockInTubesToStockInTubeDTOsForSampleType(stockInTubes));
+        return inBoxDTO;
     }
 
     /**

@@ -61,9 +61,7 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     @Query("select count(t.id) from StockOutReqFrozenTube t where t.stockOutTask.id=?1 and t.frozenTube.frozenTubeState = '2009' and t.frozenTube.status != '3001'")
     Long countAbnormalTubeByStockOutTaskId(Long taskId);
 
-    // 根据出库盒ID读取出库样本
-    @Query("SELECT s FROM StockOutReqFrozenTube s WHERE s.stockOutFrozenBox.id = ?1 AND (?2 IS NULL OR s.status=?2)")
-    List<StockOutReqFrozenTube> findByStockOutFrozenBoxId(Long boxId, String status);
+    List<StockOutReqFrozenTube> findByStockOutFrozenBoxId(Long boxId);
 
     // 根据多个出库盒ID读取出库样本
     @Query("SELECT s FROM StockOutReqFrozenTube s WHERE s.stockOutFrozenBox.id IN ?1 AND (?2 IS NULL OR s.status=?2)")

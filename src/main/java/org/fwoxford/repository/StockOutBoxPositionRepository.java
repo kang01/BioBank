@@ -12,5 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StockOutBoxPositionRepository extends JpaRepository<StockOutBoxPosition,Long> {
 
-    StockOutBoxPosition findByStockOutFrozenBoxIdAndStatus(Long id, String valid);
+    StockOutBoxPosition findByStockOutFrozenBoxId(Long id);
 }

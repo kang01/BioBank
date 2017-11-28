@@ -9,6 +9,7 @@ import org.fwoxford.repository.*;
 import org.fwoxford.service.dto.response.GeocoderSearchAddressResponse;
 import org.fwoxford.service.dto.response.GeocoderSearchResponse;
 import org.fwoxford.service.mapper.*;
+import org.fwoxford.web.rest.StockOutFrozenBoxPoisition;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.GeocoderReaderUtils;
@@ -3884,7 +3885,7 @@ public class ImportSampleDataTest {
             con = DBUtilForTemp.open();
 //            System.out.println("连接成功！");
             log.info("链接成功！");
-            String sqlForSelect = "select * from " + "jt_opt_1122_1" + " a order by  a.OLD_DATE";// 预编译语句
+            String sqlForSelect = "select * from " + "jt_opt_1128" + " a order by  a.OLD_DATE";// 预编译语句
             pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
             result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
             ResultSetMetaData rsMeta = result.getMetaData();
@@ -4352,7 +4353,7 @@ public class ImportSampleDataTest {
             .frozenTubeVolumnsUnit(frozenTubeType.getFrozenTubeVolumnUnit())
             .tubeRows(null)
             .tubeColumns(null)
-            .status(Constants.FROZEN_TUBE_NORMAL).memo("2017/10/24数据导入")
+            .status(Constants.FROZEN_TUBE_NORMAL).memo(new Date()+"数据导入")
             .age(oldTube!=null?oldTube.getAge():null).gender(oldTube!=null?oldTube.getGender():null).patientId(oldTube!=null?oldTube.getPatientId():null).nation(oldTube!=null?oldTube.getNation():null)
             .frozenBoxCode(null).frozenTubeType(frozenTubeType).sampleType(sampleType).sampleClassification(sampleClassification)
             .project(project).projectSite(oldTube!=null?oldTube.getProjectSite():null).frozenBox(null).frozenTubeState("2004");
@@ -4400,7 +4401,7 @@ public class ImportSampleDataTest {
                 .applyDate(stockOutDate).applyPersonName(null).delegate(delegate)
                 .approverId(opt_user_id).approveTime(stockOutDate)
                 .endTime(null).startTime(null).purposeOfSample(null).recordId(opt_user_id).recordTime(stockOutDate);
-            stockOutApplyRepository.saveAndFlush(stockOutApply);
+            stockOutApplyRepository.save(stockOutApply);
             StockOutApplyProject stockOutApplyProject = new StockOutApplyProject().project(project).stockOutApply(stockOutApply).status(Constants.VALID);
             stockOutApplyProjectRepository.save(stockOutApplyProject);
         }
@@ -4456,6 +4457,7 @@ public class ImportSampleDataTest {
 
         stockOutHandoverRepository.save(stockOutHandover);
 
+        int countOfStockOutReal = 0;
         for (Map<String, Object> key: boxList) {
             String boxCode1D = key.get("BOX_CODE_1").toString();
             FrozenBox frozenBox = frozenBoxRepository.findByFrozenBoxCode1D(boxCode1D);
@@ -4605,8 +4607,17 @@ public class ImportSampleDataTest {
             stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
             stockOutHandoverDetailsRepository.save(stockOutHandoverDetailss);
             executedOperations[0]++;
+            countOfStockOutReal+=stockOutReqFrozenTubes.size();
             log.info("Finished:(%d/%d)"+ executedOperations[0]+"/" +allOperations);
         }
+        stockOutApply.countOfStockSample(countOfStockOutReal).countOfHandOverSample(countOfStockOutReal);
+        stockOutPlan.countOfStockOutPlanSample(countOfStockOutReal);
+        stockOutTask.countOfHandOverSample(countOfStockOutReal).countOfStockOutSample(countOfStockOutReal);
+        stockOutHandover.countOfHandoverSample(countOfStockOutReal);
+        stockOutApplyRepository.save(stockOutApply);
+        stockOutPlanRepository.save(stockOutPlan);
+        stockOutTaskRepository.save(stockOutTask);
+        stockOutHandoverRepository.save(stockOutHandover);
     }
     ///////////////////////////////////////////////////佳通导入结束///////////////////////////////////////
 
@@ -6267,27 +6278,38 @@ public class ImportSampleDataTest {
                 List<Object[]> recordList = map.get(key);
                 String optName = "";
                 for(Object[] obj : recordList){
+                    log.info(obj[0].toString()+","+obj[1].toString()+","+obj[2].toString()+","+obj[3].toString());
                     String opt = obj[0].toString();
+                    String frozenBoxCode = obj[1].toString();
+                    if(frozenBoxCode.equals("00290804863")||frozenBoxCode.equals("00290806021")||frozenBoxCode.equals("00290804862")||frozenBoxCode.equals("00290908017")){
+                        continue;
+                    }
                     if(!optName.equals(opt)){
                         optName=opt;
                     }else{
                         wrongBox.add(obj[0].toString()+","+obj[1].toString()+","+obj[2].toString()+","+obj[3].toString());
                         //删除出库冻存盒，删除出库样本，删除交接冻存盒，删除交接样本
-                        String frozenBoxCode = obj[1].toString();
-
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                        Date date = format.parse(obj[3].toString());
-
-                        ZonedDateTime zonedDateTime = date.toInstant().atZone(ZoneId.systemDefault());
-//                        StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findByFrozenBoxCodeAndCreatedDateGreaterThan(frozenBoxCode,zonedDateTime);
-//                        if(stockOutFrozenBox == null){
-//                            throw new BankServiceException("Not find");
-//                        }
-                        log.info(opt);
+                        String time = obj[3].toString().substring(0,10);
+                        StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findByFrozenBoxCodeAndCreatedDateLike(frozenBoxCode,time);
+                        if(stockOutFrozenBox == null){
+                            throw new BankServiceException("Not find");
+                        }
+                        StockOutBoxPosition stockOutBoxPosition = stockOutBoxPositionRepository.findByStockOutFrozenBoxId(stockOutFrozenBox.getId());
+                        StockOutHandoverBox stockOutHandoverBox = stockOutHandoverBoxRepository.findByStockOutFrozenBoxId(stockOutFrozenBox.getId());
+                        if(stockOutHandoverBox!=null){
+                            List<StockOutHandoverDetails> stockOutHandoverDetailss = stockOutHandoverDetailsRepository.findByStockOutHandoverBoxId(stockOutHandoverBox.getId());
+                            stockOutHandoverDetailsRepository.deleteInBatch(stockOutHandoverDetailss);
+                            stockOutHandoverBoxRepository.delete(stockOutHandoverBox);
+                        }
+                       List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxId(stockOutFrozenBox.getId());
+                        stockOutReqFrozenTubeRepository.deleteInBatch(stockOutReqFrozenTubes);
+                        stockOutBoxPositionRepository.delete(stockOutBoxPosition);
+                        stockOutFrozenBoxRepository.delete(stockOutFrozenBox);
                     }
                 }
             }
         }
+
         log.info(wrongBox.toString());
     }
     //补充导入0029项目数据
@@ -6417,10 +6439,10 @@ public class ImportSampleDataTest {
                     this.importBoxOutFromPeace2ForJT_1117(opts1);
                     break;
                 case "移位入库":
-//                    this.importBoxForJTInStock_1023(opts1, Constants.STORANGE_IN_TYPE_MOVE);
+                    this.importBoxForJTInStock_1023(opts1, Constants.STORANGE_IN_TYPE_MOVE);
                     break;
                 case "复位入库":
-//                    this.importBoxForJTInStock_1023(opts1, Constants.STORANGE_IN_TYPE_REVERT);
+                    this.importBoxForJTInStock_1023(opts1, Constants.STORANGE_IN_TYPE_REVERT);
                     break;
                 default:
                     break;

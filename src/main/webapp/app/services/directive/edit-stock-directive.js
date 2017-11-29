@@ -1342,7 +1342,7 @@
                 // $scope.showFlag = false;
                 //4:分装操作
                 if(status == 4){
-
+                    $scope.showFlag = false;
                     $scope.editToSpiltTube();
                 }
             }).error(function (data) {

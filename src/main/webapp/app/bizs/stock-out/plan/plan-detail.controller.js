@@ -145,6 +145,11 @@
                         className: 'btn btn-primary btn-sm ml-10',
                         key: '1',
                         action: _fnCreateTask
+                    },{
+                        text: '勾选',
+                        className: 'btn btn-primary btn-sm ml-10',
+                        key: '1',
+                        action: _fnSelectTask
                     },
                     {
                         text: '<i class="fa fa-shopping-cart"></i><div class="circle1" ng-if="vm.selectedLen">{{vm.selectedLen}}</div>',
@@ -409,6 +414,27 @@
                 toastr.error("请勾选申请出库的冻存盒!");
             }
 
+        }
+        //自定义勾选
+        function _fnSelectTask() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/plan/modal/plan-task-select-modal.html',
+                controller: 'PlanTaskSelectModalController',
+                controllerAs:'vm',
+                size:'lg',
+                // resolve: {
+                //     items: function () {
+                //         return {
+                //             taskId:taskId
+                //         };
+                //     }
+                // }
+            });
+
+            modalInstance.result.then(function (data) {
+
+            });
         }
         //查看选中的计划详情
         function _fnViewPlanDetail() {

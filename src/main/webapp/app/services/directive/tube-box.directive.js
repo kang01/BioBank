@@ -1207,7 +1207,7 @@
 
                         toBoxId: desBox.id,
                         toBoxCode: desBox.frozenBoxCode,
-                        toRow,toCol,
+                        toRow: toRow, toCol: toCol,
                         toRowCode: desPos.rowCode,
                         toColCode: desPos.colCode,
                         desData: desTube

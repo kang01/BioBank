@@ -80,7 +80,7 @@
                 }
             };
             vm.statusOptions = MasterData.frozenBoxStatus;
-            vm.statusOptions.push({value:"20022",label:"待分装"})
+            vm.statusOptions.push({value:"2002",label:"待分装"})
         }
         function _sampleTypeInit() {
             vm.noSampleClassFlag = false;
@@ -119,7 +119,7 @@
             vm.sampleTypeOptions = [];
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
-                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"})
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"});
             });
             vm.sampleClassConfig = {
                 valueField:'sampleClassificationId',
@@ -1372,13 +1372,17 @@
         };
         //双击显示未满冻存盒详情
         vm.selectAndOpenTargetBox = function (item, $event){
-            vm.obox = angular.copy(item);
+            if(item.stockInFrozenTubeList.length){
+                vm.obox = angular.copy(item);
+            }
+
             tubeList = vm.obox.stockInFrozenTubeList;
             var rowCount = +vm.obox.frozenBoxType.frozenBoxTypeRows;
             var colCount = +vm.obox.frozenBoxType.frozenBoxTypeColumns;
+            //绘制新管子集合，并且把盒子中已有管子放入这个管子集合
             _fnDrawSplitTube(rowCount,colCount);
-            vm.stockInFrozenTubeList1 = _.each(vm.obox.stockInFrozenTubeList, function(t){ t.tubeColumns = +t.tubeColumns});
             //显示盒子详情
+            vm.stockInFrozenTubeList1 = _.each(vm.obox.stockInFrozenTubeList, function(t){ t.tubeColumns = +t.tubeColumns});
             vm.boxDetailFlag = true;
         };
         //关闭未满冻存盒详情
@@ -1412,6 +1416,11 @@
 
                 }
             }
+            // if(!tubeList.length){
+            //     _.forEach(vm.obox.stockInFrozenTubeList,function (box) {
+            //         box.isNewSampleFlag = true;
+            //     })
+            // }
             //把已有管子放进去
             for(var m =0 ; m < vm.obox.stockInFrozenTubeList.length; m++){
                 for(var n = 0; n < tubeList.length;n++){

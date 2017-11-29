@@ -80,7 +80,7 @@
                 }
             };
             vm.statusOptions = MasterData.frozenBoxStatus;
-            vm.statusOptions.push({value:"20022",label:"待分装"})
+            vm.statusOptions.push({value:"2002",label:"待分装"})
         }
         function _sampleTypeInit() {
             vm.noSampleClassFlag = false;
@@ -119,7 +119,7 @@
             vm.sampleTypeOptions = [];
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
-                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"})
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"});
             });
             vm.sampleClassConfig = {
                 valueField:'sampleClassificationId',
@@ -1372,12 +1372,17 @@
         };
         //双击显示未满冻存盒详情
         vm.selectAndOpenTargetBox = function (item, $event){
-            vm.obox = angular.copy(item);
+            if(item.stockInFrozenTubeList.length){
+                vm.obox = angular.copy(item);
+            }
+
+            tubeList = vm.obox.stockInFrozenTubeList;
             var rowCount = +vm.obox.frozenBoxType.frozenBoxTypeRows;
             var colCount = +vm.obox.frozenBoxType.frozenBoxTypeColumns;
+            //绘制新管子集合，并且把盒子中已有管子放入这个管子集合
             _fnDrawSplitTube(rowCount,colCount);
-            vm.stockInFrozenTubeList1 = _.each(vm.obox.stockInFrozenTubeList, function(t){ t.tubeColumns = +t.tubeColumns});
             //显示盒子详情
+            vm.stockInFrozenTubeList1 = _.each(vm.obox.stockInFrozenTubeList, function(t){ t.tubeColumns = +t.tubeColumns});
             vm.boxDetailFlag = true;
         };
         //关闭未满冻存盒详情
@@ -1404,7 +1409,6 @@
                         frozenBoxCode:"",
                         frozenTubeId:"",
                         sampleCode:null,
-                        sampleTempCode:null,
                         id:"",
                         selectTubeCode:vm.obox.frozenBoxCode
                     };
@@ -1412,6 +1416,11 @@
 
                 }
             }
+            // if(!tubeList.length){
+            //     _.forEach(vm.obox.stockInFrozenTubeList,function (box) {
+            //         box.isNewSampleFlag = true;
+            //     })
+            // }
             //把已有管子放进去
             for(var m =0 ; m < vm.obox.stockInFrozenTubeList.length; m++){
                 for(var n = 0; n < tubeList.length;n++){
@@ -1474,20 +1483,6 @@
             }
             //清空被分装的盒子数
             for(var k = 0; k < selectTubeList.length; k++){
-                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleCode = null;
-                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTempCode = null;
-                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].frozenBoxCode = null;
-                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeId = vm.box.sampleType.id;
-                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeName = vm.box.sampleType.sampleTypeName;
-                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeCode = vm.box.sampleType.sampleTypeCode;
-                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].backColor = vm.box.sampleType.backColor;
-                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].backColorForClass = vm.box.backColorForClass;
-                // if(vm.box.sampleClassification){
-                //     vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleClassificationId = vm.box.sampleClassification.id;
-                //     vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleClassificationName = vm.box.sampleClassification.sampleClassificationName;
-                //     vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleClassificationCode = vm.box.sampleClassification.sampleClassificationCode;
-                //     vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].backColorForClass = vm.box.sampleClassification.backColor;
-                // }
                 vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)] = {
                     id: null,
                     sampleCode: null,
@@ -1498,7 +1493,7 @@
                     sampleClassificationId: selectTubeList[k].sampleClassificationId,
                     frozenBoxId: vm.box.id,
                     frozenBoxCode: vm.box.frozenBoxCode,
-                    status: null,
+                    status: "3001",
                     memo: null,
                     tubeRows:selectTubeList[k].tubeRows,
                     tubeColumns:selectTubeList[k].tubeColumns
@@ -1518,6 +1513,7 @@
                             vm.obox.stockInFrozenTubeList[i].frozenBoxCode = vm.obox.stockInFrozenTubeList[i].selectTubeCode;
                             vm.obox.stockInFrozenTubeList[i].id = selectTubeList[0].id;
                             vm.obox.stockInFrozenTubeList[i].frozenTubeId = selectTubeList[0].frozenTubeId;
+                            // vm.obox.stockInFrozenTubeList[i].sampleCode = selectTubeList[0].sampleCode;
                             delete vm.obox.stockInFrozenTubeList[i].selectTubeCode;
                             selectTubeList.splice(0,1);
                         }else{
@@ -1557,7 +1553,7 @@
                 _.forEach(vm.boxList,function (box) {
                     if(box.frozenBoxCode == obox.frozenBoxCode){
                         //新增的样本
-                        var addSampleArray = _.filter(obox.stockInFrozenTubeList,{frozenTubeId:""});
+                        var addSampleArray = _.filter(obox.stockInFrozenTubeList,{sampleCode:null});
                         if(addSampleArray.length){
                             for(var i = 0,addSampleCount = addSampleArray.length; i < addSampleCount; i++){
                                 var len = _.filter(box.stockInFrozenTubeList,{id:addSampleArray[i].id}).length;

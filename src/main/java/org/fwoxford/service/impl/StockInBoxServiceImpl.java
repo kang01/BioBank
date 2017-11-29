@@ -471,9 +471,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBoxNew.setProject(frozenBox.getProject());
             frozenBoxNew.setProjectCode(frozenBox.getProjectCode());
             frozenBoxNew.setProjectName(frozenBox.getProjectName());
-            frozenBoxNew.setProjectSite(frozenBox.getProjectSite());
-            frozenBoxNew.setProjectSiteName(frozenBox.getProjectSiteName());
-            frozenBoxNew.setProjectSiteCode(frozenBox.getProjectSiteCode());
+//            frozenBoxNew.setProjectSite(frozenBox.getProjectSite());
+//            frozenBoxNew.setProjectSiteName(frozenBox.getProjectSiteName());
+//            frozenBoxNew.setProjectSiteCode(frozenBox.getProjectSiteCode());
 
             frozenBoxNew.setDislocationNumber(0);
             frozenBoxNew.setEmptyHoleNumber(0);
@@ -1011,14 +1011,17 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(frozenTubeIdsOld!=null&&frozenTubeIdsOld.size()>0){
             frozenTubeRepository.updateStatusByNotInAndFrozenTubeState(frozenTubeIdsOld);
         }
-
+        //盒内新增样本
         List<StockInTube> stockInTubes = new ArrayList<StockInTube>();
+        //原盒原库存的样本
+        List<StockInTubeDTO> stockInTubesForResponseOld = new ArrayList<StockInTubeDTO>();
         //保存冻存管信息
         for(StockInTubeDTO tubeDTO:stockInTubeDTOList){
             //取原冻存管的患者信息
             StockInTube StockInTubeForSave = new StockInTube();
             StockInTube stockInTube = null;
             if(tubeDTO.getFrozenTubeState()!=null&&tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKED)){
+                stockInTubesForResponseOld.add(tubeDTO);
                 continue;
             }
 
@@ -1087,7 +1090,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxRepository.save(stockInBox);
         stockInTubeRepository.save(stockInTubes);
         StockInBoxDTO inBoxDTO = stockInBoxMapper.stockInBoxToStockInBoxDTO(stockInBox);
-        inBoxDTO.setFrozenTubeDTOS(stockInTubeMapper.stockInTubesToStockInTubeDTOsForSampleType(stockInTubes));
+        //盒内新编辑的样本
+        List<StockInTubeDTO> inTubesForNew = stockInTubeMapper.stockInTubesToStockInTubeDTOsForSampleType(stockInTubes);
+        List<StockInTubeDTO> finalInTubeListLast = new ArrayList<StockInTubeDTO>(){{addAll(stockInTubesForResponseOld);addAll(inTubesForNew);}};
+        inBoxDTO.setFrozenTubeDTOS(finalInTubeListLast);
         return inBoxDTO;
     }
 

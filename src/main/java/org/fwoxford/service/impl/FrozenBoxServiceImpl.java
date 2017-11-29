@@ -735,6 +735,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 inTubeForBox.setFrozenBoxCode(f.getFrozenBoxCode());
                 inTubeForBox.setTubeColumns(t.getTubeColumns());
                 inTubeForBox.setTubeRows(t.getTubeRows());
+                inTubeForBox.setSampleCode(t.getSampleCode()!=null?t.getSampleCode():t.getSampleTempCode());
                 stockInTubeForBoxes.add(inTubeForBox);
             }
             for (StockInTube stockInTube : stockInTubes) {
@@ -753,6 +754,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 inTubeForBox.setFrozenBoxCode(stockInTube.getFrozenBoxCode());
                 inTubeForBox.setTubeColumns(stockInTube.getTubeColumns());
                 inTubeForBox.setTubeRows(stockInTube.getTubeRows());
+                inTubeForBox.setSampleCode(stockInTube.getSampleCode()!=null?stockInTube.getSampleCode():stockInTube.getSampleTempCode());
                 stockInTubeForBoxes.add(inTubeForBox);
             }
             FrozenBoxType boxType = f.getFrozenBoxType();

@@ -14,7 +14,7 @@
         var vm = this;
 
         vm.ok = function () {
-            $uibModalInstance.close();
+            $uibModalInstance.close(vm.paginationText);
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

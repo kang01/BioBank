@@ -423,17 +423,17 @@
                 controller: 'PlanTaskSelectModalController',
                 controllerAs:'vm',
                 size:'lg',
-                // resolve: {
-                //     items: function () {
-                //         return {
-                //             taskId:taskId
-                //         };
-                //     }
-                // }
+                resolve: {
+                    items: function () {
+                        return {
+
+                        };
+                    }
+                }
             });
 
-            modalInstance.result.then(function (data) {
-
+            modalInstance.result.then(function (paginationText) {
+                console.log(paginationText);
             });
         }
         //查看选中的计划详情

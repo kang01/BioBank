@@ -10,6 +10,7 @@ public class StockInTubeForBox {
     private String frozenBoxCode;
     private String tubeColumns;
     private String tubeRows;
+    private String sampleCode;
 
     public Long getId() {
         return id;
@@ -41,5 +42,13 @@ public class StockInTubeForBox {
 
     public void setTubeRows(String tubeRows) {
         this.tubeRows = tubeRows;
+    }
+
+    public String getSampleCode() {
+        return sampleCode;
+    }
+
+    public void setSampleCode(String sampleCode) {
+        this.sampleCode = sampleCode;
     }
 }

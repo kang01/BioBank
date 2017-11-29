@@ -117,6 +117,7 @@
                 editor: 'tube',
                 multiSelect: true,
                 comments: true,
+                outsideClickDeselects:true,
                 renderer: myCustomRenderer,
                 onAfterSelectionEnd:function (row, col, row2, col2) {
                     //是否下一个
@@ -128,6 +129,11 @@
                     var array = _.flatten(remarkArray);
                     vm.selectedPos = this.getSelected();
                     vm.selectedTubesForDel = _.flatten(remarkArray);
+                    var len = _.filter(vm.selectedTubesForDel,{flag:"2"}).length;
+                    if(len){
+                        return;
+                    }
+
 
                     if(window.event && window.event.ctrlKey){
                         //换位
@@ -566,6 +572,7 @@
                     // 单元格有数据，并且有冻存盒ID，表示该单元格在库里有位置
                     // 该单元格不能编辑
                     cellProperties.editor = false;
+                    cellProperties.disableVisualSelection = true;
                     // 该单元格只读
                     cellProperties.readOnly = true;
                     // 该单元格的样式

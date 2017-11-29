@@ -238,10 +238,11 @@ public interface StockInTubeMapper {
             return null;
         }
         StockInTubeForBox stockInTubeForBox = new StockInTubeForBox();
-        stockInTubeForBox.setId(stockInTube.getFrozenTube()!=null?stockInTube.getFrozenTube().getId():null);
+        stockInTubeForBox.setId(stockInTube.getId());
         stockInTubeForBox.setTubeRows(stockInTube.getTubeRows());
         stockInTubeForBox.setTubeColumns(stockInTube.getTubeColumns());
         stockInTubeForBox.setFrozenBoxCode(stockInTube.getFrozenBoxCode());
+        stockInTubeForBox.setSampleCode(stockInTube.getSampleCode()!=null?stockInTube.getSampleCode():stockInTube.getSampleTempCode());
         return stockInTubeForBox;
     }
 }

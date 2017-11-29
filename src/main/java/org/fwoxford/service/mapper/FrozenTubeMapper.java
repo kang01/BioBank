@@ -181,10 +181,11 @@ public interface FrozenTubeMapper {
             return null;
         }
         StockInTubeForBox stockInTubeForBox = new StockInTubeForBox();
-        stockInTubeForBox.setId(frozenTube.getId());
+//        stockInTubeForBox.setId(frozenTube.getId());
         stockInTubeForBox.setTubeRows(frozenTube.getTubeRows());
         stockInTubeForBox.setTubeColumns(frozenTube.getTubeColumns());
         stockInTubeForBox.setFrozenBoxCode(frozenTube.getFrozenBoxCode());
+        stockInTubeForBox.setSampleCode(frozenTube.getSampleCode()!=null?frozenTube.getSampleCode():frozenTube.getSampleTempCode());
         return stockInTubeForBox;
     }
 }

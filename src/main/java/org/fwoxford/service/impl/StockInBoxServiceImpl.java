@@ -1000,8 +1000,25 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             throw new BankServiceException("盒内有重复的冻存管，不能保存！",jsonArray.toString());
         }
         //传入过来的入库管ID，验证是否有删除项
-        List<Long> stockIntubeIdsOld = stockInTubeDTOList.stream().map(s->s.getId()).collect(Collectors.toList());
-        List<Long> frozenTubeIdsOld = stockInTubeDTOList.stream().map(s->s.getFrozenTubeId()).collect(Collectors.toList());
+        List<Long> stockIntubeIdsOld = new ArrayList<>();
+//            stockInTubeDTOList.stream().map(s->
+//            s.getId()
+//        ).collect(Collectors.toList());
+        stockInTubeDTOList.forEach(s->{
+            if(s.getId()!=null){
+                stockIntubeIdsOld.add(s.getId());
+            }
+        });
+
+        List<Long> frozenTubeIdsOld = new ArrayList<>();
+//            stockInTubeDTOList.stream().map(s->s.getFrozenTubeId()).collect(Collectors.toList());
+
+        stockInTubeDTOList.forEach(s->{
+            if(s.getFrozenTubeId()!=null){
+                frozenTubeIdsOld.add(s.getFrozenTubeId());
+            }
+        });
+
         //删除掉需要删除的冻存管---原来入库盒样本排除传入过来的样本，就是要删除的
         if(stockIntubeIdsOld!=null&&stockIntubeIdsOld.size()>0){
             stockInTubeRepository.updateStatusByStockInBoxIdAndIdNotIn(stockInBox.getId(),stockIntubeIdsOld);

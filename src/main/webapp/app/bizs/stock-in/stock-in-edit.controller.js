@@ -1512,6 +1512,7 @@
                         if(selectTubeList.length){
                             vm.obox.stockInFrozenTubeList[i].frozenBoxCode = vm.obox.stockInFrozenTubeList[i].selectTubeCode;
                             vm.obox.stockInFrozenTubeList[i].id = selectTubeList[0].id;
+                            vm.obox.stockInFrozenTubeList[i].frozenTubeId = selectTubeList[0].frozenTubeId;
                             delete vm.obox.stockInFrozenTubeList[i].selectTubeCode;
                             selectTubeList.splice(0,1);
                         }else{

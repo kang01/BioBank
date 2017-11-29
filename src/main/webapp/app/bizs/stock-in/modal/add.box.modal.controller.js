@@ -15,9 +15,6 @@
         vm.createBoxflag = false;
         var boxes = items.incompleteBoxes;
         var stockInFrozenTubeList = angular.copy(items.box.stockInFrozenTubeList);
-        _.forEach(stockInFrozenTubeList,function (tube) {
-           tube.frozenTubeId = null;
-        });
         vm.box = {
             frozenBoxCode1D:null
         };

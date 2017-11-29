@@ -1077,6 +1077,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                     .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
                     .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
                     .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
+                stockInTube.setId(tubeDTO.getId());
             }
             stockInTubes.add(stockInTube);
             //保存入库样本表
@@ -1136,7 +1137,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 throw new BankServiceException("项目不存在！");
             }
             stockInTube.setProject(project);
-            tubeDTO.setProjectCode(project.getProjectCode());
+            stockInTube.setProjectCode(project.getProjectCode());
         }
         if(tubeDTO.getProjectSiteId()==null){
             stockInTube.setProjectSite(frozenBox.getProjectSite());
@@ -1204,6 +1205,18 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInTube.setSampleType(entity);
         stockInTube.setSampleTypeCode(entity.getSampleTypeCode());
         stockInTube.setSampleTypeName(entity.getSampleTypeName());
+
+        if(tubeDTO.getSampleClassificationId()!=null){
+            List<ProjectSampleClass> projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleClassificationId(tubeDTO.getProjectId(),tubeDTO.getSampleClassificationId());
+            if(projectSampleClass.size()==0){
+                throw new BankServiceException("样本分类无效！");
+            }
+
+            SampleClassification sampleClassification = projectSampleClass.get(0).getSampleClassification();
+            stockInTube.setSampleClassification(sampleClassification);
+            stockInTube.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+            stockInTube.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+        }
         return stockInTube;
     }
     /**

@@ -35,18 +35,18 @@
         vm.initStockInBoxesTable = _initStockInBoxesTable;
         //编辑转到分装
         vm.editToSpiltTube = _fnEditToSpiltTube;
-
+        //绘制盒子列表
         vm.tableRender = function () {
             _.forEach(vm.stockInBox, function(box) {
                 if(box.id == vm.box.id){
                     // box.countOfSample = vm.box.countOfSample;
-                    box.countOfSample = vm.box.frozenTubeDTOS.length;
+                    box.countOfSample = vm.box.countOfSample;
                     box.frozenBoxCode1D = vm.box.frozenBoxCode1D;
                     box.isSplit = vm.box.isSplit;
                 }
             });
             vm.dtOptions.withOption("data",vm.stockInBox);
-            // vm.dtInstance.rerender();
+            vm.dtInstance.rerender();
         };
 
 

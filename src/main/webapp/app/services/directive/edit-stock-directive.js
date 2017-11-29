@@ -1330,6 +1330,7 @@
                 toastr.success("保存冻存盒成功！");
 
                 $scope.stockInBox.frozenTubeDTOS =  data.frozenTubeDTOS;
+                $scope.stockInBox.countOfSample =  data.countOfSample;
                 $scope.reloadData();
                 _reloadTubesForTable(data);
                 // _initBoxInfo();

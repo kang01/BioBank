@@ -38,12 +38,14 @@
         //绘制盒子列表
         vm.tableRender = function () {
             _.forEach(vm.stockInBox, function(box) {
-                if(box.id == vm.box.id){
-                    // box.countOfSample = vm.box.countOfSample;
-                    box.countOfSample = vm.box.countOfSample;
-                    box.frozenBoxCode1D = vm.box.frozenBoxCode1D;
-                    box.isSplit = vm.box.isSplit;
+                if(vm.box){
+                    if(box.id == vm.box.id){
+                        box.countOfSample = vm.box.countOfSample;
+                        box.frozenBoxCode1D = vm.box.frozenBoxCode1D;
+                        box.isSplit = vm.box.isSplit;
+                    }
                 }
+
             });
             vm.dtOptions.withOption("data",vm.stockInBox);
             vm.dtInstance.rerender();
@@ -490,6 +492,8 @@
                 vm.stockInBox = res.data;
                 vm.dtOptions.withOption('data',vm.stockInBox);
                 vm.dtInstance.rerender();
+                _isStockInFinish();
+
             });
         }
         function _fnServerData() {
@@ -756,7 +760,8 @@
                 vm.showFlag = false;
                 //分装
                 vm.splittingBox = false;
-                vm.dtInstance.rerender();
+                _fnQueryBoxList();
+                // vm.dtInstance.rerender();
             });
         }
         //撤销上架
@@ -771,7 +776,7 @@
             modalInstance.result.then(function (data) {
                 RescindPutAwayService.rescindPutAway(vm.entity.stockInCode,boxCode).then(function (data) {
                     vm.dtOptions.isHeaderCompiled = false;
-                    vm.dtInstance.rerender();
+                    _fnQueryBoxList();
                 });
 
             });
@@ -1469,35 +1474,35 @@
             }
             //清空被分装的盒子数
             for(var k = 0; k < selectTubeList.length; k++){
-                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleCode = null;
-                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTempCode = null;
-                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].frozenBoxCode = null;
-                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeId = vm.box.sampleType.id;
-                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeName = vm.box.sampleType.sampleTypeName;
-                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeCode = vm.box.sampleType.sampleTypeCode;
-                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].backColor = vm.box.sampleType.backColor;
-                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].backColorForClass = vm.box.backColorForClass;
-                if(vm.box.sampleClassification){
-                    vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleClassificationId = vm.box.sampleClassification.id;
-                    vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleClassificationName = vm.box.sampleClassification.sampleClassificationName;
-                    vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleClassificationCode = vm.box.sampleClassification.sampleClassificationCode;
-                    vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].backColorForClass = vm.box.sampleClassification.backColor;
-                }
-                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)] = {
-                //     id: null,
-                //     sampleCode: "",
-                //     sampleTempCode: "",
-                //     sampleTypeId: vm.box.sampleType.id,
-                //     sampleTypeCode: vm.box.sampleType.sampleTypeCode,
-                //     sampleClassificationCode: selectTubeList[k].sampleClassificationCode,
-                //     sampleClassificationId: selectTubeList[k].sampleClassificationId,
-                //     frozenBoxId: vm.box.id,
-                //     frozenBoxCode: vm.box.frozenBoxCode,
-                //     status: "",
-                //     memo: "",
-                //     tubeRows:selectTubeList[k].tubeRows,
-                //     tubeColumns:selectTubeList[k].tubeColumns
-                // };
+                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleCode = null;
+                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTempCode = null;
+                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].frozenBoxCode = null;
+                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeId = vm.box.sampleType.id;
+                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeName = vm.box.sampleType.sampleTypeName;
+                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleTypeCode = vm.box.sampleType.sampleTypeCode;
+                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].backColor = vm.box.sampleType.backColor;
+                // vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].backColorForClass = vm.box.backColorForClass;
+                // if(vm.box.sampleClassification){
+                //     vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleClassificationId = vm.box.sampleClassification.id;
+                //     vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleClassificationName = vm.box.sampleClassification.sampleClassificationName;
+                //     vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].sampleClassificationCode = vm.box.sampleClassification.sampleClassificationCode;
+                //     vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)].backColorForClass = vm.box.sampleClassification.backColor;
+                // }
+                vm.frozenTubeArray[getTubeRowIndex(selectTubeList[k].tubeRows)][getTubeColumnIndex(selectTubeList[k].tubeColumns)] = {
+                    id: null,
+                    sampleCode: null,
+                    sampleTempCode: null,
+                    sampleTypeId: selectTubeList[k].sampleTypeId,
+                    sampleTypeCode: selectTubeList[k].sampleTypeCode,
+                    sampleClassificationCode: selectTubeList[k].sampleClassificationCode,
+                    sampleClassificationId: selectTubeList[k].sampleClassificationId,
+                    frozenBoxId: vm.box.id,
+                    frozenBoxCode: vm.box.frozenBoxCode,
+                    status: null,
+                    memo: null,
+                    tubeRows:selectTubeList[k].tubeRows,
+                    tubeColumns:selectTubeList[k].tubeColumns
+                };
 
 
             }

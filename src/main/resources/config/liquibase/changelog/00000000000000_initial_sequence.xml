@@ -71,4 +71,7 @@
     <changeSet id="11111111111111-3" author="jhipster" dbms="h2,postgresql,oracle">
         <createSequence sequenceName="seq_stock_out_handover_box" startValue="1" incrementBy="1"></createSequence>
     </changeSet>
+    <changeSet id="11111111111111-4" author="jhipster" dbms="h2,postgresql,oracle">
+        <createSequence sequenceName="seq_check_type" startValue="1" incrementBy="1"></createSequence>
+    </changeSet>
 </databaseChangeLog>

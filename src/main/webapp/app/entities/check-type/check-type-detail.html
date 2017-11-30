@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.checkType.detail.title">Check Type</span> {{vm.checkType.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.checkType.checkTypeCode">Check Type Code</span></dt>
+        <dd>
+            <span>{{vm.checkType.checkTypeCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.checkType.checkTypeName">Check Type Name</span></dt>
+        <dd>
+            <span>{{vm.checkType.checkTypeName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.checkType.status">Status</span></dt>
+        <dd>
+            <span>{{vm.checkType.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.checkType.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.checkType.memo}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="check-type-detail.edit({id:vm.checkType.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

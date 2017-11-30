@@ -1,0 +1,24 @@
+{
+    "bioBankApp": {
+        "checkType" : {
+            "home": {
+                "title": "Check Types",
+                "createLabel": "Create a new Check Type",
+                "createOrEditLabel": "Create or edit a Check Type"
+            },
+            "created": "A new Check Type is created with identifier {{ param }}",
+            "updated": "A Check Type is updated with identifier {{ param }}",
+            "deleted": "A Check Type is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Check Type {{ id }}?"
+            },
+            "detail": {
+                "title": "Check Type"
+            },
+            "checkTypeCode": "Check Type Code",
+            "checkTypeName": "Check Type Name",
+            "status": "Status",
+            "memo": "Memo"
+        }
+    }
+}

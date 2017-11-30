@@ -23,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import javax.jdo.annotations.Join;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,55 +42,54 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     private final StockOutApplyMapper stockOutApplyMapper;
 
     @Autowired
-    private DelegateRepository delegateRepository;
+    DelegateRepository delegateRepository;
 
     @Autowired
-    private ProjectRepository projectRepository;
+    ProjectRepository projectRepository;
 
     @Autowired
-    private StockOutApplyProjectRepository stockOutApplyProjectRepository;
+    StockOutApplyProjectRepository stockOutApplyProjectRepository;
 
     @Autowired
-    private StockOutApplyRepositries stockOutApplyRepositries;
+    StockOutApplyRepositries stockOutApplyRepositries;
 
     @Autowired
-    private StockOutRequiredSampleRepository stockOutRequiredSampleRepository;
+    StockOutRequirementRepository stockOutRequirementRepository;
 
     @Autowired
-    private StockOutRequirementRepository stockOutRequirementRepository;
+    UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
 
     @Autowired
-    private  PasswordEncoder passwordEncoder;
+    ReportExportingService reportExportingService;
 
     @Autowired
-    private ReportExportingService reportExportingService;
+    StockOutRequirementService stockOutRequirementService;
 
     @Autowired
-    private StockOutRequirementService stockOutRequirementService;
+    StockOutFilesRepository stockOutFilesRepository;
 
     @Autowired
-    private StockOutFilesRepository stockOutFilesRepository;
+    StockOutPlanRepository stockOutPlanRepository;
 
     @Autowired
-    private StockOutPlanRepository stockOutPlanRepository;
+    StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
 
     @Autowired
-    private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
+    StockOutHandoverDetailsRepository stockOutHandoverDetailsRepository;
 
     @Autowired
-    private StockOutHandoverDetailsRepository stockOutHandoverDetailsRepository;
+    StockOutApplyProjectService stockOutApplyProjectService;
 
     @Autowired
-    private StockOutApplyProjectService stockOutApplyProjectService;
-
-    @Autowired
-    private StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
+    StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
 
     @Autowired
     private BankUtil bankUtil;
+    @Autowired
+    CheckTypeRepository checkTypeRepository;
 
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
@@ -222,6 +220,13 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         stockOutApply.setRecordId(stockOutApplyForSave.getRecordId());
         stockOutApply.setRecordTime(stockOutApplyForSave.getRecordTime());
         stockOutApply.setPurposeOfSample(stockOutApplyForSave.getPurposeOfSample());
+        if(stockOutApplyForSave.getCheckTypeId()!=null){
+            CheckType checkType = checkTypeRepository.findByIdAndStatus(stockOutApplyForSave.getCheckTypeId(),Constants.VALID);
+            if(checkType == null){
+                throw new BankServiceException("检测类型不存在！");
+            }
+            stockOutApply.setCheckTypeId(stockOutApplyForSave.getCheckTypeId());
+        }
         stockOutApplyRepository.save(stockOutApply);
         List<Long> projectIds = stockOutApplyForSave.getProjectIds();
 
@@ -282,7 +287,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         res.setStartTime(stockOutApply.getStartTime());
         res.setPurposeOfSample(stockOutApply.getPurposeOfSample());
         res.setStatus(stockOutApply.getStatus());
-        List<ProjectResponse> projectResponses = new ArrayList<ProjectResponse>();
+        res.setCheckTypeId(stockOutApply.getCheckTypeId());
         //获取授权的项目
         List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockOutApplyId(id);
         List<Long> projectIds = new ArrayList<Long>();

@@ -126,4 +126,23 @@ public interface StockInBoxMapper {
         sampleClassification.setId(id);
         return sampleClassification;
     }
+
+    default StockInBox frozenBoxToStockInBox(FrozenBox frozenBox,StockIn stockIn){
+        if(frozenBox == null){
+            return null;
+        }
+        StockInBox stockInBox = new StockInBox();
+        stockInBox.sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
+            .sampleClassification(frozenBox.getSampleClassification())
+            .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)
+            .sampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null)
+            .dislocationNumber(frozenBox.getDislocationNumber()).emptyHoleNumber(frozenBox.getEmptyHoleNumber()).emptyTubeNumber(frozenBox.getEmptyTubeNumber())
+            .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
+            .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(stockIn.getProject())
+            .projectCode(stockIn.getProjectCode()).projectName(stockIn.getProject()!=null?stockIn.getProject().getProjectName():null)
+            .projectSite(stockIn.getProjectSite()).projectSiteCode(stockIn.getProjectSiteCode())
+            .projectSiteName(stockIn.getProjectSite()!=null?stockIn.getProjectSite().getProjectSiteName():null).frozenBox(frozenBox).status(frozenBox.getStatus()).memo(frozenBox.getMemo())
+            .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).stockInCode(stockIn.getStockInCode()).stockIn(stockIn);
+        return stockInBox;
+    }
 }

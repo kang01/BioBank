@@ -245,4 +245,25 @@ public interface StockInTubeMapper {
         stockInTubeForBox.setSampleCode(stockInTube.getSampleCode()!=null?stockInTube.getSampleCode():stockInTube.getSampleTempCode());
         return stockInTubeForBox;
     }
+
+    default StockInTube frozenTubeToStockInTube(FrozenTube tube,StockInBox stockInBox){
+        if(tube == null){
+            return null;
+        }
+        StockInTube stockInTube = new StockInTube();
+        stockInTube.status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
+            .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox).errorType(tube.getErrorType())
+            .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(tube.getFrozenTubeState())
+            .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
+            .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())
+            .frozenTubeVolumnsUnit(tube.getFrozenTubeVolumnsUnit()).sampleVolumns(tube.getSampleVolumns())
+            .project(tube.getProject()).projectCode(tube.getProjectCode()).projectSite(tube.getProjectSite())
+            .projectSiteCode(tube.getProjectSiteCode()).sampleClassification(tube.getSampleClassification())
+            .sampleClassificationCode(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationCode():null)
+            .sampleClassificationName(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationName():null)
+            .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
+            .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
+            .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
+        return stockInTube;
+    }
 }

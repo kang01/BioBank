@@ -884,24 +884,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBox = frozenBoxRepository.save(frozenBox);
         //保存入库冻存盒信息
         int countOfStockInTube = 0;
-        stockInBox.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-        stockInBox.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
-        stockInBox.setStockIn(stockIn);
-        stockInBox.setStockInCode(stockIn.getStockInCode());
-        stockInBox.setMemo(frozenBox.getMemo());
-        stockInBox.setStatus(frozenBox.getStatus());
-        stockInBox.setFrozenBox(frozenBox);
+        stockInBox = stockInBoxMapper.frozenBoxToStockInBox(frozenBox,stockIn);
         stockInBox.setCountOfSample(countOfStockInTube);
-        stockInBox.sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
-            .sampleClassification(frozenBox.getSampleClassification())
-            .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)
-            .sampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null)
-            .dislocationNumber(frozenBox.getDislocationNumber()).emptyHoleNumber(frozenBox.getEmptyHoleNumber()).emptyTubeNumber(frozenBox.getEmptyTubeNumber())
-            .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
-            .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(stockIn.getProject())
-            .projectCode(stockIn.getProjectCode()).projectName(stockIn.getProject()!=null?stockIn.getProject().getProjectName():null)
-            .projectSite(stockIn.getProjectSite()).projectSiteCode(stockIn.getProjectSiteCode())
-            .projectSiteName(stockIn.getProjectSite()!=null?stockIn.getProjectSite().getProjectSiteName():null);
         stockInBoxRepository.save(stockInBox);
 
 
@@ -1083,20 +1067,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             //如果是出库再回来，此时只能修改入库管信息，不能修改样本信息，样本信息只有在入库完成时可以编辑
             if(tubeDTO.getFrozenTubeState()==null||(tubeDTO.getFrozenTubeState()!=null&&(tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)||tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)))){
                 FrozenTube tube= createNewFrozenTube(StockInTubeForSave,frozenBox);
-                stockInTube = new StockInTube();
-                stockInTube.status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
-                    .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox).errorType(tube.getErrorType())
-                    .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(tube.getFrozenTubeState())
-                    .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
-                    .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())
-                    .frozenTubeVolumnsUnit(tube.getFrozenTubeVolumnsUnit()).sampleVolumns(tube.getSampleVolumns())
-                    .project(tube.getProject()).projectCode(tube.getProjectCode()).projectSite(tube.getProjectSite())
-                    .projectSiteCode(tube.getProjectSiteCode()).sampleClassification(tube.getSampleClassification())
-                    .sampleClassificationCode(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationCode():null)
-                    .sampleClassificationName(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationName():null)
-                    .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
-                    .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
-                    .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
+                stockInTube = stockInTubeMapper.frozenTubeToStockInTube(tube,stockInBox);
                 stockInTube.setId(tubeDTO.getId());
             }
             stockInTubes.add(stockInTube);

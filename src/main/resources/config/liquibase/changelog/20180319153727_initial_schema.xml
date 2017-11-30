@@ -15,7 +15,9 @@
 
     <!--初始化数据- start-->
     <changeSet id="20180319153727-1" author="jhipster">
-        <sqlFile path="config/liquibase/biobank2017071001.sql" ></sqlFile>
+        <sql>
+            INSERT INTO CHECK_TYPE(ID,CHECK_TYPE_CODE,CHECK_TYPE_NAME,STATUS,CREATED_BY,CREATED_DATE) VALUES (SEQ_CHECK_TYPE.NEXTVAL,'TH','糖化检测','0001','SYSTEM',SYSDATE);
+        </sql>
     </changeSet>
     <!--<changeSet id="20180319153727-1" author="jhipster">-->
         <!--<loadData encoding="UTF-8"-->

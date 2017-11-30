@@ -86,6 +86,10 @@ public class StockOutApplyForSave {
      * 已交接样本量
      */
     private Long countOfHandoverSample;
+    /**
+     * 出库检测类型
+     */
+    private Long checkTypeId;
 
     public Long getId() {
         return id;
@@ -237,6 +241,14 @@ public class StockOutApplyForSave {
 
     public void setCountOfHandoverSample(Long countOfHandoverSample) {
         this.countOfHandoverSample = countOfHandoverSample;
+    }
+
+    public Long getCheckTypeId() {
+        return checkTypeId;
+    }
+
+    public void setCheckTypeId(Long checkTypeId) {
+        this.checkTypeId = checkTypeId;
     }
 
     @Override

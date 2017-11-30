@@ -103,6 +103,7 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.Coordinate.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.Province.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.StockOutHandoverBox.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.CheckType.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

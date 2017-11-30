@@ -465,7 +465,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxSplitIn.setStatus(Constants.FROZEN_BOX_STOCKING);
         if(frozenBoxNew.getId()== null){
             //盒ID为空，表示新增的冻存盒---保存冻存盒，保存入库盒
-            frozenBoxNew.setStatus(Constants.FROZEN_BOX_STOCKING);
             frozenBoxNew.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
             frozenBoxNew.setFrozenBoxCode1D(stockInBoxForDataSplit.getFrozenBoxCode1D());
             frozenBoxNew.setProject(frozenBox.getProject());
@@ -539,6 +538,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBoxCheckService.checkFrozenBoxCodeRepead(map);
         }
         frozenBoxNew.setLockFlag(Constants.FROZEN_BOX_LOCKED_FOR_SPLIT);
+        frozenBoxNew.setStatus(Constants.FROZEN_BOX_STOCKING);
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
         if(stockInBoxSplitIn.getId() == null){
             stockInBoxSplitIn.setStockIn(stockIn);

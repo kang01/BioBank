@@ -1853,7 +1853,9 @@
 
             modalInstance.result.then(function (data) {
                 _.forEach(data.stockInFrozenTubeList,function (tube) {
-                   tube.flag = "1";
+                    if(status == 1){
+                        tube.flag = "2";
+                    }
                 });
                 if(data){
                     if(!data.sampleTypeCode){

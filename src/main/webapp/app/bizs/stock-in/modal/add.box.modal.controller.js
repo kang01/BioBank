@@ -142,11 +142,13 @@
 
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.sampleTypeClassOptions = _.orderBy(data, ['sampleClassificationId'], ['asc']);
+                //当有样本分类时，不选样本分类不能点击确定按钮
                 vm.noSampleClassFlag = true;
                 //1:新加第二个盒子 2：新加第一个盒子
                 if(status == "2"){
                     if(boxes.length){
-                        if(vm.isMixed == "1" && sampleTypeClassId) {
+                        //混合类型，并且有分类
+                        if(sampleTypeClassId) {
                             for (var i = 0; i < boxes.length; i++) {
                                 for (var j = 0; j < vm.sampleTypeClassOptions.length; j++) {
                                     if (boxes[i].sampleTypeCode == vm.sampleTypeClassOptions[j].sampleClassificationCode) {
@@ -174,6 +176,10 @@
 
                             }
                         }
+                        //不是混合类型，但是有样本分类
+                        // if(vm.isMixed == "0" && sampleTypeClassId) {
+                        //
+                        // }
                     }else{
                         vm.noSampleClassFlag = true;
                         if(vm.sampleTypeClassOptions.length){

@@ -1766,6 +1766,7 @@
             var boxStr = JSON.stringify(vm.frozenTubeArray);
             if(boxStr == vm.boxStr){
                 _fnRecoverInit();
+                vm.splittingBox = false;
             }else{
                 modalInstance = $uibModal.open({
                     animation: true,

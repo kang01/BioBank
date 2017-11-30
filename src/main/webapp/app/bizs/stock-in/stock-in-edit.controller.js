@@ -1751,6 +1751,7 @@
             selectTubeList = [];
             saveBoxList = [];
             vm.frozenBoxCode = "";
+            //盒子详情
             vm.stockInFrozenTubeList1 = [];
             vm.boxDetailFlag = false;
             $(".box-selected").removeClass("box-selected");
@@ -1764,14 +1765,8 @@
         vm.closeBox = function () {
             var boxStr = JSON.stringify(vm.frozenTubeArray);
             if(boxStr == vm.boxStr){
-                vm.frozenBoxCode = "";
+                _fnRecoverInit();
                 vm.splittingBox = false;
-                vm.boxList = [];
-                tubeList = [];
-                selectTubeList = [];
-                saveBoxList = [];
-                vm.stockInFrozenTubeList1 = [];
-                vm.boxDetailFlag = false;
             }else{
                 modalInstance = $uibModal.open({
                     animation: true,
@@ -1789,20 +1784,9 @@
                     }
                 });
                 modalInstance.result.then(function (flag) {
-                    if(flag) {
-                        vm.saveBox();
-                    }
-                    vm.tableRender();
-                    vm.splittingBox = false;
+                    vm.saveBox();
                 },function () {
-                    vm.frozenBoxCode = "";
-                    vm.splittingBox = false;
-                    vm.boxList = [];
-                    tubeList = [];
-                    selectTubeList = [];
-                    saveBoxList = [];
-                    vm.stockInFrozenTubeList1 = [];
-                    vm.boxDetailFlag = false;
+                    _fnRecoverInit();
                 });
             }
 
@@ -1819,6 +1803,10 @@
         };
         //添加分装样本盒 1:第二个新盒子 2.新添第一个盒子
         vm.addBoxModal = function (box,status) {
+            if(vm.boxList.length){
+                toastr.error("有未满的冻存盒，无法添加新冻存盒！请您先进行保存分装操作!");
+                return;
+            }
             if(!box){
                 box = {};
                 box.sampleTypeId = vm.box.sampleType.id;
@@ -1866,7 +1854,9 @@
 
             modalInstance.result.then(function (data) {
                 _.forEach(data.stockInFrozenTubeList,function (tube) {
-                   tube.flag = "1";
+                    if(status == 1){
+                        tube.flag = "2";
+                    }
                 });
                 if(data){
                     if(!data.sampleTypeCode){
@@ -1877,9 +1867,17 @@
                     var index;
                     if(data.sampleClassificationCode){
                         index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:data.sampleClassificationCode});
+
                     }else{
                         index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:data.sampleTypeCode});
                     }
+                    if(!vm.boxList.length){
+                        if(index != -1){
+                            _.remove(vm.incompleteBoxesList,{sampleTypeCode:data.sampleClassificationCode});
+                            index = -1;
+                        }
+                    }
+
                     if(index == -1){
                         var boxTempList  = [];
                         boxTempList.push(data);

@@ -56,23 +56,27 @@
         }
 
         _initStockOutBoxesTable();
+        //选择的计划的盒子列表
+        var selectedSample;
         function _initStockOutBoxesTable() {
             vm.selected = {};
             vm.selectAll = false;
-            var selectedSample;
+
             // 处理盒子选中状态
             vm.toggleAll = function (selectAll, selectedItems) {
                 selectedItems = vm.selected;
                 selectAll = vm.selectAll;
-                var arrayId = [];
+                var boxIdArray = [];
                 for (var id in selectedItems) {
-                    arrayId.push(id);
+                    boxIdArray.push(id);
                     if (selectedItems.hasOwnProperty(id)) {
                         selectedItems[id] = selectAll;
                     }
                 }
-                vm.strBoxIds = _.join(arrayId,",");
+                vm.strBoxIds = _.join(boxIdArray,",");
+                //
                 if(!selectAll){
+                    //全部不选中
                     vm.strBoxIds = "";
                     _.forEach(vm.boxData, function(value) {
                         var len  =  _.filter(selectedSample, {id:value.id}).length;
@@ -92,14 +96,14 @@
                 vm.selectedOptions.withOption('data', selectedSample);
             };
             var clickFlag = false;
+            //选择的计划的盒子列表
             selectedSample = [];
             vm.toggleOne = function (selectedItems) {
                 clickFlag = true;
-                // console.log(JSON.stringify(selectedItems))
-                var arrayId = [];
+                var boxIdArray = [];
                 for (var id in selectedItems) {
                     if(selectedItems[id]){
-                        arrayId.push(id);
+                        boxIdArray.push(id);
                         var obj = _.find(vm.boxData,{id:+id});
                         var len = _.filter(selectedSample,{id:+id}).length;
                         if(!len){
@@ -119,7 +123,7 @@
                 }
                 vm.selectedLen = selectedSample.length;
                 vm.selectedOptions.withOption('data', selectedSample);
-                vm.strBoxIds = _.join(arrayId,",");
+                vm.strBoxIds = _.join(boxIdArray,",");
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
                         if(!selectedItems[id]) {
@@ -138,7 +142,7 @@
             // vm.boxData = [];
             // vm.dtOptions.withOption('data',vm.boxData);
             vm.dtOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING", 300, 5)
-                .withOption('order', [[1,'asc']])
+                .withOption('order', [[2,'asc']])
                 .withButtons([
                     {
                         text: '创建任务',
@@ -159,11 +163,12 @@
                     }
                 ])
                 .withOption('rowCallback', rowCallback)
-                .withOption('createdRow', function(row, data, dataIndex) {
+                .withOption('createdRow', function(row, data, iDisplayIndex) {
                     $compile(angular.element(row).contents())($scope);
                 })
                 .withOption('headerCallback', function(header) {
                     var circle1 = $(".circle1").parent()[0];
+
                     $compile(angular.element(header).contents())($scope);
                     $compile(angular.element(circle1).contents())($scope);
                 });
@@ -173,6 +178,7 @@
             vm.dtColumns = [
                 // DTColumnBuilder.newColumn('id').notVisible(),
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
+                DTColumnBuilder.newColumn('frozenBoxCode1D').withOption("width", "30").notSortable().withOption('searchable',false).withTitle('#'),
                 DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('冻存盒编码').withOption("width", "90").renderWith(_fnRowRender),
                 DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "80"),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
@@ -181,12 +187,18 @@
 
 
             function _fnRowSelectorRender(data, type, full, meta) {
-                vm.selected[full.id] = false;
+                var len = _.filter(selectedSample,{id:full.id}).length;
+                if(len){
+                    vm.selected[full.id] = true;
+                }else{
+                    vm.selected[full.id] = false;
+                }
                 var html = '';
                 html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
                 return html;
             }
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
+                $('td:nth-child(2)', nRow).html(iDisplayIndex + 1);
                 $('td', nRow).unbind('click');
                 $(nRow).bind('click', function() {
                     var tr = this;
@@ -215,12 +227,12 @@
 
                 return frozenBoxCode;
             }
+            //获取管子信息
             function _loadTubes(boxId) {
                 if(vm.sampleIds){
                     PlanService.queryPlanTubes(vm.sampleIds,boxId).success(function (data) {
                         vm.tubeData = data;
                         vm.tubeOptions.withOption('data', data);
-                        // vm.tubeInstance.rerender();
                     });
                 }
 
@@ -389,7 +401,6 @@
 
                 }
 
-                // vm.dtInstance.rerender();
                 vm.tubeOptions.withOption('data', []);
                 vm.tubeInstance.rerender();
             },100);
@@ -422,7 +433,8 @@
                 templateUrl: 'app/bizs/stock-out/plan/modal/plan-task-select-modal.html',
                 controller: 'PlanTaskSelectModalController',
                 controllerAs:'vm',
-                size:'lg',
+                size:'md',
+                backdrop:'static',
                 resolve: {
                     items: function () {
                         return {
@@ -432,8 +444,48 @@
                 }
             });
 
-            modalInstance.result.then(function (paginationText) {
-                console.log(paginationText);
+            modalInstance.result.then(function (paginationIndexArray) {
+                vm.boxData = _.orderBy(vm.boxData, ['frozenBoxCode1D'], ['asc']);
+                var boxIdArray = [];
+                var rgExp = /\d{1,3}-\d{1,3}/;
+                _.forEach(paginationIndexArray,function (pagination) {
+                    var index = pagination.indexOf("-");
+                    //检查输入的内容中是否包含-
+                    if(index != -1){
+                        if(rgExp.test(pagination)){
+                            //匹配成功后，判断第一个数要小于第二个数，不然就输入错误
+                            var num1 = _.toNumber(pagination.substr(0,index));
+                            var num2 = _.toNumber(pagination.substring(index+1));
+                            if(num2 > vm.boxData.length){
+                                num2 = vm.boxData.length;
+                                vm.selectAll = true;
+                            }
+                            for(var i = num1; i < num2+1; i++){
+                                _fnSelectBoxData(i);
+
+                            }
+                        }
+                    }else{
+                        var i = _.toNumber(pagination);
+                        _fnSelectBoxData(i);
+                    }
+
+                });
+                //勾选冻存盒列表
+                function _fnSelectBoxData(index) {
+                    var len = _.filter(selectedSample,{id:vm.boxData[index-1].id}).length;
+                    if(!len){
+                        //要勾选的数据
+                        selectedSample.push(vm.boxData[index-1]);
+                        //盒子ID
+                        boxIdArray.push(vm.boxData[index-1].id);
+                    }
+                }
+                vm.dtInstance.rerender();
+                vm.selectedLen = selectedSample.length;
+                vm.selectedOptions.withOption('data', selectedSample);
+                vm.strBoxIds = _.join(boxIdArray,",");
+
             });
         }
         //查看选中的计划详情
@@ -453,6 +505,7 @@
                 controller: 'PlanTaskDescModalController',
                 controllerAs:'vm',
                 size:'lg',
+                backdrop:'static',
                 resolve: {
                     items: function () {
                         return {

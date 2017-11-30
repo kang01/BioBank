@@ -181,27 +181,32 @@
                     }
                 },
                 enterMoves:function () {
-                    var hotMoves = hotRegisterer.getInstance('my-handsontable');
-                    var selectedRow = hotMoves.getSelected()[0];
-                    var selectedCol = hotMoves.getSelected()[1];
-                    var tubes = _.flatten(vm.frozenTubeArray);
-                    var tube = _.find(tubes,{sampleCode:""});
-                    if(tube){
-                        var rowIndex = tube.rowNO - selectedRow;
-                        var colIndex = tube.colNO - selectedCol - 1;
-                        return{row:rowIndex,col:colIndex};
+                    if(vm.obox.isMixed){
+                        return{row:1,col:0};
                     }else{
-                        // return{row:0,col:0};
+                        var hotMoves = hotRegisterer.getInstance('my-handsontable');
+                        var selectedRow = hotMoves.getSelected()[0];
+                        var selectedCol = hotMoves.getSelected()[1];
+                        var tubes = _.flatten(vm.frozenTubeArray);
+                        var tube = _.find(tubes,{sampleCode:""});
+                        if(tube){
+                            var rowIndex = tube.rowNO - selectedRow;
+                            var colIndex = tube.colNO - selectedCol - 1;
+                            return{row:rowIndex,col:colIndex};
+                        }else{
+                            // return{row:0,col:0};
 
-                        // added by zhuyu for 扫码不近格
-                        if (vm.singleMultipleFlag == "single"){
-                            return{row:0,col:0};
-                        } else if(selectedCol + 1 < hotMoves.countCols()){
-                            return{row:0,col:1};
-                        } else{
-                            return{row:1,col:-selectedCol};
+                            // added by zhuyu for 扫码不近格
+                            if (vm.singleMultipleFlag == "single"){
+                                return{row:0,col:0};
+                            } else if(selectedCol + 1 < hotMoves.countCols()){
+                                return{row:0,col:1};
+                            } else{
+                                return{row:1,col:-selectedCol};
+                            }
                         }
                     }
+
 
                     // if(vm.nextFlag){
                     //     var hotMoves = hotRegisterer.getInstance('my-handsontable');
@@ -217,11 +222,32 @@
 
                 },
                 afterChange:function (change,source) {
-                    if(vm.singleMultipleFlag != "single"){
-                        return;
-                    }
                     var tableCtrl = _getTableCtrl();
+                    //混合类型99时，编辑一行
+                    function _fnMixedType() {
+                        if(vm.obox.sampleTypeCode == "99"){
+                            var rowIndex = change[0][0];
+                            var oldTubeObject = change[0][2];
+                            if(oldTubeObject.sampleClassificationId){
+                                for(var m = 0; m < vm.frozenTubeArray.length; m++){
+                                    for(var n = 0; n < vm.frozenTubeArray[m].length ; n++){
+                                        if(oldTubeObject.sampleCode){
+                                            vm.frozenTubeArray[rowIndex][n].sampleCode = oldTubeObject.sampleCode;
+                                        }
+                                    }
+
+                                }
+                                tableCtrl.loadData(vm.frozenTubeArray);
+                            }
+                        }
+                    }
                     if(source == 'edit'){
+                        _fnMixedType();
+                        //多选时，不弹出modal框
+                        if(vm.singleMultipleFlag != "single"){
+                            return;
+                        }
+                    //    单选时
                         for (var i=0; i<change.length; ++i){
                             var item = change[i];
                             var row = item[0];
@@ -307,7 +333,6 @@
                                     }
                                 }).error(function (data) {
                                     vm.nextFlag = false;
-                                    var tableCtrl = _getTableCtrl();
                                     toastr.error(data.message);
                                     for(var i = 0; i < vm.frozenTubeArray.length; i++){
                                         for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
@@ -331,8 +356,10 @@
                             }
                         }
 
-                        return;
+
+
                     }
+
                 },
                 beforeKeyDown:function (event,change) {
                     if(vm.flagStatus){

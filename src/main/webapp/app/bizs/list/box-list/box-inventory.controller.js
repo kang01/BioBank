@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('BoxInventoryController', BoxInventoryController);
 
-    BoxInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService','FrozenBoxTypesService'];
+    BoxInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxInventoryService','BioBankDataTable','BioBankSelectize','MasterData','SampleTypeService','RequirementService','FrozenBoxTypesService'];
 
-    function BoxInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService,FrozenBoxTypesService) {
+    function BoxInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxInventoryService,BioBankDataTable,BioBankSelectize,MasterData,SampleTypeService,RequirementService,FrozenBoxTypesService) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
@@ -83,42 +83,61 @@
             function onFrozenBoxTypeSuccess(data) {
                 vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['asc']);
             }
-            vm.projectConfig = {
+            vm.projectConfig = BioBankSelectize.buildSettings({
                 valueField:'id',
                 labelField:'projectName',
                 searchField:'projectName',
-                onChange:function(value){
-                    vm.projectIds = _.join(value, ',');
-                    projectIds = value;
-                    vm.dto.projectCodeStr = [];
-                    if(vm.dto.sampleTypeId){
-                        _fnQueryProjectSampleClass(vm.projectIds,vm.dto.sampleTypeId);
-                    }
+                clearMaxItemFlag : true
+            });
+            vm.projectConfig.onChange = function(value){
+                vm.projectIds = _.join(value, ',');
+                projectIds = value;
+                vm.dto.projectCodeStr = [];
+                if(vm.dto.sampleTypeId){
+                    _fnQueryProjectSampleClass(vm.projectIds,vm.dto.sampleTypeId);
                 }
-
             };
             //盒子位置
-            vm.frozenBoxPlaceConfig = {
+            vm.frozenBoxPlaceConfig = BioBankSelectize.buildSettings({
                 valueField:'id',
-                labelField:'equipmentCode',
-                maxItems: 1,
-                onChange:function (value) {
-                    if(value){
-                        AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
-                    }else{
-                        vm.frozenBoxAreaOptions = [
-                            {id:"",areaCode:""}
-                        ];
-                        vm.dto.areaId = "";
-                        vm.frozenBoxShelfOptions = [
-                            {id:"",supportRackCode:""}
-                        ];
-                        vm.dto.shelvesId = "";
-                        $scope.$apply();
-                    }
-
+                labelField:'equipmentCode'
+            });
+            vm.frozenBoxPlaceConfig.onChange = function (value) {
+                if(value){
+                    AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                }else{
+                    vm.frozenBoxAreaOptions = [
+                        {id:"",areaCode:""}
+                    ];
+                    vm.dto.areaId = "";
+                    vm.frozenBoxShelfOptions = [
+                        {id:"",supportRackCode:""}
+                    ];
+                    vm.dto.shelvesId = "";
+                    $scope.$apply();
                 }
             };
+            // vm.frozenBoxPlaceConfig = {
+            //     valueField:'id',
+            //     labelField:'equipmentCode',
+            //     maxItems: 1,
+            //     onChange:function (value) {
+            //         if(value){
+            //             AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+            //         }else{
+            //             vm.frozenBoxAreaOptions = [
+            //                 {id:"",areaCode:""}
+            //             ];
+            //             vm.dto.areaId = "";
+            //             vm.frozenBoxShelfOptions = [
+            //                 {id:"",supportRackCode:""}
+            //             ];
+            //             vm.dto.shelvesId = "";
+            //             $scope.$apply();
+            //         }
+            //
+            //     }
+            // };
             function onAreaSuccess(data) {
                 vm.frozenBoxAreaOptions = data;
                 vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
@@ -204,33 +223,30 @@
                 onChange:function(value){
                 }
             };
+
             //盒子编码
-            vm.boxCodeConfig = {
-                create: true,
+            var selectizeObj = {
+                create : true,
                 persist:false,
-                onChange: function(value){
+                onInitializeFlag : true,
+                clearMaxItemFlag : true
+            };
+            vm.boxCodeConfig = BioBankSelectize.buildSettings(selectizeObj);
+            vm.boxCodeConfig.onChange = function (value) {
                     vm.dto.frozenBoxCodeStr = value;
-                }
             };
+
             //一维编码
-            vm.boxCode1DConfig = {
-                create: true,
-                persist:false,
-                onChange: function(value){
-                    vm.dto.frozenBoxCode1DStr = value;
-
-                }
+            vm.boxCode1DConfig = BioBankSelectize.buildSettings(selectizeObj);
+            vm.boxCode1DConfig.onChange =  function(value){
+                vm.dto.frozenBoxCode1DStr = value;
             };
-            //样本类型
-            vm.sampleTypeConfig = {
-                valueField:'id',
-                labelField:'sampleTypeName',
-                maxItems: 1,
-                onChange:function (value) {
-                    if(vm.projectIds){
-                        _fnQueryProjectSampleClass(vm.projectIds,value);
-                    }
 
+            //样本类型
+            vm.sampleTypeConfig = BioBankSelectize.buildSettings({valueField:'id',labelField:'sampleTypeName'});
+            vm.sampleTypeConfig.onChange = function(value){
+                if(vm.projectIds){
+                    _fnQueryProjectSampleClass(vm.projectIds,value);
                 }
             };
             //样本分类
@@ -242,22 +258,9 @@
                     }
                 });
             }
-            vm.sampleClassConfig = {
-                valueField:'sampleClassificationId',
-                labelField:'sampleClassificationName',
-                maxItems: 1,
-                onChange:function (value) {
-                }
-            };
+            vm.sampleClassConfig = BioBankSelectize.buildSettings({valueField:'sampleClassificationId', labelField:'sampleClassificationName'});
             //盒子类型 17:10*10 18:8*8
-            vm.boxTypeConfig = {
-                valueField:'id',
-                labelField:'frozenBoxTypeName',
-                maxItems: 1,
-                onChange:function(value){
-
-                }
-            };
+            vm.boxTypeConfig = BioBankSelectize.buildSettings({valueField:'id', labelField:'frozenBoxTypeName'});
         }
         _init();
         function _fnReloadSelectedData() {

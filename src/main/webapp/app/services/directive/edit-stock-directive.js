@@ -288,8 +288,9 @@
                                                         sampleClassificationId:vm.obox.sampleClassificationId,
                                                         sampleClassificationName:vm.obox.sampleClassificationName,
                                                         sampleClassificationCode:vm.obox.sampleClassificationCode,
-                                                        singleMultipleFlag:vm.singleMultipleFlag
-                                                    };
+                                                        singleMultipleFlag:vm.singleMultipleFlag,
+                                                        isMixed :vm.obox.isMixed
+                                                };
                                                 }
                                             }
 
@@ -778,6 +779,7 @@
                 backColorForClass:null,
                 backColor:null,
                 flag:null,
+                isMixed:box.isMixed,
                 rowNO: rowNO,
                 colNO: colNO
             };
@@ -936,6 +938,7 @@
                             sampleSelectedArray:selectedData,
                             sampleCode:sampleCode,
                             frozenBoxId:vm.obox.frozenBoxId,
+                            isMixed:vm.obox.isMixed,
                             projectSiteId:vm.entity.projectSiteId,
                             projectId:vm.entity.projectId,
                             projectCode:vm.entity.projectCode,
@@ -955,7 +958,7 @@
                 for(var i = 0; i < vm.frozenTubeArray.length; i++){
                     for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                         if(singleMultipleFlag == "single"){
-                            if(vm.frozenTubeArray[i][j].sampleCode == tubes[0].oldSampleCode){
+                            if(vm.frozenTubeArray[i][j].sampleCode == tubes[0].oldSampleCode && vm.frozenTubeArray[i][j].tubeRows == tubes[0].tubeRows && vm.frozenTubeArray[i][j].tubeColumns == tubes[0].tubeColumns){
                                 vm.frozenTubeArray[i][j].sampleCode = tubes[0].sampleCode;
                                 vm.frozenTubeArray[i][j].frozenTubeId = tubes[0].frozenTubeId;
                                 vm.frozenTubeArray[i][j].memo = tubes[0].memo;
@@ -972,7 +975,7 @@
                             }
                         }else{
                             for(var k = 0; k < tubes.length; k++){
-                                if(vm.frozenTubeArray[i][j].sampleCode == tubes[k].sampleCode){
+                                if(vm.frozenTubeArray[i][j].sampleCode == tubes[k].sampleCode && vm.frozenTubeArray[i][j].tubeRows == tubes[k].tubeRows && vm.frozenTubeArray[i][j].tubeColumns == tubes[k].tubeColumns){
                                     vm.frozenTubeArray[i][j].frozenTubeId = tubes[k].frozenTubeId;
                                     vm.frozenTubeArray[i][j].memo = tubes[k].memo;
                                     vm.frozenTubeArray[i][j].sampleTypeId = tubes[k].sampleTypeId;
@@ -1148,17 +1151,18 @@
             //样本类型
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['sampleTypeCode','asc']);
-                //是否可以编辑
+                //99类型编辑时，不删除99类型，但是新增时不能添加99类型
                 if(!vm.editFlag){
                     _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
                 }
-                // _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
+                //新增盒子时，默认一个样本类型
                 if(!vm.obox.sampleTypeId){
                     vm.obox.sampleTypeId = vm.sampleTypeOptions[0].id;
                     vm.obox.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
                     vm.obox.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
                     vm.obox.backColor = vm.sampleTypeOptions[0].backColor;
                 }
+                //是否混合类型
                 vm.isMixed = _.find(vm.sampleTypeOptions,{'sampleTypeCode':vm.obox.sampleTypeCode}).isMixed;
 
                 //是否混合类型 1：是混合类型 不能添加99类型的的盒子只能添加97类型98类型 2：非混合类型
@@ -1169,63 +1173,36 @@
                     vm.obox.sampleClassificationName = null;
                     vm.obox.sampleClassificationCode = null;
                     vm.obox.backColorForClass = null;
-                    // $scope.$apply();
-                    //混合型无分类
-                    if(vm.obox.sampleTypeCode != '99'){
-                        for (var i = 0; i < vm.frozenTubeArray.length; i++) {
-                            for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                                if(!vm.frozenTubeArray[i][j].sampleCode){
-                                    vm.frozenTubeArray[i][j].sampleClassificationId = null;
-                                    vm.frozenTubeArray[i][j].sampleClassificationName = null;
-                                    vm.frozenTubeArray[i][j].sampleClassificationCode = null;
-                                    vm.frozenTubeArray[i][j].backColorForClass = null;
-                                    if(!vm.frozenTubeArray[i][j].sampleTypeId){
-                                        vm.frozenTubeArray[i][j].sampleTypeId = vm.obox.sampleTypeId;
-                                        vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeName;
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeCode;
-                                        vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).backColor;
-                                    }
-
+                    //无样本时，取盒子上的颜色
+                    for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                        for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                            if(!vm.frozenTubeArray[i][j].sampleCode){
+                                vm.frozenTubeArray[i][j].sampleClassificationId = null;
+                                vm.frozenTubeArray[i][j].sampleClassificationName = null;
+                                vm.frozenTubeArray[i][j].sampleClassificationCode = null;
+                                vm.frozenTubeArray[i][j].backColorForClass = null;
+                                if(!vm.frozenTubeArray[i][j].sampleTypeId){
+                                    vm.frozenTubeArray[i][j].sampleTypeId = vm.obox.sampleTypeId;
+                                    vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeName;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeCode;
+                                    vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).backColor;
                                 }
+
                             }
                         }
-                    }else{
+                    }
+
+                    //99类型有样本分类
+                    if(vm.obox.sampleTypeCode == '99'){
                         _fnQueryProjectSampleClass(vm.entity.projectId,vm.obox.sampleTypeId);
                     }
                     var tableCtrl = _getTableCtrl();
                     tableCtrl.loadData(vm.frozenTubeArray);
-                    // hotRegisterer.getInstance('my-handsontable').render();
                 }else{
+                    //非混合类型
                     _fnQueryProjectSampleClass(vm.entity.projectId,vm.obox.sampleTypeId);
                 }
             });
-
-            function _loadTube() {
-                //是否混合类型 1：是混合类型 不能添加99类型的的盒子只能添加97类型98类型
-                if(vm.isMixed == 1){
-                    vm.projectSampleTypeOptions = [];
-                    vm.projectSampleTypeOptions.push({sampleClassificationId:"",sampleClassificationName:""});
-                    vm.box.sampleClassificationId = "";
-                    vm.box.sampleClassificationName = "";
-                    vm.box.sampleClassificationCode = "";
-                    vm.box.backColorForClass = "";
-                    $scope.$apply();
-                    //混合型无分类
-                    for (var i = 0; i < vm.frozenTubeArray.length; i++) {
-                        for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                            if(!vm.frozenTubeArray[i][j].sampleCode){
-                                vm.frozenTubeArray[i][j].sampleTypeId = vm.box.sampleTypeId;
-                                vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId}).sampleTypeName;
-                                vm.frozenTubeArray[i][j].sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId}).sampleTypeCode;
-                                vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId}).backColor;
-                            }
-                        }
-                    }
-                    hotRegisterer.getInstance('my-handsontable').render();
-                }else{
-                    _fnQueryProjectSampleClass(vm.entity.projectId,vm.box.sampleTypeId);
-                }
-            }
 
 
         }
@@ -1233,6 +1210,7 @@
         function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.projectSampleTypeOptions = data;
+                //无样本分类时或者盒子为99类型时，盒子上的样本分类清空
                 if(!vm.projectSampleTypeOptions.length || vm.obox.sampleTypeCode == '99'){
                     vm.projectSampleTypeOptions.push({sampleClassificationId:"",sampleClassificationName:""});
                     vm.obox.sampleClassificationId = null;
@@ -1240,6 +1218,8 @@
                     vm.obox.sampleClassificationCode = null;
                     vm.obox.backColorForClass = null;
                 }else{
+                    //非混合类型
+                    //能取到样本分类，但是盒子上没有
                     if(!vm.obox.sampleClassificationId){
                         vm.obox.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
                         vm.obox.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
@@ -1248,22 +1228,29 @@
                     }
 
                 }
-
+                //更新样本上的样本分类
                 for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                     for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                        //非99类型且盒子上有样本分类
                         if(vm.obox.sampleTypeCode != '99'){
+                            //盒子上有样本分类，样本取盒子上的分类，没有的话除99类型外，都清空
                             if(vm.obox.sampleClassificationId){
+                                //有样本code
                                 if(!vm.frozenTubeArray[i][j].sampleCode){
-                                    vm.frozenTubeArray[i][j].sampleClassificationId = null;
-                                    vm.frozenTubeArray[i][j].sampleClassificationName = null;
-                                    vm.frozenTubeArray[i][j].sampleClassificationCode = null;
-                                    vm.frozenTubeArray[i][j].backColorForClass = null;
-                                    if(!vm.frozenTubeArray[i][j].sampleClassificationId){
-                                        vm.frozenTubeArray[i][j].sampleClassificationId = vm.obox.sampleClassificationId;
-                                        vm.frozenTubeArray[i][j].sampleClassificationName = vm.obox.sampleClassificationName;
-                                        vm.frozenTubeArray[i][j].sampleClassificationCode = vm.obox.sampleClassificationCode;
-                                        vm.frozenTubeArray[i][j].backColorForClass = vm.obox.backColorForClass;
-                                    }
+                                    // vm.frozenTubeArray[i][j].sampleClassificationId = null;
+                                    // vm.frozenTubeArray[i][j].sampleClassificationName = null;
+                                    // vm.frozenTubeArray[i][j].sampleClassificationCode = null;
+                                    // vm.frozenTubeArray[i][j].backColorForClass = null;
+                                    // if(!vm.frozenTubeArray[i][j].sampleClassificationId){
+                                    //     vm.frozenTubeArray[i][j].sampleClassificationId = vm.obox.sampleClassificationId;
+                                    //     vm.frozenTubeArray[i][j].sampleClassificationName = vm.obox.sampleClassificationName;
+                                    //     vm.frozenTubeArray[i][j].sampleClassificationCode = vm.obox.sampleClassificationCode;
+                                    //     vm.frozenTubeArray[i][j].backColorForClass = vm.obox.backColorForClass;
+                                    // }
+                                    vm.frozenTubeArray[i][j].sampleClassificationId = vm.obox.sampleClassificationId;
+                                    vm.frozenTubeArray[i][j].sampleClassificationName = vm.obox.sampleClassificationName;
+                                    vm.frozenTubeArray[i][j].sampleClassificationCode = vm.obox.sampleClassificationCode;
+                                    vm.frozenTubeArray[i][j].backColorForClass = vm.obox.backColorForClass;
 
                                 }
                             }else{
@@ -1273,10 +1260,11 @@
                                 vm.frozenTubeArray[i][j].backColorForClass = null;
                             }
                         }
-                        vm.frozenTubeArray[i][j].sampleTypeId = null;
-                        vm.frozenTubeArray[i][j].sampleTypeName = null;
-                        vm.frozenTubeArray[i][j].sampleTypeCode = null;
-                        vm.frozenTubeArray[i][j].backColor = null;
+                        // vm.frozenTubeArray[i][j].sampleTypeId = null;
+                        // vm.frozenTubeArray[i][j].sampleTypeName = null;
+                        // vm.frozenTubeArray[i][j].sampleTypeCode = null;
+                        // vm.frozenTubeArray[i][j].backColor = null;
+
                         if(!vm.frozenTubeArray[i][j].sampleTypeId){
                             vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
                             vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
@@ -1300,6 +1288,7 @@
                 }
                 var tableCtrl = _getTableCtrl();
                 tableCtrl.loadData(vm.frozenTubeArray);
+
                 vm.obox.frozenTubeDTOS =  _.flattenDeep(angular.copy(vm.frozenTubeArray));
                 strBox = JSON.stringify(vm.obox);
                 // hotRegisterer.getInstance('my-handsontable').render();

@@ -34,7 +34,14 @@
 
         var frozenBoxCode = $stateParams.frozenBoxCode;
         if(frozenBoxCode){
-            vm.dto.frozenBoxCodeStr.push(frozenBoxCode)
+            var boxCodeOption = [];
+            var obj = {};
+            obj.text = frozenBoxCode;
+            obj.value = frozenBoxCode;
+            boxCodeOption.push(obj);
+            // vm.dto.frozenBoxCodeStr.push(frozenBoxCode);
+            vm.boxCodeSelectize.addOption(boxCodeOption);
+            vm.boxCodeSelectize.setValue(frozenBoxCode)
         }
         function _init() {
             //获取项目
@@ -186,7 +193,9 @@
             vm.boxCodeConfig = BioBankSelectize.buildSettings(selectizeObj);
             vm.boxCode1DConfig = BioBankSelectize.buildSettings(selectizeObj);
             vm.sampleCodeConfig = BioBankSelectize.buildSettings(selectizeObj);
+
             vm.boxCodeConfig.onChange = function (value) {
+                vm.boxCodeSelectize = vm.boxCodeConfig.selectizeInstance;
                 vm.dto.frozenBoxCodeStr = value;
             };
             vm.boxCode1DConfig.onChange = function (value) {

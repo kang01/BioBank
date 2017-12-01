@@ -1,9 +1,7 @@
 package org.fwoxford.service.mapper;
 
 import org.fwoxford.config.Constants;
-import org.fwoxford.domain.Project;
-import org.fwoxford.domain.ProjectSite;
-import org.fwoxford.domain.Tranship;
+import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
@@ -23,12 +21,16 @@ public interface TranshipMapper {
 
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "projectSite.id", target = "projectSiteId")
+    @Mapping(source = "stockOutApply.id", target = "stockOutApplyId")
+    @Mapping(source = "delegate.id", target = "delegateId")
     TranshipDTO transhipToTranshipDTO(Tranship tranship);
 
     List<TranshipDTO> transhipsToTranshipDTOs(List<Tranship> tranships);
 
     @Mapping(source = "projectId", target = "project")
     @Mapping(source = "projectSiteId", target = "projectSite")
+    @Mapping(source = "stockOutApplyId", target = "stockOutApply")
+    @Mapping(source = "delegateId", target = "delegate")
     Tranship transhipDTOToTranship(TranshipDTO transhipDTO);
 
     List<Tranship> transhipDTOsToTranships(List<TranshipDTO> transhipDTOs);
@@ -49,6 +51,24 @@ public interface TranshipMapper {
         ProjectSite projectSite = new ProjectSite();
         projectSite.setId(id);
         return projectSite;
+    }
+
+    default StockOutApply stockOutApplyFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        StockOutApply stockOutApply = new StockOutApply();
+        stockOutApply.setId(id);
+        return stockOutApply;
+    }
+
+    default Delegate delegateFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        Delegate delegate = new Delegate();
+        delegate.setId(id);
+        return delegate;
     }
 
     default List<TranshipResponse> transhipsToTranshipTranshipResponse(List<Tranship> tranships){

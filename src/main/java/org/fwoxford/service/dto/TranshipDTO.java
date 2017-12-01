@@ -389,6 +389,10 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
             ", tempAreaCode='" + tempAreaCode + "'" +
             ", tempEquipmentId='" + tempEquipmentId + "'" +
             ", tempAreaId='" + tempAreaId + "'" +
+            ", receiveType='" + receiveType + "'" +
+            ", returnBackPeople='" + returnBackPeople + "'" +
+            ", stockOutApplyId='" + stockOutApplyId + "'" +
+            ", delegateId='" + delegateId + "'" +
             '}';
     }
 
@@ -400,5 +404,45 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSampleCountByTypeForms(List<SampleCountByTypeForm> sampleCountByTypeForms) {
         this.sampleCountByTypeForms = sampleCountByTypeForms;
+    }
+
+    private String receiveType;
+
+    private String returnBackPeople;
+
+    private Long stockOutApplyId;
+
+    private Long delegateId;
+
+    public String getReceiveType() {
+        return receiveType;
+    }
+
+    public void setReceiveType(String receiveType) {
+        this.receiveType = receiveType;
+    }
+
+    public String getReturnBackPeople() {
+        return returnBackPeople;
+    }
+
+    public void setReturnBackPeople(String returnBackPeople) {
+        this.returnBackPeople = returnBackPeople;
+    }
+
+    public Long getStockOutApplyId() {
+        return stockOutApplyId;
+    }
+
+    public void setStockOutApplyId(Long stockOutApplyId) {
+        this.stockOutApplyId = stockOutApplyId;
+    }
+
+    public Long getDelegateId() {
+        return delegateId;
+    }
+
+    public void setDelegateId(Long delegateId) {
+        this.delegateId = delegateId;
     }
 }

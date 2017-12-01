@@ -187,6 +187,8 @@
     <include file="classpath:config/liquibase/changelog/20171127143300_updated_view_StockOutApply.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171127153000_added_column_StockOutHandover.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171127154000_updated_view_StockOutHandover.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20171201084047_added_column_Tranship.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20171202084047_added_entity_constraints_Tranship.xml" relativeToChangelogFile="false"/>
 
     <!--<include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>-->
 

@@ -3885,7 +3885,7 @@ public class ImportSampleDataTest {
             con = DBUtilForTemp.open();
 //            System.out.println("连接成功！");
             log.info("链接成功！");
-            String sqlForSelect = "select * from " + "jt_opt_1128" + " a order by  a.OLD_DATE";// 预编译语句
+            String sqlForSelect = "select * from " + "jt_opt_1129" + " a order by  a.OLD_DATE";// 预编译语句
             pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
             result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
             ResultSetMetaData rsMeta = result.getMetaData();
@@ -4479,7 +4479,9 @@ public class ImportSampleDataTest {
             Area area = areaRepository.findOneByAreaCodeAndEquipmentId(areaCode, equipment.getId());
             frozenBox.status(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER).areaCode(areaCode).area(area).equipment(equipment)
                 .equipmentCode(equipmentCode)
-                .supportRackCode(null).supportRack(null).columnsInShelf(null).rowsInShelf(null).memo(String.join(",", memoList1));
+                .supportRackCode(null).supportRack(null).columnsInShelf(null).rowsInShelf(null)
+//                .memo(String.join(",", memoList1))
+            ;
             frozenBoxRepository.save(frozenBox);
             //保存出库盒
             StockOutFrozenBox stockOutFrozenBox = new StockOutFrozenBox();
@@ -4572,7 +4574,8 @@ public class ImportSampleDataTest {
 //                frozenTubeRepository.saveAndFlush(frozenTube);
 
                 StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube().status(Constants.STOCK_OUT_SAMPLE_COMPLETED)
-                    .stockOutRequirement(stockOutRequirement).memo(String.join(",", memoList))
+                    .stockOutRequirement(stockOutRequirement)
+//                    .memo(String.join(",", memoList))
                     .frozenBox(frozenTube.getFrozenBox())
                     .frozenTube(frozenTube)
                     .tubeColumns(frozenTube.getTubeColumns())
@@ -4599,7 +4602,7 @@ public class ImportSampleDataTest {
                 stockOutHandoverDetails = stockOutHandoverDetails.status(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
                     .stockOutReqFrozenTube(stockOutReqFrozenTube)
                     .stockOutHandoverBox(stockOutHandoverBox);
-                stockOutHandoverDetails.setMemo(String.join(",", memoList));
+//                stockOutHandoverDetails.setMemo(String.join(",", memoList));
                 stockOutHandoverDetailss.add(stockOutHandoverDetails);
 //                stockOutHandoverDetailsRepository.saveAndFlush(stockOutHandoverDetails);
             }

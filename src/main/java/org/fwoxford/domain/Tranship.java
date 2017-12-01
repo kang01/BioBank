@@ -561,6 +561,67 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
             ", tempAreaCode='" + tempAreaCode + "'" +
             ", tempEquipmentId='" + tempEquipmentId + "'" +
             ", transhipCode='" + tempAreaId + "'" +
+            ", receiveType='" + receiveType + "'" +
+            ", returnBackPeople='" + returnBackPeople + "'" +
             '}';
+    }
+
+    /**
+     * 接收类型：项目点 实验室
+     */
+    @Column(name="receive_type",length = 20)
+    private String receiveType;
+
+    @Column(name="return_back_people",length = 100)
+    private String returnBackPeople;
+
+    @ManyToOne
+    private StockOutApply stockOutApply;
+
+    @ManyToOne
+    private Delegate delegate;
+
+    public String getReceiveType() {
+        return receiveType;
+    }
+    public Tranship receiveType(String receiveType){
+        this.receiveType = receiveType;
+        return this;
+    }
+    public void setReceiveType(String receiveType) {
+        this.receiveType = receiveType;
+    }
+
+    public String getReturnBackPeople() {
+        return returnBackPeople;
+    }
+    public Tranship returnBackPeople(String returnBackPeople){
+        this.returnBackPeople = returnBackPeople;
+        return this;
+    }
+    public void setReturnBackPeople(String returnBackPeople) {
+        this.returnBackPeople = returnBackPeople;
+    }
+
+    public StockOutApply getStockOutApply() {
+        return stockOutApply;
+    }
+    public Tranship stockOutApply(StockOutApply stockOutApply){
+        this.stockOutApply = stockOutApply;
+        return this;
+    }
+    public void setStockOutApply(StockOutApply stockOutApply) {
+        this.stockOutApply = stockOutApply;
+    }
+
+    public Delegate getDelegate() {
+        return delegate;
+    }
+    public Tranship delegate(Delegate delegate){
+        this.delegate = delegate;
+        return this;
+    }
+    public void setDelegate(Delegate delegate) {
+        this.delegate = delegate;
     }
 }

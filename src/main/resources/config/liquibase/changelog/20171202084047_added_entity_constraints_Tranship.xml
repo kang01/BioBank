@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity Tranship.
+    -->
+    <changeSet id="20171201084047-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="stock_out_apply_id"
+                                 baseTableName="tranship"
+                                 constraintName="fk_tranship_out_apply_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_out_apply"/>
+
+        <addForeignKeyConstraint baseColumnNames="delegate_id"
+                                 baseTableName="tranship"
+                                 constraintName="fk_tranship_delegate_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="delegate"/>
+
+    </changeSet>
+</databaseChangeLog>

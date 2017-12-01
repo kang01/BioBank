@@ -49,7 +49,10 @@
             //是否可以编辑
             vm.editFlag = Boolean($scope.editFlag);
             // _initFrozenBoxPanel();
-            _initBoxInfo();
+            if(vm.obox){
+                _initBoxInfo();
+            }
+
 
         });
         $scope.$watch('stockInInfo',function () {

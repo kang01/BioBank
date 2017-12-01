@@ -674,14 +674,15 @@
         //编辑
         function _editBox(stockInBoxId) {
             BioBankBlockUi.blockUiStart();
-            vm.box = {};
-            vm.splittingBox = false;
+
+
             StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
                 BioBankBlockUi.blockUiStop();
+                vm.box = {};
                 vm.box = data;
                 vm.editFlag = true;
                 vm.showFlag = true;
-                vm.dtInstance.rerender();
+                vm.splittingBox = false;
                 setTimeout(function () {
                     document.body.scrollTop = document.body.scrollHeight  - window.innerHeight - 30;
                 },500);

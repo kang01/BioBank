@@ -1078,7 +1078,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setCountOfSample(countOfStockInTube);
         stockInBoxRepository.save(stockInBox);
         stockInTubeRepository.save(stockInTubes);
-        StockInBoxDTO inBoxDTO = stockInBoxMapper.stockInBoxToStockInBoxDTO(stockInBox);
+        StockInBoxDTO inBoxDTO = stockInBoxMapper.stockInBoxToStockInBoxDTOForSampleType(stockInBox,0);
         //盒内新编辑的样本
         List<StockInTubeDTO> inTubesForNew = stockInTubeMapper.stockInTubesToStockInTubeDTOsForSampleType(stockInTubes);
         List<StockInTubeDTO> finalInTubeListLast = new ArrayList<StockInTubeDTO>(){{addAll(stockInTubesForResponseOld);addAll(inTubesForNew);}};

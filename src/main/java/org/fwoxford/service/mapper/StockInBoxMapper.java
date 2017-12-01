@@ -147,4 +147,66 @@ public interface StockInBoxMapper {
             .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).stockInCode(stockIn.getStockInCode()).stockIn(stockIn);
         return stockInBox;
     }
+
+    default StockInBoxDTO stockInBoxToStockInBoxDTOForSampleType(StockInBox stockInBox,int i){
+        if ( stockInBox == null ) {
+            return null;
+        }
+
+        StockInBoxDTO stockInBoxDTO = new StockInBoxDTO();
+
+        stockInBoxDTO.setAreaId( stockInBox.getArea()!=null?stockInBox.getArea().getId():null);
+        stockInBoxDTO.setSupportRackId( stockInBox.getSupportRack()!=null?stockInBox.getSupportRack().getId():null);
+        stockInBoxDTO.setStockInId( stockInBox.getStockIn()!=null?stockInBox.getStockIn().getId():null );
+        stockInBoxDTO.setSampleClassificationId( stockInBox.getSampleClassification()!=null?stockInBox.getSampleClassification().getId():null );
+        stockInBoxDTO.setFrozenBoxId( stockInBox.getFrozenBox()!=null?stockInBox.getFrozenBox().getId():null);
+        stockInBoxDTO.setFrozenBoxTypeId( stockInBox.getFrozenBoxType()!=null?stockInBox.getFrozenBoxType().getId():null);
+        stockInBoxDTO.setSampleTypeId( stockInBox.getSampleType()!=null?stockInBox.getSampleType().getId():null );
+        stockInBoxDTO.setProjectSiteId( stockInBox.getProjectSite()!=null?stockInBox.getProjectSite().getId():null );
+        stockInBoxDTO.setEquipmentId( stockInBox.getEquipment()!=null?stockInBox.getEquipment().getId():null);
+        stockInBoxDTO.setProjectId( stockInBox.getProject()!=null?stockInBox.getProject().getId():null);
+        stockInBoxDTO.setCreatedBy( stockInBox.getCreatedBy() );
+        stockInBoxDTO.setCreatedDate( stockInBox.getCreatedDate() );
+        stockInBoxDTO.setLastModifiedBy( stockInBox.getLastModifiedBy() );
+        stockInBoxDTO.setLastModifiedDate( stockInBox.getLastModifiedDate() );
+        stockInBoxDTO.setId( stockInBox.getId() );
+        stockInBoxDTO.setEquipmentCode( stockInBox.getEquipmentCode() );
+        stockInBoxDTO.setAreaCode( stockInBox.getAreaCode() );
+        stockInBoxDTO.setSupportRackCode( stockInBox.getSupportRackCode() );
+        stockInBoxDTO.setRowsInShelf( stockInBox.getRowsInShelf() );
+        stockInBoxDTO.setColumnsInShelf( stockInBox.getColumnsInShelf() );
+        stockInBoxDTO.setMemo( stockInBox.getMemo() );
+        stockInBoxDTO.setStatus( stockInBox.getStatus() );
+        stockInBoxDTO.setFrozenBoxCode( stockInBox.getFrozenBoxCode() );
+        stockInBoxDTO.setCountOfSample( stockInBox.getCountOfSample() );
+        stockInBoxDTO.setFrozenBoxTypeCode( stockInBox.getFrozenBoxTypeCode() );
+        stockInBoxDTO.setFrozenBoxTypeRows( stockInBox.getFrozenBoxTypeRows() );
+        stockInBoxDTO.setFrozenBoxTypeColumns( stockInBox.getFrozenBoxTypeColumns() );
+        stockInBoxDTO.setProjectCode( stockInBox.getProjectCode() );
+        stockInBoxDTO.setProjectName( stockInBox.getProjectName() );
+        stockInBoxDTO.setProjectSiteCode( stockInBox.getProjectSiteCode() );
+        stockInBoxDTO.setProjectSiteName( stockInBox.getProjectSiteName() );
+        stockInBoxDTO.setSampleTypeCode( stockInBox.getSampleTypeCode() );
+        stockInBoxDTO.setSampleTypeName( stockInBox.getSampleTypeName() );
+        stockInBoxDTO.setSampleClassificationCode( stockInBox.getSampleClassificationCode() );
+        stockInBoxDTO.setSampleClassificationName( stockInBox.getSampleClassificationName() );
+        stockInBoxDTO.setIsSplit( stockInBox.getIsSplit() );
+        stockInBoxDTO.setEmptyTubeNumber( stockInBox.getEmptyTubeNumber() );
+        stockInBoxDTO.setEmptyHoleNumber( stockInBox.getEmptyHoleNumber() );
+        stockInBoxDTO.setDislocationNumber( stockInBox.getDislocationNumber() );
+        stockInBoxDTO.setIsRealData( stockInBox.getIsRealData() );
+        stockInBoxDTO.setStockInCode( stockInBox.getStockInCode() );
+        stockInBoxDTO.setFrozenBoxType( stockInBox.getFrozenBoxType() );
+        stockInBoxDTO.setSampleClassification( stockInBox.getSampleClassification() );
+        stockInBoxDTO.setSampleType( stockInBox.getSampleType() );
+        stockInBoxDTO.setFrozenBoxCode1D( stockInBox.getFrozenBoxCode1D() );
+        stockInBoxDTO.setBackColor(stockInBox.getSampleType()!=null?stockInBox.getSampleType().getBackColor():null);
+        stockInBoxDTO.setFrontColor(stockInBox.getSampleType()!=null?stockInBox.getSampleType().getFrontColor():null);
+        stockInBoxDTO.setIsMixed(stockInBox.getSampleType()!=null?stockInBox.getSampleType().getIsMixed():null);
+        stockInBoxDTO.setFrontColorForClass(stockInBox.getSampleClassification()!=null?stockInBox.getSampleClassification().getFrontColor():null);
+        stockInBoxDTO.setBackColorForClass(stockInBox.getSampleClassification()!=null?stockInBox.getSampleClassification().getBackColor():null);
+
+
+        return stockInBoxDTO;
+    }
 }

@@ -232,8 +232,9 @@
                             if(oldTubeObject.sampleClassificationId){
                                 for(var m = 0; m < vm.frozenTubeArray.length; m++){
                                     for(var n = 0; n < vm.frozenTubeArray[m].length ; n++){
-                                        if(oldTubeObject.sampleCode){
+                                        if(oldTubeObject.sampleCode && vm.frozenTubeArray[rowIndex][n].sampleCode){
                                             vm.frozenTubeArray[rowIndex][n].sampleCode = oldTubeObject.sampleCode;
+                                            vm.frozenTubeArray[rowIndex][n].sampleTmepCode = "";
                                         }
                                     }
 
@@ -339,6 +340,7 @@
                                         for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                                             if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
                                                 vm.frozenTubeArray[row][col].sampleCode = "";
+                                                vm.frozenTubeArray[row][col].sampleTempCode = "";
                                             }
                                         }
                                     }
@@ -1190,7 +1192,7 @@
                             }
                         }
                     }else{
-                        _fnQueryProjectSampleClass(vm.entity.projectId,vm.obox.sampleTypeId);
+                        // _fnQueryProjectSampleClass(vm.entity.projectId,vm.obox.sampleTypeId);
                     }
                     var tableCtrl = _getTableCtrl();
                     tableCtrl.loadData(vm.frozenTubeArray);

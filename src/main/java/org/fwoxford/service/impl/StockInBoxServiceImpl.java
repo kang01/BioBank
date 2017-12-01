@@ -884,7 +884,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBox = frozenBoxRepository.save(frozenBox);
         //保存入库冻存盒信息
         int countOfStockInTube = 0;
-        stockInBox = stockInBoxMapper.frozenBoxToStockInBox(frozenBox,stockIn);
+        stockInBox = stockInBoxMapper.frozenBoxToStockInBox(frozenBox,stockIn,stockInBox);
+
         stockInBox.setCountOfSample(countOfStockInTube);
         stockInBoxRepository.save(stockInBox);
 

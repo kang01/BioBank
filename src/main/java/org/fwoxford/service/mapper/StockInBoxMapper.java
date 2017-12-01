@@ -127,11 +127,13 @@ public interface StockInBoxMapper {
         return sampleClassification;
     }
 
-    default StockInBox frozenBoxToStockInBox(FrozenBox frozenBox,StockIn stockIn){
+    default StockInBox frozenBoxToStockInBox(FrozenBox frozenBox,StockIn stockIn,StockInBox stockInBox){
         if(frozenBox == null){
             return null;
         }
-        StockInBox stockInBox = new StockInBox();
+        if(stockInBox == null){
+            stockInBox = new StockInBox();
+        }
         stockInBox.sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
             .sampleClassification(frozenBox.getSampleClassification())
             .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)

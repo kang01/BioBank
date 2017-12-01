@@ -78,9 +78,7 @@
 
         function _initBoxInfo() {
             _fnQueryBoxType();
-            setTimeout(function () {
-                vm.reloadTubesForTable(vm.obox);
-            },500);
+
         }
 
         function _fnMakeNewBoxCode() {
@@ -1134,6 +1132,10 @@
                     }
 
                 }
+
+                setTimeout(function () {
+                    vm.reloadTubesForTable(vm.obox);
+                },500);
 
             }
         }

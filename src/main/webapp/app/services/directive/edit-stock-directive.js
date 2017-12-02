@@ -41,8 +41,10 @@
         vm.obox = $scope.stockInBox;
         //入库单信息
         vm.entity = $scope.stockInInfo;
+
         var oboxCopy;
         $scope.$watch('stockInBox',function () {
+            vm.repeatSampleArray = [];
             //编辑的冻存盒数据
             vm.obox = $scope.stockInBox;
             oboxCopy = angular.copy(vm.obox);

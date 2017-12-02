@@ -314,10 +314,12 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                 stockOutFrozenBox.setFrozenBoxCode1D(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode1D());
                 // 修改出库盒状态
                 stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_HANDOVER);
-                if(stockOutFrozenBox.getStockOutTask().getId()!=stockOutHandover.getStockOutTask().getId()
-                    ||!stockOutFrozenBox.getStockOutTask().getId().equals(stockOutHandover.getStockOutTask().getId())){
-                    throw new BankServiceException("交接冻存盒不在任务之内！");
-                }
+//                if(stockOutHandover.getStockOutTask()!=null){
+                    if(stockOutFrozenBox.getStockOutTask().getId()!=stockOutHandover.getStockOutTask().getId()
+                        ||!stockOutFrozenBox.getStockOutTask().getId().equals(stockOutHandover.getStockOutTask().getId())){
+                        throw new BankServiceException("交接冻存盒不在任务之内！");
+                    }
+//                }
                 // 修改冻存盒状态
                 frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
 

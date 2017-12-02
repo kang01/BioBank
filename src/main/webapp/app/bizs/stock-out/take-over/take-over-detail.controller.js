@@ -22,9 +22,9 @@
         //作废
         vm.cancellation = _fnCancellation;
 
-        var applyId = $stateParams.applyId;
-        var planId = $stateParams.planId;
-        var taskId = $stateParams.taskId;
+        var applyId = $stateParams.applyId || 0;
+        var planId = $stateParams.planId || 0;
+        var taskId = $stateParams.taskId || 0;
         vm.dto = {
             id: null,
             handoverCode: '',
@@ -36,28 +36,28 @@
             handoverTime: new Date(),
             status: '2101',
             memo: '',
-            stockOutTaskId: 0,
-            stockOutPlanId: 0,
-            stockOutApplyId: 0
+            stockOutTaskId: taskId,
+            stockOutPlanId: planId,
+            stockOutApplyId: applyId
         };
         vm.application = null;
         var handoverStatus = MasterData.takeOverStatus;
 
-        if (entity){
-            vm.dto = entity;
-            if(entity.handoverTime){
-                vm.dto.handoverTime = new Date(entity.handoverTime);
-            }else{
-                vm.dto.handoverTime = new Date();
-            }
-            vm.statusName = MasterData.getStatus(entity.status);
-            if(entity.stockOutApplyId){
-                _fnGetPlans(entity.stockOutApplyId);
-            }
-            if(entity.stockOutPlanId){
-                _fnGetTasks(entity.stockOutPlanId);
-            }
+        if (entity && entity.id){
+            vm.dto = _.cloneDeep(entity);
         }
+        if(!vm.dto.handoverTime){
+            vm.dto.handoverTime = new Date();
+        }
+        vm.statusName = MasterData.getStatus(vm.dto.status);
+
+        if(vm.dto.stockOutPlanId){
+            _fnGetTasks(vm.dto.stockOutPlanId);
+        } else if(vm.dto.stockOutApplyId){
+            _fnGetPlans(vm.dto.stockOutApplyId);
+        }
+
+
         _fnQueryUser();
         _initTakeoverEditors();
         _initFrozenBoxTable();
@@ -67,8 +67,12 @@
                 vm.application = _.find(vm.applicationOptions, {id:value});
                 StockOutService.getPlans(value).then(function (res){
                     vm.planOptions = res.data;
+                    var stockOutPlanId = vm.dto.stockOutPlanId;
                     if(vm.planOptions.length){
-                        vm.dto.stockOutPlanId = vm.planOptions[0].id;
+                        if (!_.some(res.data, {id: stockOutPlanId})){
+                            stockOutPlanId = vm.planOptions[0].id;
+                        }
+                        vm.dto.stockOutPlanId = stockOutPlanId;
                     }
                     // vm.taskOptions.length = 0;
                     if(vm.dto.stockOutPlanId){
@@ -93,10 +97,15 @@
             if (value){
                 StockOutService.getTasks(value).then(function (res){
                         vm.taskOptions = res.data;
+                        var stockOutTaskId = vm.dto.stockOutTaskId;
                         if(vm.taskOptions.length){
-                            vm.dto.stockOutTaskId = vm.taskOptions[0].id;
+                            if (!_.some(res.data, {id:stockOutTaskId})){
+                                stockOutTaskId = vm.taskOptions[0].id;
+                            }
                         }
-                        // $scope.$apply();
+                        vm.dto.stockOutTaskId = stockOutTaskId;
+
+                    // $scope.$apply();
                     }, onError
                 );
                 vm.stockOutPlanCode = (_.find(vm.planOptions, {id:value})||{}).stockOutPlanCode;
@@ -176,7 +185,7 @@
                 labelField:'stockOutTaskCode',
                 maxItems: 1,
                 onChange:function (value) {
-                    vm.dto.stockOutTaskId = null;
+                    vm.dto.stockOutTaskId = value;
                     if (value){
                         vm.stockOutTaskCode = (_.find(vm.taskOptions, {id:value})||{}).stockOutTaskCode;
                     } else {
@@ -215,6 +224,20 @@
                     if(!takeOverFlag){
                         toastr.success("交接信息已保存成功!");
                     }else{
+                        var boxIdsStr = null;
+                        var countOfSample = 0;
+                        if(boxIds.length){
+                            boxIdsStr = boxIds.join(",");
+                            for(var i = 0; i <boxIds.length; i++){
+                                for(var j = 0; j < vm.takeOverBox.length; j++){
+                                    if(boxIds[i] == vm.takeOverBox[j].id){
+                                        countOfSample += vm.takeOverBox[j].countOfSample
+                                    }
+                                }
+
+                            }
+                        }
+
                         modalInstance = $uibModal.open({
                             animation: true,
                             templateUrl: 'app/bizs/stock-out/take-over/modal/take-over-modal.html',
@@ -226,8 +249,8 @@
                                     stockOutTakeOver: angular.copy(vm.dto),
                                     stockOutApplication: vm.application,
                                     stockOutBoxes: null,
-                                    boxIdsStr:boxIdsStr,
-                                    countOfSample:vm.countOfSample
+                                    boxIdsStr: boxIdsStr,
+                                    countOfSample: countOfSample
                                 }
 
                             }
@@ -272,7 +295,6 @@
             // 全选或取消全选冻存盒
             vm.toggleAll = function (selectAll, selectedItems) {
                 boxIds = [];
-                vm.countOfSample = 0;
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
                         selectedItems[id] = selectAll;
@@ -282,47 +304,24 @@
                         }
                     }
                 }
-                if(boxIds.length){
-                    for(var i = 0; i <boxIds.length; i++){
-                        for(var j = 0; j < vm.takeOverBox.length; j++){
-                            if(boxIds[i] == vm.takeOverBox[j].id){
-                                vm.countOfSample += vm.takeOverBox[j].countOfSample
-                            }
-                        }
-
-                    }
-
-                }
+                vm.selectAllBox = selectAll;
             };
-            vm.countOfSample = 0;
             // 更新全选选项
             vm.toggleOne = function (selectedItems) {
                 boxIds = [];
 
+                var selectAllBox = true;
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
                         if(!selectedItems[id]) {
-                            vm.selectAllBox = false;
-                            return;
-                        }else{
-                            vm.countOfSample = 0;
-                            boxIds.push(id);
-                            boxIdsStr = boxIds.join(",");
-                            if(boxIds.length){
-                                for(var i = 0; i <boxIds.length; i++){
-                                    for(var j = 0; j < vm.takeOverBox.length; j++){
-                                        if(boxIds[i] == vm.takeOverBox[j].id){
-                                            vm.countOfSample += vm.takeOverBox[j].countOfSample
-                                        }
-                                    }
-
-                                }
-                            }
-
+                            selectAllBox = false;
+                            continue;
                         }
+                        boxIds.push(id);
                     }
                 }
-                vm.selectAllBox = true;
+
+                vm.selectAllBox = selectAllBox;
             };
 
             var titleHtml = '<input type="checkbox" ng-model="vm.selectAllBox" ng-click="vm.toggleAll(vm.selectAllBox, vm.selected)">';

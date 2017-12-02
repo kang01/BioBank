@@ -6,6 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -640,5 +641,41 @@ public class StockOutFrozenBox extends AbstractAuditingEntity implements Seriali
     }
     public void setFrozenBoxCode1D(String frozenBoxCode1D) {
         this.frozenBoxCode1D = frozenBoxCode1D;
+    }
+
+    /**
+     * 交接时间
+     */
+    @Column(name = "handover_time")
+    private LocalDate handoverTime;
+    /**
+     * 交接样本量
+     */
+    @Column(name = "count_of_sample")
+    private Integer countOfSample;
+
+    public LocalDate getHandoverTime() {
+        return handoverTime;
+    }
+
+    public StockOutFrozenBox handoverTime(LocalDate handoverTime){
+        this.handoverTime = handoverTime;
+        return this;
+    }
+    public StockOutFrozenBox setHandoverTime(LocalDate handoverTime) {
+        this.handoverTime = handoverTime;
+        return this;
+    }
+
+    public Integer getCountOfSample() {
+        return countOfSample;
+    }
+    public StockOutFrozenBox countOfSample(Integer countOfSample){
+        this.countOfSample = countOfSample;
+        return this;
+    }
+    public StockOutFrozenBox setCountOfSample(Integer countOfSample) {
+        this.countOfSample = countOfSample;
+        return this;
     }
 }

@@ -36,7 +36,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     @Query(value = "select count(1) from frozen_tube t where t.frozen_box_id in ?1 and t.status=?2" ,nativeQuery = true)
     int countByFrozenBoxCodeStrAndStatus(List<Long> boxIds, String status);
-    
+
     @Query(value = "select t.sample_code,count(t.sample_code) as noo from frozen_tube t " +
         " where t.frozen_box_id in ?1 and t.status!='"+Constants.INVALID+"' " +
         " GROUP BY t.sample_code " ,nativeQuery = true)
@@ -180,11 +180,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     List<FrozenTube> findBySampleCodeInAndProjectCode(List<String> sampleCodeStr,String projectCode );
 
     @Query("select t from FrozenTube t where t.frozenBoxCode in ?1 and  t.status not in (?2,"+Constants.FROZEN_TUBE_DESTROY+")")
-    List<FrozenTube> findByFrozenBoxCodeInAndStatusNot(List<String> boxCodeStr, String invalid);
-
-    @Modifying
-    @Query("update FrozenTube b set b.status='"+Constants.INVALID+"' where b.id not in ?1 and b.frozenTubeState in ('"+Constants.FROZEN_BOX_NEW+"','"+Constants.FROZEN_BOX_STOCKING+"')")
-    void updateStatusByNotInAndFrozenTubeState(List<Long> frozenTubeIdsOld);
+    List<FrozenTube> findByFrozenBoxCodeInAndStatusNot(List<String> boxCodeStr, String status);
 
     @Query(value = "select t.sample_temp_code,count(t.sample_temp_code) as noo from frozen_tube t " +
         " where t.frozen_box_id in ?1 and t.status!='"+Constants.INVALID+"' and t.sample_code is null " +
@@ -192,4 +188,8 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     List<Object[]> countByFrozenBoxCodeStrAndGroupBySampleTempCode(List<Long> boxIds);
 
     Long countByFrozenBoxIdAndStatusNot(Long id, String status);
+
+    @Modifying
+    @Query("update FrozenTube b set b.status='"+Constants.INVALID+"' where b.id not in ?1 and b.frozenTubeState in ('"+Constants.FROZEN_BOX_NEW+"','"+Constants.FROZEN_BOX_STOCKING+"') and b.frozenBox.id = ?2")
+    void updateStatusByNotInAndFrozenTubeStateAndFrozenBox(List<Long> frozenTubeIdsOld, Long frozenBoxId);
 }

@@ -2,7 +2,7 @@
 <form class="" novaildate name="newSampleForm">
     <div class="modal-header">
         <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
-        <h3 class="modal-title" id="modal-title">新增样本</h3>
+        <h3 class="modal-title" id="modal-title">编辑样本</h3>
     </div>
     <div class="modal-body add-sample-modal-body" id="modal-body">
         <!--多选-->
@@ -68,13 +68,16 @@
                                             <input type="text" class="form-control" ng-model="vm.entity.sampleVolumns">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>备注</label>
-                                            <textarea  class="form-control resize-none" rows="1" ng-model="vm.entity.memo"></textarea>
-                                        </div>
-                                    </div>
+
                                 </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>备注</label>
+                                    <textarea  class="form-control resize-none" rows="5" ng-model="vm.entity.memo"></textarea>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
         </div>

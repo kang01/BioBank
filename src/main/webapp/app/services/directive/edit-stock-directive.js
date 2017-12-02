@@ -541,7 +541,7 @@
                 }).appendTo(td);
                 $div = $("<div  class='tube-status'/>").html(tube.status).appendTo(td);
                 if(vm.repeatSampleArray.length){
-                    var len = _.filter(vm.repeatSampleArray,{sampleCode:tube.sampleCode}).length;
+                    var len = _.filter(vm.repeatSampleArray,{tubeRows:tube.tubeRows,tubeColumns:tube.tubeColumns}).length;
                     if(len){
                         $div = $("<div class='repeat-sample-class stockInAnimation'/>").appendTo(td);
                     }
@@ -1228,16 +1228,16 @@
                 //更新样本上的样本分类
                 for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                     for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                        //非99类型且盒子上有样本分类
+                        // //非99类型且盒子上有样本分类
                         if(vm.obox.sampleTypeCode != '99'){
                             //盒子上有样本分类，样本取盒子上的分类，没有的话除99类型外，都清空
                             if(vm.obox.sampleClassificationId){
-                                //有样本code
+                                //没有样本code，取盒子上的颜色
                                 if(!vm.frozenTubeArray[i][j].sampleCode){
-                                    // vm.frozenTubeArray[i][j].sampleClassificationId = null;
-                                    // vm.frozenTubeArray[i][j].sampleClassificationName = null;
-                                    // vm.frozenTubeArray[i][j].sampleClassificationCode = null;
-                                    // vm.frozenTubeArray[i][j].backColorForClass = null;
+                                    vm.frozenTubeArray[i][j].sampleClassificationId = null;
+                                    vm.frozenTubeArray[i][j].sampleClassificationName = null;
+                                    vm.frozenTubeArray[i][j].sampleClassificationCode = null;
+                                    vm.frozenTubeArray[i][j].backColorForClass = null;
                                     // if(!vm.frozenTubeArray[i][j].sampleClassificationId){
                                     //     vm.frozenTubeArray[i][j].sampleClassificationId = vm.obox.sampleClassificationId;
                                     //     vm.frozenTubeArray[i][j].sampleClassificationName = vm.obox.sampleClassificationName;
@@ -1250,7 +1250,10 @@
                                     vm.frozenTubeArray[i][j].backColorForClass = vm.obox.backColorForClass;
 
                                 }
-                            }else{
+                            }
+                        }else{
+                            //没有样本code，清空
+                            if(!vm.frozenTubeArray[i][j].sampleCode){
                                 vm.frozenTubeArray[i][j].sampleClassificationId = null;
                                 vm.frozenTubeArray[i][j].sampleClassificationName = null;
                                 vm.frozenTubeArray[i][j].sampleClassificationCode = null;
@@ -1272,17 +1275,17 @@
                     }
                 }
 
-                for(var k = 0; k < vm.projectSampleTypeOptions.length; k++){
-                    for (var m = 0; m < vm.frozenTubeArray.length; m++) {
-                        for (var n = 0; n < vm.frozenTubeArray[m].length; n++) {
-                            if(vm.projectSampleTypeOptions[k].columnsNumber == n+1){
-                                vm.frozenTubeArray[m][n].sampleClassificationId = vm.projectSampleTypeOptions[k].sampleClassificationId;
-                                vm.frozenTubeArray[m][n].backColorForClass = vm.projectSampleTypeOptions[k].backColor;
-                                vm.frozenTubeArray[m][n].sampleTypeId = sampleTypeId;
-                            }
-                        }
-                    }
-                }
+                // for(var k = 0; k < vm.projectSampleTypeOptions.length; k++){
+                //     for (var m = 0; m < vm.frozenTubeArray.length; m++) {
+                //         for (var n = 0; n < vm.frozenTubeArray[m].length; n++) {
+                //             if(vm.projectSampleTypeOptions[k].columnsNumber == n+1){
+                //                 vm.frozenTubeArray[m][n].sampleClassificationId = vm.projectSampleTypeOptions[k].sampleClassificationId;
+                //                 vm.frozenTubeArray[m][n].backColorForClass = vm.projectSampleTypeOptions[k].backColor;
+                //                 vm.frozenTubeArray[m][n].sampleTypeId = sampleTypeId;
+                //             }
+                //         }
+                //     }
+                // }
                 var tableCtrl = _getTableCtrl();
                 tableCtrl.loadData(vm.frozenTubeArray);
 
@@ -1333,7 +1336,9 @@
         }
         //保存冻存盒
         function _fnSaveBox(status) {
-            // _fnChangeData();
+            //管子状态编辑
+            vm.flagStatus = false;
+
             vm.obox.frozenTubeDTOS =  _.flattenDeep(angular.copy(vm.frozenTubeArray));
             _.remove(vm.obox.frozenTubeDTOS,{"sampleCode":null});
             if(vm.obox.sampleTypeCode == '97' ){

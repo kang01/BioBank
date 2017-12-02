@@ -927,13 +927,19 @@
                     value.sampleCode = "";
                 }
                 //样本类型
-                if(value.sampleClassificationId){
-                    SampleService.changeSampleType(value.sampleClassificationId,td,vm.projectSampleTypeOptions,1);
+                if(value.backColorForClass || value.sampleClassificationId){
+                    td.style.backgroundColor = value.backColorForClass;
                 }else{
-                    if(vm.sampleTypeOptions){
-                        SampleService.changeSampleType(value.sampleTypeId,td,vm.sampleTypeOptions,2);
-                    }
+                    td.style.backgroundColor = value.backColor;
                 }
+                //样本类型
+                // if(value.sampleClassificationId){
+                //     SampleService.changeSampleType(value.sampleClassificationId,td,vm.projectSampleTypeOptions,1);
+                // }else{
+                //     if(vm.sampleTypeOptions){
+                //         SampleService.changeSampleType(value.sampleTypeId,td,vm.sampleTypeOptions,2);
+                //     }
+                // }
                 //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常 3005:销毁
                 if(value.status){
                     changeSampleStatus(value.status,row,col,td,cellProperties);
@@ -1173,10 +1179,17 @@
                 tube.frozenTubeId =  tubeInBox.frozenTubeId;
                 tube.sampleCode = tubeInBox.sampleCode;
                 tube.sampleTempCode = tubeInBox.sampleTempCode;
+
                 tube.sampleTypeId = tubeInBox.sampleTypeId;
                 tube.sampleTypeCode = tubeInBox.sampleTypeCode;
                 tube.sampleTypeName = tubeInBox.sampleTypeName;
                 tube.backColor = tubeInBox.backColor;
+
+                tube.sampleClassificationId = tubeInBox.sampleClassificationId;
+                tube.sampleClassificationName = tubeInBox.sampleClassificationName;
+                tube.sampleClassificationCode = tubeInBox.sampleClassificationCode;
+                tube.backColorForClass = tubeInBox.backColorForClass;
+
                 tube.status = tubeInBox.status;
                 tube.memo = tubeInBox.memo;
                 tube.flag = tubeInBox.flag;
@@ -1184,8 +1197,8 @@
                     tube.sampleClassification = box.sampleClassification;
                     tube.sampleClassificationId = tubeInBox.sampleClassificationId;
                     tube.sampleClassificationName = tubeInBox.sampleClassificationName;
-                    tube.sampleClassificationCode = tubeInBox.sampleClassification.sampleClassificationCode;
-                    tube.backColorForClass = tubeInBox.sampleClassification.backColor;
+                    tube.sampleClassificationCode = tubeInBox.sampleClassificationCode;
+                    tube.backColorForClass = tubeInBox.backColorForClass;
                 }
             }
 
@@ -1202,23 +1215,23 @@
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.projectSampleTypeOptions = data;
                 if(isMixed == 1){
-                    for(var k = 0; k < data.length; k++){
-                        for (var i = 0; i < vm.frozenTubeArray.length; i++) {
-                            for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                                if(data[k].columnsNumber == j+1){
-                                    vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId;
-                                    vm.frozenTubeArray[i][j].sampleClassificationCode = data[k].sampleClassificationCode;
-                                    vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
-                                }
-                            }
-                        }
-                        for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
-                            if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
-                                vm.box.frozenTubeDTOS[m].sampleClassificationId = data[k].sampleClassificationId;
-                                vm.box.frozenTubeDTOS[m].sampleClassificationCode = data[k].sampleClassificationCode;
-                            }
-                        }
-                    }
+                    // for(var k = 0; k < data.length; k++){
+                    //     for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                    //         for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                    //             if(data[k].columnsNumber == j+1 && !vm.frozenTubeArray[i][j].sampleCode){
+                    //                 vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId;
+                    //                 vm.frozenTubeArray[i][j].sampleClassificationCode = data[k].sampleClassificationCode;
+                    //                 vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                    //             }
+                    //         }
+                    //     }
+                    //     for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
+                    //         if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber && !vm.box.frozenTubeDTOS[m].sampleCode){
+                    //             vm.box.frozenTubeDTOS[m].sampleClassificationId = data[k].sampleClassificationId;
+                    //             vm.box.frozenTubeDTOS[m].sampleClassificationCode = data[k].sampleClassificationCode;
+                    //         }
+                    //     }
+                    // }
 
                     vm.box.sampleClassificationId = null;
                 }else{
@@ -1957,6 +1970,7 @@
 
         //分装时，编辑box
         vm.editBoxOperate = function () {
+            _fnRecoverInit();
             var boxStr = JSON.stringify(vm.frozenTubeArray);
             if(boxStr == vm.boxStr){
                 vm.box.frozenTubeDTOS = _.flattenDeep(angular.copy(vm.frozenTubeArray));

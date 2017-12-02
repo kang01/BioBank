@@ -18,7 +18,7 @@
         vm.singleMultipleFlag = items.singleMultipleFlag;
 
         //是否出库再回来样本
-        vm.originalSampleFlag = false;
+        // vm.originalSampleFlag = false;
         var sampleSelectedArray = items.sampleSelectedArray || [];
         vm.entity = {
             sampleClassificationId:"",
@@ -28,7 +28,12 @@
         vm.entity.projectId = items.projectId;
         vm.entity.projectCode = items.projectCode;
         vm.entity.projectSiteId = items.projectSiteId;
+        vm.entity.isMixed = items.isMixed;
         vm.entity.sampleCode = items.sampleCode;
+
+        vm.entity.sampleTypeId = items.sampleTypeId;
+        vm.entity.sampleTypeCode = items.sampleTypeCode;
+        vm.entity.sampleTypeName = items.sampleTypeName;
 
         //冻存管状态
         vm.tubeStatusOptions = MasterData.frozenTubeStatus;
@@ -40,27 +45,35 @@
             vm.entity.sampleVolumns = sampleSelectedArray[0].sampleVolumns;
             vm.entity.memo = sampleSelectedArray[0].memo;
             vm.entity.projectSiteId = sampleSelectedArray[0].projectSiteId;
+
             vm.entity.sampleTypeId = sampleSelectedArray[0].sampleTypeId;
-            vm.entity.sampleClassificationId = sampleSelectedArray[0].sampleClassificationId;
+            vm.entity.sampleTypeCode = sampleSelectedArray[0].sampleTypeCode;
+            vm.entity.sampleTypeName = sampleSelectedArray[0].sampleTypeName;
+
+            vm.entity.tubeRows = sampleSelectedArray[0].tubeRows;
+            vm.entity.tubeColumns = sampleSelectedArray[0].tubeColumns;
+            if(vm.entity.sampleTypeCode != '99'){
+                vm.entity.sampleClassificationId = sampleSelectedArray[0].sampleClassificationId;
+                vm.entity.sampleClassificationCode = sampleSelectedArray[0].sampleClassificationCode;
+                vm.entity.sampleClassificationName = sampleSelectedArray[0].sampleClassificationName;
+            }
+
         }
 
-        _.forEach(sampleSelectedArray, function(sample) {
-            sample.status = vm.entity.status;
-        });
-        vm.sampleTypeCode = items.sampleTypeCode;
+        // _.forEach(sampleSelectedArray, function(sample) {
+        //     sample.status = vm.entity.status;
+        // });
 
-        if(vm.sampleTypeCode != "98" && vm.sampleTypeCode != "97"){
+        //非混合类型
+        if(!vm.entity.isMixed){
             vm.entity.sampleTypeId = items.sampleTypeId;
             vm.entity.sampleTypeCode = items.sampleTypeCode;
             vm.entity.sampleTypeName = items.sampleTypeName;
-            vm.sampleTypeId = items.sampleTypeId;
-            vm.sampleTypeCode = items.sampleTypeCode;
-            // vm.sampleTypeName = items.sampleTypeName;
+
             vm.entity.sampleClassificationId = items.sampleClassificationId;
             vm.entity.sampleClassificationCode = items.sampleClassificationCode;
             vm.entity.sampleClassificationName = items.sampleClassificationName;
-            vm.sampleClassificationId = items.sampleClassificationId;
-            vm.sampleClassificationCode = items.sampleClassificationCode;
+
 
         }
         //从查询出来的样本中选出要入库的样本
@@ -131,14 +144,17 @@
                 _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
                 _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"});
                 _.remove(vm.sampleTypeOptions,{sampleTypeCode:"97"});
-                if((vm.sampleTypeCode == "98" || vm.sampleTypeCode == "97") && !vm.entity.sampleTypeId){
-                    vm.entity.sampleTypeId = vm.sampleTypeOptions[0].id;
-                    vm.entity.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
-                    vm.entity.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
-                    vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+vm.entity.sampleTypeId}).backColor;
-                }else{
-                    vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+vm.entity.sampleTypeId}).backColor;
-                }
+
+                // if((vm.entity.sampleTypeCode == "98" || vm.entity.sampleTypeCode == "97"|| vm.entity.sampleTypeCode == "99")){
+                //     vm.entity.sampleTypeId = vm.sampleTypeOptions[0].id;
+                //     vm.entity.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
+                //     vm.entity.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
+                //     vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+vm.entity.sampleTypeId}).backColor;
+                // }else{
+                //     if(!vm.entity.sampleTypeId){
+                //         vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+vm.entity.sampleTypeId}).backColor;
+                //     }
+                // }
                 _fnQueryProjectSampleClass(vm.entity.projectId,vm.entity.sampleTypeId);
             });
             vm.sampleTypeConfig = {
@@ -169,8 +185,9 @@
             function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
                 SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                     vm.projectSampleTypeOptions = data;
-                    if(vm.sampleTypeCode == "98" || vm.sampleTypeCode == "97"){
-                        if(vm.projectSampleTypeOptions.length){
+                    if(vm.entity.isMixed){
+                        //混合类型
+                        if(vm.projectSampleTypeOptions.length && vm.entity.sampleTypeCode != "99"){
                             vm.entity.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
                             vm.entity.sampleClassificationName = vm.projectSampleTypeOptions[0].sampleClassificationName;
                             vm.entity.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
@@ -183,6 +200,7 @@
                             });
                         }
                     }else{
+                        //非混合类型
                         if(!vm.entity.sampleClassificationId && !vm.entity.backColorForClass){
                             if(vm.projectSampleTypeOptions.length){
                                 vm.entity.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
@@ -201,10 +219,6 @@
                             var obj = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+vm.entity.sampleClassificationId})||{};
                             vm.entity.backColorForClass = obj.backColor;
                             _.forEach(sampleSelectedArray, function(sample) {
-                                // sample.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
-                                // sample.sampleClassificationName = vm.projectSampleTypeOptions[0].sampleClassificationName;
-                                // sample.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
-
                                 var obj = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+vm.entity.sampleClassificationId})||{};
                                 sample.backColorForClass = obj.backColor;
                             });
@@ -270,6 +284,8 @@
             vm.entity.backColor = item.backColor;
             vm.entity.backColorForClass = item.backColorForClass;
             vm.entity.status = item.status;
+            vm.entity.tubeRows = item.tubeRows;
+            vm.entity.tubeColumns = item.tubeColumns;
             $($event.target).closest('table').find('.rowLight').removeClass("rowLight");
             $($event.target).closest('tr').addClass("rowLight");
             vm.queryProjectSampleClass(vm.entity.projectId,vm.entity.sampleTypeId);
@@ -278,7 +294,7 @@
 
         vm.sampleInstance = {};
         vm.sampleColumns = [
-            DTColumnBuilder.newColumn('frozenTubeId').withOption("width", "50").notSortable().withOption('searchable',false).withTitle('序号'),
+            DTColumnBuilder.newColumn('sampleCode').withOption("width", "50").notSortable().withOption('searchable',false).withTitle('序号'),
             DTColumnBuilder.newColumn('sampleCode').withTitle('冻存管编码')
         ];
         vm.sampleOptions = BioBankDataTable.buildDTOption("BASIC", 300, 10)
@@ -298,7 +314,7 @@
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
-            // if(vm.sampleTypeCode != "98" || vm.sampleTypeCode != "97"){
+            // if(vm.entity.sampleTypeCode != "98" || vm.entity.sampleTypeCode != "97"){
             //     if(tube){
             //         if(vm.sampleTypeId != tube.sampleTypeId){
             //             toastr.error("不同样本类型不能被选择！");

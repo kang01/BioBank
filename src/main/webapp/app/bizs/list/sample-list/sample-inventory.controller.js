@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('SampleInventoryController', SampleInventoryController);
 
-    SampleInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService'];
+    SampleInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','toastr','BioBankSelectize','ProjectService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService'];
 
-    function SampleInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService) {
+    function SampleInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,toastr,BioBankSelectize,ProjectService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {
@@ -34,7 +34,14 @@
 
         var frozenBoxCode = $stateParams.frozenBoxCode;
         if(frozenBoxCode){
-            vm.dto.frozenBoxCodeStr.push(frozenBoxCode)
+            var boxCodeOption = [];
+            var obj = {};
+            obj.text = frozenBoxCode;
+            obj.value = frozenBoxCode;
+            boxCodeOption.push(obj);
+            // vm.dto.frozenBoxCodeStr.push(frozenBoxCode);
+            vm.boxCodeSelectize.addOption(boxCodeOption);
+            vm.boxCodeSelectize.setValue(frozenBoxCode)
         }
         function _init() {
             //获取项目
@@ -177,27 +184,47 @@
                 onChange:function (value) {
                 }
             };
-            vm.boxCodeConfig = {
-                create: true,
+            var selectizeObj = {
+                create : true,
                 persist:false,
-                onChange: function(value){
-                    vm.dto.frozenBoxCodeStr = value;
-                }
+                onInitializeFlag : true,
+                clearMaxItemFlag : true
             };
-            vm.boxCode1DConfig = {
-                create: true,
-                persist:false,
-                onChange: function(value){
-                    vm.dto.frozenBoxCode1DStr = value;
-                }
+            vm.boxCodeConfig = BioBankSelectize.buildSettings(selectizeObj);
+            vm.boxCode1DConfig = BioBankSelectize.buildSettings(selectizeObj);
+            vm.sampleCodeConfig = BioBankSelectize.buildSettings(selectizeObj);
+
+            vm.boxCodeConfig.onChange = function (value) {
+                vm.boxCodeSelectize = vm.boxCodeConfig.selectizeInstance;
+                vm.dto.frozenBoxCodeStr = value;
             };
-            vm.sampleCodeConfig = {
-                create: true,
-                persist:false,
-                onChange: function(value){
-                    vm.dto.sampleCodeStr = value;
-                }
+            vm.boxCode1DConfig.onChange = function (value) {
+                vm.dto.frozenBoxCode1DStr = value;
             };
+            vm.sampleCodeConfig.onChange = function (value) {
+                vm.dto.sampleCodeStr = value;
+            };
+            // vm.boxCodeConfig = {
+            //     create: true,
+            //     persist:false,
+            //     onChange: function(value){
+            //         vm.dto.frozenBoxCodeStr = value;
+            //     }
+            // };
+            // vm.boxCode1DConfig = {
+            //     create: true,
+            //     persist:false,
+            //     onChange: function(value){
+            //         vm.dto.frozenBoxCode1DStr = value;
+            //     }
+            // };
+            // vm.sampleCodeConfig = {
+            //     create: true,
+            //     persist:false,
+            //     onChange: function(value){
+            //         vm.dto.sampleCodeStr = value;
+            //     }
+            // };
             //样本类型
             vm.sampleTypeConfig = {
                 valueField:'id',

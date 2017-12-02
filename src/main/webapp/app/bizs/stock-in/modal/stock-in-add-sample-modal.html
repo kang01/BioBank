@@ -118,13 +118,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>样本编码</label>
                             <input type="text" class="form-control" ng-model="vm.entity.sampleCode">
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>状态</label>
                             <selectize options='vm.tubeStatusOptions' config="vm.tubeStatusConfig"
@@ -133,18 +133,20 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>计量</label>
                             <input type="text" class="form-control" ng-model="vm.entity.sampleVolumns">
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>备注</label>
-                            <textarea  class="form-control resize-none" rows="1" ng-model="vm.entity.memo"></textarea>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                    <div class="form-group">
+                        <label>备注</label>
+                        <textarea  class="form-control resize-none" rows="6" ng-model="vm.entity.memo"></textarea>
                     </div>
+                </div>
                 </div>
             </form>
             <div class="" ng-if="vm.tubes.length >1">

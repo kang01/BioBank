@@ -1380,6 +1380,7 @@
                     $scope.showFlag = false;
                     $scope.editToSpiltTube();
                 }
+                vm.repeatSampleArray = [];
             }).error(function (data) {
                 toastr.error(data.message);
                 // $scope.reloadData();

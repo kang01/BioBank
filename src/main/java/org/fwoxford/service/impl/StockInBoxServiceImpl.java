@@ -891,85 +891,22 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
 
         List<StockInTubeDTO> stockInTubeDTOList =  stockInBoxDTO.getFrozenTubeDTOS();//传入过来的
-        List<String> sampleCodeStr = stockInTubeDTOList.stream().map(s->{
-            String sampleCode = s.getSampleCode()!=null?s.getSampleCode():s.getSampleTempCode();
-            return sampleCode;
-        }).collect(Collectors.toList());
-        //根据样本编码去查询原来的样本
-        List<FrozenTube> frozenTubeList = new ArrayList<>();
-        if(sampleCodeStr != null && sampleCodeStr.size()>0){
-            frozenTubeList =frozenTubeRepository.findBySampleCodeInAndProjectCode(sampleCodeStr,frozenBox.getProjectCode());
-        }
+        //验证传入过来的冻存管编码是否重复
+        Map<String,List<StockInTubeDTO>> mapGroupBySampleCodeAndTypeAndSampleClassification =
+            stockInTubeDTOList.stream().collect(Collectors.groupingBy( s->(s.getSampleCode()!=null?s.getSampleCode():s.getSampleTempCode())
+                +"&"+s.getSampleTypeCode()+"&"+(s.getSampleClassificationCode()!=null?s.getSampleClassificationCode():-1)));
+
         //查询到原来的样本，并验证冻存管编码是否重复
         List<StockInTubeDTO> repeatSampleList = new ArrayList<>();
-        List<SampleType> sampleTypeList = sampleTypeRepository.findAllSampleTypes();
-        for(StockInTubeDTO stockInTubeDTO : stockInTubeDTOList){
-            //确定样本类型
-            SampleType sampleType = null;
-            if(stockInTubeDTO.getSampleTypeId()!=null){
-                sampleType = sampleTypeList.stream().filter(s->s.getId().equals(stockInTubeDTO.getSampleTypeId())).findFirst().orElse(null);
-            }
-            if(sampleType == null ){
-                String sampleTypeCodeOfBox = frozenBox.getSampleTypeCode();
-                sampleType = sampleTypeList.stream().filter(s->s.getSampleTypeCode().equals(sampleTypeCodeOfBox)).findFirst().orElse(null);
-            }
-            if(sampleType == null){
-                throw new BankServiceException("样本类型获取失败！");
-            }
 
-            if(sampleType.getIsMixed().equals(Constants.YES)&&!sampleType.getSampleTypeCode().equals("97")&&!sampleType.getSampleTypeCode().equals("98")&&stockInTubeDTO.getSampleClassificationId()==null){
-                throw new BankServiceException(sampleType.getSampleTypeCode()+"样本类型必须指定样本分类！");
+        for(String tubeDTOS:mapGroupBySampleCodeAndTypeAndSampleClassification.keySet()){
+            if(mapGroupBySampleCodeAndTypeAndSampleClassification.get(tubeDTOS).size()>1){
+                repeatSampleList.addAll(mapGroupBySampleCodeAndTypeAndSampleClassification.get(tubeDTOS));
             }
-            String sampleCode = stockInTubeDTO.getSampleCode()!=null?stockInTubeDTO.getSampleCode():stockInTubeDTO.getSampleTempCode();
+        }
 
-            String sampleTypeCode = sampleType.getSampleTypeCode();
-
-            FrozenTube frozenTube = null;
-
-            //原来的样本信息可能有分类，可能无分类，所以要根据样本的分类进行判断获取样本 即有分类根据分类取，无分类根据样本类型取
-            Long sampleClassificationId = stockInTubeDTO.getSampleClassificationId();
-            if(sampleClassificationId==null && frozenBox.getSampleClassification()!=null){
-                sampleClassificationId=frozenBox.getSampleClassification().getId();
-            }
-
-            if(sampleClassificationId!=null){
-                Long finalSampleClassificationId = sampleClassificationId;
-                frozenTube = frozenTubeList.stream().filter(s->
-                    ((s.getSampleTempCode()!=null&&s.getSampleTempCode().equals(sampleCode))
-                        ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode)))&&s.getSampleTypeCode().equals(sampleTypeCode)
-                        &&(s.getSampleClassification()!=null&&s.getSampleClassification().getId().equals(finalSampleClassificationId))
-                ).findFirst().orElse(null);
-            }else{
-                frozenTube = frozenTubeList.stream().filter(s->
-                    ((s.getSampleTempCode()!=null&&s.getSampleTempCode().equals(sampleCode))
-                        ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode)))&&s.getSampleTypeCode().equals(sampleTypeCode)
-                ).findFirst().orElse(null);
-            }
-            //判断样本状态是否为已出库或已交接，若不是为重复样本编码,如果样本不存在则为新增的样本
-            if(stockInTubeDTO.getFrozenTubeId()==null&&frozenTube!=null&&
-                !(frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
-                    ||frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
-                )){
-                repeatSampleList.add(stockInTubeDTO);
-            }
-            //编辑时，如果样本ID为空，或者查询出符合条件的样本与传入的样本的ID不同，则为重复样本
-            if(stockInTubeDTO.getFrozenTubeId()!=null&&frozenTube!=null&&!stockInTubeDTO.getFrozenTubeId().equals(frozenTube.getId())){
-                repeatSampleList.add(stockInTubeDTO);
-            }
-            if(frozenTube!=null){
-                stockInTubeDTO.setFrozenTubeId(frozenTube.getId());
-                stockInTubeDTO.setSampleClassificationId(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getId():null);
-                stockInTubeDTO.setSampleTypeId(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getId():null);
-                stockInTubeDTO.setStatus(stockInTubeDTO.getStatus()!=null?stockInTubeDTO.getStatus():frozenTube.getStatus());
-                stockInTubeDTO.setProjectId(frozenTube.getProject()!=null?frozenTube.getProject().getId():null);
-                stockInTubeDTO.setProjectCode(frozenTube.getProjectCode());
-                ProjectSite projectSite = frozenTube.getProjectSite()!=null?frozenTube.getProjectSite():frozenBox.getProjectSite();
-                stockInTubeDTO.setProjectSiteId(projectSite!=null?projectSite.getId():null);
-                stockInTubeDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():null);
-                stockInTubeDTO.setFrozenTubeState(frozenTube.getFrozenTubeState());
-            }else{
-                stockInTubeDTO.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
-            }
+        if(repeatSampleList.size()==0){
+            repeatSampleList = checkFrozenTubeFromOraginData(stockInTubeDTOList,frozenBox);
         }
         //盒内重复样本
         JSONArray jsonArray = new JSONArray();
@@ -1084,6 +1021,90 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<StockInTubeDTO> finalInTubeListLast = new ArrayList<StockInTubeDTO>(){{addAll(stockInTubesForResponseOld);addAll(inTubesForNew);}};
         inBoxDTO.setFrozenTubeDTOS(finalInTubeListLast);
         return inBoxDTO;
+    }
+
+    public List<StockInTubeDTO> checkFrozenTubeFromOraginData(List<StockInTubeDTO> stockInTubeDTOList, FrozenBox frozenBox) {
+        List<StockInTubeDTO> repeatSampleList = new ArrayList<>();
+        List<String> sampleCodeStr = stockInTubeDTOList.stream().map(s->{
+            String sampleCode = s.getSampleCode()!=null?s.getSampleCode():s.getSampleTempCode();
+            return sampleCode;
+        }).collect(Collectors.toList());
+        //根据样本编码去查询原来的样本
+        List<FrozenTube> frozenTubeList = new ArrayList<>();
+        if(sampleCodeStr != null && sampleCodeStr.size()>0){
+            frozenTubeList =frozenTubeRepository.findBySampleCodeInAndProjectCode(sampleCodeStr,frozenBox.getProjectCode());
+        }
+
+        List<SampleType> sampleTypeList = sampleTypeRepository.findAllSampleTypes();
+        for(StockInTubeDTO stockInTubeDTO : stockInTubeDTOList){
+            //确定样本类型
+            SampleType sampleType = null;
+            if(stockInTubeDTO.getSampleTypeId()!=null){
+                sampleType = sampleTypeList.stream().filter(s->s.getId().equals(stockInTubeDTO.getSampleTypeId())).findFirst().orElse(null);
+            }
+            if(sampleType == null ){
+                String sampleTypeCodeOfBox = frozenBox.getSampleTypeCode();
+                sampleType = sampleTypeList.stream().filter(s->s.getSampleTypeCode().equals(sampleTypeCodeOfBox)).findFirst().orElse(null);
+            }
+            if(sampleType == null){
+                throw new BankServiceException("样本类型获取失败！");
+            }
+
+            if(sampleType.getIsMixed().equals(Constants.YES)&&!sampleType.getSampleTypeCode().equals("97")&&!sampleType.getSampleTypeCode().equals("98")&&stockInTubeDTO.getSampleClassificationId()==null){
+                throw new BankServiceException(sampleType.getSampleTypeCode()+"样本类型必须指定样本分类！");
+            }
+            String sampleCode = stockInTubeDTO.getSampleCode()!=null?stockInTubeDTO.getSampleCode():stockInTubeDTO.getSampleTempCode();
+
+            String sampleTypeCode = sampleType.getSampleTypeCode();
+
+            FrozenTube frozenTube = null;
+
+            //原来的样本信息可能有分类，可能无分类，所以要根据样本的分类进行判断获取样本 即有分类根据分类取，无分类根据样本类型取
+            Long sampleClassificationId = stockInTubeDTO.getSampleClassificationId();
+            if(sampleClassificationId==null && frozenBox.getSampleClassification()!=null){
+                sampleClassificationId=frozenBox.getSampleClassification().getId();
+            }
+
+            if(sampleClassificationId!=null){
+                Long finalSampleClassificationId = sampleClassificationId;
+                frozenTube = frozenTubeList.stream().filter(s->
+                    ((s.getSampleTempCode()!=null&&s.getSampleTempCode().equals(sampleCode))
+                        ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode)))&&s.getSampleTypeCode().equals(sampleTypeCode)
+                        &&(s.getSampleClassification()!=null&&s.getSampleClassification().getId().equals(finalSampleClassificationId))
+                ).findFirst().orElse(null);
+            }else{
+                frozenTube = frozenTubeList.stream().filter(s->
+                    ((s.getSampleTempCode()!=null&&s.getSampleTempCode().equals(sampleCode))
+                        ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode)))&&s.getSampleTypeCode().equals(sampleTypeCode)
+                ).findFirst().orElse(null);
+            }
+            //判断样本状态是否为已出库或已交接，若不是为重复样本编码,如果样本不存在则为新增的样本
+            if(stockInTubeDTO.getFrozenTubeId()==null&&frozenTube!=null&&
+                !(frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
+                    ||frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
+                )){
+                repeatSampleList.add(stockInTubeDTO);
+            }
+            //编辑时，如果样本ID为空，或者查询出符合条件的样本与传入的样本的ID不同，则为重复样本
+            if(stockInTubeDTO.getFrozenTubeId()!=null&&frozenTube!=null&&!stockInTubeDTO.getFrozenTubeId().equals(frozenTube.getId())){
+                repeatSampleList.add(stockInTubeDTO);
+            }
+            if(frozenTube!=null){
+                stockInTubeDTO.setFrozenTubeId(frozenTube.getId());
+                stockInTubeDTO.setSampleClassificationId(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getId():null);
+                stockInTubeDTO.setSampleTypeId(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getId():null);
+                stockInTubeDTO.setStatus(stockInTubeDTO.getStatus()!=null?stockInTubeDTO.getStatus():frozenTube.getStatus());
+                stockInTubeDTO.setProjectId(frozenTube.getProject()!=null?frozenTube.getProject().getId():null);
+                stockInTubeDTO.setProjectCode(frozenTube.getProjectCode());
+                ProjectSite projectSite = frozenTube.getProjectSite()!=null?frozenTube.getProjectSite():frozenBox.getProjectSite();
+                stockInTubeDTO.setProjectSiteId(projectSite!=null?projectSite.getId():null);
+                stockInTubeDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():null);
+                stockInTubeDTO.setFrozenTubeState(frozenTube.getFrozenTubeState());
+            }else{
+                stockInTubeDTO.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
+            }
+        }
+        return repeatSampleList;
     }
 
     /**

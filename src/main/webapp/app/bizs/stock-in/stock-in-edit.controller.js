@@ -927,7 +927,7 @@
                     value.sampleCode = "";
                 }
                 //样本类型
-                if(value.backColorForClass || value.sampleClassificationId){
+                if(value.backColorForClass){
                     td.style.backgroundColor = value.backColorForClass;
                 }else{
                     td.style.backgroundColor = value.backColor;
@@ -1507,6 +1507,8 @@
                     sampleTypeCode: selectTubeList[k].sampleTypeCode,
                     sampleClassificationCode: selectTubeList[k].sampleClassificationCode,
                     sampleClassificationId: selectTubeList[k].sampleClassificationId,
+                    backColor:vm.box.backColor,
+                    backColorForClass:vm.box.backColorForClass,
                     frozenBoxId: vm.box.id,
                     frozenBoxCode: vm.box.frozenBoxCode,
                     status: "3001",
@@ -1970,7 +1972,15 @@
 
         //分装时，编辑box
         vm.editBoxOperate = function () {
-            _fnRecoverInit();
+            tubeList = [];
+            selectTubeList = [];
+            saveBoxList = [];
+            vm.frozenBoxCode = "";
+            //盒子详情
+            vm.stockInFrozenTubeList1 = [];
+            vm.boxDetailFlag = false;
+            $(".box-selected").removeClass("box-selected");
+
             var boxStr = JSON.stringify(vm.frozenTubeArray);
             if(boxStr == vm.boxStr){
                 vm.box.frozenTubeDTOS = _.flattenDeep(angular.copy(vm.frozenTubeArray));

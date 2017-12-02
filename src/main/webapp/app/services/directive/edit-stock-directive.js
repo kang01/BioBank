@@ -525,7 +525,7 @@
                     cellProperties.comment = {value:tube.memo};
                 }
                 //样本类型
-                if(tube.backColorForClass || tube.sampleClassificationId){
+                if(tube.backColorForClass){
                     td.style.backgroundColor = tube.backColorForClass;
                 }else{
                     td.style.backgroundColor = tube.backColor;
@@ -1197,6 +1197,8 @@
                     }
                     var tableCtrl = _getTableCtrl();
                     tableCtrl.loadData(vm.frozenTubeArray);
+                    vm.obox.frozenTubeDTOS =  _.flattenDeep(angular.copy(vm.frozenTubeArray));
+                    strBox = JSON.stringify(vm.obox);
                 }else{
                     //非混合类型
                     _fnQueryProjectSampleClass(vm.entity.projectId,vm.obox.sampleTypeId);

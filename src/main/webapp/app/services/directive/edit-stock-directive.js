@@ -521,6 +521,7 @@
                     $(td).removeClass('htDimmed');
                     $(td).removeClass('htReadOnly');
                 }
+                cellProperties.comment = {};
                 if(tube.memo && tube.memo != " "){
                     cellProperties.comment = {value:tube.memo};
                 }

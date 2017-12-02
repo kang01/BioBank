@@ -971,7 +971,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                     throw new BankServiceException("入库冻存管不存在！");
                 }
                BeanUtils.copyProperties(stockInTube,StockInTubeForSave);
-                if(!StringUtils.isEmpty(stockInTube.getMemo())){
+                if(!StringUtils.isEmpty(stockInTube.getMemo())&&tubeDTO.getId()==null){
                     memoList.add(stockInTube.getMemo());
                 }
             }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the column for StockOutFrozenBox.
+    -->
+    <changeSet id="20171201160541-1" author="jhipster">
+        <addColumn tableName="stock_out_box">
+            <column name="count_of_sample" type="integer" remarks="出库样本量"></column>
+            <column name="handover_time" type="date" remarks="交接时间"></column>
+        </addColumn>
+    </changeSet>
+
+
+</databaseChangeLog>

@@ -232,6 +232,7 @@ public class StockOutFrozenBoxResource {
 
     /**
      * 根据任务查询需要出库的冻存盒列表（根据出库冻存管统计出来的）
+     * 同时也用于已出库样本列表查询
      * @param taskId
      * @return
      * @throws URISyntaxException

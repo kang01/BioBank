@@ -3,6 +3,7 @@ package org.fwoxford.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -505,6 +506,35 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
             ", areaId=" + areaId +
             ", stockOutTaskId=" + stockOutTaskId +
             ", frozenBoxCode1D="+ frozenBoxCode1D+
+            ", handoverTime=" + handoverTime +
+            ", countOfSample="+ countOfSample+
             '}';
+    }
+
+    /**
+     * 交接时间
+     */
+    private LocalDate handoverTime;
+    /**
+     * 交接样本量
+     */
+    private Integer countOfSample;
+
+    public LocalDate getHandoverTime() {
+        return handoverTime;
+    }
+
+    public StockOutFrozenBoxDTO setHandoverTime(LocalDate handoverTime) {
+        this.handoverTime = handoverTime;
+        return this;
+    }
+
+    public Integer getCountOfSample() {
+        return countOfSample;
+    }
+
+    public StockOutFrozenBoxDTO setCountOfSample(Integer countOfSample) {
+        this.countOfSample = countOfSample;
+        return this;
     }
 }

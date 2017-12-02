@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import oracle.jdbc.driver.Const;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -661,5 +662,15 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         Long countOfHandoverSample = stockOutHandoverDetailsRepository.countByStockOutApply(stockOutApply.getId());
         res.setCountOfHandoverSample(countOfHandoverSample);
         return res;
+    }
+
+    /**
+     * 查询所有已批准的出库申请列表
+     * @return
+     */
+    @Override
+    public List<StockOutApplyDTO> findAllStockOutApplyListOfApproved() {
+        List<StockOutApply> stockOutApplies = stockOutApplyRepository.findByStatus(Constants.STOCK_OUT_APPROVED);
+        return stockOutApplyMapper.stockOutAppliesToStockOutApplyDTOs(stockOutApplies);
     }
 }

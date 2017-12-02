@@ -89,4 +89,10 @@ public interface StockOutApplyService {
      * @return
      */
     StockOutApplyDetail getApplyAndRequirementByPlanId(Long id);
+
+    /**
+     * 查询所有已批准的出库申请列表
+     * @return
+     */
+    List<StockOutApplyDTO> findAllStockOutApplyListOfApproved();
 }

@@ -311,4 +311,15 @@ public class StockOutApplyResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 查询所有已批准的出库申请
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/approved-applies")
+    @Timed
+    public ResponseEntity<List<StockOutApplyDTO>> getStockOutApplyListOfApproved(){
+        List<StockOutApplyDTO> result = stockOutApplyService.findAllStockOutApplyListOfApproved();
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
 }

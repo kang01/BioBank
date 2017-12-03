@@ -1009,7 +1009,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         //如果样本的状态是待入库，新建，就删除掉样本
         if(frozenTubeIdsOld!=null&&frozenTubeIdsOld.size()>0){
-            frozenTubeRepository.updateStatusByNotInAndFrozenTubeState(frozenTubeIdsOld);
+            frozenTubeRepository.updateStatusByNotInAndFrozenTubeStateAndFrozenBox(frozenTubeIdsOld,frozenBox.getId());
         }
 
         List<StockInTube> stockInTubes = new ArrayList<StockInTube>();
@@ -1198,8 +1198,20 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(entity == null){
             throw new BankServiceException("冻存管样本类型不存在！");
         }
+        tubeDTO.setSampleTypeId(entity.getId());
         tubeDTO.setSampleTypeCode(entity.getSampleTypeCode());
         tubeDTO.setSampleTypeName(entity.getSampleTypeName());
+        if(tubeDTO.getSampleClassificationId()!=null){
+            List<ProjectSampleClass> projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleClassificationId(tubeDTO.getProjectId(),tubeDTO.getSampleClassificationId());
+            if(projectSampleClass.size()==0){
+                throw new BankServiceException("样本分类无效！");
+            }
+
+            SampleClassification sampleClassification = projectSampleClass.get(0).getSampleClassification();
+            tubeDTO.setSampleClassificationId(sampleClassification.getId());
+            tubeDTO.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+            tubeDTO.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+        }
         return tubeDTO;
     }
     /**
@@ -1221,7 +1233,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }else{
                 frozenTubeCode="DCG";
             }
-            frozenTubeType = frozenTubeTypeRepository.findByFrozenTubeTypeCode("RNA");
+            frozenTubeType = frozenTubeTypeRepository.findByFrozenTubeTypeCode(frozenTubeCode);
         }else {
             frozenTubeType = frozenTubeTypeRepository.findOne(tubeDTO.getFrozenTubeTypeId());
         }

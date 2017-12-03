@@ -629,59 +629,59 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                     frozenBoxList.addAll(map.get(id));
                 } else {
                     //取库存
-//                    for (int i = 0;i< countOfAllFrozenBox.intValue(); i += 200) {
-//                        int length = 200;
-//                        List<Object[]> frozenBoxIdsAndCount = frozenBoxRepository
-//                            .findIncompleteFrozenBoxIdBydProjectIdAnSampleClassificationIdAndBoxTypeId(
-//                                frozenBox.getProject().getId(),
-//                                new ArrayList<Long>() {{
-//                                    add(id);
-//                                }},
-//                                frozenBoxType.getId(),
-//                                frozenBoxCode,
-//                                i, length);
-//
-//                        List<Long> boxIds = frozenBoxIdsAndCount.stream().map(s -> {
-//                            return Long.valueOf(s[0].toString());
-//                        }).collect(Collectors.toList());
-//
-//                        if(boxIds==null||boxIds.size()==0){
-//                            continue;
-//                        }
-//                        //取当前冻存盒的数据量
-//                        List<Object[]> countOfSampleGroupByBoxId = frozenTubeRepository.countGroupByFrozenBoxId(boxIds);
-//                        //取当前冻存盒号在本次入库的入库量
-//                        List<Object[]> countOfStockInSampleGroupByBoxId = stockInTubeRepository.countByFrozenBoxIdsAndStockInCodeGroupByFrozenBoxId(boxIds, stockInCode);
-//                        Map<Object, List<Object[]>> countOfSampleMapGroupByBoxId = countOfSampleGroupByBoxId.stream().collect(Collectors.groupingBy(s -> s[0]));
-//                        Map<Object, List<Object[]>> countOfStockInSampleMapGroupByBoxId = countOfStockInSampleGroupByBoxId.stream().collect(Collectors.groupingBy(s -> s[0]));
-//                        TreeMap<Integer, List<Long>> boxMap = new TreeMap<>();
-//                        for (Object[] box : frozenBoxIdsAndCount) {
-//                            Long boxId = Long.valueOf(box[0].toString());
-//                            int allCount = Integer.valueOf(box[1].toString());
-//                            int oldCount = countOfSampleMapGroupByBoxId.get(box[0]) != null ? Integer.valueOf(countOfSampleMapGroupByBoxId.get(box[0]).get(0)[1].toString()) : 0;
-//                            int nowCount = countOfStockInSampleMapGroupByBoxId.get(box[0]) != null ? Integer.valueOf(countOfStockInSampleMapGroupByBoxId.get(box[0]).get(0)[1].toString()) : 0;
-//                            int lastCount = oldCount + nowCount;
-//                            if (allCount > lastCount) {
-//                                List<Long> oldBoxIds = boxMap.get(lastCount);
-//                                List<Long> newBoxIds = new ArrayList<>();
-//                                if (oldBoxIds != null) {
-//                                    newBoxIds.addAll(oldBoxIds);
-//                                }
-//                                newBoxIds.add(boxId);
-//                                boxMap.put(lastCount, newBoxIds);
-//                            }
-//                        }
-//                        if (boxMap.size() > 0) {
-//                            Long frozenBoxId = boxMap.firstEntry().getValue().get(0);
-//                            frozenBoxIdLastList.add(frozenBoxId);
-//                            break;
-//                        }
-//                    }
+                    for (int i = 0;i< countOfAllFrozenBox.intValue(); i += 200) {
+                        int length = 200;
+                        List<Object[]> frozenBoxIdsAndCount = frozenBoxRepository
+                            .findIncompleteFrozenBoxIdBydProjectIdAnSampleClassificationIdAndBoxTypeId(
+                                frozenBox.getProject().getId(),
+                                new ArrayList<Long>() {{
+                                    add(id);
+                                }},
+                                frozenBoxType.getId(),
+                                frozenBoxCode,
+                                i, length);
+
+                        List<Long> boxIds = frozenBoxIdsAndCount.stream().map(s -> {
+                            return Long.valueOf(s[0].toString());
+                        }).collect(Collectors.toList());
+
+                        if(boxIds==null||boxIds.size()==0){
+                            continue;
+                        }
+                        //取当前冻存盒的数据量
+                        List<Object[]> countOfSampleGroupByBoxId = frozenTubeRepository.countGroupByFrozenBoxId(boxIds);
+                        //取当前冻存盒号在本次入库的入库量
+                        List<Object[]> countOfStockInSampleGroupByBoxId = stockInTubeRepository.countByFrozenBoxIdsAndStockInCodeGroupByFrozenBoxId(boxIds, stockInCode);
+                        Map<Object, List<Object[]>> countOfSampleMapGroupByBoxId = countOfSampleGroupByBoxId.stream().collect(Collectors.groupingBy(s -> s[0]));
+                        Map<Object, List<Object[]>> countOfStockInSampleMapGroupByBoxId = countOfStockInSampleGroupByBoxId.stream().collect(Collectors.groupingBy(s -> s[0]));
+                        TreeMap<Integer, List<Long>> boxMap = new TreeMap<>();
+                        for (Object[] box : frozenBoxIdsAndCount) {
+                            Long boxId = Long.valueOf(box[0].toString());
+                            int allCount = Integer.valueOf(box[1].toString());
+                            int oldCount = countOfSampleMapGroupByBoxId.get(box[0]) != null ? Integer.valueOf(countOfSampleMapGroupByBoxId.get(box[0]).get(0)[1].toString()) : 0;
+                            int nowCount = countOfStockInSampleMapGroupByBoxId.get(box[0]) != null ? Integer.valueOf(countOfStockInSampleMapGroupByBoxId.get(box[0]).get(0)[1].toString()) : 0;
+                            int lastCount = oldCount + nowCount;
+                            if (allCount > lastCount) {
+                                List<Long> oldBoxIds = boxMap.get(lastCount);
+                                List<Long> newBoxIds = new ArrayList<>();
+                                if (oldBoxIds != null) {
+                                    newBoxIds.addAll(oldBoxIds);
+                                }
+                                newBoxIds.add(boxId);
+                                boxMap.put(lastCount, newBoxIds);
+                            }
+                        }
+                        if (boxMap.size() > 0) {
+                            Long frozenBoxId = boxMap.firstEntry().getValue().get(0);
+                            frozenBoxIdLastList.add(frozenBoxId);
+                            break;
+                        }
+                    }
                 }
             }
 
-//            List<FrozenBox> frozenBoxLast = frozenBoxRepository.findByIdIn(frozenBoxIdLastList);
-//            frozenBoxList.addAll(frozenBoxLast);
+            List<FrozenBox> frozenBoxLast = frozenBoxRepository.findByIdIn(frozenBoxIdLastList);
+            frozenBoxList.addAll(frozenBoxLast);
 
         }
         //无分类---取相同类型的
@@ -693,16 +693,16 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                     frozenBoxList.addAll(map.get(sampleTypeId));
                 } else {
                     //取库存
-//                    List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleTypeId, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED, stockInCode);
-//                    frozenBoxList.addAll(stockInFrozenBox);
+                    List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleTypeId, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED, stockInCode);
+                    frozenBoxList.addAll(stockInFrozenBox);
                 }
             }
 
         }
         //取库存中问题冻存盒
-//        if (wrongFrozenBoxList == null || wrongFrozenBoxList.size() == 0) {
-//            wrongFrozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED, stockInCode);
-//        }
+        if (wrongFrozenBoxList == null || wrongFrozenBoxList.size() == 0) {
+            wrongFrozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED, stockInCode);
+        }
         frozenBoxList.addAll(wrongFrozenBoxList);
 
         List<String> boxCodeStr = new ArrayList<>();

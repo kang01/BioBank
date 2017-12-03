@@ -181,14 +181,14 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     List<FrozenTube> findByFrozenBoxCodeInAndStatusNot(List<String> boxCodeStr, String invalid);
 
-    @Modifying
-    @Query("update FrozenTube b set b.status='"+Constants.INVALID+"' where b.id not in ?1 and b.frozenTubeState in ('"+Constants.FROZEN_BOX_NEW+"','"+Constants.FROZEN_BOX_STOCKING+"')")
-    void updateStatusByNotInAndFrozenTubeState(List<Long> frozenTubeIdsOld);
-
     @Query(value = "select t.sample_temp_code,count(t.sample_temp_code) as noo from frozen_tube t " +
         " where t.frozen_box_id in ?1 and t.status!='"+Constants.INVALID+"' and t.sample_code is null " +
         " GROUP BY t.sample_temp_code" ,nativeQuery = true)
     List<Object[]> countByFrozenBoxCodeStrAndGroupBySampleTempCode(List<Long> boxIds);
 
     Long countByFrozenBoxIdAndStatusNot(Long id, String status);
+
+    @Modifying
+    @Query("update FrozenTube b set b.status='"+Constants.INVALID+"' where b.id not in ?1 and b.frozenTubeState in ('"+Constants.FROZEN_BOX_NEW+"','"+Constants.FROZEN_BOX_STOCKING+"') and b.frozenBox.id =?2")
+    void updateStatusByNotInAndFrozenTubeStateAndFrozenBox(List<Long> frozenTubeIdsOld, Long id);
 }

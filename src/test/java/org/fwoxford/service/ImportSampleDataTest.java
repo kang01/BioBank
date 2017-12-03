@@ -3885,7 +3885,7 @@ public class ImportSampleDataTest {
             con = DBUtilForTemp.open();
 //            System.out.println("连接成功！");
             log.info("链接成功！");
-            String sqlForSelect = "select * from " + "jt_opt_1128" + " a order by  a.OLD_DATE";// 预编译语句
+            String sqlForSelect = "select * from " + "jt_opt_1201" + " a order by  a.OLD_DATE";// 预编译语句
             pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
             result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
             ResultSetMetaData rsMeta = result.getMetaData();
@@ -3946,7 +3946,7 @@ public class ImportSampleDataTest {
             con = DBUtilForTemp.open();
 //            System.out.println("连接成功！");
             log.info("链接成功！");
-            String sqlForSelect = "select * from " + "jt_move_1116";// 预编译语句
+            String sqlForSelect = "select * from " + "jt_move_1130";// 预编译语句
             pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
             result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
             ResultSetMetaData rsMeta = result.getMetaData();
@@ -4109,7 +4109,8 @@ public class ImportSampleDataTest {
             }
             frozenBox = frozenBox.equipment(entity).area(area).equipmentCode(entity.getEquipmentCode())
                 .areaCode(areaCode).supportRackCode(supportCode)
-                .supportRack(supportRack).memo(String.join(",",memoList1))
+                .supportRack(supportRack)
+//                .memo(String.join(",",memoList1))
                 .columnsInShelf(columnsInShelf).rowsInShelf(rowsInShelf).status(Constants.FROZEN_BOX_STOCKED);
             frozenBoxRepository.save(frozenBox);
 
@@ -4479,7 +4480,9 @@ public class ImportSampleDataTest {
             Area area = areaRepository.findOneByAreaCodeAndEquipmentId(areaCode, equipment.getId());
             frozenBox.status(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER).areaCode(areaCode).area(area).equipment(equipment)
                 .equipmentCode(equipmentCode)
-                .supportRackCode(null).supportRack(null).columnsInShelf(null).rowsInShelf(null).memo(String.join(",", memoList1));
+                .supportRackCode(null).supportRack(null).columnsInShelf(null).rowsInShelf(null)
+//                .memo(String.join(",", memoList1))
+            ;
             frozenBoxRepository.save(frozenBox);
             //保存出库盒
             StockOutFrozenBox stockOutFrozenBox = new StockOutFrozenBox();
@@ -4510,7 +4513,6 @@ public class ImportSampleDataTest {
             stockOutBoxPosition.setArea(area);
             stockOutBoxPosition.setAreaCode(area != null ? area.getAreaCode() : null);
             stockOutBoxPosition.setStatus(Constants.VALID);
-            stockOutBoxPosition.setCreatedDate(createDate);
             stockOutBoxPositionRepository.save(stockOutBoxPosition);
 
             StockOutHandoverBox stockOutHandoverBox = new StockOutHandoverBox().stockOutHandover(stockOutHandover)
@@ -4567,7 +4569,7 @@ public class ImportSampleDataTest {
                 if (!StringUtils.isEmpty(memo)) {
                     memoList.add(memo);
                 }
-                frozenTube.setMemo(String.join(",", memoList));
+//                frozenTube.setMemo(String.join(",", memoList));
                 frozenTubeListLast.add(frozenTube);
 //                frozenTubeRepository.saveAndFlush(frozenTube);
 

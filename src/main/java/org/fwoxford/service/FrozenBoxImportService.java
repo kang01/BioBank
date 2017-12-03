@@ -498,9 +498,9 @@ public class FrozenBoxImportService {
             getMethod.releaseConnection();
         }
 
-        if(jsonObjects.size() == 0){
-            throw new BankServiceException("冻存盒导入失败！" + boxCode + "没有冻存管数据。");
-        }
+//        if(jsonObjects.size() == 0){
+//            throw new BankServiceException("冻存盒导入失败！" + boxCode + "没有冻存管数据。");
+//        }
         return jsonObjects;
     }
 }

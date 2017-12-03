@@ -1428,12 +1428,13 @@
                     },function () {
                         // vm.box = oboxCopy;
                         $scope.stockInBox = oboxCopy;
-                        //编辑界面关闭
-                        $scope.showFlag = false;
+
                         //4:分装操作
-                        if(status == 4){
-                            $scope.editToSpiltTube();
+                        if(status != 4){
+                            //编辑界面关闭
+                            $scope.showFlag = false;
                         }
+
                     });
                 }else{
                     //编辑界面关闭

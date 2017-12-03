@@ -295,6 +295,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             ArrayList<ArrayList<Object>> arrayLists = ExcelUtils.readExcel(filetype,file.getInputStream());
             List<ArrayList<Object>>  arrayListArrayList = arrayLists.subList(1,arrayLists.size());
             for(List arrayList :arrayListArrayList){
+                if(arrayList.size()<3){
+                    continue;
+                }
                 Object boxCode =  arrayList.get(0);
                 Object sampleCode =  arrayList.get(1);
                 Object sampleType =  arrayList.get(2);

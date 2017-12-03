@@ -461,6 +461,9 @@
         // 盒子上架
         function _putInShelf(){
             var shelf = vm.selectedShelf;
+            if(!shelf){
+                return;
+            }
             var shelfType = _.filter(vm.shelfTypes, {id: shelf.supportRackTypeId})[0] || {};
             var countOfRows = shelfType.supportRackRows || 4;
             var countOfCols = shelfType.supportRackColumns || 4;
@@ -472,9 +475,10 @@
             var cellCol = startEmptyPos[1];
 
             for(var i in vm.selectedBox){
-                var boxes = vm.putInShelfBoxes[shelf.id] || {};
-                vm.putInShelfBoxes[shelf.id] = boxes;
+
                 if (vm.selectedBox[i]){
+                    var boxes = vm.putInShelfBoxes[shelf.id] || {};
+                    vm.putInShelfBoxes[shelf.id] = boxes;
                     // 遍历选中的冻存盒，i是冻存盒的Code
                     var box = _.filter(vm.frozenBoxes, {frozenBoxCode: i})[0];
                     if (!box){

@@ -33,15 +33,9 @@
         vm.exchangeDestroy = _fnExchangeDestroy;
 
         var frozenBoxCode = $stateParams.frozenBoxCode;
+
         if(frozenBoxCode){
-            var boxCodeOption = [];
-            var obj = {};
-            obj.text = frozenBoxCode;
-            obj.value = frozenBoxCode;
-            boxCodeOption.push(obj);
-            // vm.dto.frozenBoxCodeStr.push(frozenBoxCode);
-            vm.boxCodeSelectize.addOption(boxCodeOption);
-            vm.boxCodeSelectize.setValue(frozenBoxCode)
+            vm.dto.frozenBoxCodeStr.push(frozenBoxCode);
         }
         function _init() {
             //获取项目
@@ -191,11 +185,24 @@
                 clearMaxItemFlag : true
             };
             vm.boxCodeConfig = BioBankSelectize.buildSettings(selectizeObj);
+            vm.boxCodeConfig.onInitialize = function (initialize) {
+                vm.boxCodeSelectize = initialize;
+                if(frozenBoxCode){
+                    var boxCodeOption = [];
+                    var obj = {};
+                    obj.text = frozenBoxCode;
+                    obj.value = frozenBoxCode;
+                    boxCodeOption.push(obj);
+                    // vm.dto.frozenBoxCodeStr.push(frozenBoxCode);
+                    vm.boxCodeSelectize.addOption(boxCodeOption);
+                    vm.boxCodeSelectize.setValue(frozenBoxCode);
+                }
+            };
             vm.boxCode1DConfig = BioBankSelectize.buildSettings(selectizeObj);
             vm.sampleCodeConfig = BioBankSelectize.buildSettings(selectizeObj);
 
             vm.boxCodeConfig.onChange = function (value) {
-                vm.boxCodeSelectize = vm.boxCodeConfig.selectizeInstance;
+                // vm.boxCodeSelectize = vm.boxCodeConfig.selectizeInstance;
                 vm.dto.frozenBoxCodeStr = value;
             };
             vm.boxCode1DConfig.onChange = function (value) {

@@ -275,13 +275,14 @@
             });
 
             modalInstance.result.then(function (data) {
-                if(vm.requirement.id){
-                    _loadRequirement();
-                }else{
-                    _fnUpdateRequirementData(data);
-                    //更新申请列表
-                    _updateRequirementTable();
-                }
+                _fnUpdateRequirementData(data);
+                //更新申请列表
+                _updateRequirementTable();
+                // if(vm.requirement.id){
+                //     _loadRequirement();
+                // }else{
+                //
+                // }
 
             }, function () {
                 vm.isRequirementSaveFlag = false;
@@ -308,7 +309,8 @@
                 //保存完了核对
                 if(vm.allowCheckFlag){
                     RequirementService.checkSampleRequirement(sampleRequirementId).success(function (data) {
-                        _fnUpdateRequirementData(data);
+                        var requirement = _.find(vm.requirement.stockOutRequirement,{id:data.id});
+                        requirement.status = data.status;
                         //更新申请列表
                         _updateRequirementTable();
                         vm.allowCheckFlag = false;
@@ -367,7 +369,7 @@
         //指定样本编码详情
         vm.appointDescSample = _fnAppointDescSample;
 
-        vm.dtOptions = BioBankDataTable.buildDTOption("BASIC")
+        vm.dtOptions = BioBankDataTable.buildDTOption("SORTING")
             .withOption('createdRow', createdRow);
 
         vm.dtColumns = [
@@ -404,12 +406,15 @@
             }
 
             if(data.sex){
-                if(data.sex == "null"){
-                    sex = "";
-                }else{
-                    sex = data.sex;
+                switch (data.sex){
+                    case 'M': sex = '男';break;
+                    case '男': sex = '男';break;
+                    case 'F': sex = '女';break;
+                    case '女': sex = '女';break;
+                    case 'null': sex = '不详';break;
                 }
-
+            }else{
+                sex = "不详";
             }
             $('td:eq(4)', row).html(sex);
             $('td:eq(5)', row).html(diseaseType);

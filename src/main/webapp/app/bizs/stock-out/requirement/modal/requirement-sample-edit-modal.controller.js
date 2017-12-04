@@ -170,9 +170,9 @@
                 fb.append('stockOutRequirement', angular.toJson(obj));
                 fb.append('file', file);
                 RequirementService.saveSampleRequirementOfUpload(requirementId,fb).success(function (data) {
-                    data.sampleTypeName = sampleRequirement.sampleTypeName;
+                    data.sampleTypeName = null;
                     data.frozenTubeTypeName = null;
-                    BioBankBlockUi.blockUiStop(vm.sampleRequirement);
+                    BioBankBlockUi.blockUiStop(data);
                     toastr.success("保存样本需求成功！");
                     $uibModalInstance.close(data);
                 }).error(function (data) {
@@ -187,21 +187,29 @@
         var sampleRequirement;
         function _fnSaveRequirement() {
             if(vm.sampleRequirement.id){
-                if(vm.sampleRequirement.status){
-                    delete  vm.sampleRequirement.status;
-                }
-                delete  vm.sampleRequirement.samples;
+                // if(vm.sampleRequirement.status){
+                //     delete  vm.sampleRequirement.status;
+                // }
+                // delete  vm.sampleRequirement.samples;
 
                 sampleRequirement = angular.copy(vm.sampleRequirement);
+                sampleRequirement.status = "1201";
                 if(!vm.isAge){
                     sampleRequirement.age = null;
                 }
+                if(!sampleRequirement.frozenTubeTypeId || sampleRequirement.frozenTubeTypeId == "null"){
+                    sampleRequirement.frozenTubeTypeName = null;
+                }
+                if(!sampleRequirement.sampleTypeId || sampleRequirement.sampleTypeId == "null" || vm.file){
+                    sampleRequirement.sampleTypeName = null;
+                }
+
                 RequirementService.saveEditSampleRequirement(requirementId,sampleRequirement).success(function (data) {
                     data.sampleTypeName = sampleRequirement.sampleTypeName;
                     data.frozenTubeTypeName = null;
                     BioBankBlockUi.blockUiStop();
                     toastr.success("修改样本需求成功！");
-                    $uibModalInstance.close(data);
+                    $uibModalInstance.close(sampleRequirement);
                 }).error(function (data) {
                     BioBankBlockUi.blockUiStop();
                     toastr.success(data.message);
@@ -211,6 +219,12 @@
                 sampleRequirement = angular.copy(vm.sampleRequirement);
                 if(!vm.isAge){
                     sampleRequirement.age = null;
+                }
+                if(!sampleRequirement.frozenTubeTypeId || sampleRequirement.frozenTubeTypeId == "null"){
+                    sampleRequirement.frozenTubeTypeName = null;
+                }
+                if(!sampleRequirement.sampleTypeId || sampleRequirement.sampleTypeId == "null" || vm.file){
+                    sampleRequirement.sampleTypeName = null;
                 }
                 RequirementService.saveSampleRequirement(requirementId,sampleRequirement).success(function (data) {
                     data.sampleTypeName = sampleRequirement.sampleTypeName;

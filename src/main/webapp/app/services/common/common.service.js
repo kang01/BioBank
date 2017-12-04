@@ -50,7 +50,7 @@
                                 .withOption('searching', false);
                             break;
                         case "SORTING":
-                            options.withOption('sorting', true)
+                            options.withOption('sorting', [])
                                 .withOption('paging', false)
                                 .withOption('info', false)
                                 .withOption('searching', false)

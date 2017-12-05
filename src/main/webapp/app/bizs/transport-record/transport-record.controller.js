@@ -51,9 +51,8 @@
                 // }
             });
             modalInstance.result.then(function (project) {
-                vm.projcect = project;
                 // TranshipNewEmptyService.save({},onTranshipNewEmptyService,onError);
-                TranshipNewEmptyService.saveTransportEmpty(vm.project.projectId,vm.project.projectSiteId).success(function (data) {
+                TranshipNewEmptyService.saveTransportEmpty(project.projectId,project.projectSiteId).success(function (data) {
                     $state.go('transport-record-edit',{
                         transhipId : data.id,
                         transhipCode : data.transhipCode

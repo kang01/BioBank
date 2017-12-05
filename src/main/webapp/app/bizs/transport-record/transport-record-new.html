@@ -54,7 +54,7 @@
                     </label>
                     <div class="col-md-8">
                         <selectize options='vm.projectOptions' config="vm.projectConfig"
-                                   ng-model="vm.transportRecord.projectId" ng-disabled="true"></selectize>
+                                   ng-model="vm.transportRecord.projectId" ng-disabled="vm.boxLength"></selectize>
                         <!--<input type="text" class="form-control"  ng-model="vm.transportRecord.projectSiteCode" ng-disabled="vm.boxLength">-->
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                     <label class="col-md-4 control-label text-left">项目点</label>
                     <div class="col-md-8">
                         <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
-                                   ng-model="vm.transportRecord.projectSiteId" ng-disabled="true"></selectize>
+                                   ng-model="vm.transportRecord.projectSiteId"></selectize>
                         <!--<input type="text" class="form-control"  ng-model="vm.transportRecord.projectCode">-->
                     </div>
                 </div>
@@ -296,7 +296,7 @@
                                     <label>冻存盒号<span class="required-field"></span></label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode"   ng-disabled="!vm.box.frozenBoxCode" required>
-                                        <div class="input-group-addon" ng-click="vm.makeNewBoxCode()">生成</div>
+                                        <div class="input-group-addon" ng-click="vm.makeNewBoxCode()" >生成</div>
                                     </div>
                                 </div>
                             </div>

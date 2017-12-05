@@ -27,7 +27,7 @@
         //
         vm.makeNewBoxCodeFlag = false;
         function _fnMakeNewBoxCode() {
-            if(!vm.box){
+            if(!vm.box.sampleTypeId || !vm.box.sampleClassificationId){
                 return;
             }
             StockInInputService.makeNewBoxCode(vm.transportRecord.projectId,vm.box.sampleTypeId,vm.box.sampleClassificationId).success(function (data) {
@@ -1168,6 +1168,9 @@
                 labelField:'sampleTypeName',
                 maxItems: 1,
                 onChange:function (value) {
+                    if(!value){
+                        return;
+                    }
                     var isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
                     var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
 

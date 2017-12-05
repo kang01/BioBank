@@ -151,7 +151,7 @@ public class TranshipResource {
      */
     @PostMapping("/tranships/new-empty/{projectId}/{projectSiteId}")
     @Timed
-    public ResponseEntity<TranshipDTO> initTranship(Long projectId, Long projectSiteId) throws URISyntaxException {
+    public ResponseEntity<TranshipDTO> initTranship(@PathVariable Long projectId, @PathVariable Long projectSiteId) throws URISyntaxException {
         log.debug("REST request to create Tranship first");
         TranshipDTO result = transhipService.initTranship(projectId, projectSiteId);
         return ResponseEntity.ok()

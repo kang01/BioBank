@@ -96,7 +96,31 @@
 
                 return options;
             };
+            service.buildDTColumn = function (columnDatas) {
+                var columns = [];
+                var obj;
+                _.forEach(columnDatas,function (column) {
 
+                    obj = DTColumnBuilder.newColumn(column.name);
+
+                    if(column.title){
+                        obj.withTitle(column.title);
+                    }
+                    if(column.width){
+                        obj.withOption("width", column.width);
+                    }
+                    if(column.notSortable){
+                        obj.notSortable();
+                    }
+                    if(column.renderWith){
+                        obj.renderWith(column.renderWith)
+                    }
+
+                    columns.push(obj);
+                });
+
+                return columns;
+            };
             return service;
         }])
         .factory('MasterData',['SampleTypeService',function(SampleTypeService){

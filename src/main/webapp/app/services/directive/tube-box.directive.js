@@ -1068,8 +1068,8 @@
             // 将选中的两个单元格交换
             function _exchangeSelectedTubePosition(){
                 var tubes = _getSelectedElements();
-                if (tubes.length > 2){
-                    toastr.error("选中的管子多于2个。");
+                if (tubes.length != 2){
+                    toastr.error("请选择两支冻存管进行换位。");
                     return false;
                 }
 

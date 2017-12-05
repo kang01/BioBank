@@ -74,6 +74,13 @@
             if($stateParams.transhipCode){
                 vm.transportRecord.transhipCode = $stateParams.transhipCode;
             }
+            //项目点 项目编码
+            if($stateParams.projectId){
+                vm.transportRecord.projectId = $stateParams.projectId;
+            }
+            if($stateParams.projectSiteId){
+                vm.transportRecord.projectSiteId = $stateParams.projectSiteId;
+            }
             // 设置默认值
             if(vm.transportRecord.transhipDate){
                 vm.transportRecord.transhipDate = new Date(entity.transhipDate);

@@ -32,13 +32,43 @@
         vm.edit = edit;
         vm.add = add;
         vm.stockIn = _fnStockIn;
-
+        var modalInstance;
         function add() {
-            TranshipNewEmptyService.save({},onTranshipNewEmptyService,onError);
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/transport-record/modal/transport-record-select-project-modal.html',
+                controller: 'SelectProjectModalController',
+                backdrop:'static',
+                controllerAs: 'vm',
+                // resolve:{
+                //     items:function () {
+                //         return{
+                //             box:vm.box || {},
+                //             receiverId:vm.transportRecord.receiverId,
+                //             receiveDate: vm.transportRecord.receiveDate
+                //         };
+                //     }
+                // }
+            });
+            modalInstance.result.then(function (project) {
+                vm.projcect = project;
+                // TranshipNewEmptyService.save({},onTranshipNewEmptyService,onError);
+                TranshipNewEmptyService.saveTransportEmpty(vm.project.projectId,vm.project.projectSiteId).success(function (data) {
+                    $state.go('transport-record-edit',{
+                        transhipId : data.id,
+                        transhipCode : data.transhipCode
+                    });
+                });
+            });
+
+
         }
-        function onTranshipNewEmptyService(data) {
-            $state.go('transport-record-edit',{transhipId : data.id,transhipCode : data.transhipCode});
-        }
+        // function onTranshipNewEmptyService(data) {
+        //     $state.go('transport-record-edit',{
+        //         transhipId : data.id,
+        //         transhipCode : data.transhipCode
+        //     });
+        // }
         //开始入库
         function _fnStockIn() {
             var codeArray = [];

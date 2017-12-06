@@ -8,8 +8,10 @@
         .module('bioBankApp')
         .controller('GiveBackDetailController', GiveBackDetailController);
 
-    GiveBackDetailController.$inject = ['$scope', '$compile', 'BioBankDataTable','$uibModal', 'toastr', '$state','DTColumnBuilder','StockInInputService','EquipmentAllService'];
-    function GiveBackDetailController($scope, $compile, BioBankDataTable, $uibModal, toastr, $state,DTColumnBuilder,StockInInputService,EquipmentAllService) {
+    GiveBackDetailController.$inject = ['$scope', '$compile', 'BioBankDataTable','$uibModal', 'toastr', '$state',
+        'FrozenBoxTypesService','StockInInputService','EquipmentAllService','SampleTypeService','AreasByEquipmentIdService','SupportacksByAreaIdService'];
+    function GiveBackDetailController($scope, $compile, BioBankDataTable, $uibModal, toastr, $state,
+                                      FrozenBoxTypesService,StockInInputService,EquipmentAllService,SampleTypeService,AreasByEquipmentIdService,SupportacksByAreaIdService) {
         var vm = this;
         var modalInstance;
 
@@ -48,11 +50,10 @@
             //盒列
             var columns = [
                 {
-                    name:"frozenBoxId",
+                    name:"frozenBoxCode",
                     title:"#",
                     width:"50px",
                     notSortable:true
-
                 },
                 {
                     name:"frozenBoxCode",
@@ -60,17 +61,17 @@
                     notSortable:true,
                     renderWith:_fnRowRender
 
+
                 }
 
             ];
 
             _fnBoxInfoInit();
-            _queryBox();
-
 
             vm.boxColumns = BioBankDataTable.buildDTColumn(columns);
             vm.boxOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING","400")
-                .withOption('order', [[1, 'asc' ]]);
+                .withOption('order', [[1, 'asc' ]])
+                .withOption('rowCallback', rowCallback);
 
             function _fnRowRender(data, type, full, meta) {
                 var frozenBoxCode = '';
@@ -82,16 +83,151 @@
                 return frozenBoxCode;
             }
 
+            function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull) {
+                $('td:first', nRow).html(iDisplayIndex+1);
+                $(nRow).bind('click', function() {
+                    var tr = this;
+                    $(tr).closest('table').find('.rowLight').removeClass("rowLight");
+                    $(tr).addClass('rowLight');
+                    _queryBox(53783);
+                });
+            }
+
             //初始化信息（样本类型、样本分类、盒类型、暂存位置）
             function _fnBoxInfoInit() {
+                //盒子类型 17:10*10 18:8*8
+                vm.boxTypeInstance = {};
+                vm.boxTypeConfig = {
+                    valueField:'id',
+                    labelField:'frozenBoxTypeName',
+                    maxItems: 1,
+                    onInitialize: function(selectize){
+                        vm.boxTypeInstance = selectize;
+                    },
+                    onChange:function(value) {
+                    }
+                };
+                vm.sampleTypeConfig = {
+                    valueField:'id',
+                    labelField:'sampleTypeName',
+                    maxItems: 1,
+                    onChange:function (value) {}
+                };
+                vm.frozenBoxPlaceConfig = {
+                    valueField:'id',
+                    labelField:'equipmentCode',
+                    maxItems: 1,
+                    onChange:function (value) {
+                        vm.box.areaId = "";
+                        vm.box.supportRackId = "";
+                        vm.boxRowCol = "";
+                        vm.box.columnsInShelf = "";
+                        vm.box.rowsInShelf = "";
+                        if(value){
+                            AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                        }else{
+                            vm.frozenBoxAreaOptions = [];
+                            vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
+
+                            vm.frozenBoxShelfOptions = [];
+                            vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
+
+
+                            $scope.$apply();
+                        }
+                    }
+                };
+                vm.frozenBoxAreaConfig = {
+                    valueField:'id',
+                    labelField:'areaCode',
+                    maxItems: 1,
+                    onChange:function (value) {
+                        vm.box.supportRackId = "";
+                        vm.boxRowCol = "";
+                        vm.box.columnsInShelf = "";
+                        vm.box.rowsInShelf = "";
+                        if(value){
+                            for(var i = 0; i < vm.frozenBoxAreaOptions.length; i++){
+                                if(value == vm.frozenBoxAreaOptions[i].id){
+                                    vm.box.areaCode = vm.frozenBoxAreaOptions[i].areaCode;
+                                }
+                            }
+                            SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+                        }else{
+                            vm.frozenBoxShelfOptions = [];
+                            vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
+                            $scope.$apply();
+                        }
+
+
+                    }
+                };
+                vm.frozenBoxShelfConfig = {
+                    valueField:'id',
+                    labelField:'supportRackCode',
+                    maxItems: 1,
+                    onChange:function (value) {
+                        vm.boxRowCol = "";
+                        vm.box.columnsInShelf = "";
+                        vm.box.rowsInShelf = "";
+                        if(value){
+                            for(var i = 0; i < vm.frozenBoxShelfOptions.length; i++){
+                                if(value == vm.frozenBoxShelfOptions[i].id){
+                                    vm.box.supportRackCode = vm.frozenBoxShelfOptions[i].areaCode;
+                                }
+                            }
+                        }
+                        $scope.$apply();
+                    }
+                };
+
+                //区域
+                function onAreaSuccess(data) {
+                    vm.frozenBoxAreaOptions = data;
+                    vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
+                }
+                //架子
+                function onShelfSuccess(data) {
+                    vm.frozenBoxShelfOptions = data;
+                    vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
+                }
+                //盒子位置
+                vm.splitPlace = function () {
+                    if(vm.boxRowCol){
+                        vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
+                        vm.box.rowsInShelf = vm.boxRowCol.substring(1);
+                    }else{
+                        vm.box.columnsInShelf = "";
+                        vm.box.rowsInShelf = "";
+                    }
+                };
+                //盒子类型
+                FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
+                //设备
                 EquipmentAllService.query({},onEquipmentSuccess, onError);
+
+                _querySampleType();
                 function onEquipmentSuccess(data) {
                     vm.frozenBoxPlaceOptions = _.orderBy(data,['equipmentCode'],['asc']);
                 }
+                function onFrozenBoxTypeSuccess(data) {
+                    vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['esc']);
+                }
+                //获取样本分类
+                function _querySampleType() {
+                    SampleTypeService.querySampleType().success(function (data) {
+                        vm.sampleTypeOptions = data;
+                        _.remove(vm.sampleTypeOptions,{sampleTypeName:"98"});
+                        _.remove(vm.sampleTypeOptions,{sampleTypeName:"97"});
+                    });
+                }
+
+
             }
+
             //获取冻存盒信息（盒子信息和管子信息）
-            function _queryBox() {
-                StockInInputService.queryEditStockInBox(53783).success(function (data) {
+            function _queryBox(boxId) {
+                StockInInputService.queryEditStockInBox(boxId).success(function (data) {
                     vm.box = data;
                     vm.tubes = data.frozenTubeDTOS;
                     vm.htInstance.api.loadData(data, data.frozenTubeDTOS);
@@ -103,6 +239,9 @@
                 // vm.repeatSampleArray = JSON.parse(error.data.params[0]);
                 // hotRegisterer.getInstance('my-handsontable').render();
             }
+
+
+
             //导入冻存盒
             vm.importBox = function () {
                 modalInstance = $uibModal.open({
@@ -122,7 +261,8 @@
 
                 });
                 modalInstance.result.then(function (data) {
-
+                    console.log(JSON.stringify(data));
+                    vm.boxOptions.withOption("data",data);
                 },function () {
 
                 })

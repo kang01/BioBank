@@ -31,7 +31,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label class="col-md-4 control-label text-left">
-                        转运日期
+                        归还日期
                         <span class="required-field"></span>
                     </label>
                     <div class="col-md-8">
@@ -75,24 +75,6 @@
         </div>
         <div class="row">
             <div class="col-md-3">
-                <div class="form-group ">
-                    <label class="col-md-4 control-label text-left">转运批次</label>
-                    <div class="col-md-8">
-                        <input type="number" class="form-control" ng-model="vm.transportRecord.transhipBatch">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group ">
-                    <label class="col-md-4 control-label text-left">状态</label>
-                    <div class="col-md-8">
-                        <selectize options='vm.statusOptions' config="vm.statusConfig"
-                                   ng-model="vm.transportRecord.transhipState" ng-disabled="true"></selectize>
-                        <input type="hidden" name="level" ng-model="vm.transportRecord.transhipState" required>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
                 <div class="form-group three-col">
 
                     <label class="col-md-4 control-label text-left">
@@ -128,6 +110,30 @@
                 </div>
 
             </div>
+            <div class="col-md-3">
+                <div class="form-group three-col">
+
+                    <label class="col-md-4 control-label text-left">
+                        交接人
+                        <span class="required-field"></span>
+                    </label>
+                    <div class="col-md-8">
+                        <selectize options='vm.receiverOptions' config="vm.receiverConfig"
+                                   ng-model="vm.transportRecord.receiverId"></selectize>
+                        <input type="hidden" class="form-control" ng-model="vm.transportRecord.receiverId">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-3">
+                <div class="form-group three-col">
+                    <label class="col-md-4 control-label text-left">冻存盒数</label>
+                    <div class="col-md-8">
+                        <input type="number" class="form-control" ng-model="vm.transportRecord.frozenBoxNumber">
+                    </div>
+                </div>
+
+            </div>
 
         </div>
         <div class="row">
@@ -149,31 +155,7 @@
                 </div>
 
             </div>
-            <div class="col-md-3">
-                <div class="form-group three-col">
-                    <label class="col-md-4 control-label text-left">冻存盒数</label>
-                    <div class="col-md-8">
-                        <input type="number" class="form-control" ng-model="vm.transportRecord.frozenBoxNumber">
-                    </div>
-                </div>
 
-            </div>
-            <div class="col-md-3">
-                <div class="form-group ">
-                    <label class="col-md-4 control-label text-left">样本满意度</label>
-                    <div class="col-md-8">
-                        <span ng-repeat="rating in vm.ratings">
-                            <div star-rating rating-value="rating.current" max="rating.max"
-                                 on-rating-selected="vm.getSelectedRating(rating)"
-                            ></div>
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-        <div class="row">
             <div class="col-md-3">
                 <div class="form-group ">
                     <label class="col-md-4 control-label text-left">空管数</label>
@@ -190,6 +172,10 @@
                     </div>
                 </div>
             </div>
+
+        </div>
+        <div class="row">
+
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="col-md-2 control-label text-left">备注</label>
@@ -308,7 +294,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label>样本分类</label>
-                                <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
+                                <selectize options='vm.sampleTypeClassOptions' config="vm.sampleTypeClassConfig"
                                            ng-model="vm.box.sampleClassificationId"
                                            ng-disabled="!vm.box || vm.sampleClassFlag"></selectize>
                             </div>

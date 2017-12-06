@@ -66,7 +66,7 @@
                 {name:"5",width:"80"},
                 {name:"6",width:"80"}
             ];
-            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC","260");
+            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC,SEARCHING","260");
             vm.dtColumns = BioBankDataTable.buildDTColumn(columns);
         }
 

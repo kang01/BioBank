@@ -81,6 +81,7 @@
                 }
                 return frozenBoxCode;
             }
+
             //初始化信息（样本类型、样本分类、盒类型、暂存位置）
             function _fnBoxInfoInit() {
                 EquipmentAllService.query({},onEquipmentSuccess, onError);

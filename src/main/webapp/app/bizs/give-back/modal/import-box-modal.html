@@ -26,15 +26,24 @@
         </div>
         <div class="row">
             <div class="col-md-2 import-box-input">
-                <div>
-                    <p>导入冻存盒</p>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>导入冻存盒</h4>
+                    </div>
+                    <div class="panel-body" style="padding: 0">
+                        <selectize placeholder='' options='vm.myOptions' config="vm.boxCodeConfig"
+                                   ng-model="vm.arrayBoxCode" ng-disabled='disable' required='true'
+                        ></selectize>
+                    </div>
                 </div>
-                <selectize placeholder='' options='vm.myOptions' config="vm.boxCodeConfig"
-                           ng-model="vm.arrayBoxCode" ng-disabled='disable' required='true'
-                ></selectize>
             </div>
             <div class="col-md-10">
-                <table datatable="ng" dt-options="vm.dtOptions" dt-columns="vm.dtColumns"  class="table table-striped table-bordered">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>冻存盒详情</h4>
+                    </div>
+                    <div class="panel-body no-padding" style="padding: 0">
+                        <table datatable="ng" dt-options="vm.dtOptions" dt-columns="vm.dtColumns"  class="table table-striped table-bordered">
                     <thead>
                     <th>冻存盒号</th>
                     <th>一维编码</th>
@@ -68,6 +77,8 @@
                     </tr>
                     </tbody>
                 </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

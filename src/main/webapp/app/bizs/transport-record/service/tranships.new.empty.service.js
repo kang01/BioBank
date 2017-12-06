@@ -9,10 +9,10 @@
         .module('bioBankApp')
         .factory('TranshipNewEmptyService', TranshipNewEmptyService);
 
-    TranshipNewEmptyService.$inject = ['$resource'];
+    TranshipNewEmptyService.$inject = ['$resource','$http'];
 
-    function TranshipNewEmptyService ($resource) {
-        var service = $resource('api/tranships/new-empty', {}, {
+    function TranshipNewEmptyService ($resource,$http) {
+        var service = $resource('api/tranships/new-empty/', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',
@@ -25,6 +25,19 @@
             'update': { method:'PUT' },
             'delete':{ method:'DELETE'}
         });
+        service.saveTransportEmpty = function(projectId,projectSiteId){
+            var ajaxUrl = 'api/tranships/new-empty/'+projectId+'/'+projectSiteId;
+            var req = {
+                method: 'POST',
+                url: ajaxUrl,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data:{}
+            };
+
+            return $http(req);
+        };
 
         return service;
     }

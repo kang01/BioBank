@@ -2,9 +2,10 @@
 <form class="" novaildate name="newSampleForm">
     <div class="modal-header">
         <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
-        <h3 class="modal-title" id="modal-title">新增样本</h3>
+        <h3 class="modal-title" id="modal-title">编辑样本</h3>
     </div>
     <div class="modal-body add-sample-modal-body" id="modal-body">
+        <!--多选-->
         <div ng-if="vm.singleMultipleFlag != 'single'" class="multi">
             <div class="row">
                 <div class="col-md-4">
@@ -37,7 +38,8 @@
                                         <span class="required-field"></span>
                                     </label>
                                     <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                               ng-model="vm.entity.sampleTypeId" ng-disabled="vm.sampleTypeCode != '98'&& vm.sampleTypeCode != '97'"></selectize>
+                                               ng-model="vm.entity.sampleTypeId"
+                                               ng-disabled="!vm.entity.isMixed || (vm.entity.isMixed && (vm.entity.sampleTypeCode != '97'||vm.entity.sampleTypeCode != '98'))"></selectize>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -45,7 +47,7 @@
                                     <label>样本分类</label>
                                     <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
                                                ng-model="vm.entity.sampleClassificationId"
-                                               ng-disabled="vm.sampleTypeCode != '98' &&  vm.sampleTypeCode != '97'"
+                                               ng-disabled="!vm.entity.isMixed"
                                     ></selectize>
                                 </div>
                             </div>
@@ -66,17 +68,21 @@
                                             <input type="text" class="form-control" ng-model="vm.entity.sampleVolumns">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>备注</label>
-                                            <textarea  class="form-control resize-none" rows="1" ng-model="vm.entity.memo"></textarea>
-                                        </div>
-                                    </div>
+
                                 </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>备注</label>
+                                    <textarea  class="form-control resize-none" rows="5" ng-model="vm.entity.memo"></textarea>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
         </div>
         </div>
+        <!--单选-->
         <div  ng-if="vm.singleMultipleFlag === 'single'">
             <form >
                 <div class="row">
@@ -100,7 +106,7 @@
                                 <span class="required-field"></span>
                             </label>
                             <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                       ng-model="vm.entity.sampleTypeId" ng-disabled="vm.sampleTypeCode != '98'&& vm.sampleTypeCode != '97' || vm.originalSampleFlag"></selectize>
+                                       ng-model="vm.entity.sampleTypeId" ng-disabled="vm.entity.isMixed  && (vm.entity.sampleTypeCode != '97'||vm.entity.sampleTypeCode != '98')"></selectize>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -108,20 +114,20 @@
                             <label>样本分类</label>
                             <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
                                        ng-model="vm.entity.sampleClassificationId"
-                                       ng-disabled="vm.sampleTypeCode != '98' &&  vm.sampleTypeCode != '97' || vm.originalSampleFlag"
+                                       ng-disabled="!vm.entity.isMixed"
                             ></selectize>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>样本编码</label>
                             <input type="text" class="form-control" ng-model="vm.entity.sampleCode">
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>状态</label>
                             <selectize options='vm.tubeStatusOptions' config="vm.tubeStatusConfig"
@@ -130,18 +136,20 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>计量</label>
                             <input type="text" class="form-control" ng-model="vm.entity.sampleVolumns">
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>备注</label>
-                            <textarea  class="form-control resize-none" rows="1" ng-model="vm.entity.memo"></textarea>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                    <div class="form-group">
+                        <label>备注</label>
+                        <textarea  class="form-control resize-none" rows="6" ng-model="vm.entity.memo"></textarea>
                     </div>
+                </div>
                 </div>
             </form>
             <div class="" ng-if="vm.tubes.length >1">

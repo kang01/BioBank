@@ -29,6 +29,7 @@ public class FrozenTubeListSearchForm {
     private String tubeRows;
     private String tubeColumns;
     private Long sampleUsedTimes;
+    private String status;
 
     public String getPosition() {
         return position;
@@ -228,5 +229,13 @@ public class FrozenTubeListSearchForm {
 
     public void setSampleUsedTimes(Long sampleUsedTimes) {
         this.sampleUsedTimes = sampleUsedTimes;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

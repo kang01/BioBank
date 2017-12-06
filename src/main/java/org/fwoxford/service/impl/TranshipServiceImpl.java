@@ -377,7 +377,10 @@ public class TranshipServiceImpl implements TranshipService{
      */
     @Override
     public TranshipDTO initTranship() {
-
+        return initTranship(null, null);
+    }
+    @Override
+    public TranshipDTO initTranship(Long projectId, Long projectSiteId) {
         Tranship tranship = new Tranship();
         tranship.setStatus(Constants.VALID);
         tranship.setTranshipCode(bankUtil.getUniqueID("A"));
@@ -387,6 +390,21 @@ public class TranshipServiceImpl implements TranshipService{
         tranship.setEmptyTubeNumber(0);
         tranship.setSampleNumber(0);
         tranship.setEffectiveSampleNumber(0);
+
+        if (projectId != null){
+            Project project = projectRepository.findOne(projectId);
+            tranship.setProject(project);
+            tranship.setProjectCode(project.getProjectCode());
+            tranship.setProjectName(project.getProjectName());
+        }
+
+        if (projectSiteId != null){
+            ProjectSite projectSite = projectSiteRepository.findOne(projectSiteId);
+            tranship.setProjectSite(projectSite);
+            tranship.setProjectSiteCode(projectSite.getProjectSiteCode());
+            tranship.setProjectSiteName(projectSite.getProjectSiteName());
+        }
+
         transhipRepository.save(tranship);
         return transhipMapper.transhipToTranshipDTO(tranship);
     }

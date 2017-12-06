@@ -20,8 +20,8 @@
         var modalInstance;
         vm.dtInstance = {};
         vm.requirement = entity;
-        //判断是否需求保存
-        vm.sampleflag = false;
+        //判断是否弹出需求保存提示信息
+        vm.isRequirementSaveFlag = false;
         //是否可以核对
         vm.allowCheckFlag = false;
 
@@ -97,8 +97,14 @@
                 vm.status = vm.requirement.status;
             }
             vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
+            //更新申请列表
+            _updateRequirementTable();
+        }
+        //更新申请列表
+        function _updateRequirementTable() {
             setTimeout(function () {
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
+                //判断是否都是核对完的列表
                 vm.isApproval();
             },100);
         }
@@ -248,7 +254,7 @@
         vm.sampleRequirementListCheck = _fnSampleRequirementCheckList;
         //添加样本需求
         vm.addSampleModal = function (sampleRequirement) {
-            vm.sampleflag = true;
+            vm.isRequirementSaveFlag = true;
             _fnSaveRequirement();
             modalInstance = $uibModal.open({
                 animation: true,
@@ -269,28 +275,50 @@
             });
 
             modalInstance.result.then(function (data) {
-                _loadRequirement();
+                _fnUpdateRequirementData(data);
+                //更新申请列表
+                _updateRequirementTable();
+                // if(vm.requirement.id){
+                //     _loadRequirement();
+                // }else{
+                //
+                // }
+
             }, function () {
-                vm.sampleflag = false;
+                vm.isRequirementSaveFlag = false;
             });
         };
+        //更新需求的数据
+        function _fnUpdateRequirementData(data) {
+            var requirement = _.find(vm.requirement.stockOutRequirement,{id:data.id});
+            if(requirement){
+                _.assign(requirement,data);
+            }else{
+                vm.requirement.stockOutRequirement.push(data);
+            }
+        }
+        //保存申请记录
         function _fnSaveRequirement(sampleRequirementId) {
-            delete vm.requirement.stockOutRequirement;
+            // delete vm.requirement.stockOutRequirement;
             BioBankBlockUi.blockUiStart();
             RequirementService.saveRequirementInfo(vm.requirement).success(function (data) {
                 BioBankBlockUi.blockUiStop();
-                if(!vm.sampleflag){
+                if(!vm.isRequirementSaveFlag){
                     toastr.success("保存申请记录成功！");
                 }
+                //保存完了核对
                 if(vm.allowCheckFlag){
                     RequirementService.checkSampleRequirement(sampleRequirementId).success(function (data) {
-                        _loadRequirement();
+                        var requirement = _.find(vm.requirement.stockOutRequirement,{id:data.id});
+                        requirement.status = data.status;
+                        //更新申请列表
+                        _updateRequirementTable();
                         vm.allowCheckFlag = false;
-                        vm.sampleflag = false;
+                        vm.isRequirementSaveFlag = false;
                     }).error(function (data) {
                         toastr.error(data.message);
                         vm.allowCheckFlag = false;
-                        vm.sampleflag = false;
+                        vm.isRequirementSaveFlag = false;
                     });
                 }
             }).error(function (data) {
@@ -341,7 +369,7 @@
         //指定样本编码详情
         vm.appointDescSample = _fnAppointDescSample;
 
-        vm.dtOptions = BioBankDataTable.buildDTOption("BASIC")
+        vm.dtOptions = BioBankDataTable.buildDTOption("SORTING")
             .withOption('createdRow', createdRow);
 
         vm.dtColumns = [
@@ -359,6 +387,7 @@
         function createdRow(row, data, dataIndex) {
             var status = '';
             var diseaseType = '';
+            var sex = "";
             switch (data.status){
                 case '1201': status = '待核对';break;
                 case '1202': status = '库存不足';break;
@@ -375,6 +404,19 @@
             if(data.isHemolysis){
                 diseaseType += "溶血　";
             }
+
+            if(data.sex){
+                switch (data.sex){
+                    case 'M': sex = '男';break;
+                    case '男': sex = '男';break;
+                    case 'F': sex = '女';break;
+                    case '女': sex = '女';break;
+                    case 'null': sex = '不详';break;
+                }
+            }else{
+                sex = "不详";
+            }
+            $('td:eq(4)', row).html(sex);
             $('td:eq(5)', row).html(diseaseType);
             $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
@@ -410,15 +452,23 @@
         }
         //核对
         function _fnSampleRequirementCheck(sampleRequirementId) {
+            //是否可以核对
             vm.allowCheckFlag = true;
-            vm.sampleflag = true;
+            //
+            vm.isRequirementSaveFlag = true;
             _fnSaveRequirement(sampleRequirementId);
 
         }
         //复原
         function _fnSampleRequirementRevert(sampleRequirementId) {
             RequirementService.revertSampleRequirement(sampleRequirementId).success(function (data) {
-                _loadRequirement();
+                _.each(vm.requirement.stockOutRequirement,function (requirement) {
+                    if(requirement.id == data.id){
+                        requirement.status = data.status;
+                    }
+                });
+                //更新申请列表
+                _updateRequirementTable();
             }).error(function (data) {
             });
         }
@@ -434,7 +484,9 @@
             modalInstance.result.then(function (data) {
                 RequirementService.delSampleRequirement(sampleRequirementId).success(function (data) {
                     toastr.success("删除成功!");
-                    _loadRequirement();
+                    _.remove(vm.requirement.stockOutRequirement,{id:sampleRequirementId});
+                    //更新申请列表
+                    _updateRequirementTable();
                 }).error(function (data) {
                     toastr.error(data.message);
                 });
@@ -510,7 +562,7 @@
 
         //批准
         function _fnApprovalModal() {
-            vm.sampleflag = true;
+            vm.isRequirementSaveFlag = true;
             _fnSaveRequirement();
             modalInstance = $uibModal.open({
                 animation: true,
@@ -530,7 +582,7 @@
             modalInstance.result.then(function (data) {
                 $state.go("requirement-list");
             }, function () {
-                vm.sampleflag = false;
+                vm.isRequirementSaveFlag = false;
             });
         }
         vm.planSave = function () {

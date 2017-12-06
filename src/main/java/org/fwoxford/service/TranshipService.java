@@ -67,6 +67,7 @@ public interface TranshipService {
      * @return
      */
     TranshipDTO initTranship();
+    TranshipDTO initTranship(Long projectId, Long projectSiteId);
 
     /**
      * 作废转运记录

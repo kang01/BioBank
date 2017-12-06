@@ -3,7 +3,7 @@
     <div class="row m-0 mb-10">
         <div class="col-md-12">
             <div class="pull-left ">
-                <h2 class="m-0">添加出库申请<small>（批准操作，委托方、委托人、开始时间、结束时间、记录人、记录时间为必填项）</small></h2>
+                <h2 class="m-0">修改出库申请<small>（批准操作，委托方、委托人、开始时间、结束时间、记录人、记录时间为必填项）</small></h2>
             </div>
             <div class="pull-right">
 
@@ -27,7 +27,13 @@
 
     <div class="row m-0">
         <div class="row m-0">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-2">
+                <label >申请单号
+                    <span class="required-field"></span>
+                </label>
+                <input type="text"  class="form-control" ng-model="vm.requirement.applyCode" required disabled>
+            </div>
+            <div class="form-group col-md-4">
                 <label >委托方
                     <span class="required-field"></span>
                 </label>

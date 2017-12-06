@@ -104,6 +104,10 @@
             .state('transport-record-edit', {
                 parent: 'bizs',
                 url: '/transport-record/{transhipId}/edit',
+                params:{
+                    projectId:null,
+                    projectSiteId:null
+                },
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'transportRecord.new.title'

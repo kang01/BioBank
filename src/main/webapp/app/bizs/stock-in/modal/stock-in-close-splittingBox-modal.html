@@ -15,5 +15,6 @@
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">保存</button>
-    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">不保存</button>
+    <button ng-if="vm.status != 4"class="btn btn-warning" type="button" ng-click="vm.cancel()">不保存</button>
+    <button ng-if="vm.status == 4" class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

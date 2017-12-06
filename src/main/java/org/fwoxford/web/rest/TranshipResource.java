@@ -143,6 +143,22 @@ public class TranshipResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+
+    /**
+     * 添加转运记录
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/tranships/new-empty/{projectId}/{projectSiteId}")
+    @Timed
+    public ResponseEntity<TranshipDTO> initTranship(@PathVariable Long projectId, @PathVariable Long projectSiteId) throws URISyntaxException {
+        log.debug("REST request to create Tranship first");
+        TranshipDTO result = transhipService.initTranship(projectId, projectSiteId);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
     /**
      * 修改保存转运记录单
      * @return

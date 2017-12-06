@@ -1,0 +1,37 @@
+<div class="modal-header">
+    <h3 class="modal-title">
+        选择项目
+    </h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group ">
+                <div class="form-group">
+                    <label>项目编码<span class="required-field"></span></label>
+                    <selectize options='vm.projectOptions' config="vm.projectConfig"
+                               ng-model="vm.project.projectId"></selectize>
+                </div>
+                <!--<label class="col-md-4 control-label text-left">-->
+                    <!--项目编码-->
+                    <!--<span class="required-field"></span>-->
+                <!--</label>-->
+                <!--<div class="col-md-8">-->
+                    <!--<selectize options='vm.projectOptions' config="vm.projectConfig"-->
+                               <!--ng-model="vm.project.projectId"></selectize>-->
+                <!--</div>-->
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>项目点<span class="required-field"></span></label>
+                <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
+                           ng-model="vm.project.projectSiteId"></selectize>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button"  ng-click="vm.ok(vm.project)" ng-disabled="!vm.project.projectId || !vm.project.projectSiteId">确定</button>
+    <button class="btn btn-warning" type="button"  ng-click="vm.cancel()">取消</button>
+</div>

@@ -9,10 +9,10 @@
         .controller('FrozenStorageBoxModalController', FrozenStorageBoxModalController)
         .controller('ProgressBarModalController', ProgressBarModalController);
 
-    FrozenStorageBoxModalController.$inject = ['$scope','$q','toastr','$timeout','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService','blockUI','blockUIConfig','AreasByEquipmentIdService','EquipmentAllService','SampleTypeService','TransportRecordService'];
+    FrozenStorageBoxModalController.$inject = ['$scope','$q','toastr','$timeout','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','BioBankSelectize','items','TranshipBoxService','blockUI','blockUIConfig','AreasByEquipmentIdService','EquipmentAllService','SampleTypeService','TransportRecordService'];
     ProgressBarModalController.$inject = ['$uibModalInstance','$uibModal'];
 
-    function FrozenStorageBoxModalController($scope,$q,toastr,$timeout,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService,blockUI,blockUIConfig,AreasByEquipmentIdService,EquipmentAllService,SampleTypeService,TransportRecordService) {
+    function FrozenStorageBoxModalController($scope,$q,toastr,$timeout,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,BioBankSelectize,items,TranshipBoxService,blockUI,blockUIConfig,AreasByEquipmentIdService,EquipmentAllService,SampleTypeService,TransportRecordService) {
 
         var vm = this;
         vm.items = items;
@@ -173,29 +173,43 @@
         ];
         //录入冻存盒号
         var changeTableTimer = null;
-        vm.boxCodeConfig = {
-            create: true,
+        var selectizeObj = {
+            create : true,
             persist:false,
-            createOnBlur:false,
-            onInitialize: function(selectize){
-                vm.boxCodeSelectize = selectize;
-            },
-            onChange: function(value){
-                clearTimeout(changeTableTimer);
-                changeTableTimer = setTimeout(function () {
-                    if(value.length){
-                        vm.codeList = value;
-                        _fnInitBoxInfo();
-                    }
-                    if ($scope.$digest()){
-                        $scope.$apply();
-                    }
-                },300);
-            },
-            onItemRemove:function (value) {
-                _.remove(vm.obox.frozenBoxDTOList,{frozenBoxCode:value});
-            }
+            clearMaxItemFlag : true
         };
+        vm.boxCodeConfig = BioBankSelectize.buildSettings(selectizeObj);
+
+        vm.boxCodeConfig.onChange = function (value) {
+            vm.boxCodeSelectize = vm.boxCodeConfig.selectizeInstance;
+            clearTimeout(changeTableTimer);
+            changeTableTimer = setTimeout(function () {
+                if(value.length){
+                    vm.codeList = value;
+                    _fnInitBoxInfo();
+                }
+                if ($scope.$digest()){
+                    $scope.$apply();
+                }
+            },300);
+        };
+        vm.boxCodeConfig.onItemRemove = function (value) {
+            _.remove(vm.obox.frozenBoxDTOList,{frozenBoxCode:value});
+        }
+        // vm.boxCodeConfig = {
+        //     create: true,
+        //     persist:false,
+        //     createOnBlur:false,
+        //     onInitialize: function(selectize){
+        //         vm.boxCodeSelectize = selectize;
+        //     },
+        //     onChange: function(value){
+        //
+        //     },
+        //     onItemRemove:function (value) {
+        //         _.remove(vm.obox.frozenBoxDTOList,{frozenBoxCode:value});
+        //     }
+        // };
 
         //创建盒子
         function _fnCreateTempBox(code){
@@ -274,6 +288,7 @@
                 })
             }
         }
+        //上传完成后更新数据
         function _fnFormatBoxData(boxes) {
             vm.obox.frozenBoxDTOList = boxes;
             //只取盒子编码

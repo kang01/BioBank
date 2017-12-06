@@ -15,15 +15,24 @@
         var projectIds = items.projectIds;
         var requirementId = items.requirementId;
         var sampleRequirement = angular.copy(items.sampleRequirement);
+        // vm.file = {};
         if(sampleRequirement){
             vm.sampleRequirement = sampleRequirement;
+            // if(sampleRequirement.samples){
+            //     vm.file.name = sampleRequirement.samples;
+            // }
 
         }else{
             vm.sampleRequirement = {
+                id:null,
                 isHemolysis:false,//溶血
                 isBloodLipid:false,//脂质血
                 memo:null,
                 sampleClassificationId:null,
+                sampleTypeName: null,
+                frozenTubeTypeName:null,
+                sex:null,
+                status:'1201',
                 age:"0;0"
             };
         }
@@ -46,9 +55,14 @@
             labelField:'sampleTypeName',
             maxItems: 1,
             onChange:function (value) {
-                if(value && projectIds){
-                    _fuQuerySampleClass(projectIds,value);
+                if(value != 'null'){
+                    if(value && projectIds){
+                        _fuQuerySampleClass(projectIds,value);
+                        vm.sampleRequirement.sampleTypeName = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeName;
+
+                    }
                 }
+
 
             }
         };
@@ -68,15 +82,17 @@
         function _fnQuerySampleType() {
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data, ['id'], ['esc']);
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"});
                 vm.sampleTypeOptions.unshift({id:"null",sampleTypeName:"全部"});
                 vm.sampleTypeOptions.pop();
-                // vm.sampleClassOptions.unshift({sampleClassificationId:"null",sampleClassificationName:"全部"});
-                // vm.sampleRequirement.sampleTypeId = vm.sampleClassOptions[0].id;
+
                 if(!vm.sampleRequirement.sampleTypeId){
                     vm.sampleRequirement.sampleTypeId = vm.sampleTypeOptions[0].id;
-                //     if(vm.sampleRequirement.sampleTypeId && projectIds){
-                //         _fuQuerySampleClass(projectIds,vm.sampleRequirement.sampleTypeId);
-                //     }
+                    vm.sampleRequirement.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
+
+                }else{
+                    vm.sampleRequirement.sampleTypeName = _.find(vm.sampleTypeOptions,{id:vm.sampleRequirement.sampleTypeId}).sampleTypeName;
                 }
             });
         }
@@ -87,7 +103,6 @@
             maxItems: 1,
             allowEmptyOption:false,
             onChange:function (value) {
-
             }
         };
         //获取冻存管类型
@@ -97,6 +112,7 @@
                 vm.frozenTubeTypeOptions.unshift({id:"null",frozenTubeTypeName:"全部"});
                 if(!vm.sampleRequirement.frozenTubeTypeId){
                     vm.sampleRequirement.frozenTubeTypeId = vm.frozenTubeTypeOptions[0].id;
+                    vm.sampleRequirement.frozenTubeTypeName = vm.frozenTubeTypeOptions[0].frozenTubeTypeName;
                 }
             });
         }
@@ -154,9 +170,11 @@
                 fb.append('stockOutRequirement', angular.toJson(obj));
                 fb.append('file', file);
                 RequirementService.saveSampleRequirementOfUpload(requirementId,fb).success(function (data) {
-                    BioBankBlockUi.blockUiStop();
+                    data.sampleTypeName = null;
+                    data.frozenTubeTypeName = null;
+                    BioBankBlockUi.blockUiStop(data);
                     toastr.success("保存样本需求成功！");
-                    $uibModalInstance.close();
+                    $uibModalInstance.close(data);
                 }).error(function (data) {
                     BioBankBlockUi.blockUiStop();
                 });
@@ -166,36 +184,54 @@
             }
         };
         //保存申请记录
+        var sampleRequirement;
         function _fnSaveRequirement() {
             if(vm.sampleRequirement.id){
-                if(vm.sampleRequirement.status){
-                    delete  vm.sampleRequirement.status;
-                }
-                delete  vm.sampleRequirement.samples;
+                // if(vm.sampleRequirement.status){
+                //     delete  vm.sampleRequirement.status;
+                // }
+                // delete  vm.sampleRequirement.samples;
 
-                var sampleRequirement = angular.copy(vm.sampleRequirement);
+                sampleRequirement = angular.copy(vm.sampleRequirement);
+                sampleRequirement.status = "1201";
                 if(!vm.isAge){
                     sampleRequirement.age = null;
                 }
+                if(!sampleRequirement.frozenTubeTypeId || sampleRequirement.frozenTubeTypeId == "null"){
+                    sampleRequirement.frozenTubeTypeName = null;
+                }
+                if(!sampleRequirement.sampleTypeId || sampleRequirement.sampleTypeId == "null" || vm.file){
+                    sampleRequirement.sampleTypeName = null;
+                }
+
                 RequirementService.saveEditSampleRequirement(requirementId,sampleRequirement).success(function (data) {
+                    data.sampleTypeName = sampleRequirement.sampleTypeName;
+                    data.frozenTubeTypeName = null;
                     BioBankBlockUi.blockUiStop();
-                    toastr.success("保存样本需求成功！");
-                    $uibModalInstance.close();
+                    toastr.success("修改样本需求成功！");
+                    $uibModalInstance.close(sampleRequirement);
                 }).error(function (data) {
                     BioBankBlockUi.blockUiStop();
                     toastr.success(data.message);
                 });
 
             }else{
-                var sampleRequirement = angular.copy(vm.sampleRequirement);
+                sampleRequirement = angular.copy(vm.sampleRequirement);
                 if(!vm.isAge){
                     sampleRequirement.age = null;
                 }
+                if(!sampleRequirement.frozenTubeTypeId || sampleRequirement.frozenTubeTypeId == "null"){
+                    sampleRequirement.frozenTubeTypeName = null;
+                }
+                if(!sampleRequirement.sampleTypeId || sampleRequirement.sampleTypeId == "null" || vm.file){
+                    sampleRequirement.sampleTypeName = null;
+                }
                 RequirementService.saveSampleRequirement(requirementId,sampleRequirement).success(function (data) {
+                    data.sampleTypeName = sampleRequirement.sampleTypeName;
+                    data.frozenTubeTypeName = null;
                     BioBankBlockUi.blockUiStop();
                     toastr.success("保存样本需求成功！");
-
-                    $uibModalInstance.close();
+                    $uibModalInstance.close(data);
                 }).error(function (data) {
                     BioBankBlockUi.blockUiStop();
                 });

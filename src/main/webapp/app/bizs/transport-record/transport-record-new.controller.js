@@ -27,7 +27,7 @@
         //
         vm.makeNewBoxCodeFlag = false;
         function _fnMakeNewBoxCode() {
-            if(!vm.box){
+            if(!vm.box.sampleTypeId || !vm.box.sampleClassificationId){
                 return;
             }
             StockInInputService.makeNewBoxCode(vm.transportRecord.projectId,vm.box.sampleTypeId,vm.box.sampleClassificationId).success(function (data) {
@@ -73,6 +73,13 @@
 
             if($stateParams.transhipCode){
                 vm.transportRecord.transhipCode = $stateParams.transhipCode;
+            }
+            //项目点 项目编码
+            if($stateParams.projectId){
+                vm.transportRecord.projectId = $stateParams.projectId;
+            }
+            if($stateParams.projectSiteId){
+                vm.transportRecord.projectSiteId = $stateParams.projectSiteId;
             }
             // 设置默认值
             if(vm.transportRecord.transhipDate){
@@ -1161,6 +1168,9 @@
                 labelField:'sampleTypeName',
                 maxItems: 1,
                 onChange:function (value) {
+                    if(!value){
+                        return;
+                    }
                     var isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
                     var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
 

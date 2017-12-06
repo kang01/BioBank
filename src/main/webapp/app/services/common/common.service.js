@@ -50,7 +50,7 @@
                                 .withOption('searching', false);
                             break;
                         case "SORTING":
-                            options.withOption('sorting', true)
+                            options.withOption('sorting', [])
                                 .withOption('paging', false)
                                 .withOption('info', false)
                                 .withOption('searching', false)
@@ -233,5 +233,29 @@
 
             };
             return factory;
+        })
+        .factory('BioBankSelectize',function () {
+            var service = {};
+            service.buildSettings = function (data){
+                // true对于使用create方式添加的option会添加到select标签下面，再次点击会在下拉中出现。
+                // False，create方式添加的option只是显示在选框中，再次点击不会出现在下拉框中。
+                var options = {
+                    create : false,
+                    maxItems:1,
+                    delimiterEx:"[ ,]"
+                };
+                options = _.assignIn(options, data);
+
+                if(data.clearMaxItemFlag){
+                    delete options.maxItems
+                }
+                options.onInitialize = function (selectizeInstance) {
+                    options.selectizeInstance = selectizeInstance;
+                    var delimiterEscaped = selectizeInstance.settings.delimiterEx; //selectizeInstance.settings.delimiter.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    selectizeInstance.settings.splitOn = new RegExp('\\s*' + delimiterEscaped + '+\\s*');
+                };
+                return options;
+            };
+            return service
         });
 })();

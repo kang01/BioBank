@@ -562,7 +562,8 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     margin-bottom: 6px;
 }
 
-.transport-record-new div.dataTables_filter input {
+.transport-record-new div.dataTables_filter input ,
+.import-box div.dataTables_filter input {
     width: 8em;
 }
 

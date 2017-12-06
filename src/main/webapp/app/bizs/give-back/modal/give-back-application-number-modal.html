@@ -1,0 +1,22 @@
+<div class="modal-header">
+    <h3 class="modal-title">
+        申请单号
+    </h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group ">
+                <div class="form-group">
+                    <label>申请单号<span class="required-field"></span></label>
+                    <input type="text" class="form-control" ng-model="vm.applicationNumber">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button"  ng-click="vm.ok()" ng-disabled="!vm.applicationNumber">确定</button>
+    <button class="btn btn-warning" type="button"  ng-click="vm.cancel()">取消</button>
+</div>
+

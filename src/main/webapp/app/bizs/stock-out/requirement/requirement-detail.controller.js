@@ -331,7 +331,13 @@
             vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
             RequirementService.checkSampleRequirementList(vm.sampleRequirementIds).success(function (data) {
                 vm.requirementApplyFlag = true;
-                _loadRequirement();
+                _.forEach(data,function (requirement) {
+                   var obj = _.find(vm.requirement.stockOutRequirement,{id:requirement.id});
+                   obj.status = requirement.status;
+                });
+                //更新申请列表
+                _updateRequirementTable();
+                // _loadRequirement();
             }).error(function (data) {
             });
         }

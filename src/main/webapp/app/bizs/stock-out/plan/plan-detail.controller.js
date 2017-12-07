@@ -57,7 +57,7 @@
 
         _initStockOutBoxesTable();
         //选择的计划的盒子列表
-        var selectedSample;
+        var selectedBox;
         function _initStockOutBoxesTable() {
             vm.selected = {};
             vm.selectAll = false;
@@ -79,25 +79,25 @@
                     //全部不选中
                     vm.strBoxIds = "";
                     _.forEach(vm.boxData, function(value) {
-                        var len  =  _.filter(selectedSample, {id:value.id}).length;
+                        var len  =  _.filter(selectedBox, {id:value.id}).length;
                         if(len){
-                            _.remove(selectedSample,{id:value.id});
+                            _.remove(selectedBox,{id:value.id});
                         }
                     });
                 }else{
                     for(var i = 0; i< vm.boxData.length; i++){
-                        var len = _.filter(selectedSample,{id:+vm.boxData[i].id}).length;
+                        var len = _.filter(selectedBox,{id:+vm.boxData[i].id}).length;
                         if(!len){
-                            selectedSample.push(vm.boxData[i])
+                            selectedBox.push(vm.boxData[i])
                         }
                     }
                 }
-                vm.selectedLen = selectedSample.length;
-                vm.selectedOptions.withOption('data', selectedSample);
+                vm.selectedLen = selectedBox.length;
+                vm.selectedOptions.withOption('data', selectedBox);
             };
             var clickFlag = false;
             //选择的计划的盒子列表
-            selectedSample = [];
+            selectedBox = [];
             vm.toggleOne = function (selectedItems) {
                 clickFlag = true;
                 var boxIdArray = [];
@@ -105,24 +105,24 @@
                     if(selectedItems[id]){
                         boxIdArray.push(id);
                         var obj = _.find(vm.boxData,{id:+id});
-                        var len = _.filter(selectedSample,{id:+id}).length;
+                        var len = _.filter(selectedBox,{id:+id}).length;
                         if(!len){
-                            selectedSample.push(obj);
+                            selectedBox.push(obj);
                         }
                     }else{
                         var index = [];
-                        if(selectedSample.length){
-                            for(var i = 0; i < selectedSample.length; i++){
-                                if(+id == selectedSample[i].id){
+                        if(selectedBox.length){
+                            for(var i = 0; i < selectedBox.length; i++){
+                                if(+id == selectedBox[i].id){
                                     index.push(i);
                                 }
                             }
-                            _.pullAt(selectedSample, index);
+                            _.pullAt(selectedBox, index);
                         }
                     }
                 }
-                vm.selectedLen = selectedSample.length;
-                vm.selectedOptions.withOption('data', selectedSample);
+                vm.selectedLen = selectedBox.length;
+                vm.selectedOptions.withOption('data', selectedBox);
                 vm.strBoxIds = _.join(boxIdArray,",");
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
@@ -187,7 +187,7 @@
 
 
             function _fnRowSelectorRender(data, type, full, meta) {
-                var len = _.filter(selectedSample,{id:full.id}).length;
+                var len = _.filter(selectedBox,{id:full.id}).length;
                 if(len){
                     vm.selected[full.id] = true;
                 }else{
@@ -393,7 +393,24 @@
                 if(vm.sampleIds){
                     PlanService.queryPlanBoxes(vm.sampleIds,obj).success(function (res){
                         vm.boxData = res.data;
+                        vm.boxData = _.orderBy(vm.boxData, ['frozenBoxCode'], ['asc']);
                         vm.dtOptions.withOption('data',vm.boxData);
+                        var array = [];
+                        _.forEach(selectedBox,function (box) {
+                            var len = _.filter(vm.boxData,{frozenBoxCode:box.frozenBoxCode}).length;
+                            if(!len){
+                                array.push(box);
+                            }
+                        });
+                        _.forEach(array,function (box) {
+                            _.remove(selectedBox,{frozenBoxCode:box.frozenBoxCode});
+                        });
+                        vm.selectedLen = selectedBox.length;
+                        if(vm.selectedLen == vm.boxData.length){
+                            vm.selectAll = true;
+                        }else{
+                            vm.selectAll = false;
+                        }
                     });
                 }else{
                     vm.dtOptions.withOption('data',[]);
@@ -445,7 +462,7 @@
             });
 
             modalInstance.result.then(function (paginationIndexArray) {
-                vm.boxData = _.orderBy(vm.boxData, ['frozenBoxCode1D'], ['asc']);
+                vm.boxData = _.orderBy(vm.boxData, ['frozenBoxCode'], ['asc']);
                 var boxIdArray = [];
                 var rgExp = /\d{1,3}-\d{1,3}/;
                 _.forEach(paginationIndexArray,function (pagination) {
@@ -456,7 +473,7 @@
                             //匹配成功后，判断第一个数要小于第二个数，不然就输入错误
                             var num1 = _.toNumber(pagination.substr(0,index));
                             var num2 = _.toNumber(pagination.substring(index+1));
-                            if(num2 > vm.boxData.length){
+                            if(num2 >= vm.boxData.length){
                                 num2 = vm.boxData.length;
                                 vm.selectAll = true;
                             }
@@ -473,17 +490,17 @@
                 });
                 //勾选冻存盒列表
                 function _fnSelectBoxData(index) {
-                    var len = _.filter(selectedSample,{id:vm.boxData[index-1].id}).length;
+                    var len = _.filter(selectedBox,{id:vm.boxData[index-1].id}).length;
                     if(!len){
                         //要勾选的数据
-                        selectedSample.push(vm.boxData[index-1]);
+                        selectedBox.push(vm.boxData[index-1]);
                         //盒子ID
                         boxIdArray.push(vm.boxData[index-1].id);
                     }
                 }
                 vm.dtInstance.rerender();
-                vm.selectedLen = selectedSample.length;
-                vm.selectedOptions.withOption('data', selectedSample);
+                vm.selectedLen = selectedBox.length;
+                vm.selectedOptions.withOption('data', selectedBox);
                 vm.strBoxIds = _.join(boxIdArray,",");
 
             });

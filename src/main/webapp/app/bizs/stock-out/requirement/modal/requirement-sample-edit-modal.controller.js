@@ -227,8 +227,8 @@
                     sampleRequirement.sampleTypeName = null;
                 }
                 RequirementService.saveSampleRequirement(requirementId,sampleRequirement).success(function (data) {
-                    data.sampleTypeName = sampleRequirement.sampleTypeName;
-                    data.frozenTubeTypeName = null;
+                    // data.sampleTypeName = sampleRequirement.sampleTypeName;
+                    // data.frozenTubeTypeName = null;
                     BioBankBlockUi.blockUiStop();
                     toastr.success("保存样本需求成功！");
                     $uibModalInstance.close(data);

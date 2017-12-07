@@ -51,21 +51,71 @@ public interface StockOutRequirementService {
      */
     void delete(Long id);
 
+    /**
+     * 保存样本需求
+     * @param stockOutRequirement
+     * @param stockOutApplyId
+     * @return
+     */
     StockOutRequirementForApply saveStockOutRequirement(StockOutRequirementForApply stockOutRequirement, Long stockOutApplyId);
 
+    /**
+     * 上传并保存样本需求
+     * @param stockOutRequirement
+     * @param stockOutApplyId
+     * @param file
+     * @param request
+     * @return
+     */
     StockOutRequirementForApply saveAndUploadStockOutRequirement(StockOutRequirementForApply stockOutRequirement, Long stockOutApplyId, MultipartFile file, HttpServletRequest request);
 
+    /**
+     * 获取需求详情
+     * @param id
+     * @return
+     */
     StockOutRequirementForApply getRequirementById(Long id);
 
+    /**
+     * 核对样本（单个）
+     * @param id
+     * @return
+     */
     StockOutRequirementForApplyTable checkStockOutRequirement(Long id);
 
+    /**
+     * 获取核对详情
+     * @param id
+     * @return
+     */
     StockOutRequirementSampleDetail getCheckDetail(Long id);
 
-    StockOutRequirementForApply revertStockOutRequirement(Long id);
+    /**
+     * 复原核对结果
+     * @param id
+     * @return
+     */
+    StockOutRequirementForApplyTable revertStockOutRequirement(Long id);
 
+    /**
+     * 批量核对样本
+     * @param ids
+     * @return
+     */
     List<StockOutRequirementForApplyTable> batchCheckStockOutRequirement(List<Long> ids);
 
+    /**
+     * 打印需求详情
+     * @param id
+     * @return
+     */
     ByteArrayOutputStream printStockOutRequirementDetailReport(Long id);
 
+    /**
+     * 根据申请需求需求列表
+     * @param id
+     * @param input
+     * @return
+     */
     DataTablesOutput<StockOutRequirementFrozenTubeDetail> getCheckDetailByRequirement(Long id, DataTablesInput input);
 }

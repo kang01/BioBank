@@ -229,6 +229,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 throw new BankServiceException("未查到冻存管类型！");
             }
             requirement.setFrozenTubeType(frozenTubeType);
+            stockOutRequirement.setFrozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName());
         }else{
             requirement.setFrozenTubeType(null);
         }
@@ -238,6 +239,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 throw new BankServiceException("未查到样本类型！");
             }
             requirement.setSampleType(sampleType);
+            stockOutRequirement.setSampleTypeName(sampleType.getSampleTypeName());
         }else{
             requirement.setSampleType(null);
         }
@@ -252,6 +254,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         }
         stockOutRequirementRepository.save(requirement);
         stockOutRequirement.setId(requirement.getId());
+        stockOutRequirement.setSex(Constants.SEX_MAP.get(requirement.getSex())!=null?Constants.SEX_MAP.get(requirement.getSex()).toString():null);
 
         return stockOutRequirement;
     }
@@ -284,7 +287,6 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             Query query = entityManager.createNativeQuery(sql.toString());
             query.setParameter("1", stockOutRequirement.getId()).executeUpdate();
         }
-        Map<String,String> map = new HashMap<>();
         List<JSONObject> jsonArray = new ArrayList<>();
         try {
             String filetype=file.getOriginalFilename().split("\\.")[1];//后缀
@@ -413,7 +415,6 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         //获取指定样本
         if(stockOutRequirement.getImportingFileId()!=null){
             List<StockOutRequiredSampleDTO> stockOutRequiredSamples = new ArrayList<StockOutRequiredSampleDTO>();
-//            List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(id);
             StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(stockOutRequirement.getImportingFileId());
             String fileContent = stockOutFiles.getFileContent();
             List<JSONObject> jsonArray = JSONArray.fromObject(fileContent);
@@ -527,8 +528,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
      * @return
      */
     @Override
-    public StockOutRequirementForApply revertStockOutRequirement(Long id) {
-        StockOutRequirementForApply stockOutRequirementForApply = new StockOutRequirementForApply();
+    public StockOutRequirementForApplyTable revertStockOutRequirement(Long id) {
         StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
         if(stockOutRequirement == null){
             throw new BankServiceException("未查询到样本需求！");
@@ -543,12 +543,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
         Query query = entityManager.createNativeQuery(sql.toString());
         query.setParameter("1", id).executeUpdate();
-
-
-//        int a = 1/0;
-        stockOutRequirementForApply.setId(id);
-        stockOutRequirementForApply.setStatus(stockOutRequirement.getStatus());
-        return stockOutRequirementForApply;
+        return stockOutApplyService.stockOutRequirementToStockOutRequirementForApplyTable(stockOutRequirement);
     }
 
     /**
@@ -653,12 +648,15 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
      */
     @Override
     public ByteArrayOutputStream printStockOutRequirementDetailReport(Long id) {
+        //打印出库申请详情--构造
         StockOutRequirementDetailReportDTO requirementDTO = checkStockOutRequirementDetailReportDTO(id);
         ByteArrayOutputStream outputStream = reportExportingService.makeStockOutRequirementCheckReport(requirementDTO);
         return outputStream;
     }
-
-    private StockOutRequirementDetailReportDTO checkStockOutRequirementDetailReportDTO(Long id) {
+    /**
+     *  打印出库申请详情--构造
+     */
+    public StockOutRequirementDetailReportDTO checkStockOutRequirementDetailReportDTO(Long id) {
         StockOutRequirementDetailReportDTO report = new StockOutRequirementDetailReportDTO();
         StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
         if(stockOutRequirement == null){

@@ -257,9 +257,9 @@ public class StockOutRequirementResource {
      */
     @PutMapping("/stock-out-requirements/revert/{id}")
     @Timed
-    public ResponseEntity<StockOutRequirementForApply> revertStockOutRequirement(@PathVariable Long id) throws URISyntaxException {
+    public ResponseEntity<StockOutRequirementForApplyTable> revertStockOutRequirement(@PathVariable Long id) throws URISyntaxException {
         log.debug("REST request to revert StockOutRequirement : {}", id);
-        StockOutRequirementForApply result = stockOutRequirementService.revertStockOutRequirement(id);
+        StockOutRequirementForApplyTable result = stockOutRequirementService.revertStockOutRequirement(id);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, id.toString()))
             .body(result);
@@ -304,6 +304,12 @@ public class StockOutRequirementResource {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * 根据申请需求需求列表
+     * @param input
+     * @param id
+     * @return
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-requirements/getCheckDetail/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutRequirementFrozenTubeDetail> getPageStockIn(@RequestBody DataTablesInput input, @PathVariable Long id) {

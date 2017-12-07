@@ -226,7 +226,10 @@
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-md-10">
-                            <h4>分装后样本盒<span ng-if="vm.boxDetailFlag">{{vm.stockInFrozenTubeList1[0].frozenBoxCode}}</span></h4>
+                            <h4>
+                                <span ng-if="!vm.boxDetailFlag">分装后样本盒</span>
+                                <span ng-if="vm.boxDetailFlag">{{vm.frozenBox.frozenBoxCode}}&nbsp;{{vm.frozenBox.sampleClassificationName?vm.frozenBox.sampleClassificationName:vm.frozenBox.sampleTypeName}}</span></h4>
+
                         </div>
                         <div class="col-md-2  text-right mt-10">
                             <button type="button" class="btn btn-default btn-xs" ng-click="vm.closeBoxDesc()" ng-if="vm.boxDetailFlag">
@@ -265,7 +268,7 @@
 
                         <div class="col-md-12 ml-10 mt-5 mb-5" ng-if="vm.boxDetailFlag">
                             <table class="p-10">
-                                <tr ng-repeat="tubes in vm.stockInFrozenTubeList1 | orderBy: 'tubeRows' | groupBy: 'tubeRows'">
+                                <tr ng-repeat="tubes in vm.frozenBox.stockInFrozenTubeList1 | orderBy: 'tubeRows' | groupBy: 'tubeRows'">
                                     <td style="padding:2px" ng-repeat="tube in tubes | orderBy: 'tubeColumns'">
                                         <!--构建的样本-->
                                         <div ng-if="tube.flag == '3'" style="width:31px;height:31px;line-height:23px;text-align:center;font-size:8pt;border:2px solid;border-radius:5px;-moz-border-radius:5px;padding:3px;background-color: #fff">

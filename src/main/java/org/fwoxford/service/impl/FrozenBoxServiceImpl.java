@@ -622,8 +622,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
         //有分类---取相同分类的
         if (sampleClassificationIdStr.size() > 0) {
-            List<Long> frozenBoxIdLastList = new ArrayList<>();
-            Long countOfAllFrozenBox = frozenBoxRepository.count();
+//            List<Long> frozenBoxIdLastList = new ArrayList<>();
+//            Long countOfAllFrozenBox = frozenBoxRepository.count();
             for (Long id : sampleClassificationIdStr) {
                 if (map.get(id) != null && map.get(id).size() > 0) {
                     frozenBoxList.addAll(map.get(id));

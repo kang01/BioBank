@@ -168,8 +168,6 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
                 frozenTubeListLast.addAll(frozenTubeList);
             }
         }
-        Map<String,List<FrozenTube>> map = frozenTubeListLast.stream().collect(Collectors.groupingBy(s->s.getSampleCode()));
-        TreeMap<String,List<FrozenTube>> tr = new TreeMap<>(map);
         stockOutRequirement.setCountOfSampleReal(frozenTubeListLast.size());
         if(frozenTubeListLast.size()!=0&&(frozenTubeListLast.size()==stockOutRequiredSamples.size())){
              status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;

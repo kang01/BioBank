@@ -6,10 +6,7 @@ import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
-import org.fwoxford.service.ReportExportingService;
-import org.fwoxford.service.StockOutFilesService;
-import org.fwoxford.service.StockOutReqFrozenTubeService;
-import org.fwoxford.service.StockOutRequirementService;
+import org.fwoxford.service.*;
 import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
 import org.fwoxford.service.dto.response.*;
@@ -34,7 +31,6 @@ import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,7 +75,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     private StockOutApplyProjectRepository stockOutApplyProjectRepository;
 
     @Autowired
-    private StockOutFilesService stockOutFilesService;
+    private StockOutApplyService stockOutApplyService;
 
     @Autowired
     private StockOutFilesRepository stockOutFilesRepository;
@@ -407,8 +403,8 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
      * @return
      */
     @Override
-    public StockOutRequirementForApply checkStockOutRequirement(Long id) {
-        StockOutRequirementForApply stockOutRequirementForApply = new StockOutRequirementForApply();
+    public StockOutRequirementForApplyTable checkStockOutRequirement(Long id) {
+        StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();
         StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
         if(stockOutRequirement == null){
             throw new BankServiceException("未查询到需求！");
@@ -463,9 +459,8 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         }
         stockOutRequirement.setStatus(status);
         stockOutRequirementRepository.save(stockOutRequirement);
-        stockOutRequirementForApply.setId(id);
-        stockOutRequirementForApply.setStatus(status);
-        return stockOutRequirementForApply;
+        stockOutRequirementForApplyTable = stockOutApplyService.stockOutRequirementToStockOutRequirementForApplyTable(stockOutRequirement);
+        return stockOutRequirementForApplyTable;
     }
 
     @Override
@@ -562,7 +557,8 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
      * @return
      */
     @Override
-    public void batchCheckStockOutRequirement(List<Long> ids) {
+    public  List<StockOutRequirementForApplyTable> batchCheckStockOutRequirement(List<Long> ids) {
+        List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<>();
         //查询全部样本需求
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByIdInAndStatusNot(ids,Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS);
 
@@ -570,9 +566,11 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             Map<Double,StockOutRequirement> map = getOrderStockOutRequirement(stockOutRequirementList);
             for(Double d :map.keySet()){
                 StockOutRequirement stockOutRequirements = map.get(d);
-                checkStockOutRequirement(stockOutRequirements.getId());
+                StockOutRequirementForApplyTable stockOutRequirementForApplyTable = checkStockOutRequirement(stockOutRequirements.getId());
+                stockOutRequirementForApplyTables.add(stockOutRequirementForApplyTable);
             }
         }
+        return stockOutRequirementForApplyTables;
     }
     /**
      * 权重说明：SUM（权重系数）/ COUNT(权重系数) = 权重

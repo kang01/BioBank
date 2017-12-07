@@ -319,23 +319,8 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByApply(id);
         int countOfSampleAll=0;
         for(StockOutRequirement requirement : stockOutRequirementList){
-            StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();
-            stockOutRequirementForApplyTable.setId(requirement.getId());
-            stockOutRequirementForApplyTable.setStatus(requirement.getStatus());
-            stockOutRequirementForApplyTable.setCountOfSample(requirement.getCountOfSample());
-            stockOutRequirementForApplyTable.setRequirementName(requirement.getRequirementName());
-           if(requirement.getImportingFileId()!=null){
-                StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(requirement.getImportingFileId());
-                stockOutRequirementForApplyTable.setSamples(stockOutFiles!=null?stockOutFiles.getFileName():null);
-            }else {
-                stockOutRequirementForApplyTable.setDiseaseTypeId(requirement.getDiseaseType());
-                stockOutRequirementForApplyTable.setIsBloodLipid(requirement.isIsBloodLipid());
-                stockOutRequirementForApplyTable.setIsHemolysis(requirement.isIsHemolysis());
-                stockOutRequirementForApplyTable.setFrozenTubeTypeName(requirement.getFrozenTubeType()!=null?requirement.getFrozenTubeType().getFrozenTubeTypeName():null);
-                stockOutRequirementForApplyTable.setSampleTypeName(requirement.getSampleType()!=null?requirement.getSampleType().getSampleTypeName():null);
-                stockOutRequirementForApplyTable.setSex(Constants.SEX_MAP.get(requirement.getSex())!=null?Constants.SEX_MAP.get(requirement.getSex()).toString():null);
-                stockOutRequirementForApplyTable.setAge(requirement.getAgeMin()+"-"+requirement.getAgeMax()+"岁");
-            }
+            //构造样本需求列表
+            StockOutRequirementForApplyTable stockOutRequirementForApplyTable = stockOutRequirementToStockOutRequirementForApplyTable(requirement);
             stockOutRequirementForApplyTables.add(stockOutRequirementForApplyTable);
             Long countOfSample = requirement.getCountOfSample()!=null?requirement.getCountOfSample():0L;
             countOfSampleAll +=countOfSample;
@@ -348,6 +333,30 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
        Long countOfHandoverSample = stockOutHandoverDetailsRepository.countByStockOutApply(id);
         res.setCountOfHandoverSample(countOfHandoverSample);
         return res;
+    }
+
+    public StockOutRequirementForApplyTable stockOutRequirementToStockOutRequirementForApplyTable(StockOutRequirement requirement) {
+        if(requirement == null){
+            return null;
+        }
+        StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();
+        stockOutRequirementForApplyTable.setId(requirement.getId());
+        stockOutRequirementForApplyTable.setStatus(requirement.getStatus());
+        stockOutRequirementForApplyTable.setCountOfSample(requirement.getCountOfSample());
+        stockOutRequirementForApplyTable.setRequirementName(requirement.getRequirementName());
+        if(requirement.getImportingFileId()!=null){
+            StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(requirement.getImportingFileId());
+            stockOutRequirementForApplyTable.setSamples(stockOutFiles!=null?stockOutFiles.getFileName():null);
+        }else {
+            stockOutRequirementForApplyTable.setDiseaseTypeId(requirement.getDiseaseType());
+            stockOutRequirementForApplyTable.setIsBloodLipid(requirement.isIsBloodLipid());
+            stockOutRequirementForApplyTable.setIsHemolysis(requirement.isIsHemolysis());
+            stockOutRequirementForApplyTable.setFrozenTubeTypeName(requirement.getFrozenTubeType()!=null?requirement.getFrozenTubeType().getFrozenTubeTypeName():null);
+            stockOutRequirementForApplyTable.setSampleTypeName(requirement.getSampleType()!=null?requirement.getSampleType().getSampleTypeName():null);
+            stockOutRequirementForApplyTable.setSex(Constants.SEX_MAP.get(requirement.getSex())!=null?Constants.SEX_MAP.get(requirement.getSex()).toString():null);
+            stockOutRequirementForApplyTable.setAge(requirement.getAgeMin()+"-"+requirement.getAgeMax()+"岁");
+        }
+        return stockOutRequirementForApplyTable;
     }
 
     /**

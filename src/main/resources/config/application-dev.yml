@@ -30,6 +30,8 @@ spring:
 #        username: biobank_p_20171020
 #        password: eyuXotN6
         url: jdbc:oracle:thin:@10.24.10.56:1521/orcl
+#        username: C##biobank_p_20171020
+#        password: eyuXotN6
         username: C##biobank_t_20171120
         password: root123
     jpa:

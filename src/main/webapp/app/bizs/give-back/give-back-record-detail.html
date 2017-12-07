@@ -55,9 +55,9 @@
                         <span class="required-field"></span>
                     </label>
                     <div class="col-md-8">
-                        <selectize options='vm.projectOptions' config="vm.projectConfig"
-                                   ng-model="vm.transportRecord.projectId" ng-disabled="vm.boxLength"></selectize>
-                        <!--<input type="text" class="form-control"  ng-model="vm.transportRecord.projectSiteCode">-->
+                        <selectize options='vm.delegatesOptions' config="vm.delegatesConfig"
+                        ng-model="vm.giveBackRecord.delegateId"></selectize>
+                        <input type="hidden" ng-model="vm.giveBackRecord.delegateId" required>
                     </div>
                 </div>
             </div>
@@ -185,6 +185,21 @@
                 </div>
 
             </div>
+            <div class="col-md-3">
+                <div class="form-group ">
+                    <label class="col-md-4 control-label text-left">存储位置</label>
+                    <div class="col-md-8">
+                        <div class="col-md-6 pl-0">
+                            <selectize options='vm.recordPlaceOptions' config="vm.recordPlaceConfig" ng-model="vm.giveBackRecord.tempEquipmentId"></selectize>
+                        </div>
+                        <div class="col-md-6 pl-0 pr-0">
+                            <selectize options='vm.recordAreaOptions' config="vm.recordAreaConfig"
+                            ng-model="vm.giveBackRecord.tempAreaId" ></selectize>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
 
     </form>
@@ -249,7 +264,7 @@
                         <button type="button" class="btn btn-default btn-xs" ng-click="vm.tubeRemark()"
                                 ng-disabled="!vm.box || vm.flagStatus">样本批注
                         </button>
-                        <button type="button" class="btn btn-default btn-xs" ng-click="vm.reImportFrozenBoxData()"
+                        <button type="button" class="btn btn-default btn-xs" ng-click="vm.reloadBoxData()"
                                 ng-disabled="!vm.box">重新导入
                         </button>
                     </div>
@@ -276,17 +291,15 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-md-6 pr-0">
-                                <label>盒类型<span class="required-field"></span></label>
-                                <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
-                                           ng-model="vm.box.frozenBoxTypeId" ng-disabled="!vm.box"></selectize>
+                                <label>盒类型</label>
+                                <input type="text" class="form-control" ng-model="vm.box.frozenBoxTypeName"   ng-disabled="true">
                             </div>
                         </div>
                         <div class="row">
 
                             <div class="form-group col-md-6 pr-0">
                                 <label>样本类型<span class="required-field"></span></label>
-                                <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                           ng-model="vm.box.sampleTypeId" ng-disabled="!vm.box"></selectize>
+                                <input type="text" class="form-control" ng-model="vm.box.sampleTypeName"   ng-disabled="true">
                                 <label class="checkbox-inline pb-10">
                                     <input type="checkbox" ng-model="vm.box.isSplit" ng-disabled="!vm.box || vm.isMixedFlag"
                                            ng-true-value="1" ng-false-value="0">是否分装
@@ -294,9 +307,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label>样本分类</label>
-                                <selectize options='vm.sampleTypeClassOptions' config="vm.sampleTypeClassConfig"
-                                           ng-model="vm.box.sampleClassificationId"
-                                           ng-disabled="!vm.box || vm.sampleClassFlag"></selectize>
+                                <input type="text" class="form-control" ng-model="vm.box.sampleClassificationName"   ng-disabled="true">
                             </div>
 
                         </div>

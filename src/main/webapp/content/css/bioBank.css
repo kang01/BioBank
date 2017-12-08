@@ -1692,7 +1692,7 @@ ul.rating {
     }
     /*入库*/
     .transport-code{
-        width: 500px;
+        width: 580px;
     }
 
 }
@@ -1762,6 +1762,10 @@ ul.rating {
 
     .sample-type-num .col-md-1:nth-child(9) {
         margin-left: 18px;
+    }
+    /*入库*/
+    .transport-code{
+        width: 630px;
     }
 }
 

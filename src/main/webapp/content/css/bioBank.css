@@ -632,7 +632,10 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     width: 89%;
     padding-left: 12px;
 }
-
+/*入库*/
+.transport-code{
+    width: 330px;
+}
 /*.split-box .box-right{*/
 /*width: 330px;*/
 /*}*/
@@ -1687,6 +1690,11 @@ ul.rating {
     .sample-type-num .col-md-1:nth-child(10) {
         margin-left: 12px;
     }
+    /*入库*/
+    .transport-code{
+        width: 500px;
+    }
+
 }
 
 /*1920*/

@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockOutFrozenBox.
@@ -194,20 +195,19 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     @Override
     public List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId) {
         List<StockOutFrozenBoxForTaskDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
+        //根据待出库的样本查询出待出库的冻存盒
         List<FrozenBox> boxes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndStatus(taskId,Constants.STOCK_OUT_SAMPLE_IN_USE);
-//        List<Long> frozenBoxIds = new ArrayList<>();
-//        boxes.forEach(b->{if(!frozenBoxIds.contains(b.getId())){
-//            frozenBoxIds.add(b.getId());
-//        }});
-//        List<List<Long>> idEach1000 = Lists.partition(frozenBoxIds,1000);
-//        List<Object[]> allBoxCount = new ArrayList<>();
-//        for(List<Long> ids : idEach1000){
-//            List<Object[]> countOfEachFrozenBox = stockOutReqFrozenTubeRepository.countByTaskAndBoxAndStatus(taskId,ids,Constants.STOCK_OUT_SAMPLE_IN_USE);
-//            allBoxCount.addAll(countOfEachFrozenBox);
-//        }
-        for(FrozenBox frozenBox :boxes){
+
+        //此任务内待出库的冻存盒和样本量
+        List<Object[]> countByTaskGroupByBox = stockOutReqFrozenTubeRepository.countByTaskGroupByBox(taskId);
+
+        Map<Long, List<FrozenBox>> boxesGroupByBoxId = boxes.stream().collect(Collectors.groupingBy(s->s.getId()));
+        for(Long boxId : boxesGroupByBoxId.keySet()){
             StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
-            Long count = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndFrozenBoxIdAndStatus(taskId,frozenBox.getId(),Constants.STOCK_OUT_SAMPLE_IN_USE);
+            FrozenBox frozenBox = boxesGroupByBoxId.get(boxId).get(0);
+
+            Object[] obje = countByTaskGroupByBox.stream().filter(s->Long.valueOf(s[0].toString()).equals(boxId)).findFirst().orElse(null);
+            Long count = obje!=null?Long.valueOf(obje[1].toString()):0;
             box.setId(frozenBox.getId());
             box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             box.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
@@ -251,6 +251,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             if(box.getId()!=null){
                 frozenBox = frozenBoxRepository.findOne(box.getId())!=null?frozenBoxRepository.findOne(box.getId()):new FrozenBox();
             }
+            //验证冻存盒类型是否一致
             FrozenBoxType boxType = new FrozenBoxType();
             if (box.getFrozenBoxTypeId() != null) {
                 FrozenBoxType frozenBoxType = new FrozenBoxType();
@@ -266,7 +267,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                     throw new BankServiceException("冻存盒类型不能为空！",box.toString());
                 }
             }
-
+            //验证冻存盒数量是否错误（不能超过冻存盒的最大规格）
             String columns = boxType.getFrozenBoxTypeColumns()!=null?boxType.getFrozenBoxTypeColumns():new String("0");
             String rows = boxType.getFrozenBoxTypeRows()!=null?boxType.getFrozenBoxTypeRows():new String("0");
             int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
@@ -277,9 +278,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 throw new BankServiceException("临时盒中冻存管数量错误！",frozenBoxDTO.toString());
             }
 
-            frozenBox.setFrozenBoxCode(box.getFrozenBoxCode());
-            frozenBox.setFrozenBoxCode1D(box.getFrozenBoxCode1D());
-            frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
+            frozenBox.frozenBoxCode(box.getFrozenBoxCode()).frozenBoxCode1D(box.getFrozenBoxCode1D()).status(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
             frozenBoxRepository.save(frozenBox);
             box.setId(frozenBox.getId());
             //保存出库盒
@@ -308,48 +307,45 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             //查询要出库的样本
             List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(taskId,frozenTubeIds,Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
             List<FrozenTube> frozenTubeList = new ArrayList<>();
-            List<FrozenBox> frozenBoxOldList = new ArrayList<>();
-
+            //出库的样本原来所在的冻存盒的ID，为了更改原来冻存盒内样本的数量
+            List<Long> stockOutFromBoxId = new ArrayList<>();
+            List<FrozenBox>  stockOutFromBoxList = new ArrayList<>();
             for(FrozenTubeDTO f: box.getFrozenTubeDTOS()){
                 for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){
                     if(f.getId().equals(s.getFrozenTube().getId())){
                         FrozenBox frozenBoxOld = s.getFrozenBox();
-                        FrozenBox frozenBoxInOldList = frozenBoxOldList.stream().filter(b->b.getId()==frozenBoxOld.getId()).findFirst().orElse(null);
-                        if(frozenBoxInOldList==null){
-                            frozenBoxOld.countOfSample(frozenBoxOld.getCountOfSample()-1);
-                            frozenBoxOldList.add(frozenBoxOld);
-                        }else{
-                            frozenBoxInOldList.countOfSample(frozenBoxInOldList.getCountOfSample()-1);
-                            int position = frozenBoxOldList.indexOf(frozenBoxInOldList);
-                            frozenBoxOldList.remove(position);
-                            frozenBoxOldList.add(frozenBoxInOldList);
+                        if(!stockOutFromBoxId.contains(frozenBoxOld.getId())){
+                            stockOutFromBoxId.add(frozenBoxOld.getId());
+                            stockOutFromBoxList.add(frozenBoxOld);
                         }
-
-                        s.setStockOutFrozenBox(stockOutFrozenBox);
-                        s.setStatus(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
-                        s.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
-                        s.setTubeColumns(f.getTubeColumns());
-                        s.setTubeRows(f.getTubeRows());
-                        s.setFrozenBox(frozenBox);
-                        s.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-                        s.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
-
-                        FrozenTube frozenTube =s.getFrozenTube();
-                        frozenTube.setFrozenBox(frozenBox);
-                        frozenTube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-                        frozenTube.setTubeColumns(f.getTubeColumns());
-                        frozenTube.setTubeRows(f.getTubeRows());
-                        frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
+                        //更改出库样本所属的冻存盒，位置，状态
+                        s.stockOutFrozenBox(stockOutFrozenBox).status(Constants.STOCK_OUT_SAMPLE_WAITING_OUT)
+                            .frozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_PENDING).tubeColumns(f.getTubeColumns()).tubeRows(f.getTubeRows())
+                            .frozenBox(frozenBox).frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
+                        //更改样本所属的冻存盒以及盒内的位置
+                        FrozenTube frozenTube =s.getFrozenTube()
+                            .frozenBox(frozenBox).frozenBoxCode(frozenBox.getFrozenBoxCode()).tubeColumns(f.getTubeColumns()).tubeRows(f.getTubeRows()).frozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
                         frozenTubeList.add(frozenTube);
                     }
                 }
             }
             stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
             frozenTubeRepository.save(frozenTubeList);
-            frozenBoxRepository.save(frozenBoxOldList);
+
+            //更改出库样本原来所属的冻存盒的当前样本量
+            List<Object[]> countAllSampleByfrozenBoxIds =  frozenTubeRepository.countGroupByFrozenBoxId(stockOutFromBoxId);
+            for(FrozenBox boxFrom: stockOutFromBoxList){
+                Object[] obje = countAllSampleByfrozenBoxIds.stream().filter(s->Long.valueOf(s[0].toString()).equals(boxFrom.getId())).findFirst().orElse(null);
+                Integer count = obje!=null?Integer.valueOf(obje[1].toString()):0;
+                frozenBox.countOfSample(count);
+            }
+            frozenBoxRepository.save(stockOutFromBoxList);
+            //创建的新的出库冻存盒的样本数量
             Long countOfSample = frozenTubeRepository.countByFrozenBoxIdAndStatusNot(frozenBox.getId(),Constants.INVALID);
             frozenBox.countOfSample(countOfSample.intValue());
             frozenBoxRepository.save(frozenBox);
+            stockOutFrozenBox.countOfSample(countOfSample.intValue());
+            stockOutFrozenBoxRepository.save(stockOutFrozenBox);
         }
         return stockOutFrozenBoxMapper.stockOutFrozenBoxesToStockOutFrozenBoxDTOs(stockOutFrozenBoxs);
     }
@@ -392,13 +388,10 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             box.setSampleTypeName(frozenBox.getSampleTypeName());
             String position = BankUtil.getPositionString(f.getEquipmentCode(),f.getAreaCode(),f.getSupportRackCode(),f.getColumnsInShelf(),f.getRowsInShelf(),null,null);
             box.setPosition(position);
-            Long stockOutFrozenBoxId = f.getId();
-            Long count = stockOutReqFrozenTubeRepository.countByStockOutFrozenBoxId(stockOutFrozenBoxId);
-            box.setCountOfSample(count);
+            box.setCountOfSample(f.getCountOfSample()!=null?Long.valueOf(f.getCountOfSample()):0L);
             box.setMemo(f.getMemo());
             box.setStatus(f.getStatus());
-            StockOutHandover stockOutHandover = stockOutHandoverRepository.findByStockOutTaskIdAndstockOutBoxId(taskId,f.getId());
-            box.setStockOutHandoverTime(stockOutHandover!=null?stockOutHandover.getHandoverTime():null);
+            box.setStockOutHandoverTime(f.getHandoverTime());
             alist.add(box);
         }
         return alist;
@@ -417,8 +410,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         if(stockOutTask == null){
             throw new BankServiceException("出库任务不存在！");
         }
-        //验证负责人密码
-
+        //验证两个出库负责人密码
         Long loginId1 = stockOutTask.getStockOutHeadId1();
         Long loginId2 = stockOutTask.getStockOutHeadId2();
         if(loginId1 == null || loginId2 == null){
@@ -456,13 +448,10 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         List<StockOutFrozenBox> stockOutFrozenBoxes = stockOutFrozenBoxRepository.findByIdIn(frozenBoxIds);
         for(StockOutFrozenBox stockOutFrozenBox : stockOutFrozenBoxes){
             FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
+            Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByStockOutFrozenBoxId(stockOutFrozenBox.getId());
             //保存出库冻存盒
-            stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_COMPLETED);
-            stockOutFrozenBox.setFrozenBox(frozenBox);
-            stockOutFrozenBox.setEquipment(equipment);
-            stockOutFrozenBox.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
-            stockOutFrozenBox.setArea(area);
-            stockOutFrozenBox.setAreaCode(area!=null?area.getAreaCode():null);
+            stockOutFrozenBox.status(Constants.STOCK_OUT_FROZEN_BOX_COMPLETED).frozenBox(frozenBox).equipment(equipment)
+                .equipmentCode(equipment!=null?equipment.getEquipmentCode():null).area(area).areaCode(area!=null?area.getAreaCode():null);
             stockOutFrozenBox.frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
                 .sampleClassification(frozenBox.getSampleClassification())
                 .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)
@@ -471,39 +460,24 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
                 .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
                 .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
-                .projectSiteName(frozenBox.getProjectSiteName()).memo(frozenBox.getMemo());
+                .projectSiteName(frozenBox.getProjectSiteName()).memo(frozenBox.getMemo()).countOfSample(countOfStockOutSample.intValue());
             //保存冻存盒位置
-            StockOutBoxPosition stockOutBoxPosition = new StockOutBoxPosition();
-            stockOutBoxPosition.setStockOutFrozenBox(stockOutFrozenBox);
-            stockOutBoxPosition.setEquipment(equipment);
-            stockOutBoxPosition.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
-            stockOutBoxPosition.setArea(area);
-            stockOutBoxPosition.setAreaCode(area!=null?area.getAreaCode():null);
-            stockOutBoxPosition.setStatus(Constants.VALID);
+            StockOutBoxPosition stockOutBoxPosition = new StockOutBoxPosition()
+                .stockOutFrozenBox(stockOutFrozenBox).equipment(equipment).equipmentCode(equipment!=null?equipment.getEquipmentCode():null)
+                .area(area).areaCode(area!=null?area.getAreaCode():null).status(Constants.VALID);
             stockOutBoxPositionList.add(stockOutBoxPosition);
             //保存冻存盒的位置和状态
-            frozenBox.setEquipment(equipment);
-            frozenBox.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
-            frozenBox.setArea(area);
-            frozenBox.setAreaCode(area!=null?area.getAreaCode():null);
-            frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
+            frozenBox.equipment(equipment).equipmentCode(equipment!=null?equipment.getEquipmentCode():null)
+                .area(area).areaCode(area!=null?area.getAreaCode():null).status(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
             frozenBoxList.add(frozenBox);
         }
         stockOutFrozenBoxRepository.save(stockOutFrozenBoxes);
         stockOutBoxPositionRepository.save(stockOutBoxPositionList);
         frozenBoxRepository.save(frozenBoxList);
+        //查询出已经出库的样本
         List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxIdIn(frozenBoxIds);
-//       List<FrozenTube> frozenTubeList = new ArrayList<>();
-       List<Long> frozenTubeIds = new ArrayList<Long>();
-        for(StockOutReqFrozenTube s: stockOutReqFrozenTubes){
-            FrozenTube frozenTube = s.getFrozenTube();
-//            frozenTube.setSampleUsedTimes(frozenTube.getSampleUsedTimes()!=null?frozenTube.getSampleUsedTimes():0+1);
-//            frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
-//            s.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
-//            s.setStatus(Constants.STOCK_OUT_SAMPLE_COMPLETED);
-//            frozenTubeList.add(frozenTube);
-            frozenTubeIds.add(frozenTube.getId());
-        }
+
+        //更改出库样本状态为已出库
         List<List<Long>> frozenBoxs = Lists.partition(frozenBoxIds, 1000);
         for(List<Long> ids: frozenBoxs){
             StringBuffer sql = new StringBuffer();
@@ -515,35 +489,32 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             query.executeUpdate();
 
         }
-
+        //样本的ID集合
+        List<Long> frozenTubeIds = new ArrayList<Long>();
+        stockOutReqFrozenTubes.forEach(s->{
+            frozenTubeIds.add(s.getFrozenTube().getId());
+        });
+        for(StockOutReqFrozenTube s: stockOutReqFrozenTubes){
+            FrozenTube frozenTube = s.getFrozenTube();
+            frozenTubeIds.add(frozenTube.getId());
+        }
+        //更改样本状态为已出库
         List<List<Long>> frozenTubes = Lists.partition(frozenTubeIds, 1000);
         for(List<Long> ids: frozenTubes){
             StringBuffer sqlForTube = new StringBuffer();
             sqlForTube.append("update frozen_tube t set t.frozen_tube_state = ?1 where t.id in ?2");
-
             Query queryForTube = entityManager.createNativeQuery(sqlForTube.toString());
             queryForTube.setParameter("1", Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
             queryForTube.setParameter("2", ids);
             queryForTube.executeUpdate();
-
         }
 
-//        List<List<StockOutReqFrozenTube>> stockOutReqTubeList = Lists.partition(stockOutReqFrozenTubes, 1000);
-//        for(List<StockOutReqFrozenTube> f:stockOutReqTubeList){
-//            stockOutReqFrozenTubeRepository.save(f);
-//        }
-//        List<List<FrozenTube>> frozenTubes = Lists.partition(frozenTubeList, 1000);
-//        for(List<FrozenTube> f:frozenTubes){
-//            frozenTubeRepository.save(frozenTubeList);
-//        }
-
+        //任务未出库样本量
         List<String> statusList = new ArrayList<>();
         statusList.add(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
         statusList.add(Constants.STOCK_OUT_SAMPLE_COMPLETED);
-
-        //任务未出库样本量
         Long countOfTaskTube = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(taskId,statusList);
-        //如果任务内的
+        //如果任务内的样本量都出库了，任务状态为已完成，如果出库样本中有异常出库的样本为异常出库
         if(countOfTaskTube.intValue()==0) {
             //异常出库样本量
             Long abNormalTube = stockOutReqFrozenTubeRepository.countAbnormalTubeByStockOutTaskId(taskId);
@@ -553,12 +524,13 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutTask.setStatus(Constants.STOCK_OUT_TASK_COMPLETED);
         }
         stockOutTaskRepository.save(stockOutTask);
+
+        //未完成出库申请的冻存管数量
         List<String> statusList_ = new ArrayList<>();
         statusList_.add(Constants.STOCK_OUT_SAMPLE_IN_USE);
         statusList_.add(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
-
         Long countOfUnCompleteTask = stockOutReqFrozenTubeRepository.countUnCompleteSampleByStockOutApplyAndStatusIn(stockOutTask.getStockOutPlan().getStockOutApply().getId(),statusList_);
-       //未完成出库申请的冻存管数量
+       //如果此次申请的出库样本都出库了，计划更改为已完成的状态，申请和出库是一对一的关系。
         if(countOfUnCompleteTask.intValue()==0){
             StockOutPlan stockOutPlan = stockOutTask.getStockOutPlan();
             stockOutPlan.setStatus(Constants.STOCK_OUT_PLAN_COMPLETED);

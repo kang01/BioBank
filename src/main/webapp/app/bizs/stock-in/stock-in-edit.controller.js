@@ -1397,12 +1397,13 @@
             //绘制新管子集合，并且把盒子中已有管子放入这个管子集合
             _fnDrawSplitTube(rowCount,colCount);
             //显示盒子详情
-            vm.stockInFrozenTubeList1 = _.each(vm.obox.stockInFrozenTubeList, function(t){ t.tubeColumns = +t.tubeColumns});
+            vm.frozenBox = vm.obox;
+            vm.frozenBox.stockInFrozenTubeList1 = _.each(vm.obox.stockInFrozenTubeList, function(t){ t.tubeColumns = +t.tubeColumns});
             vm.boxDetailFlag = true;
         };
         //关闭未满冻存盒详情
         vm.closeBoxDesc = function () {
-            vm.stockInFrozenTubeList1 = [];
+            vm.frozenBox.stockInFrozenTubeList1 = [];
             vm.frozenBoxCode = "";
             //关闭盒子详情
             vm.boxDetailFlag = false;
@@ -1588,7 +1589,7 @@
             //绘制新管子集合，并且把盒子中已有管子放入这个管子集合
             _fnDrawSplitTube(rowCount,colCount);
 
-            vm.stockInFrozenTubeList1 = _.each(vm.obox.stockInFrozenTubeList, function(t){ t.tubeColumns = +t.tubeColumns});
+            vm.frozenBox.stockInFrozenTubeList1 = _.each(vm.obox.stockInFrozenTubeList, function(t){ t.tubeColumns = +t.tubeColumns});
             //     for(var i = 0; i < vm.boxList.length; i++){
             //         if(obox.sampleClassification.id == vm.boxList[i].sampleClassification.id){
             //             if(vm.boxList.length > 1){
@@ -1768,7 +1769,7 @@
             saveBoxList = [];
             vm.frozenBoxCode = "";
             //盒子详情
-            vm.stockInFrozenTubeList1 = [];
+            vm.frozenBox.stockInFrozenTubeList1 = [];
             vm.boxDetailFlag = false;
             $(".box-selected").removeClass("box-selected");
         }
@@ -1977,7 +1978,7 @@
             saveBoxList = [];
             vm.frozenBoxCode = "";
             //盒子详情
-            vm.stockInFrozenTubeList1 = [];
+            vm.frozenBox.stockInFrozenTubeList1 = [];
             vm.boxDetailFlag = false;
             $(".box-selected").removeClass("box-selected");
 

@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.StockOutRequirement;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.StockOutApplyDetail;
 import org.fwoxford.service.dto.response.StockOutApplyForApprove;
@@ -95,4 +96,18 @@ public interface StockOutApplyService {
      * @return
      */
     List<StockOutApplyDTO> findAllStockOutApplyListOfApproved();
+
+    /**
+     * 根据需求构造
+     * @param stockOutRequirements
+     * @return
+     */
+    StockOutRequirementForApplyTable stockOutRequirementToStockOutRequirementForApplyTable(StockOutRequirement stockOutRequirements);
+
+    /**
+     * 根据二级申请ID，取上一级出库申请
+     * @param id
+     * @return
+     */
+    List<StockOutApplyForDataTableEntity> getLastStockOutApplyList(Long id);
 }

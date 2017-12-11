@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import net.sf.json.JSONObject;
 import org.fwoxford.domain.StockOutRequiredSample;
 import org.fwoxford.domain.StockOutRequirement;
 import org.fwoxford.service.dto.StockOutReqFrozenTubeDTO;
@@ -47,4 +48,6 @@ public interface StockOutReqFrozenTubeService {
     String checkStockOutSampleByAppointedSample(List<StockOutRequiredSampleDTO> stockOutRequiredSamples, StockOutRequirement stockOutRequirement);
 
     String checkStockOutSampleByRequirement(StockOutRequirement stockOutRequirement);
+
+    String checkStockOutSampleByAppointedSampleOrAppointedBox(List<JSONObject> jsonArray, StockOutRequirement stockOutRequirement);
 }

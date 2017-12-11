@@ -265,6 +265,10 @@
             TaskService.queryTubes(boxCode,vm.taskId).success(function (data) {
                 frozenBox = data;
                 vm.frozenTubeDTOS = frozenBox.frozenTubeDTOS;
+                var len = _.filter(frozenBox.frozenTubeDTOS,{stockOutFlag:1}).length;
+                //更新左侧列表中冻存盒列表中的样本量
+                _.find(vm.stockOutbox,{"frozenBoxCode":frozenBox.frozenBoxCode}).countOfSample = len;
+                vm.boxOptions.withOption('data', vm.stockOutbox);
                 _reloadTubesForTable(frozenBox);
             }).error(function (data) {
 
@@ -699,10 +703,6 @@
                 var boxCode = vm.box.frozenBoxCode;
                 TaskService.repeal(vm.taskId,repealList).success(function (data) {
                     toastr.success("申请撤销样本成功!");
-                    //更新左侧列表中冻存盒列表中的样本量
-                    _.find(vm.stockOutbox,{"frozenBoxCode":vm.box.frozenBoxCode}).countOfSample -= repealList.length;
-                    vm.boxOptions.withOption('data', vm.stockOutbox);
-
                     _fnLoadTubes(boxCode);
                     vm.box.frozenBoxCode =boxCode;
                 });

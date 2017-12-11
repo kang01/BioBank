@@ -153,12 +153,20 @@
                 {id:"1103",name:"已批准"},
                 {id:"1190",name:"已作废"}
             ];
+            //计划状态
+            var _planStatus = [
+                {id:"1401",name:"进行中"},
+                {id:"1402",name:"已完成"},
+                {id:"1403",name:"已撤销"},
+                {id:"1490",name:"已作废"}
+            ];
             //任务状态
             var _taskStatus = [
                 {id:"1601",name:"待出库"},
                 {id:"1602",name:"进行中"},
                 {id:"1603",name:"已出库"},
                 {id:"1604",name:"异常出库"},
+                {id:"1605",name:"已撤销"},
                 {id:"1690",name:"已作废"}
             ];
             //交接状态
@@ -209,7 +217,8 @@
                         _takeOverStatus,
                         _stockOutTaskBoxStatus,
                         _frozenBoxStatus,
-                        _frozenTubeStatus
+                        _frozenTubeStatus,
+                        _planStatus
                     );
                 }
 

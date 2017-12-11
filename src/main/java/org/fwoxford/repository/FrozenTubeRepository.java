@@ -44,7 +44,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     @Query(value = "SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt " +
         " WHERE rt.STATUS in ('"+Constants.STOCK_OUT_SAMPLE_IN_USE+"','"+Constants.STOCK_OUT_SAMPLE_WAITING_OUT+"')",nativeQuery = true)
-    List<Object[]> findAllStockOutFrozenTube();
+    List<Object> findAllStockOutFrozenTube();
 
     @Query(value = "select t.* from frozen_tube t " +
         "  LEFT OUTER JOIN ( " +
@@ -120,7 +120,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     FrozenTube findBySampleCodeAndSampleTypeCode(String sampleCode, String sampleTypeCode);
 
-    @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '"+Constants.FROZEN_BOX_STOCKED+"' and t.status='"+Constants.FROZEN_TUBE_NORMAL+"'" +
+    @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '"+Constants.FROZEN_BOX_STOCKED+"' and t.status!='"+Constants.INVALID+"'" +
         " and (t.sample_code in ?3" +
         " or t.sample_code in ?4" +
         " or t.sample_code in ?5" +
@@ -150,7 +150,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     List<FrozenTube> findByFrozenBoxCodeAndFrozenTubeState(String frozenBoxCode, String frozenTubeState);
 
-    @Query(value = "select t.sample_code,t.sample_type_code from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id " +
+    @Query(value = "select t.sample_code,t.sample_type_code,b.id from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id " +
         " where (b.frozen_box_code_1d in ?1 " +
         " or b.frozen_box_code in ?1)" +
         "and t.sample_type_code = ?2 and t.frozen_tube_state = '"+ Constants.FROZEN_BOX_STOCKED+"' ",nativeQuery = true)
@@ -192,4 +192,30 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Modifying
     @Query("update FrozenTube b set b.status='"+Constants.INVALID+"' where b.id not in ?1 and b.frozenTubeState in ('"+Constants.FROZEN_BOX_NEW+"','"+Constants.FROZEN_BOX_STOCKING+"') and b.frozenBox.id = ?2")
     void updateStatusByNotInAndFrozenTubeStateAndFrozenBox(List<Long> frozenTubeIdsOld, Long frozenBoxId);
+
+    @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '"+Constants.FROZEN_BOX_STOCKED+"' " +
+        " and t.status!='"+Constants.INVALID+"'" +
+        " and (t.sample_code in ?3" +
+        " or t.sample_code in ?4" +
+        " or t.sample_code in ?5" +
+        " or t.sample_code in ?6" +
+        " or t.sample_code in ?7" +
+        " or t.sample_code in ?8" +
+        " or t.sample_code in ?9" +
+        " or t.sample_code in ?10" +
+        " or t.sample_code in ?11" +
+        " or t.sample_code in ?12" +
+        " ) " +
+        " and t.project_id in ?2 and t.sample_type_code = ?1 " +
+        " and (?13 = 0  or t.frozen_box_id = ?13)"
+        ,nativeQuery = true)
+    List<FrozenTube> findBySampleTypeCodeAndProjectInAndSampleCodeInAndFrozenBoxId(
+        String sampleType, List<Long> projectIds, List<String> strings, List<String> strings1, List<String> strings2, List<String> strings3,
+        List<String> strings4, List<String> strings5,List<String> strings6, List<String> strings7, List<String> strings8, List<String> strings9,Long frozenBoxId);
+
+    @Query(value = "select t.* from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id " +
+        " where t.frozen_tube_state = '"+ Constants.FROZEN_BOX_STOCKED+"' and  t.sample_type_code = ?2  and (b.frozen_box_code_1d in ?1 " +
+        " or b.frozen_box_code in ?1)" +
+        "and t.project_id in ?3 ",nativeQuery = true)
+    List<FrozenTube> findByFrozenBoxCode1DInOrFrozenBoxCodeInAndSampleTypeAndProjectIdsIn(List<String> code, String type, List<Long> projectIds);
 }

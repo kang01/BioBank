@@ -147,7 +147,7 @@ public class StockOutTaskFrozenTubeResource {
             .body(result);
     }
     /**
-     * 撤销保存
+     * 撤销出库保存
      * @param frozenTubeDTOS
      * @return
      * @throws URISyntaxException

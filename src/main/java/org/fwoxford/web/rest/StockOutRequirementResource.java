@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import net.sf.json.JSONObject;
 import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.response.StockOutRequirementForApply;
+import org.fwoxford.service.dto.response.StockOutRequirementForApplyTable;
 import org.fwoxford.service.dto.response.StockOutRequirementFrozenTubeDetail;
 import org.fwoxford.service.dto.response.StockOutRequirementSampleDetail;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -227,9 +228,9 @@ public class StockOutRequirementResource {
      */
     @RequestMapping(value = "/stock-out-requirements/{id}/check",method = RequestMethod.POST)
     @Timed
-    public ResponseEntity<StockOutRequirementForApply> checkStockOutRequirement(@PathVariable Long id) throws URISyntaxException {
+    public ResponseEntity<StockOutRequirementForApplyTable> checkStockOutRequirement(@PathVariable Long id) throws URISyntaxException {
         log.debug("REST request to check StockOutRequirement : {}", id);
-        StockOutRequirementForApply result = stockOutRequirementService.checkStockOutRequirement(id);
+        StockOutRequirementForApplyTable result = stockOutRequirementService.checkStockOutRequirement(id);
         return ResponseEntity.created(new URI("/api/stock-out-requirements/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -256,9 +257,9 @@ public class StockOutRequirementResource {
      */
     @PutMapping("/stock-out-requirements/revert/{id}")
     @Timed
-    public ResponseEntity<StockOutRequirementForApply> revertStockOutRequirement(@PathVariable Long id) throws URISyntaxException {
+    public ResponseEntity<StockOutRequirementForApplyTable> revertStockOutRequirement(@PathVariable Long id) throws URISyntaxException {
         log.debug("REST request to revert StockOutRequirement : {}", id);
-        StockOutRequirementForApply result = stockOutRequirementService.revertStockOutRequirement(id);
+        StockOutRequirementForApplyTable result = stockOutRequirementService.revertStockOutRequirement(id);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, id.toString()))
             .body(result);
@@ -272,10 +273,10 @@ public class StockOutRequirementResource {
      */
     @RequestMapping(value = "/stock-out-requirements/check/{ids}",method = RequestMethod.POST)
     @Timed
-    public ResponseEntity<Void> batchCheckStockOutRequirement(@PathVariable List<Long> ids) throws URISyntaxException {
+    public ResponseEntity<List<StockOutRequirementForApplyTable>> batchCheckStockOutRequirement(@PathVariable List<Long> ids) throws URISyntaxException {
         log.debug("REST request to check StockOutRequirement : {}", ids);
-        stockOutRequirementService.batchCheckStockOutRequirement(ids);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, ids.toString())).build();
+        List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = stockOutRequirementService.batchCheckStockOutRequirement(ids);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockOutRequirementForApplyTables.toString())).body(stockOutRequirementForApplyTables);
     }
 
     /**
@@ -303,6 +304,12 @@ public class StockOutRequirementResource {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * 根据申请需求需求列表
+     * @param input
+     * @param id
+     * @return
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-requirements/getCheckDetail/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutRequirementFrozenTubeDetail> getPageStockIn(@RequestBody DataTablesInput input, @PathVariable Long id) {

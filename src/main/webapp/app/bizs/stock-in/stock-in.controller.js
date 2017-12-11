@@ -93,7 +93,7 @@
             }
         }
         function _fnCreatedRow(row, data, dataIndex) {
-            var transportCodes = _.replace(data.transhipCode, /,/g, ', ');
+            // var transportCodes = _.replace(data.transhipCode, /,/g, ', ');
 
             var status = '';
             switch (data.status){
@@ -101,10 +101,10 @@
                 case '7002': status = '已入库'; break;
                 case '7090': status = '已作废'; break;
             }
-            if(data.projectSiteCode == "null"){
-                $('td:eq(2)', row).html("");
-            }
-            $('td:eq(1)', row).html(transportCodes);
+            // if(data.projectSiteCode == "null"){
+            //     $('td:eq(2)', row).html("");
+            // }
+            // $('td:eq(1)', row).html(transportCodes);
             if(data.storeKeeper2){
                 $("td:eq(6)", row).text([data.storeKeeper1, data.storeKeeper2].join(";"));
             }
@@ -143,7 +143,18 @@
 
 
         }
+        function _fnTransportRowRender(data, type, full, meta) {
+            var transportCode = full.transhipCode ? full.transhipCode : "";
 
+            var html = "<div class='transport-code text-ellipsis' title='"+transportCode+"'>"+transportCode+"</div>";
+            $(html).css({"width":"500px"});
+            return html;
+        }
+        function _fnSiteRowRender(data, type, full, meta) {
+            var projectSiteCode = full.projectSiteCode ? full.projectSiteCode : "";
+            var html = "<div class='text-ellipsis' style='width: 100px' title='"+projectSiteCode+"'>"+projectSiteCode+"</div>";
+            return html;
+        }
         function _createColumnFilters(){
             var filters = {
                 aoColumns: [
@@ -174,12 +185,12 @@
         function _createColumns(){
             var columns = [
                 DTColumnBuilder.newColumn('stockInCode').withTitle('入库编码').withOption('width','100'),
-                DTColumnBuilder.newColumn('transhipCode').withTitle('转运编码').withOption('width','auto'),
-                DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点').withOption('width','70'),
+                DTColumnBuilder.newColumn('transhipCode').withTitle('转运编码').withOption('width','auto').renderWith(_fnTransportRowRender),
+                DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点').withOption('width','70').renderWith(_fnSiteRowRender),
                 DTColumnBuilder.newColumn('projectCode').withTitle('项目编号').withOption('width','90'),
-                DTColumnBuilder.newColumn('recordDate').withTitle('创建日期').withOption('width','90'),
-                DTColumnBuilder.newColumn('stockInDate').withTitle('入库日期').withOption('width','90'),
-                DTColumnBuilder.newColumn('storeKeeper1').withTitle('库管员').withOption('width','100'),
+                DTColumnBuilder.newColumn('recordDate').withTitle('创建日期').withOption('width','110'),
+                DTColumnBuilder.newColumn('stockInDate').withTitle('入库日期').withOption('width','110'),
+                DTColumnBuilder.newColumn('storeKeeper1').withTitle('库管员').withOption('width','160'),
                 DTColumnBuilder.newColumn('countOfSample').withTitle('样本数量').withOption('width','80'),
                 DTColumnBuilder.newColumn('countOfBox').withTitle('冻存盒数量').withOption('width','100'),
                 DTColumnBuilder.newColumn('status').withTitle('状态').withOption('width','80'),

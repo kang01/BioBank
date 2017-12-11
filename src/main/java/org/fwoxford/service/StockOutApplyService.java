@@ -94,4 +94,11 @@ public interface StockOutApplyService {
      * @return
      */
     StockOutRequirementForApplyTable stockOutRequirementToStockOutRequirementForApplyTable(StockOutRequirement stockOutRequirements);
+
+    /**
+     * 根据二级申请ID，取上一级出库申请
+     * @param id
+     * @return
+     */
+    List<StockOutApplyForDataTableEntity> getLastStockOutApplyList(Long id);
 }

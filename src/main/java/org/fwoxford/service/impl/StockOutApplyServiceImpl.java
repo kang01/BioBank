@@ -14,6 +14,7 @@ import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -151,17 +152,22 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         stockOutApplyRepository.delete(id);
     }
 
+    /**
+     * 出库申请列表查询
+     * @param input
+     * @return
+     */
     @Override
     public DataTablesOutput<StockOutApplyForDataTableEntity> findStockOutApply(DataTablesInput input) {
         DataTablesOutput<StockOutApplyForDataTableEntity> output = stockOutApplyRepositries.findAll(input);
         List<StockOutApplyForDataTableEntity> alist = new ArrayList<StockOutApplyForDataTableEntity>();
         output.getData().forEach(apply ->{
             StockOutApplyForDataTableEntity applyData = new StockOutApplyForDataTableEntity();
-            Long CountOfextLevel = stockOutApplyRepository.countByParentApplyId(apply.getId());
-            if(CountOfextLevel.intValue()>0){
+//            Long CountOfextLevel = stockOutApplyRepository.countByParentApplyId(apply.getId());
+            if(apply.getParentApplyId()==null){
                 applyData.setLevelNo(Constants.LEVEL_ONE);
             }else{
-                applyData.setLevelNo(apply.getLevelNo());
+                applyData.setLevelNo(Constants.LEVEL_TWO);
             }
             applyData.setId(apply.getId());
             String sampleTypes = apply.getSampleTypes();
@@ -271,7 +277,20 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     @Override
     public List<StockOutApplyForDataTableEntity> getNextStockOutApplyList(Long id) {
         List<StockOutApplyForDataTableEntity> stockOutApplyForDataTableEntities= stockOutApplyRepositries.findByParentApplyId(id);
-        return stockOutApplyForDataTableEntities;
+
+        List<StockOutApplyForDataTableEntity> stockOutApplyForDataTableEntitiesForResponse = new ArrayList<StockOutApplyForDataTableEntity>();
+
+        stockOutApplyForDataTableEntities.forEach(s->{
+            StockOutApplyForDataTableEntity stockOutApplyForDataTableEntity = new StockOutApplyForDataTableEntity();
+            BeanUtils.copyProperties(s,stockOutApplyForDataTableEntity);
+            if(s.getParentApplyId()==null){
+                stockOutApplyForDataTableEntity.setLevelNo(Constants.LEVEL_ONE);
+            }else{
+                stockOutApplyForDataTableEntity.setLevelNo(Constants.LEVEL_TWO);
+            }
+            stockOutApplyForDataTableEntitiesForResponse.add(stockOutApplyForDataTableEntity);
+        });
+        return stockOutApplyForDataTableEntitiesForResponse;
     }
 
     @Override
@@ -359,6 +378,39 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             stockOutRequirementForApplyTable.setAge(requirement.getAgeMin()+"-"+requirement.getAgeMax()+"岁");
         }
         return stockOutRequirementForApplyTable;
+    }
+
+    /**
+     * 根据二级申请ID，取上一级出库申请
+     * @param id
+     * @return
+     */
+    @Override
+    public List<StockOutApplyForDataTableEntity> getLastStockOutApplyList(Long id) {
+        if(id == null){
+            throw new BankServiceException("请传入有效的二级申请ID！");
+        }
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
+        if(stockOutApply == null){
+            throw new BankServiceException("申请查询失败！");
+        }
+        if(stockOutApply.getParentApplyId() == null){
+            throw new BankServiceException("该申请不是二级申请，没有上一级申请！");
+        }
+        StockOutApplyForDataTableEntity stockOutApplyForParent = stockOutApplyRepositries.findOne(stockOutApply.getParentApplyId());
+        if(stockOutApplyForParent == null){
+            throw new BankServiceException("上一级申请查询失败！");
+        }
+        List<StockOutApplyForDataTableEntity> stockOutApplyForDataTableEntities = new ArrayList<StockOutApplyForDataTableEntity>();
+        StockOutApplyForDataTableEntity stockOutApplyForDataTableEntity = new StockOutApplyForDataTableEntity();
+        BeanUtils.copyProperties(stockOutApplyForParent,stockOutApplyForDataTableEntity);
+        if(stockOutApplyForParent.getParentApplyId()==null){
+            stockOutApplyForDataTableEntity.setLevelNo(Constants.LEVEL_ONE);
+        }else{
+            stockOutApplyForDataTableEntity.setLevelNo(Constants.LEVEL_TWO);
+        }
+        stockOutApplyForDataTableEntities.add(stockOutApplyForDataTableEntity);
+        return stockOutApplyForDataTableEntities;
     }
 
     /**

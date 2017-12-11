@@ -193,6 +193,11 @@
                 }else{
                     vm.selected[full.id] = false;
                 }
+                if(vm.selectedLen == vm.boxData.length){
+                    vm.selectAll = true;
+                }else{
+                    vm.selectAll = false;
+                }
                 var html = '';
                 html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
                 return html;
@@ -485,8 +490,8 @@
                         boxIdArray.push(vm.boxData[index-1].id);
                     }
                 }
-                vm.dtInstance.rerender();
                 vm.selectedLen = selectedBox.length;
+                vm.dtInstance.rerender();
                 vm.selectedOptions.withOption('data', selectedBox);
                 vm.strBoxIds = _.join(boxIdArray,",");
 

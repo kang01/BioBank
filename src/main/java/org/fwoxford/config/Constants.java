@@ -351,6 +351,12 @@ public final class Constants {
         put(FROZEN_BOX_DESTROY,"已销毁");
     }};
 
+    /**
+     * 接收类型：01 ：项目点； 02：出库归还
+     */
+    public static final String RECEIVE_TYPE_PROJECT_SITE = "01";
+    public static final String RECEIVE_TYPE_RETURN_BACK = "02";
+
     private Constants() {
     }
 

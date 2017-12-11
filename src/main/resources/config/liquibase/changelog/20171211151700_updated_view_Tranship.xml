@@ -6,10 +6,13 @@
     <!--
         Added the view for entity TranshipResponse.
     -->
-    <changeSet id="20170522000000-2" author="jhipster">
+    <changeSet id="20171211151700-1" author="jhipster">
+        <dropView viewName="view_tranship"></dropView>
+    </changeSet>
 
+    <changeSet id="20171211151700-2" author="jhipster">
         <createView viewName="view_tranship">
-            select
+            SELECT
             t.id,
             t.tranship_code,
             t.project_code,
@@ -18,8 +21,9 @@
             TO_CHAR(t.receive_date,'yyyy-MM-dd') as receive_date,
             t.tranship_state,
             t.sample_satisfaction,t.track_number,
-            (select u.last_name||u.first_name from jhi_user u where u.id=t.receiver_id) as receiver
-            from  tranship t
+            (select u.last_name||u.first_name from jhi_user u where u.id=t.receiver_id) as receiver,
+            receive_type
+            FROM  tranship t
         </createView>
     </changeSet>
 

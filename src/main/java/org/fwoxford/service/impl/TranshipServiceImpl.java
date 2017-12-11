@@ -344,8 +344,9 @@ public class TranshipServiceImpl implements TranshipService{
      * @return
      */
     @Override
-    public DataTablesOutput<TranshipResponse> findAllTranship(DataTablesInput input) {
+    public DataTablesOutput<TranshipResponse> findAllTranship(DataTablesInput input ,String receiveType) {
         //获取转运列表
+        input.addColumn("receiveType",true,true,"+"+receiveType);
         DataTablesOutput<TranshipResponse> transhipDataTablesOutput =  transhipRepositries.findAll(input);
         return transhipDataTablesOutput;
     }

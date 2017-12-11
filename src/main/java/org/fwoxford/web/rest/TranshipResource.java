@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
 import net.sf.json.JSONObject;
+import org.fwoxford.config.Constants;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.AttachmentDTO;
 import org.fwoxford.service.dto.response.StockInForDataDetail;
@@ -125,7 +126,7 @@ public class TranshipResource {
         });
         input.addColumn("id",true,true,null);
         input.addOrder("id",true);
-        DataTablesOutput<TranshipResponse> transhipsTablesOutput = transhipService.findAllTranship(input);
+        DataTablesOutput<TranshipResponse> transhipsTablesOutput = transhipService.findAllTranship(input, Constants.RECEIVE_TYPE_PROJECT_SITE);
         return transhipsTablesOutput;
     }
 
@@ -245,5 +246,24 @@ public class TranshipResource {
         return ResponseEntity.created(new URI("/res/api/tranships/" + transhipId))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    /**
+     * 归还记录列表
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/return-back", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<TranshipResponse> getPageTranshipForReturnBack(@RequestBody DataTablesInput input) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
+        DataTablesOutput<TranshipResponse> transhipsTablesOutput = transhipService.findAllTranship(input, Constants.RECEIVE_TYPE_RETURN_BACK);
+        return transhipsTablesOutput;
     }
 }

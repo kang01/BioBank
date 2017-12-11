@@ -334,4 +334,17 @@ public class StockOutApplyResource {
         List<StockOutApplyDTO> result = stockOutApplyService.findAllStockOutApplyListOfApproved();
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
+
+    /**
+     * 根据申请编码获取申请详细信息
+     * @param applyCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/applyCode/{applyCode}")
+    @Timed
+    public ResponseEntity<StockOutApplyDTO> getByStockOutCode(@PathVariable String applyCode) throws URISyntaxException {
+        StockOutApplyDTO result = stockOutApplyService.findStockOutApplyByApplyCode(applyCode);
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
 }

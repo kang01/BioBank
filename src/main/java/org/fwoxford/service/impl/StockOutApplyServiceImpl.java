@@ -1,6 +1,5 @@
 package org.fwoxford.service.impl;
 
-import oracle.jdbc.driver.Const;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -24,6 +23,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
@@ -736,5 +736,34 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     public List<StockOutApplyDTO> findAllStockOutApplyListOfApproved() {
         List<StockOutApply> stockOutApplies = stockOutApplyRepository.findByStatus(Constants.STOCK_OUT_APPROVED);
         return stockOutApplyMapper.stockOutAppliesToStockOutApplyDTOs(stockOutApplies);
+    }
+
+    /**
+     * 根据申请编码获取申请详细信息
+     * @param applyCode
+     * @return
+     */
+    @Override
+    public StockOutApplyDTO findStockOutApplyByApplyCode(String applyCode) {
+        if(StringUtils.isEmpty(applyCode)){
+            throw new BankServiceException("请传入有效的申请编码！");
+        }
+        StockOutApply stockOutApply = stockOutApplyRepository.findByApplyCode(applyCode);
+        if(stockOutApply == null){
+            throw new BankServiceException("未查询到申请信息！");
+        }
+        if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVED)){
+            throw new BankServiceException("申请未批准！");
+        }
+        StockOutApplyDTO stockOutApplyDTO =  stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
+        stockOutApplyDTO.setDelegateName(stockOutApply.getDelegate().getDelegateName());
+        Long checkTypeId = stockOutApplyDTO.getCheckTypeId();
+        if(checkTypeId != null){
+            CheckType checkType = checkTypeRepository.findByIdAndStatus(checkTypeId,Constants.VALID);
+            if(checkType!=null){
+                stockOutApplyDTO.setCheckTypeName(checkType.getCheckTypeName());
+            }
+        }
+        return stockOutApplyDTO;
     }
 }

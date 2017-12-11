@@ -61,6 +61,7 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
      */
     private Long delegateId;
 
+
     private String invalidReason;
 
     public Long getId() {
@@ -221,6 +222,8 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
             ", countOfStockSample='" + countOfStockSample + "'" +
             ", countOfHandOverSample='" + countOfHandOverSample + "'" +
             ", checkTypeId='" + checkTypeId + "'" +
+            ", delegateName='" + delegateName + "'" +
+            ", checkTypeName='" + checkTypeName + "'" +
             '}';
     }
     private Integer countOfStockSample;
@@ -249,5 +252,27 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setCheckTypeId(Long checkTypeId) {
         this.checkTypeId = checkTypeId;
+    }
+
+    /**
+     * 委托方名称
+     */
+    private String delegateName;
+    private String checkTypeName;
+
+    public String getDelegateName() {
+        return delegateName;
+    }
+
+    public void setDelegateName(String delegateName) {
+        this.delegateName = delegateName;
+    }
+
+    public String getCheckTypeName() {
+        return checkTypeName;
+    }
+
+    public void setCheckTypeName(String checkTypeName) {
+        this.checkTypeName = checkTypeName;
     }
 }

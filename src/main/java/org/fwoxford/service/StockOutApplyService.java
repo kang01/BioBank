@@ -2,10 +2,7 @@ package org.fwoxford.service;
 
 import org.fwoxford.domain.StockOutRequirement;
 import org.fwoxford.service.dto.StockOutApplyDTO;
-import org.fwoxford.service.dto.response.StockOutApplyDetail;
-import org.fwoxford.service.dto.response.StockOutApplyForApprove;
-import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
-import org.fwoxford.service.dto.response.StockOutApplyForSave;
+import org.fwoxford.service.dto.response.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -110,4 +107,11 @@ public interface StockOutApplyService {
      * @return
      */
     List<StockOutApplyForDataTableEntity> getLastStockOutApplyList(Long id);
+
+    /**
+     * 根据申请编码获取申请详细信息
+     * @param applyCode
+     * @return
+     */
+    StockOutApplyDTO findStockOutApplyByApplyCode(String applyCode);
 }

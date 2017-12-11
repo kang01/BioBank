@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('PlanListController', PlanListController);
 
-    PlanListController.$inject = ['$scope','$compile','$state','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankDataTable'];
+    PlanListController.$inject = ['$scope','$compile','$state','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankDataTable','MasterData'];
 
-    function PlanListController($scope,$compile,$state,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankDataTable) {
+    function PlanListController($scope,$compile,$state,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankDataTable,MasterData) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.add = _fnAdd;
@@ -116,12 +116,7 @@
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         function createdRow(row, data, dataIndex) {
-            var planStatus = '';
-            switch (data.status){
-                case '1401': planStatus = '进行中';break;
-                case '1402': planStatus = '已完成';break;
-                case '1490': planStatus = '已作废';break;
-            }
+            var planStatus = MasterData.getStatus(data.status);
             $('td:eq(6)', row).html(planStatus);
             $compile(angular.element(row).contents())($scope);
         }

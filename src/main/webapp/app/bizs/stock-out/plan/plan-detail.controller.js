@@ -10,9 +10,9 @@
         .controller('PlanDetailController', PlanDetailController)
         .controller('PlanDelModalController', PlanDelModalController);
 
-    PlanDetailController.$inject = ['$scope','$compile','$state','$stateParams','toastr','$uibModal','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankBlockUi','BioBankDataTable'];
+    PlanDetailController.$inject = ['$scope','$compile','$state','$stateParams','toastr','$uibModal','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankBlockUi','BioBankDataTable','MasterData'];
     PlanDelModalController.$inject = ['$uibModalInstance'];
-    function PlanDetailController($scope,$compile,$state,$stateParams,toastr,$uibModal,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankBlockUi,BioBankDataTable) {
+    function PlanDetailController($scope,$compile,$state,$stateParams,toastr,$uibModal,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankBlockUi,BioBankDataTable,MasterData) {
         var vm = this;
         var modalInstance;
         vm.dtInstance = {};
@@ -240,13 +240,7 @@
             //管子列表
             vm.tubeOptions = BioBankDataTable.buildDTOption("BASIC", 300)
                 .withOption('createdRow', function(row, data, dataIndex) {
-                    var status = '';
-                    switch (data.status){
-                        case '3001': status = '正常';break;
-                        case '3002': status = '空管';break;
-                        case '3003': status = '空孔';break;
-                        case '3004': status = '异常';break;
-                    }
+                    var status = MasterData.getStatus(data.status);
                     $('td:eq(1)', row).html(status);
                     $compile(angular.element(row).contents())($scope);
                 });
@@ -327,14 +321,7 @@
         ];
 
         function createdRow(row, data, dataIndex) {
-            var status = '';
-            switch (data.status){
-                case '1601': status = '待出库';break;
-                case '1602': status = '进行中';break;
-                case '1603': status = '已出库';break;
-                case '1604': status = '异常出库';break;
-                case '1690': status = '已作废';break;
-            }
+            var status = MasterData.getStatus(data.status);
             $('td:eq(1)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }

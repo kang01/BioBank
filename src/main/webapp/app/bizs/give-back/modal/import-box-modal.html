@@ -3,7 +3,7 @@
     <h3 class="modal-title" id="modal-title">导入冻存盒</h3>
 </div>
 <div class="modal-body import-box-modal-body" id="modal-body">
-    <div style="height: 400px;">
+    <div>
         <div class="row form-horizontal">
             <div class="col-md-3">
                 <div class="form-group">
@@ -25,24 +25,24 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-2 import-box-input">
-                <div class="panel panel-default">
+            <div class="col-md-2 import-box-select">
+                <div class="panel panel-default mb-0">
                     <div class="panel-heading">
                         <h4>导入冻存盒</h4>
                     </div>
-                    <div class="panel-body" style="padding: 0">
+                    <div class="panel-body" style="padding: 0;">
                         <selectize placeholder='' options='vm.myOptions' config="vm.boxCodeConfig"
                                    ng-model="vm.arrayBoxCode" ng-disabled='disable' required='true'
                         ></selectize>
                     </div>
                 </div>
             </div>
-            <div class="col-md-10">
-                <div class="panel panel-default">
+            <div class="col-md-10 pl-0">
+                <div class="panel panel-default mb-0">
                     <div class="panel-heading">
                         <h4>冻存盒详情</h4>
                     </div>
-                    <div class="panel-body no-padding" style="padding: 0">
+                    <div class="panel-body pt-6 p-0">
                         <table datatable="ng" dt-options="vm.dtOptions" dt-columns="vm.dtColumns"  class="table table-striped table-bordered">
                     <thead>
                     <th>冻存盒号</th>
@@ -54,7 +54,7 @@
                     <th>操作</th>
                     </thead>
                     <tbody >
-                    <tr ng-repeat="item in vm.obox.frozenBoxDTOList" ng-if="item">
+                    <tr ng-repeat="item in vm.boxList" ng-if="item">
                         <td><span ng-class="{'red-color': item.isRepeat == 1}">{{item.frozenBoxCode}}</span></td>
                         <td>{{item.frozenBoxCode1D}}</td>
                         <td>

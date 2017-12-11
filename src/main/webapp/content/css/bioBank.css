@@ -716,6 +716,9 @@ table.dataTable tfoot th, table.dataTable tfoot td {
 .import-box-modal-body .import-box-input .selectize-input {
     height: 288px;
 }
+.import-box-modal-body .import-box-select .selectize-input {
+    height: 336px;
+}
 .batch-box-modal-body .import-box-input .selectize-input {
     height: 304px;
 }
@@ -805,7 +808,10 @@ tr.shown td .details-control {
 .no-padding .dataTables_wrapper {
     padding: 0;
 }
-
+.pt-6 .dataTables_wrapper{
+    padding: 0;
+    padding-top: 6px;
+}
 .pt-0 .dataTables_wrapper {
     padding-top: 0;
 }

@@ -642,6 +642,8 @@
 
                     <url>jdbc:oracle:thin:@10.24.10.56:1521/orcl</url>
                     <defaultSchemaName></defaultSchemaName>
+                    <!--<username>C##biobank_p_20171020</username>-->
+                    <!--<password>eyuXotN6</password>-->
                     <username>C##biobank_t_20171120</username>
                     <password>root123</password>
 

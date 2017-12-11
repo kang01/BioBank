@@ -615,7 +615,9 @@
                     for (var j = startCol; j <= endCol; ++j){
                         var cell = tableCtrl.getCell(i,j);
                         var tube = tableCtrl.getDataAtCell(i,j);
-
+                        if(!tube){
+                            return
+                        }
                         // 原盒的管子不能选择
                         if (tube && tube.flag == 2){
                             continue;

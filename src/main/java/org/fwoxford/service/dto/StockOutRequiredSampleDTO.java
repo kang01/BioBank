@@ -138,4 +138,13 @@ public class StockOutRequiredSampleDTO extends AbstractAuditingDTO implements Se
     public void setFrozenBoxCode1D(String frozenBoxCode1D) {
         this.frozenBoxCode1D = frozenBoxCode1D;
     }
+    private Long frozenBoxId;
+
+    public Long getFrozenBoxId() {
+        return frozenBoxId;
+    }
+
+    public void setFrozenBoxId(Long frozenBoxId) {
+        this.frozenBoxId = frozenBoxId;
+    }
 }

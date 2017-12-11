@@ -12,14 +12,6 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StockOutTaskFrozenTubeRepository extends JpaRepository<StockOutTaskFrozenTube,Long> {
 
-    void deleteByStockOutTaskId(Long id);
-
-    @Query("select count(t) from StockOutTaskFrozenTube t where t.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenBox.id=?1")
-    Long countByFrozenBox(Long frozenBoxId);
-
-    @Query("select count(t) from StockOutTaskFrozenTube t where t.stockOutTask.id=?1 and t.status != '1802'")
-    Long countByStockOutTaskId(Long id);
-
     @Query(value = "select  count(count(c.FROZEN_BOX_ID)) from STOCK_OUT_TASK_TUBE a\n" +
         "left join STOCK_OUT_PLAN_TUBE b on a.STOCK_OUT_PLAN_FROZEN_TUBE_ID = b.ID\n" +
         "left join STOCK_OUT_REQ_FROZEN_TUBE c on c.id = b.STOCK_OUT_REQ_FROZEN_TUBE_ID\n" +

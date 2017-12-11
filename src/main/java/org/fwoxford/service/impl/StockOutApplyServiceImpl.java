@@ -191,6 +191,8 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         StockOutApply stockOutApply = new StockOutApply();
         stockOutApply.setStatus(Constants.STOCK_OUT_PENDING);
         stockOutApply.setApplyCode(bankUtil.getUniqueID("C"));
+        stockOutApply.setCountOfStockSample(0);
+        stockOutApply.setCountOfHandOverSample(0);
         stockOutApplyRepository.save(stockOutApply);
         StockOutApplyForSave stockOutApplyForSave = new StockOutApplyDetail();
         stockOutApplyForSave.setId(stockOutApply.getId());
@@ -547,7 +549,8 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             //查询这个申请的样本量
             Long count = stockOutReqFrozenTubeRepository.countByApplyAndStatus(s.getId(),Constants.STOCK_OUT_SAMPLE_COMPLETED);
             //查询这次申请已经交接的样本量
-            if(count.intValue()>s.getCountOfHandOverSample().intValue()){
+            Long countOfHandoverSample = s.getCountOfHandOverSample()!=null?s.getCountOfHandOverSample():0L;
+            if(count.intValue()!=0 && count.intValue()>countOfHandoverSample.intValue()){
                 stockOutAppliesNotHandover.add(s);
             }
         }

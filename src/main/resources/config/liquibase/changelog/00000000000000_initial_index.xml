@@ -69,4 +69,11 @@
             CREATE INDEX pk_box_for_tranship_tube ON tranship_tube (tranship_box_id);
         </sql>
     </changeSet>
+
+    <changeSet id="22222222222222-7" author="jhipster" dbms="h2,postgresql,oracle">
+        <!-- 表 stock_out_req_frozen_tube 索引-->
+        <sql>
+            CREATE INDEX pk_requirement_for_out_tube ON stock_out_req_frozen_tube (stock_out_requirement_id);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -136,8 +136,6 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
         for(FrozenTubeResponse tube :frozenTubeDTOS){
             frozenTubeIds.add(tube.getId());
         }
-        //撤销样本量
-        int i = 0;
         //需求样本撤销
         List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(taskId,frozenTubeIds,Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
         for(StockOutReqFrozenTube stockOutReqFrozenTube: stockOutReqFrozenTubes){
@@ -145,20 +143,52 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
                 if(tube.getId().equals(stockOutReqFrozenTube.getFrozenTube().getId())){
                     stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
                     stockOutReqFrozenTube.setRepealReason(tube.getRepealReason());
-                    i++;
                 }
             }
         }
         stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+        Long countOfStockOutFrozenTubeForTask = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(stockOutTask.getId(),new ArrayList<String>(){{add(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);}});
+        stockOutTask.countOfStockOutSample(countOfStockOutFrozenTubeForTask.intValue());
+        //如果任务出库样本量为0 ，任务状态为已撤销
+        //如果任务出库样本量等于已交接样本量，则状态为已完成
+        if(countOfStockOutFrozenTubeForTask.intValue()==0){
+            stockOutTask.setStatus(Constants.STOCK_OUT_TASK_REPEAL);
+        }
 
-        stockOutTask.countOfStockOutSample(stockOutTask.getCountOfStockOutSample()-i);
+        //任务未出库样本量
+        List<String> statusList = new ArrayList<>();
+        statusList.add(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+        statusList.add(Constants.STOCK_OUT_SAMPLE_COMPLETED);
+        Long countOfTaskTube = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(taskId,statusList);
+        //如果任务内的样本量都出库了，任务状态为已完成，如果出库样本中有异常出库的样本为异常出库
+        if(countOfTaskTube.intValue() == 0){
+            stockOutTask.setStatus(Constants.STOCK_OUT_TASK_COMPLETED);
+        }
         stockOutTaskRepository.save(stockOutTask);
         StockOutPlan stockOutPlan = stockOutTask.getStockOutPlan();
-        stockOutPlan.countOfStockOutPlanSample(stockOutPlan.getCountOfStockOutPlanSample()-i);
-        stockOutPlanRepository.save(stockOutPlan);
+
         StockOutApply stockOutApply = stockOutPlan.getStockOutApply();
-        stockOutApply.countOfStockSample(stockOutApply.getCountOfStockSample()-i);
+        List<String> statusList_ = new ArrayList<>();
+        statusList_.add(Constants.STOCK_OUT_SAMPLE_IN_USE);
+        statusList_.add(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
+        statusList_.add(Constants.STOCK_OUT_SAMPLE_COMPLETED);
+        Long countOfStockOutFrozenTubeForApply = stockOutReqFrozenTubeRepository.countUnCompleteSampleByStockOutApplyAndStatusIn(stockOutApply.getId(),statusList_);
+        stockOutApply.countOfStockSample(countOfStockOutFrozenTubeForApply.intValue());
         stockOutApplyRepository.save(stockOutApply);
+
+        Long countOfUnStockOutFrozenTubeForApply = stockOutReqFrozenTubeRepository.countUnCompleteSampleByStockOutApplyAndStatusIn(stockOutApply.getId(),new ArrayList<String>(){{add(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);add(Constants.STOCK_OUT_SAMPLE_IN_USE);}});
+        stockOutPlan.countOfStockOutPlanSample(countOfStockOutFrozenTubeForApply.intValue());
+        //如果计划出库样本量为0 ，任务状态为已撤销
+        //如果未出库样本量为0，则状态为已完成
+        if(countOfStockOutFrozenTubeForApply.intValue() == 0){
+            stockOutPlan.setStatus(Constants.STOCK_OUT_PLAN_REPEAL);
+        }
+        if(countOfUnStockOutFrozenTubeForApply.intValue()==0){
+            stockOutPlan.setStatus(Constants.STOCK_OUT_PLAN_COMPLETED);
+        }
+
+        stockOutPlanRepository.save(stockOutPlan);
+
         return frozenTubeDTOS;
     }
 

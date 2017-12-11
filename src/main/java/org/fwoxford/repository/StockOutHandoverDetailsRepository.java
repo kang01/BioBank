@@ -23,8 +23,11 @@ public interface StockOutHandoverDetailsRepository extends JpaRepository<StockOu
     @Query(value = "select count(b.id) from stock_out_handover_box b where b.stock_out_handover_id =?1" ,nativeQuery = true)
     Integer countFrozenBoxByStockOutHandoverId(Long id);
 
-    @Query("select count(t) from StockOutHandoverDetails t where t.stockOutHandoverBox.stockOutHandover.stockOutApply.id=?1")
+    @Query("select count(t.id) from StockOutHandoverDetails t where t.stockOutHandoverBox.stockOutHandover.stockOutApply.id=?1")
     Long countByStockOutApply(Long id);
 
     List<StockOutHandoverDetails> findByStockOutHandoverBoxId(Long id);
+
+    @Query("select count(t.id) from StockOutHandoverDetails t where t.stockOutReqFrozenTube.stockOutTask.id=?1")
+    Long countByStockOutTaskId(Long id);
 }

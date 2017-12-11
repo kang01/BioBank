@@ -87,63 +87,18 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         "        select  a.id from frozen_box a  " +
         "            left join   stock_out_req_frozen_tube c on c.frozen_box_id = a.id " +
         "            where c.stock_out_task_id = ?1 " +
-        "            group by a.id)b on a.id = b.id where b.id is not null " ,nativeQuery = true)
+        "            group by a.id) b on a.id = b.id where b.id is not null " ,nativeQuery = true)
 
     List<FrozenBox> findByStockOutTaskId(Long taskId);
-
-    @Query( "select  DISTINCT a from FrozenBox a" +
-        " inner join StockOutReqFrozenTube c on c.frozenBox.id = a.id" +
-        " inner join StockOutPlanFrozenTube b on b.stockOutReqFrozenTube.id =c.id" +
-        " inner join StockOutTaskFrozenTube e on e.stockOutPlanFrozenTube.id =b.id" +
-        " where e.stockOutTask.id = ?1 ")
-    Page<FrozenBox> findAllByTask(Long taskId, Pageable pageable);
-
-    @Query(value = "select f.*,(select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000') as sampleNumber from frozen_box f " +
-        " where f.frozen_box_code != ?1 " +
-        " and f.project_id=?2 " +
-        " and f.frozen_box_type_id=?3 " +
-        " and f.status=?4" +
-        " and (select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000')<(f.frozen_box_columns*f.frozen_box_rows) " +
-        " and f.is_split = 0 " +
-        " order by sampleNumber asc",nativeQuery = true)
-    List<FrozenBox> findIncompleteFrozenBoxInAllStock(String frozenBoxCode, Long projectId, Long frozenBoxTypeId, String status);
-
-    @Query(value = "select f.*,(select count(tube.id) from frozen_tube tube left join stock_in_tube inTube on inTube.frozen_tube_id = tube.id left join stock_in_box inBox on inTube.stock_in_box_id = inBox.id  and inBox.stock_in_code =?6 where inTube.frozen_box_code =f.frozen_box_code and tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000') as sampleNumber from frozen_box f  " +
-        " where f.frozen_box_code != ?1 " +
-        " and f.project_id=?2 " +
-        " and f.sample_classification_id in ?3" +
-        " and f.frozen_box_type_id=?4 " +
-        " and f.status=?5" +
-        " and (select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000')<(f.frozen_box_columns*f.frozen_box_rows) " +
-        " and f.is_split = 0 " +
-        " order by sampleNumber asc FETCH FIRST 10 ROWS ONLY",nativeQuery = true)
-    List<FrozenBox> findIncompleteFrozenBoxBySampleClassificationIdInAllStock(String frozenBoxCode, Long projectId,
-                                                                              List<Long> sampleClassificationIdStr, Long frozenBoxTypeId, String status, String stockInCode);
-
-    @Query(value = "select f.*,(select count(tube.id) from frozen_tube tube left join stock_in_tube inTube on inTube.frozen_tube_id = tube.id left join stock_in_box inBox on inTube.stock_in_box_id = inBox.id  and inBox.stock_in_code =?6 where inTube.frozen_box_code =f.frozen_box_code and tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000') as sampleNumber " +
-        " from frozen_box f " +
-        " where f.frozen_box_code != ?1 " +
-        " and f.project_id=?2 " +
-        " and f.sample_type_id=?3 " +
-        " and f.frozen_box_type_id=?4 " +
-        " and f.status=?5" +
-        " and (select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code and tube.status!='0000')<(f.frozen_box_columns*f.frozen_box_rows) " +
-        " and f.is_split = 0 " +
-        " order by sampleNumber asc FETCH FIRST 10 ROWS ONLY",nativeQuery = true)
-    List<FrozenBox> findIncompleteFrozenBoxBySampleTypeIdInAllStock(String frozenBoxCode, Long projectId, Long sampleTypeId, Long frozenBoxTypeId, String status, String stockInCode);
 
     FrozenBox findBySupportRackIdAndColumnsInShelfAndRowsInShelf(Long id, String columnsInShelf, String rowsInShelf);
 
     List<FrozenBox> findProjectByEquipmentId(Long id);
 
-    @Query("select count(box) from FrozenBox box where box.equipmentCode = ?1 and box.areaCode = ?2  and box.supportRackCode = ?3 " +
-        " and box.columnsInShelf = ?4 and box.rowsInShelf = ?5" +
-        " and box.status!='0000'and box.status!='2090'")
-    Long countByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(String equipmentCode, String areaCode, String shelfCode, String columnsInShelf, String rowsInShelf);
-
     @Modifying
-    @Query("update FrozenBox b set b.status=?1 where b.frozenBoxCode in ?2 and b.status not in ('2090','0000')")
+    @Query("update FrozenBox b set b.status=?1 where b.frozenBoxCode in ?2 and b.status not in ('"+Constants.FROZEN_BOX_INVALID+"','"+Constants.INVALID+"')")
     void updateStatusByFrozenBoxCodes(String frozenBoxTranshipComplete, List<String> frozenBoxCodes);
+
     @Query(value = "SELECT ROWNUM  as id," +
         " cast(temp.equipment_code as varchar2(255)) as equipment_code, " +
         " cast(temp.area_code as varchar2(255)) as area_code, " +
@@ -226,7 +181,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     FrozenBox findByFrozenBoxCodeAndSampleTypeCode(String boxCode, String sampleTypeCode);
 
-    @Query(value = " select support_rack_id,count(support_rack_id) as noo from frozen_box where status in ('2004','2006')" +
+    @Query(value = " select support_rack_id,count(support_rack_id) as noo from frozen_box where status in ('"+Constants.FROZEN_BOX_STOCKED+"','"+Constants.FROZEN_BOX_PUT_SHELVES+"')" +
         " and support_rack_id in ?1 " +
         " group by support_rack_id ",nativeQuery = true)
     List<Object[]> findFrozenBoxGroupBySupportRack(List<Long> supportRackIds);
@@ -245,18 +200,21 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         "                    ,t.created_date ,103 as type" +
         "                    FROM stock_out_box t where t.frozen_box_id = ?1" ,nativeQuery = true)
     List<Object[]> findFrozenBoxStockOutHistory(Long id);
+
     @Query(value = "SELECT t.equipment_code,t.area_code,t.support_rack_code,t.ROWS_IN_SHELF,t.COLUMNS_IN_SHELF,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
         "                    t.frozen_box_type_id,t.frozen_box_type_code," +
         "                    t.project_id,t.project_code,t.project_name,t.project_site_id,t.project_site_name,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
         "                    ,t.created_date ,102 as type" +
         "                    FROM stock_in_box t where t.frozen_box_id = ?1 and t.status = '2004'" ,nativeQuery = true)
     List<Object[]> findFrozenBoxStockInHistory(Long id);
+
     @Query(value = "select t.equipment_code,t.area_code,t.support_rack_code,t.ROWS_IN_SHELF,t.COLUMNS_IN_SHELF,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
         "                    t.frozen_box_type_id,t.frozen_box_type_code," +
         "                    t.project_id,t.project_code,t.project_name,t.project_site_id,t.project_site_name,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
         "                    ,t.created_date ,101 as type" +
         "                    from tranship_box t where frozen_box_id = ?1" ,nativeQuery = true)
     List<Object[]> findFrozenBoxTranshipHistory(Long id);
+
 
     @Query(value = "SELECT t.equipment_code,t.area_code,t.support_rack_code,t.rows_in_shelf,t.columns_in_shelf,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
         "                    t.project_id,t.project_code,t.project_site_id,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
@@ -291,12 +249,11 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     FrozenBox findByFrozenBoxCode1D(String boxCode1D);
 
-    List<FrozenBox> findByProjectCodeAndStatus(String projectCode, String frozenBoxStocking);
+    List<FrozenBox> findByProjectCodeAndStatus(String projectCode, String status);
 
     @Query(value = "SELECT t.ID,t.FROZEN_BOX_ROWS*t.FROZEN_BOX_COLUMNS AS COUNTOFSAMPLE FROM FROZEN_BOX t WHERE t.PROJECT_ID = ?1 AND t.SAMPLE_CLASSIFICATION_ID in ?2 AND t.STATUS = '"+Constants.FROZEN_BOX_STOCKED+"' AND t.FROZEN_BOX_TYPE_ID = ?3 and t.FROZEN_BOX_CODE != ?4 ORDER BY t.ID DESC  OFFSET ?5 ROWS FETCH NEXT ?6 ROWS ONLY",nativeQuery = true)
     List<Object[]> findIncompleteFrozenBoxIdBydProjectIdAnSampleClassificationIdAndBoxTypeId(Long projectId, ArrayList<Long> sampeClassTypeIds, Long frozenBoxTypeId, String frozenBoxCode,Integer startPos,Integer length);
 
-    List<FrozenBox> findByIdIn(List<Long> frozenBoxIds);
 
     //此方法仅供导入数据时使用
     @Query(nativeQuery = true,value = "select cast(frozen_box_code as varchar2(255)) as frozen_box_code from (\n" +
@@ -307,6 +264,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         ") b  group by frozen_box_code) where noo>=3")
     List<Object> findFrozenBoxStockInAndOutRecord();
 
+    //just used for test ..
     @Query(value = "select cast(id as varchar2(255)) as id," +
         " cast(frozen_box_code as varchar2(255)) as frozen_box_code," +
         " cast(frozen_box_code_1d as varchar2(255)) as frozen_box_code_1d," +
@@ -319,5 +277,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         "where frozen_box_code in ?1 order by frozen_box_code ,CREATED_DATE",nativeQuery = true)
     List<Object[]> findFrozenBoxStockInAndOutRecordByBoxCodeIn(List<String> frozenBoxCodeStr100);
 
+    @Query(value = "SELECT B.ID FROM FROZEN_BOX B WHERE B.FROZEN_BOX_CODE = ?1 OR B.FROZEN_BOX_CODE_1D = ?1 AND B.STATUS = '"+Constants.FROZEN_BOX_STOCKED+"'",nativeQuery = true)
+    Object findIdByFrozenBoxCode(String boxCode1D);
 }
 

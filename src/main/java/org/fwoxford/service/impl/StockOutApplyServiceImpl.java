@@ -352,7 +352,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         res.setStockOutRequirement(stockOutRequirementForApplyTables);
         res.setCountOfStockOutSample(countOfStockOutSample);
         res.setCountOfSample(Long.valueOf(countOfSampleAll));
-       Long countOfHandoverSample = stockOutHandoverDetailsRepository.countByStockOutApply(id);
+        Long countOfHandoverSample = stockOutHandoverDetailsRepository.countByStockOutApply(id);
         res.setCountOfHandoverSample(countOfHandoverSample);
         return res;
     }

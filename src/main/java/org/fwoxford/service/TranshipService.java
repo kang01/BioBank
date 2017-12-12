@@ -67,7 +67,7 @@ public interface TranshipService {
      * @return
      */
     TranshipDTO initTranship();
-    TranshipDTO initTranship(Long projectId, Long projectSiteId);
+    TranshipDTO initTranship(Long projectId, Long projectSiteId,Long stockOutApplyId);
 
     /**
      * 作废转运记录
@@ -96,4 +96,11 @@ public interface TranshipService {
      * @return
      */
     AttachmentDTO saveAndUploadTranship(AttachmentDTO attachmentDTO, Long transhipId, MultipartFile file, HttpServletRequest request);
+
+    /**
+     * 初始化归还记录
+     * @param stockOutApplyId
+     * @return
+     */
+    TranshipDTO initReturnBack(Long stockOutApplyId);
 }

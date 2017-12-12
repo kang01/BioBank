@@ -16,4 +16,10 @@
             <column name = "delegate_id" type="bigint" remarks="委托方ID"></column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="20171201084047-2" author="jhipster">
+        <addColumn tableName="tranship">
+            <column name = "apply_person_name" type="nvarchar(20)" remarks="委托人姓名"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

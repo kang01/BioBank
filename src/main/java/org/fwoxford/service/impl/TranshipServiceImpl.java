@@ -82,7 +82,7 @@ public class TranshipServiceImpl implements TranshipService{
     @Autowired
     private TranshipTubeRepository transhipTubeRepository;
     @Autowired
-    private StockOutFilesService stockOutFilesService;
+    private StockOutApplyRepository stockOutApplyRepository;
     @Autowired
     private AttachmentRepository attachmentRepository;
     @Autowired
@@ -378,20 +378,26 @@ public class TranshipServiceImpl implements TranshipService{
      */
     @Override
     public TranshipDTO initTranship() {
-        return initTranship(null, null);
+        return initTranship(null, null,null);
     }
     @Override
-    public TranshipDTO initTranship(Long projectId, Long projectSiteId) {
+    public TranshipDTO initTranship(Long projectId, Long projectSiteId,Long stockOutApplyId) {
         Tranship tranship = new Tranship();
         tranship.setStatus(Constants.VALID);
-        tranship.setTranshipCode(bankUtil.getUniqueID("A"));
+        String transhipCode = "";
+        if(stockOutApplyId!=null){
+            transhipCode = bankUtil.getUniqueID("AA");
+        }else{
+            transhipCode = bankUtil.getUniqueID("A");
+        }
+        tranship.setTranshipCode(transhipCode);
         tranship.setTranshipState(Constants.TRANSHIPE_IN_PENDING);
         tranship.setFrozenBoxNumber(0);
         tranship.setEmptyHoleNumber(0);
         tranship.setEmptyTubeNumber(0);
         tranship.setSampleNumber(0);
         tranship.setEffectiveSampleNumber(0);
-
+        tranship.setReceiveType(Constants.RECEIVE_TYPE_PROJECT_SITE);
         if (projectId != null){
             Project project = projectRepository.findOne(projectId);
             tranship.setProject(project);
@@ -405,7 +411,19 @@ public class TranshipServiceImpl implements TranshipService{
             tranship.setProjectSiteCode(projectSite.getProjectSiteCode());
             tranship.setProjectSiteName(projectSite.getProjectSiteName());
         }
-
+        if(stockOutApplyId != null){
+            StockOutApply stockOutApply = stockOutApplyRepository.findOne(stockOutApplyId);
+            if(stockOutApply == null){
+                throw new BankServiceException("申请不存在！");
+            }
+            if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVED)){
+                throw new BankServiceException("申请未批准！");
+            }
+            tranship.setDelegate(stockOutApply.getDelegate());
+            tranship.setStockOutApply(stockOutApply);
+            tranship.setApplyPersonName(stockOutApply.getApplyPersonName());
+            tranship.setReceiveType(Constants.RECEIVE_TYPE_RETURN_BACK);
+        }
         transhipRepository.save(tranship);
         return transhipMapper.transhipToTranshipDTO(tranship);
     }
@@ -547,5 +565,16 @@ public class TranshipServiceImpl implements TranshipService{
         attachmentRepository.save(attachment);
         attachmentDTO.setId(attachment.getId());
         return attachmentDTO;
+    }
+
+    /**
+     * 初始化归还记录
+     * @param stockOutApplyId
+     * @return
+     */
+    @Override
+    public TranshipDTO initReturnBack(Long stockOutApplyId) {
+
+        return initTranship(null,null,stockOutApplyId);
     }
 }

@@ -154,7 +154,7 @@ public class TranshipResource {
     @Timed
     public ResponseEntity<TranshipDTO> initTranship(@PathVariable Long projectId, @PathVariable Long projectSiteId) throws URISyntaxException {
         log.debug("REST request to create Tranship first");
-        TranshipDTO result = transhipService.initTranship(projectId, projectSiteId);
+        TranshipDTO result = transhipService.initTranship(projectId, projectSiteId,null);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -265,5 +265,20 @@ public class TranshipResource {
         input.addOrder("id",true);
         DataTablesOutput<TranshipResponse> transhipsTablesOutput = transhipService.findAllTranship(input, Constants.RECEIVE_TYPE_RETURN_BACK);
         return transhipsTablesOutput;
+    }
+
+    /**
+     * 添加归还记录
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/return-back/new-empty/{stockOutApplyId}")
+    @Timed
+    public ResponseEntity<TranshipDTO> initReturnBack(@PathVariable Long stockOutApplyId) throws URISyntaxException {
+        log.debug("REST request to create Tranship first");
+        TranshipDTO result = transhipService.initReturnBack(stockOutApplyId);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 }

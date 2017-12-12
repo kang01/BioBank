@@ -581,6 +581,9 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     private Delegate delegate;
 
+    @Column(name="apply_person_name",length = 20)
+    private String applyPersonName;
+
     public String getReceiveType() {
         return receiveType;
     }
@@ -623,5 +626,16 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     }
     public void setDelegate(Delegate delegate) {
         this.delegate = delegate;
+    }
+
+    public String getApplyPersonName() {
+        return applyPersonName;
+    }
+    public Tranship applyPersonName(String applyPersonName){
+        this.applyPersonName = applyPersonName;
+        return this;
+    }
+    public void setApplyPersonName(String applyPersonName) {
+        this.applyPersonName = applyPersonName;
     }
 }

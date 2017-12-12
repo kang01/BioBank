@@ -182,6 +182,9 @@ public class BankUtil{
         LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
         LocalDate localDate = localDateTime.toLocalDate();
         String fourRandom = getSerialRandom(flag,localDate);
+        if(flag.length()>1){
+            dateTime = dateTime.substring(1,dateTime.length());
+        }
         time = flag +dateTime+fourRandom;
         return time;
     }

@@ -1,10 +1,10 @@
 <div>
     <h3 class="pull-left" style="margin: 2px;">归还记录详情
-        <!--<small>&nbsp;{{vm.transportRecord.transhipCode}}</small>-->
+        <small>&nbsp;{{vm.giveBackRecord.transhipCode}}</small>
     </h3>
     <div class="form-group pull-right pr-10">
         <div class="text-right">
-            <button type="button" class="btn btn-primary" ng-click="vm.receiveFinish()">接受完成</button>
+            <button type="button" class="btn btn-primary" ng-click="vm.receiveFinish()">接收完成</button>
             <button type="button" class="btn btn-default" ng-click="vm.saveRecord()">保存归还记录</button>
             <button type="button" class="btn btn-default" ng-click="vm.invalid()">作废</button>
             <button type="button" class="btn btn-default" ui-sref="give-back-table">关闭</button>
@@ -23,31 +23,31 @@
                         <span class="required-field"></span>
                     </label>
                     <div class="col-md-8">
-                        <input type="text" class="form-control" ng-model="vm.transportRecord.trackNumber" ng-disabled="true">
+                        <input type="text" class="form-control" ng-model="vm.giveBackRecord.applyCode" ng-disabled="true">
                     </div>
                 </div>
 
             </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label class="col-md-4 control-label text-left">
-                        归还日期
-                        <span class="required-field"></span>
-                    </label>
-                    <div class="col-md-8">
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="startDate"
-                                   uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.transhipDate"
-                                   is-open="vm.datePickerOpenStatus.transhipDate"
-                                   required/>
-                            <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('transhipDate')"><i
-                            class="glyphicon glyphicon-calendar"></i></button>
-                        </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!--<div class="col-md-3">-->
+                <!--<div class="form-group">-->
+                    <!--<label class="col-md-4 control-label text-left">-->
+                        <!--归还日期-->
+                        <!--<span class="required-field"></span>-->
+                    <!--</label>-->
+                    <!--<div class="col-md-8">-->
+                        <!--<div class="input-group">-->
+                            <!--<input type="text" class="form-control" name="startDate"-->
+                                   <!--uib-datepicker-popup="{{dateformat}}" ng-model="vm.giveBackRecord.transhipDate"-->
+                                   <!--is-open="vm.datePickerOpenStatus.transhipDate"-->
+                                   <!--required/>-->
+                            <!--<span class="input-group-btn">-->
+                        <!--<button type="button" class="btn btn-default" ng-click="vm.openCalendar('transhipDate')"><i-->
+                            <!--class="glyphicon glyphicon-calendar"></i></button>-->
+                        <!--</span>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
             <div class="col-md-3">
                 <div class="form-group ">
                     <label class="col-md-4 control-label text-left">
@@ -65,9 +65,7 @@
                 <div class="form-group three-col project-sites">
                     <label class="col-md-4 control-label text-left">委托人</label>
                     <div class="col-md-8">
-                        <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
-                                   ng-model="vm.transportRecord.projectSiteId"></selectize>
-                        <!--<input type="text" class="form-control"  ng-model="vm.transportRecord.projectCode">-->
+                        <input type="text" class="form-control"  ng-model="vm.giveBackRecord.applyPersonName" ng-disabled="true">
                     </div>
                 </div>
 
@@ -83,29 +81,8 @@
                     </label>
                     <div class="col-md-8">
                         <selectize options='vm.receiverOptions' config="vm.receiverConfig"
-                                   ng-model="vm.transportRecord.receiverId"></selectize>
-                        <input type="hidden" class="form-control" ng-model="vm.transportRecord.receiverId">
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-md-3">
-                <div class="form-group ">
-                    <label class="col-md-4 control-label text-left">
-                        接收日期
-                        <span class="required-field"></span>
-                    </label>
-                    <div class="col-md-8">
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="receiveDate"
-                                   uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.receiveDate"
-                                   is-open="vm.datePickerOpenStatus.receiveDate"
-                                   required/>
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i
-                                    class="glyphicon glyphicon-calendar"></i></button>
-                            </span>
-                        </div>
+                                   ng-model="vm.giveBackRecord.receiverId"></selectize>
+                        <input type="hidden" class="form-control" ng-model="vm.giveBackRecord.receiverId">
                     </div>
                 </div>
 
@@ -118,18 +95,38 @@
                         <span class="required-field"></span>
                     </label>
                     <div class="col-md-8">
-                        <selectize options='vm.receiverOptions' config="vm.receiverConfig"
-                                   ng-model="vm.transportRecord.receiverId"></selectize>
-                        <input type="hidden" class="form-control" ng-model="vm.transportRecord.receiverId">
+                        <input type="text" class="form-control" ng-model="vm.giveBackRecord.returnBackPeople">
                     </div>
                 </div>
 
             </div>
             <div class="col-md-3">
+                <div class="form-group ">
+                    <label class="col-md-4 control-label text-left">
+                        归还日期
+                        <span class="required-field"></span>
+                    </label>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="receiveDate"
+                                   uib-datepicker-popup="{{dateformat}}" ng-model="vm.giveBackRecord.receiveDate"
+                                   is-open="vm.datePickerOpenStatus.receiveDate"
+                                   required/>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i
+                                    class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
                 <div class="form-group three-col">
                     <label class="col-md-4 control-label text-left">冻存盒数</label>
                     <div class="col-md-8">
-                        <input type="number" class="form-control" ng-model="vm.transportRecord.frozenBoxNumber">
+                        <input type="number" class="form-control" ng-model="vm.giveBackRecord.frozenBoxNumber" min="0">
                     </div>
                 </div>
 
@@ -141,7 +138,7 @@
                 <div class="form-group">
                     <label class="col-md-4 control-label text-left">样本人份</label>
                     <div class="col-md-8">
-                        <input type="number" class="form-control" ng-model="vm.transportRecord.sampleNumber">
+                        <input type="number" class="form-control" ng-model="vm.giveBackRecord.sampleNumber" min="0">
                     </div>
                 </div>
 
@@ -150,7 +147,7 @@
                 <div class="form-group">
                     <label class="col-md-4 control-label text-left">有效样本数</label>
                     <div class="col-md-8">
-                        <input type="number" class="form-control" ng-model="vm.transportRecord.effectiveSampleNumber">
+                        <input type="number" class="form-control" ng-model="vm.giveBackRecord.effectiveSampleNumber" min="0">
                     </div>
                 </div>
 
@@ -160,7 +157,7 @@
                 <div class="form-group ">
                     <label class="col-md-4 control-label text-left">空管数</label>
                     <div class="col-md-8">
-                        <input type="number" class="form-control" ng-model="vm.transportRecord.emptyTubeNumber">
+                        <input type="number" class="form-control" ng-model="vm.giveBackRecord.emptyTubeNumber" min="0">
                     </div>
                 </div>
             </div>
@@ -168,7 +165,7 @@
                 <div class="form-group ">
                     <label class="col-md-4 control-label text-left">空孔数</label>
                     <div class="col-md-8">
-                        <input type="number" class="form-control" ng-model="vm.transportRecord.emptyHoleNumber">
+                        <input type="number" class="form-control" ng-model="vm.giveBackRecord.emptyHoleNumber" min="0">
                     </div>
                 </div>
             </div>
@@ -180,7 +177,7 @@
                 <div class="form-group">
                     <label class="col-md-2 control-label text-left">备注</label>
                     <div class="col-md-10">
-                        <input type="text" class="form-control" ng-model="vm.transportRecord.memo">
+                        <input type="text" class="form-control" ng-model="vm.giveBackRecord.memo">
                     </div>
                 </div>
 
@@ -358,7 +355,7 @@
                         <div tube-box-table ht-instance="vm.htInstance" ht-settings="vm.htSettings"
                              data-box="vm.box" data-tubes="vm.tubes"></div>
                     </div>
-                    <!--<div class="col-md-1" ng-show="vm.transportRecord.transhipState == '1001'">-->
+                    <!--<div class="col-md-1" ng-show="vm.giveBackRecord.transhipState == '1001'">-->
                     <!--<div class="text-right" style="margin-top: 2px">-->
 
                     <!--</div>-->

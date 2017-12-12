@@ -34,9 +34,12 @@
             })
             .state('give-back-detail', {
                 parent: 'bizs',
-                url: '/give-back-detail',
+                url: '/give-back-detail/{giveBackId}',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN']
+                },
+                params:{
+                    giveBackId:null
                 },
                 views: {
                     'content@': {

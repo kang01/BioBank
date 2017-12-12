@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('ApplicationNumberModalController', ApplicationNumberModalController);
 
-    ApplicationNumberModalController.$inject = ['$uibModalInstance','ProjectService','ProjectSitesByProjectIdService'];
+    ApplicationNumberModalController.$inject = ['$uibModalInstance','toastr','GiveBackService'];
 
-    function ApplicationNumberModalController($uibModalInstance,ProjectService,ProjectSitesByProjectIdService) {
+    function ApplicationNumberModalController($uibModalInstance,toastr,GiveBackService) {
         var vm = this;
         _init();
         function _init() {
@@ -26,7 +26,12 @@
             $uibModalInstance.dismiss('cancel');
         };
         this.ok = function () {
-            $uibModalInstance.close();
+            GiveBackService.queryGiveBackId(vm.applyCode).success(function (data) {
+                $uibModalInstance.close(data.id);
+            }).error(function (data) {
+                toastr.error(data.message);
+            });
+
         };
     }
 })();

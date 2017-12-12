@@ -8,21 +8,48 @@
         .module('bioBankApp')
         .controller('GiveBackDetailController', GiveBackDetailController);
 
-    GiveBackDetailController.$inject = ['$scope', '$compile', 'BioBankDataTable','$uibModal', 'toastr', '$state',
-        'FrozenBoxTypesService','StockInInputService','EquipmentAllService','SampleTypeService','AreasByEquipmentIdService','SupportacksByAreaIdService','RequirementService'];
-    function GiveBackDetailController($scope, $compile, BioBankDataTable, $uibModal, toastr, $state,
-                                      FrozenBoxTypesService,StockInInputService,EquipmentAllService,SampleTypeService,AreasByEquipmentIdService,SupportacksByAreaIdService,RequirementService) {
+    GiveBackDetailController.$inject = ['$scope', '$compile', 'BioBankDataTable','$uibModal', 'toastr', '$stateParams','Principal',
+        'GiveBackService','StockInInputService','EquipmentAllService','SampleUserService','AreasByEquipmentIdService','SupportacksByAreaIdService','RequirementService'];
+    function GiveBackDetailController($scope, $compile, BioBankDataTable, $uibModal, toastr, $stateParams,Principal,
+                                      GiveBackService,StockInInputService,EquipmentAllService,SampleUserService,AreasByEquipmentIdService,SupportacksByAreaIdService,RequirementService) {
         var vm = this;
         var modalInstance;
+        //归还记录对象
+        vm.giveBackRecord = {};
 
         _fnRecordInfo();
         _fnRecordBox();
 
         //归还信息
         function _fnRecordInfo() {
-            //归还记录对象
-            vm.giveBackRecord = {};
+            //委托方
             _fuQueryDelegates();
+            //接收人
+            _fnQueryReceiver();
+
+            if($stateParams.giveBackId){
+                var giveBackId = $stateParams.giveBackId;
+                GiveBackService.queryGiveBackInfo(giveBackId).success(function (data) {
+                    vm.giveBackRecord = data;
+                    //当前用户
+                    _fnQueryUser();
+                    _fnInitRecord();
+                    _fnQueryBox();
+                });
+            }
+            //初始化数据
+            function _fnInitRecord() {
+                if(vm.giveBackRecord.receiveDate){
+                    vm.giveBackRecord.receiveDate = new Date(vm.giveBackRecord.receiveDate);
+                }else{
+                    vm.giveBackRecord.receiveDate = new Date();
+                }
+                if(vm.giveBackRecord.tempEquipmentId){
+                    _fnQueryArea(vm.giveBackRecord.tempEquipmentId);
+                }
+            }
+
+
             vm.recordPlaceConfig = {
                 valueField:'id',
                 labelField:'equipmentCode',
@@ -30,20 +57,21 @@
                 onChange:function (value) {
                     vm.giveBackRecord.tempAreaId = "";
                     if(value){
-                        AreasByEquipmentIdService.query({id:value},onRecordAreaSuccess, onError);
+                        _fnQueryArea(value);
                     }else{
                         vm.recordAreaOptions = [];
                         vm.recordAreaOptions.push({id:"",areaCode:""});
                     }
                 }
             };
+            //区域
             vm.recordAreaConfig = {
                 valueField:'id',
                 labelField:'areaCode',
                 maxItems: 1,
                 onChange:function (value) {}
             };
-
+            //委托方
             vm.delegatesConfig = {
                 valueField:'id',
                 labelField:'delegateName',
@@ -51,6 +79,14 @@
                 onChange:function (value) {
                 }
             };
+            //接收人
+            vm.receiverConfig = {
+                valueField:'id',
+                labelField:'userName',
+                maxItems: 1
+
+            };
+
             //日期控件
             vm.datePickerOpenStatus = {};
             vm.openCalendar = openCalendar;
@@ -67,10 +103,45 @@
                 });
             }
             //区域
-            function onRecordAreaSuccess(data) {
-                vm.recordAreaOptions = data;
-                vm.recordAreaOptions.push({id:"",areaCode:""});
+            function _fnQueryArea(tempEquipmentId) {
+                AreasByEquipmentIdService.query({id:tempEquipmentId},onRecordAreaSuccess, onError);
+                function onRecordAreaSuccess(data) {
+                    vm.recordAreaOptions = data;
+                    vm.recordAreaOptions.push({id:"",areaCode:""});
+                }
             }
+            //接收人
+            function _fnQueryReceiver() {
+                SampleUserService.query({},onReceiverSuccess, onError);
+                function onReceiverSuccess(data) {
+                    vm.receiverOptions = data;
+                }
+            }
+            //当前用户
+            function _fnQueryUser() {
+                Principal.identity().then(function(account) {
+                    vm.account = account;
+                    if(vm.account.login != "admin" || vm.account.login != "user"){
+                        if(!vm.giveBackRecord.receiverId){
+                            vm.giveBackRecord.receiverId = vm.account.id;
+                        }
+
+                    }
+                });
+            }
+            //获取盒子列表
+            function _fnQueryBox() {
+                GiveBackService.queryGiveBackBox(vm.giveBackRecord.transhipCode).success(function (data) {
+                    vm.dtOptions.with("data",data);
+                });
+            }
+
+            vm.saveRecord = function () {
+                GiveBackService.saveGiveBackRecord(vm.giveBackRecord).success(function (data) {
+                    toastr.success("归还记录保存成功!");
+                });
+            }
+
         }
         //归还盒子信息
         function _fnRecordBox() {
@@ -99,6 +170,7 @@
 
             _fnBoxInfoInit();
 
+
             vm.boxColumns = BioBankDataTable.buildDTColumn(columns);
             vm.boxOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING","400")
                 .withOption('order', [[1, 'asc' ]])
@@ -120,7 +192,7 @@
                     var tr = this;
                     $(tr).closest('table').find('.rowLight').removeClass("rowLight");
                     $(tr).addClass('rowLight');
-                    _queryBox(53783);
+                    _queryBoxDetail(53783);
                 });
             }
 
@@ -224,8 +296,8 @@
                 }
             }
 
-            //获取冻存盒信息（盒子信息和管子信息）
-            function _queryBox(boxId) {
+            //获取冻存盒信息详情（盒子信息和管子信息）
+            function _queryBoxDetail(boxId) {
                 StockInInputService.queryEditStockInBox(boxId).success(function (data) {
                     vm.box = data;
                     vm.tubes = data.frozenTubeDTOS;

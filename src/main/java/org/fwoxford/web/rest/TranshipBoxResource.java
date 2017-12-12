@@ -234,4 +234,29 @@ public class TranshipBoxResource {
 
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
+
+    /**
+     * 根据转运编码查询冻存盒编码List
+     * @param transhipCode
+     * @return
+     */
+    @GetMapping("/return-boxes/transhipCode/{transhipCode}")
+    @Timed
+    public ResponseEntity<List<FrozenBoxCodeForTranshipDTO>> getFrozenBoxCodeByTranshipCodeForReturnBack(@PathVariable String transhipCode) {
+        log.debug("REST request to get FrozenBox : {}", transhipCode);
+        List<FrozenBoxCodeForTranshipDTO> res = transhipBoxService.getFrozenBoxCodeByTranshipCode(transhipCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * 分页查询转运冻存盒
+     * @param transhipCode
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/return-boxes/transhipCode/{transhipCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<FrozenBoxCodeForTranshipDTO> getFrozenBoxCodeByTranshipCodeForReturnBack(@PathVariable String transhipCode, @RequestBody DataTablesInput input) {
+        return transhipBoxService.getPageFrozenBoxCodeByTranshipCode(transhipCode,input);
+    }
 }

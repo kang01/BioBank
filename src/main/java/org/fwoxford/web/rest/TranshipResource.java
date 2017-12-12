@@ -281,4 +281,17 @@ public class TranshipResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+
+    /**
+     * 归还详情
+     * @param id
+     * @return
+     */
+    @GetMapping("/return-back/id/{id}")
+    @Timed
+    public ResponseEntity<TranshipDTO> getReturnBackById(@PathVariable Long id) {
+        log.debug("REST request to get Tranship : {}", id);
+        TranshipDTO transhipDTO = transhipService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(transhipDTO));
+    }
 }

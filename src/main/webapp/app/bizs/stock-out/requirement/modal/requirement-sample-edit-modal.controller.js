@@ -14,6 +14,10 @@
         var vm = this;
         var projectIds = items.projectIds;
         var requirementId = items.requirementId;
+        //性别
+        vm.sexOptions = MasterData.sexDict;
+        //疾病类型
+        vm.diseaseTypeOptions = MasterData.diseaseType;
         var sampleRequirement = angular.copy(items.sampleRequirement);
         // vm.file = {};
         if(sampleRequirement){
@@ -45,6 +49,12 @@
         if(vm.sampleRequirement.sampleTypeId){
             _fuQuerySampleClass(projectIds,vm.sampleRequirement.sampleTypeId);
         }
+        if(!vm.sampleRequirement.diseaseTypeId){
+            vm.sampleRequirement.diseaseTypeId = vm.diseaseTypeOptions[2].id;
+        }
+        if(!vm.sampleRequirement.sex){
+            vm.sampleRequirement.sex = vm.sexOptions[2].type;
+        }
         _fnIsUseAge();
         _fnQuerySampleType();
         _fuQueryFrozenTubeType();
@@ -52,6 +62,28 @@
 
         // vm.sampleRequirement.age = "30;70";
 
+
+
+
+        vm.sexConfig = {
+            valueField:'type',
+            labelField:'name',
+            maxItems: 1
+        };
+        vm.diseaseTypeConfig = {
+            valueField:'id',
+            labelField:'name',
+            maxItems: 1,
+            onChange:function (value) {
+            }
+        };
+        vm.checkTypeConfig = {
+            valueField:'id',
+            labelField:'checkTypeName',
+            maxItems: 1,
+            onChange:function (value) {
+            }
+        };
         vm.sampleTypeConfig = {
             valueField:'id',
             labelField:'sampleTypeName',
@@ -68,6 +100,24 @@
 
             }
         };
+        //样本分类
+        vm.sampleClassConfig = {
+            valueField:'sampleClassificationId',
+            labelField:'sampleClassificationName',
+            maxItems: 1,
+            allowEmptyOption:false,
+            onChange:function (value) {
+            }
+        };
+        vm.frozenTubeTypeConfig = {
+            valueField:'id',
+            labelField:'frozenTubeTypeName',
+            maxItems: 1,
+            onChange:function (value) {
+                // console.log( _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed);
+            }
+        };
+
         //根据项目和样本类型获取样本分类
         function _fuQuerySampleClass(projectIds,sampleTypeId) {
             RequirementService.queryRequirementSampleClasses(projectIds,sampleTypeId).success(function (data) {
@@ -98,49 +148,6 @@
                 }
             });
         }
-        //样本分类
-        vm.sampleClassConfig = {
-            valueField:'sampleClassificationId',
-            labelField:'sampleClassificationName',
-            maxItems: 1,
-            allowEmptyOption:false,
-            onChange:function (value) {
-            }
-        };
-        //获取冻存管类型
-        function _fuQueryFrozenTubeType() {
-            RequirementService.queryFrozenTubeType().success(function (data) {
-                vm.frozenTubeTypeOptions = data;
-                vm.frozenTubeTypeOptions.unshift({id:"null",frozenTubeTypeName:"全部"});
-                if(!vm.sampleRequirement.frozenTubeTypeId){
-                    vm.sampleRequirement.frozenTubeTypeId = vm.frozenTubeTypeOptions[0].id;
-                    vm.sampleRequirement.frozenTubeTypeName = vm.frozenTubeTypeOptions[0].frozenTubeTypeName;
-                }
-            });
-        }
-        vm.frozenTubeTypeConfig = {
-            valueField:'id',
-            labelField:'frozenTubeTypeName',
-            maxItems: 1,
-            onChange:function (value) {
-                // console.log( _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed);
-            }
-        };
-        //性别
-        vm.sexOptions = MasterData.sexDict;
-        if(!vm.sampleRequirement.sex){
-            vm.sampleRequirement.sex = vm.sexOptions[2].type;
-        }
-        vm.sexConfig = {
-            valueField:'type',
-            labelField:'name',
-            maxItems: 1
-        };
-        //疾病类型
-        vm.diseaseTypeOptions = MasterData.diseaseType;
-        if(!vm.sampleRequirement.diseaseTypeId){
-            vm.sampleRequirement.diseaseTypeId = vm.diseaseTypeOptions[2].id;
-        }
         vm.isUseAge = _fnIsUseAge;
         function _fnIsUseAge() {
             if(!vm.isAge){
@@ -152,20 +159,17 @@
 
             }
         }
-        vm.diseaseTypeConfig = {
-            valueField:'id',
-            labelField:'name',
-            maxItems: 1,
-            onChange:function (value) {
-            }
-        };
-        vm.checkTypeConfig = {
-            valueField:'id',
-            labelField:'checkTypeName',
-            maxItems: 1,
-            onChange:function (value) {
-            }
-        };
+        //获取冻存管类型
+        function _fuQueryFrozenTubeType() {
+            RequirementService.queryFrozenTubeType().success(function (data) {
+                vm.frozenTubeTypeOptions = data;
+                vm.frozenTubeTypeOptions.unshift({id:"null",frozenTubeTypeName:"全部"});
+                if(!vm.sampleRequirement.frozenTubeTypeId){
+                    vm.sampleRequirement.frozenTubeTypeId = vm.frozenTubeTypeOptions[0].id;
+                    vm.sampleRequirement.frozenTubeTypeName = vm.frozenTubeTypeOptions[0].frozenTubeTypeName;
+                }
+            });
+        }
         //获取检测类型
         function _fnQueryCheckType() {
             RequirementService.queryCheckTypes().success(function (data) {
@@ -198,7 +202,7 @@
             }
         };
         //保存申请记录
-        var sampleRequirement;
+        var sampleRequirement1;
         function _fnSaveRequirement() {
             if(vm.sampleRequirement.id){
                 // if(vm.sampleRequirement.status){
@@ -206,19 +210,19 @@
                 // }
                 // delete  vm.sampleRequirement.samples;
 
-                sampleRequirement = angular.copy(vm.sampleRequirement);
-                sampleRequirement.status = "1201";
+                sampleRequirement1 = angular.copy(vm.sampleRequirement);
+                sampleRequirement1.status = "1201";
                 if(!vm.isAge){
-                    sampleRequirement.age = null;
+                    sampleRequirement1.age = null;
                 }
-                if(!sampleRequirement.frozenTubeTypeId || sampleRequirement.frozenTubeTypeId == "null"){
-                    sampleRequirement.frozenTubeTypeName = null;
+                if(!sampleRequirement1.frozenTubeTypeId || sampleRequirement1.frozenTubeTypeId == "null"){
+                    sampleRequirement1.frozenTubeTypeName = null;
                 }
-                if(!sampleRequirement.sampleTypeId || sampleRequirement.sampleTypeId == "null" || vm.file){
-                    sampleRequirement.sampleTypeName = null;
+                if(!sampleRequirement1.sampleTypeId || sampleRequirement1.sampleTypeId == "null" || vm.file){
+                    sampleRequirement1.sampleTypeName = null;
                 }
 
-                RequirementService.saveEditSampleRequirement(requirementId,sampleRequirement).success(function (data) {
+                RequirementService.saveEditSampleRequirement(requirementId,sampleRequirement1).success(function (data) {
                     // data.sampleTypeName = sampleRequirement.sampleTypeName;
                     // data.frozenTubeTypeName = null;
                     BioBankBlockUi.blockUiStop();

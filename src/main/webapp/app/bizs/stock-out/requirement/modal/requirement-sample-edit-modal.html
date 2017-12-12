@@ -71,7 +71,12 @@
                 <input type="checkbox"  value="option2" ng-model="vm.sampleRequirement.isBloodLipid" ng-true-value="true" ng-false-value="false"> 脂质血
             </label>
         </div>
-        <div class="form-group col-md-8">
+        <div class="form-group col-md-2">
+            <label >检测类型</label>
+            <selectize options='vm.checkTypeOptions' config="vm.checkTypeConfig"
+                       ng-model="vm.sampleRequirement.checkTypeId "></selectize>
+        </div>
+        <div class="form-group col-md-6">
             <label>备注</label>
             <textarea rows="1" class="form-control resize-none" ng-model="vm.sampleRequirement.memo"></textarea>
         </div>

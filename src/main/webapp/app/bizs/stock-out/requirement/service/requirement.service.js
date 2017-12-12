@@ -61,9 +61,14 @@
             //作废
             invalidPlan:_invalidPlan,
             //查看指定样本详情
-            assignSampleDes:_assignSampleDes
+            assignSampleDes:_assignSampleDes,
+            //获取检测类型
+            queryCheckTypes:_queryCheckTypes
 
         };
+        function _queryCheckTypes() {
+            return $http.get('api/check-types/all');
+        }
         function _queryDemo(data,oSettings) {
             return $http.post('api/res/tranships',JSON.stringify(data));
         }

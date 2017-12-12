@@ -114,79 +114,23 @@ public class TranshipServiceImpl implements TranshipService{
             || oldTranship.getTranshipState().equals(Constants.TRANSHIPE_IN_STOCKING))){
             throw new BankServiceException("转运已不在进行中状态，不能修改记录！",transhipDTO.toString());
         }
-        Project project = projectRepository.findOne(transhipDTO.getProjectId());
-        Long receiverId = transhipDTO.getReceiverId();
-        if(receiverId!=null){
-            User user = userRepository.findOne(receiverId);
-            String username = user!=null?(user.getLastName()+user.getFirstName()):null;
-            transhipDTO.setReceiver(user!=null?username:transhipDTO.getReceiver());
+        if(transhipDTO.getProjectId()==null){
+            throw new BankServiceException("项目不能为空！");
         }
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
-        Equipment equipment = new Equipment();Area area = new Area();
-        if(transhipDTO.getTempEquipmentId()!=null){
-            equipment = equipmentRepository.findOne(transhipDTO.getTempEquipmentId());
-        }
-        if(transhipDTO.getTempAreaId()!=null){
-            area = areaRepository.findOne(transhipDTO.getTempAreaId());
-        }
-        int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfTube = 0;
-        final  Integer[] countOfPeople = {0};//样本人份
-        List<Long> boxIds = new ArrayList<Long>();
-        for(FrozenBox box : frozenBoxList){
-            if(transhipDTO.getTempEquipmentId()!=null){
-                box.setEquipment(equipment);
-                box.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
 
-                box.setArea(area);
-                box.setAreaCode(area!=null?area.getAreaCode():null);
-            }
-            frozenBoxRepository.save(box);
-            boxIds.add(box.getId());
-        }
-        if(boxIds.size()>0){
-            countOfEmptyHole = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_HOLE_EMPTY);
-            countOfEmptyTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_EMPTY);
-            countOfTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_NORMAL);
-            //查询临时样本人份
-            List<Object[]> countOfTempSampleCodeGroupBySampleTempCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleTempCode(boxIds);
-            //查询扫码后的样本人份
-            List<Object[]> countOfSampleCodeGroupBySampleCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleCode(boxIds);
-            countOfTempSampleCodeGroupBySampleTempCode.forEach(s->{
-                if(s[0]!=null){
-                    countOfPeople[0]++;
-                }
-            });
-            countOfSampleCodeGroupBySampleCode.forEach(s->{
-                if(s[0]!=null){
-                    countOfPeople[0]++;
-                }
-            });
-        }
-        transhipDTO.setSampleNumber(transhipDTO.getSampleNumber()!=null&& transhipDTO.getSampleNumber()!=0?transhipDTO.getSampleNumber():countOfPeople[0]);
-        transhipDTO.setFrozenBoxNumber(transhipDTO.getFrozenBoxNumber()!=null && transhipDTO.getFrozenBoxNumber()!=0?transhipDTO.getFrozenBoxNumber():frozenBoxList.size());
-        transhipDTO.setEmptyHoleNumber(transhipDTO.getEmptyHoleNumber()!=null && transhipDTO.getEmptyHoleNumber()!=0?transhipDTO.getEmptyHoleNumber():countOfEmptyHole);
-        transhipDTO.setEmptyTubeNumber(transhipDTO.getEmptyTubeNumber()!=null && transhipDTO.getEmptyTubeNumber()!=0?transhipDTO.getEmptyTubeNumber():countOfEmptyTube);
-        transhipDTO.setEffectiveSampleNumber(transhipDTO.getEffectiveSampleNumber()!=null && transhipDTO.getEffectiveSampleNumber()!=0?transhipDTO.getEffectiveSampleNumber():countOfTube);
-        if(frozenBoxList.size()==0){
-            transhipDTO.setProjectCode(project!=null?project.getProjectCode():new String(""));
-            transhipDTO.setProjectName(project!=null?project.getProjectName():new String(""));
-        }else{
-            transhipDTO.setProjectCode(oldTranship.getProjectCode());
-            transhipDTO.setProjectName(oldTranship.getProjectName());
-            transhipDTO.setProjectId(oldTranship.getProject()!=null?oldTranship.getProject().getId():null);
-        }
         if(transhipDTO.getProjectSiteId()!=null){
             ProjectSite projectSite = projectSiteRepository.findOne(transhipDTO.getProjectSiteId());
             transhipDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():new String(""));
             transhipDTO.setProjectSiteName(projectSite!=null?projectSite.getProjectSiteName():new String(""));
         }
+        transhipDTO.setTranshipState(oldTranship.getTranshipState());
+        transhipDTO.setStatus(oldTranship.getStatus());
+        transhipDTO.setProjectCode(oldTranship.getProjectCode());
+        transhipDTO.setProjectName(oldTranship.getProjectName());
+        transhipDTO.setProjectId(oldTranship.getProject()!=null?oldTranship.getProject().getId():null);
+        transhipDTO.setReceiveType(Constants.RECEIVE_TYPE_PROJECT_SITE);
+        return updateTranship(transhipDTO);
 
-        Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
-        tranship.setTranshipState(oldTranship.getTranshipState());
-        tranship.setStatus(oldTranship.getStatus());
-        tranship = transhipRepository.save(tranship);
-        TranshipDTO result = transhipMapper.transhipToTranshipDTO(tranship);
-        return result;
     }
 
     /**
@@ -578,5 +522,107 @@ public class TranshipServiceImpl implements TranshipService{
     public TranshipDTO initReturnBack(Long stockOutApplyId) {
 
         return initTranship(null,null,stockOutApplyId);
+    }
+
+    /**
+     * 修改保存归还记录
+     * @param transhipDTO
+     * @return
+     */
+    @Override
+    public TranshipDTO saveReturnBack(TranshipDTO transhipDTO) {
+        log.debug("Request to save Tranship : {}", transhipDTO);
+        Long transhipId = transhipDTO.getId();
+        if(transhipId == null){
+            throw new BankServiceException("归还记录不存在！",transhipDTO.toString());
+        }
+        Tranship oldTranship = transhipRepository.findOne(transhipDTO.getId());
+
+        if(oldTranship!=null&&(oldTranship.getTranshipState().equals(Constants.TRANSHIPE_IN_STOCKED)
+            || oldTranship.getTranshipState().equals(Constants.TRANSHIPE_IN_STOCKING))){
+
+            throw new BankServiceException("归还已不在进行中状态，不能修改记录！",transhipDTO.toString());
+        }
+        if(transhipDTO.getStockOutApplyId()==null){
+            throw new BankServiceException("申请ID不能为空！");
+        }
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(transhipDTO.getStockOutApplyId());
+        if(stockOutApply == null ||(stockOutApply!=null&&!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVED))){
+            throw new BankServiceException("申请无效！");
+        }
+        transhipDTO.setTranshipState(oldTranship.getTranshipState());
+        transhipDTO.setStatus(oldTranship.getStatus());
+        transhipDTO.setReceiveType(Constants.RECEIVE_TYPE_RETURN_BACK);
+        return updateTranship(transhipDTO);
+    }
+
+    public TranshipDTO updateTranship(TranshipDTO transhipDTO) {
+        if(transhipDTO == null ||(transhipDTO!=null&&transhipDTO.getId()==null)){
+            return null;
+        }
+        Long receiverId = transhipDTO.getReceiverId();
+        if(receiverId!=null){
+            User user = userRepository.findOne(receiverId);
+            String username = user!=null?(user.getLastName()+user.getFirstName()):null;
+            transhipDTO.setReceiver(user!=null?username:transhipDTO.getReceiver());
+        }
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipDTO.getId());
+        Equipment equipment = new Equipment();
+        Area area = new Area();
+        //接收样本的暂存位置，如果转运有了暂存位置，则盒子上的暂存位置也改成相应的位置
+        if(transhipDTO.getTempEquipmentId()!=null){
+            equipment = equipmentRepository.findOne(transhipDTO.getTempEquipmentId());
+        }
+        if(transhipDTO.getTempAreaId()!=null){
+            area = areaRepository.findOne(transhipDTO.getTempAreaId());
+        }
+        int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfTube = 0;
+        final  Integer[] countOfPeople = {0};//样本人份
+        List<Long> boxIds = new ArrayList<Long>();
+        for(FrozenBox box : frozenBoxList){
+            if(transhipDTO.getTempEquipmentId()!=null){
+                box.setEquipment(equipment);
+                box.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
+
+                box.setArea(area);
+                box.setAreaCode(area!=null?area.getAreaCode():null);
+            }
+            frozenBoxRepository.save(box);
+            boxIds.add(box.getId());
+        }
+        if(boxIds.size()>0){
+            countOfEmptyHole = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_HOLE_EMPTY);
+            countOfEmptyTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_EMPTY);
+            countOfTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_NORMAL);
+            //查询临时样本人份
+            List<Object[]> countOfTempSampleCodeGroupBySampleTempCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleTempCode(boxIds);
+            //查询扫码后的样本人份
+            List<Object[]> countOfSampleCodeGroupBySampleCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleCode(boxIds);
+            countOfTempSampleCodeGroupBySampleTempCode.forEach(s->{
+                if(s[0]!=null){
+                    countOfPeople[0]++;
+                }
+            });
+            countOfSampleCodeGroupBySampleCode.forEach(s->{
+                if(s[0]!=null){
+                    countOfPeople[0]++;
+                }
+            });
+        }
+        //判断是否有转运盒，如果有转运盒，项目的编码不能变，如果没有转运盒，项目编码可以改变；
+        if(frozenBoxList.size()==0 && transhipDTO.getProjectId()!=null){
+            Project project = projectRepository.findOne(transhipDTO.getProjectId());
+            transhipDTO.setProjectCode(project!=null?project.getProjectCode():new String(""));
+            transhipDTO.setProjectName(project!=null?project.getProjectName():new String(""));
+        }
+
+        transhipDTO.setSampleNumber(transhipDTO.getSampleNumber()!=null&& transhipDTO.getSampleNumber()!=0?transhipDTO.getSampleNumber():countOfPeople[0]);
+        transhipDTO.setFrozenBoxNumber(transhipDTO.getFrozenBoxNumber()!=null && transhipDTO.getFrozenBoxNumber()!=0?transhipDTO.getFrozenBoxNumber():frozenBoxList.size());
+        transhipDTO.setEmptyHoleNumber(transhipDTO.getEmptyHoleNumber()!=null && transhipDTO.getEmptyHoleNumber()!=0?transhipDTO.getEmptyHoleNumber():countOfEmptyHole);
+        transhipDTO.setEmptyTubeNumber(transhipDTO.getEmptyTubeNumber()!=null && transhipDTO.getEmptyTubeNumber()!=0?transhipDTO.getEmptyTubeNumber():countOfEmptyTube);
+        transhipDTO.setEffectiveSampleNumber(transhipDTO.getEffectiveSampleNumber()!=null && transhipDTO.getEffectiveSampleNumber()!=0?transhipDTO.getEffectiveSampleNumber():countOfTube);
+        Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
+        transhipRepository.save(tranship);
+        return transhipDTO;
     }
 }

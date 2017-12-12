@@ -169,9 +169,6 @@ public class TranshipResource {
     @Timed
     public ResponseEntity<TranshipDTO> saveTranships(@Valid @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
         log.debug("REST request to update Tranship : {}", transhipDTO);
-        if (transhipDTO.getId() == null) {
-            return initTranship();
-        }
         TranshipDTO result = transhipService.save(transhipDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipDTO.getId().toString()))
@@ -293,5 +290,21 @@ public class TranshipResource {
         log.debug("REST request to get Tranship : {}", id);
         TranshipDTO transhipDTO = transhipService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(transhipDTO));
+    }
+
+    /**
+     * 归还记录的修改保存
+     * @param transhipDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/return-back/update-object")
+    @Timed
+    public ResponseEntity<TranshipDTO> saveReturnBack(@Valid @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
+        log.debug("REST request to update Tranship : {}", transhipDTO);
+        TranshipDTO result = transhipService.saveReturnBack(transhipDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipDTO.getId().toString()))
+            .body(result);
     }
 }

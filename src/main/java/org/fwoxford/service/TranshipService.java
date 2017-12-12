@@ -103,4 +103,11 @@ public interface TranshipService {
      * @return
      */
     TranshipDTO initReturnBack(Long stockOutApplyId);
+
+    /**
+     * 修改保存归还记录
+     * @param transhipDTO
+     * @return
+     */
+    TranshipDTO saveReturnBack(TranshipDTO transhipDTO);
 }

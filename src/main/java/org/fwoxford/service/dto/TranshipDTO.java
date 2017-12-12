@@ -416,6 +416,10 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
 
     private String applyPersonName;
 
+    private String applyCode;
+
+    private String delegateName;
+
     public String getReceiveType() {
         return receiveType;
     }
@@ -454,5 +458,21 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setApplyPersonName(String applyPersonName) {
         this.applyPersonName = applyPersonName;
+    }
+
+    public String getApplyCode() {
+        return applyCode;
+    }
+
+    public void setApplyCode(String applyCode) {
+        this.applyCode = applyCode;
+    }
+
+    public String getDelegateName() {
+        return delegateName;
+    }
+
+    public void setDelegateName(String delegateName) {
+        this.delegateName = delegateName;
     }
 }

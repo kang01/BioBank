@@ -315,6 +315,8 @@ public class TranshipServiceImpl implements TranshipService{
             sampleCountByTypeForms.add(sampleCountByTypeForm);
         }
         TranshipDTO transhipDTO = transhipMapper.transhipToTranshipDTO(tranship);
+        transhipDTO.setDelegateName(tranship.getDelegate()!=null?tranship.getDelegate().getDelegateName():null);
+        transhipDTO.setApplyCode(tranship.getStockOutApply()!=null?tranship.getStockOutApply().getApplyCode():null);
         transhipDTO.setSampleCountByTypeForms(sampleCountByTypeForms);
         List<User> userList = userRepository.findAll();
         for(User u :userList){

@@ -1585,6 +1585,12 @@ ul.rating {
     width: 70%;
     padding-top: 10px;
 }
+.parent-color{
+    color: #0066FF;
+}
+.child-color{
+    color: #2CAF2D;
+}
 
 
 

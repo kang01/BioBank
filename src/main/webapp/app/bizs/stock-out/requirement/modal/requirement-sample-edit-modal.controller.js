@@ -48,6 +48,8 @@
         _fnIsUseAge();
         _fnQuerySampleType();
         _fuQueryFrozenTubeType();
+        _fnQueryCheckType();
+
         // vm.sampleRequirement.age = "30;70";
 
         vm.sampleTypeConfig = {
@@ -150,7 +152,6 @@
 
             }
         }
-
         vm.diseaseTypeConfig = {
             valueField:'id',
             labelField:'name',
@@ -158,6 +159,19 @@
             onChange:function (value) {
             }
         };
+        vm.checkTypeConfig = {
+            valueField:'id',
+            labelField:'checkTypeName',
+            maxItems: 1,
+            onChange:function (value) {
+            }
+        };
+        //获取检测类型
+        function _fnQueryCheckType() {
+            RequirementService.queryCheckTypes().success(function (data) {
+                vm.checkTypeOptions = data;
+            });
+        }
         //保存样本需求
         vm.saveSampleRequirement = function (file) {
             BioBankBlockUi.blockUiStart();

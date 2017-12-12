@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.service.dto.response.AreasListAllDataTableEntity;
 import org.fwoxford.service.dto.response.FrozenTubeHistory;
 import org.springframework.core.convert.converter.Converter;
@@ -112,7 +113,7 @@ public interface FrozenTubeHistoryRepositories extends DataTablesRepository<Froz
         "            stockOut.sample_classification_id,\n" +
         "            stockOut.frozen_tube_state,stockOut.CREATED_DATE\n" +
         "\n" +
-        "            from (select * from stock_out_req_frozen_tube  where frozen_tube_id in ?1 and status!='0000') stockOut" +
+        "            from (select * from stock_out_req_frozen_tube t where t.frozen_tube_id in ?1 and t.status!='0000' and t.status != '"+ Constants.STOCK_OUT_SAMPLE_IN_USE_NOT+"') stockOut" +
         "            left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id\n" +
         "            left join frozen_box box on soutbox.frozen_box_id = box.id\n" +
         "            left join  stock_out_task task on soutbox.stock_out_task_id = task.id\n" +

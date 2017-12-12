@@ -22,7 +22,7 @@ public interface StockOutApplyRepositries extends DataTablesRepository<StockOutA
         "            left join stock_out_required_sample s on req.id=s.stock_out_requirement_id\n" +
         "            where req.stock_out_apply_id=ap.id)) as sample_types,\n" +
         "            (select sum(req.count_of_sample) from stock_out_requirement req where req.stock_out_apply_id=ap.id) as count_of_sample,\n" +
-        "           (select count(r.id) from stock_out_req_frozen_tube r left join stock_out_requirement req on r.STOCK_OUT_REQUIREMENT_ID = req.id where req.STOCK_OUT_APPLY_ID = ap.id) as count_of_stock_sample "+
+        "            ap.count_of_stock_sample as count_of_stock_sample ,ap.parent_apply_id"+
         "            from stock_out_apply ap  where ap.parent_apply_id =?1",nativeQuery = true)
     List<StockOutApplyForDataTableEntity> findByParentApplyId(Long id);
 }

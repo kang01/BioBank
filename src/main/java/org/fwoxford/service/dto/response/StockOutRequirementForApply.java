@@ -186,4 +186,23 @@ public class StockOutRequirementForApply {
     public void setImportingFileId(Long importingFileId) {
         this.importingFileId = importingFileId;
     }
+
+    public String sampleTypeName;
+    public String frozenTubeTypeName;
+
+    public String getSampleTypeName() {
+        return sampleTypeName;
+    }
+
+    public void setSampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
+    }
+
+    public String getFrozenTubeTypeName() {
+        return frozenTubeTypeName;
+    }
+
+    public void setFrozenTubeTypeName(String frozenTubeTypeName) {
+        this.frozenTubeTypeName = frozenTubeTypeName;
+    }
 }

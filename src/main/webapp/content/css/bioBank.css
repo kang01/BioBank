@@ -633,7 +633,10 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     width: 89%;
     padding-left: 12px;
 }
-
+/*入库*/
+.transport-code{
+    width: 330px;
+}
 /*.split-box .box-right{*/
 /*width: 330px;*/
 /*}*/
@@ -1694,6 +1697,11 @@ ul.rating {
     .sample-type-num .col-md-1:nth-child(10) {
         margin-left: 12px;
     }
+    /*入库*/
+    .transport-code{
+        width: 580px;
+    }
+
 }
 
 /*1920*/
@@ -1761,6 +1769,10 @@ ul.rating {
 
     .sample-type-num .col-md-1:nth-child(9) {
         margin-left: 18px;
+    }
+    /*入库*/
+    .transport-code{
+        width: 630px;
     }
 }
 

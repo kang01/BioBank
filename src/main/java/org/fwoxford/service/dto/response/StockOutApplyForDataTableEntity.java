@@ -31,7 +31,6 @@ public class StockOutApplyForDataTableEntity {
     /**
      * 样本用途
      */
-    @NotNull
     @JsonView(DataTablesOutput.View.class)
     @Column(name = "purpose_of_sample")
     private String purposeOfSample;
@@ -94,6 +93,9 @@ public class StockOutApplyForDataTableEntity {
     @JsonView(DataTablesOutput.View.class)
     @Column(name = "count_of_stock_sample")
     private Long countOfStockSample;
+
+    @Column(name = "parent_apply_id")
+    private Long parentApplyId;
 
     @Override
     public boolean equals(Object o) {
@@ -202,5 +204,13 @@ public class StockOutApplyForDataTableEntity {
 
     public void setCountOfStockSample(Long countOfStockSample) {
         this.countOfStockSample = countOfStockSample;
+    }
+
+    public Long getParentApplyId() {
+        return parentApplyId;
+    }
+
+    public void setParentApplyId(Long parentApplyId) {
+        this.parentApplyId = parentApplyId;
     }
 }

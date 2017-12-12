@@ -129,11 +129,12 @@ public final class Constants {
         put("isBloodLipid",5);
     }};
     /**
-     * 出库计划状态：1401:进行中，1402：已完成，1490：已作废
+     * 出库计划状态：1401:进行中，1402：已完成，1490：已作废, 1403：已撤销
      */
     public static final String STOCK_OUT_PLAN_INVALID = "1490";
     public static final String STOCK_OUT_PLAN_PENDING = "1401";
     public static final String STOCK_OUT_PLAN_COMPLETED = "1402";
+    public static final String STOCK_OUT_PLAN_REPEAL = "1403";
     /**
      * 出库计划样本状态：1501：新建,1502：撤销出库,1503：已出库
      */
@@ -141,13 +142,14 @@ public final class Constants {
     public static final String STOCK_OUT_PLAN_TUBE_CANCEL = "1502";
     public static final String STOCK_OUT_PLAN_TUBE_COMPLETED = "1503";
     /**
-     * 出库任务状态：1601：待出库，1602：进行中，1603：已出库，1604：异常出库，1690：已作废
+     * 出库任务状态：1601：待出库，1602：进行中，1603：已出库，1604：异常出库，1690：已作废,1605 : 已撤销
      */
     public static final String STOCK_OUT_TASK_NEW = "1601";
     public static final String STOCK_OUT_TASK_PENDING = "1602";
     public static final String STOCK_OUT_TASK_COMPLETED = "1603";
     public static final String STOCK_OUT_TASK_ABNORMAL = "1604";
     public static final String STOCK_OUT_TASK_INVALID = "1690";
+    public static final String STOCK_OUT_TASK_REPEAL = "1605";
     /**
      * 出库冻存盒状态：1701：待出库；1702：已出库；1703：已交接
      */
@@ -348,6 +350,12 @@ public final class Constants {
         put(FROZEN_BOX_STOCK_OUT_HANDOVER,"已交接");
         put(FROZEN_BOX_DESTROY,"已销毁");
     }};
+
+    /**
+     * 接收类型：01 ：项目点； 02：出库归还
+     */
+    public static final String RECEIVE_TYPE_PROJECT_SITE = "01";
+    public static final String RECEIVE_TYPE_RETURN_BACK = "02";
 
     private Constants() {
     }

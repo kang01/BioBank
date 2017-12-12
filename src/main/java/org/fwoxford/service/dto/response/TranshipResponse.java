@@ -95,6 +95,9 @@ public class TranshipResponse {
     @Column(name = "track_number")
     private String trackNumber;
 
+    @Column(name="receive_type",length = 20)
+    private String receiveType;
+
     public Long getId() {
         return id;
     }
@@ -175,6 +178,14 @@ public class TranshipResponse {
         this.trackNumber = trackNumber;
     }
 
+    public String getReceiveType() {
+        return receiveType;
+    }
+
+    public void setReceiveType(String receiveType) {
+        this.receiveType = receiveType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -208,6 +219,7 @@ public class TranshipResponse {
             ", receiveDate='" + receiveDate + "'" +
             ", sampleSatisfaction='" + sampleSatisfaction + "'" +
             ", trackNumber='" + sampleSatisfaction + "'" +
+            ", receiveType='" + receiveType + "'" +
             '}';
     }
 

@@ -17,7 +17,7 @@ public interface StockOutApplyRepository extends JpaRepository<StockOutApply,Lon
 
     StockOutApply findByApplyCode(String applyCode);
 
-    @Query("SELECT T FROM StockOutApply T WHERE T.status='"+ Constants.STOCK_OUT_APPROVED+"' AND T.countOfHandOverSample<T.countOfStockSample")
+    @Query("SELECT T FROM StockOutApply T WHERE T.status='"+ Constants.STOCK_OUT_APPROVED+"' AND (T.countOfHandOverSample<T.countOfStockSample OR T.countOfHandOverSample is null)")
     List<StockOutApply> findUnHandoverApply();
 
     List<StockOutApply> findByStatus(String status);

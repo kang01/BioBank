@@ -6,10 +6,7 @@ import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
-import org.fwoxford.service.ReportExportingService;
-import org.fwoxford.service.StockOutFilesService;
-import org.fwoxford.service.StockOutReqFrozenTubeService;
-import org.fwoxford.service.StockOutRequirementService;
+import org.fwoxford.service.*;
 import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
 import org.fwoxford.service.dto.response.*;
@@ -34,7 +31,6 @@ import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,7 +75,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     private StockOutApplyProjectRepository stockOutApplyProjectRepository;
 
     @Autowired
-    private StockOutFilesService stockOutFilesService;
+    private StockOutApplyService stockOutApplyService;
 
     @Autowired
     private StockOutFilesRepository stockOutFilesRepository;
@@ -95,6 +91,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
     @Autowired
     FrozenTubeRepository frozenTubeRepository;
+
+    @Autowired
+    FrozenBoxRepository frozenBoxRepository;
 
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
@@ -233,6 +232,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 throw new BankServiceException("未查到冻存管类型！");
             }
             requirement.setFrozenTubeType(frozenTubeType);
+            stockOutRequirement.setFrozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName());
         }else{
             requirement.setFrozenTubeType(null);
         }
@@ -242,6 +242,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 throw new BankServiceException("未查到样本类型！");
             }
             requirement.setSampleType(sampleType);
+            stockOutRequirement.setSampleTypeName(sampleType.getSampleTypeName());
         }else{
             requirement.setSampleType(null);
         }
@@ -256,6 +257,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         }
         stockOutRequirementRepository.save(requirement);
         stockOutRequirement.setId(requirement.getId());
+        stockOutRequirement.setSex(Constants.SEX_MAP.get(requirement.getSex())!=null?Constants.SEX_MAP.get(requirement.getSex()).toString():null);
 
         return stockOutRequirement;
     }
@@ -288,7 +290,6 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             Query query = entityManager.createNativeQuery(sql.toString());
             query.setParameter("1", stockOutRequirement.getId()).executeUpdate();
         }
-        Map<String,String> map = new HashMap<>();
         List<JSONObject> jsonArray = new ArrayList<>();
         try {
             String filetype=file.getOriginalFilename().split("\\.")[1];//后缀
@@ -332,23 +333,27 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 e.printStackTrace();
             }
         }
+        //需求样本量
         int countOfSample = 0;
+        //仅指定冻存盒编码的需求
         List<JSONObject> boxCodeList = new ArrayList<JSONObject>();
 
         for(int i = 0 ; i < jsonArray.size() ; i++){
+            //指定样本编码
             if(jsonArray.get(i).get("code")!=null&&!jsonArray.get(i).get("code").equals("")){
                 countOfSample ++ ;
             }else{
                 boxCodeList.add(jsonArray.get(i));
             }
         }
+        //仅指定冻存盒编码的需求根据类型分组，去获取盒内有多少需求样本
         Map<String,List<JSONObject>> mapGroupByType = boxCodeList.stream().collect(Collectors.groupingBy(w->w.getString("type")));
         for(String key :mapGroupByType.keySet()){
             List<JSONObject> boxList= mapGroupByType.get(key);
             List<String> boxCode1DList = new ArrayList<>();
             boxList.forEach(s->boxCode1DList.add(s.getString("frozenBoxCode1D")));
             List<List<String>> boxCode1DListEach1000 = Lists.partition(boxCode1DList,1000);
-            for(List<String> code:boxCode1DListEach1000){
+            for(List<String> code:boxCode1DListEach1000){//每一千个冻存盒取一次
                 Long count = frozenTubeRepository.countByFrozenBoxCode1DInAndSampleType(code,key);
                 countOfSample+=count.intValue();
             }
@@ -407,8 +412,8 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
      * @return
      */
     @Override
-    public StockOutRequirementForApply checkStockOutRequirement(Long id) {
-        StockOutRequirementForApply stockOutRequirementForApply = new StockOutRequirementForApply();
+    public StockOutRequirementForApplyTable checkStockOutRequirement(Long id) {
+        StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();
         StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
         if(stockOutRequirement == null){
             throw new BankServiceException("未查询到需求！");
@@ -416,56 +421,29 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         String status = Constants.STOCK_OUT_REQUIREMENT_CKECKING;
         //获取指定样本
         if(stockOutRequirement.getImportingFileId()!=null){
-            List<StockOutRequiredSampleDTO> stockOutRequiredSamples = new ArrayList<StockOutRequiredSampleDTO>();
-//            List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(id);
             StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(stockOutRequirement.getImportingFileId());
+            //指定样本的JSON串
             String fileContent = stockOutFiles.getFileContent();
             List<JSONObject> jsonArray = JSONArray.fromObject(fileContent);
-            List<StockOutRequiredSampleDTO> stockOutRequiredSampleList = new ArrayList<>();
-            for(int i=0;i<jsonArray.size();i++){
-                StockOutRequiredSampleDTO stockOutRequiredSample = new StockOutRequiredSampleDTO();
-                String boxCode1D = jsonArray.get(i).getString("frozenBoxCode1D");
-                stockOutRequiredSample.setFrozenBoxCode1D(boxCode1D);
-                String type = jsonArray.get(i).getString("type");
-                String sampleCode = jsonArray.get(i).getString("code");
-                stockOutRequiredSample.setSampleCode(sampleCode);
-                stockOutRequiredSample.setSampleType(type);
-                if(!StringUtils.isEmpty(boxCode1D) && StringUtils.isEmpty(sampleCode)){
-                    stockOutRequiredSampleList.add(stockOutRequiredSample);
-                }else {
-                    stockOutRequiredSamples.add(stockOutRequiredSample);
-                }
-            }
-            Map<String, List<StockOutRequiredSampleDTO>> boxListGroupByType =
-                stockOutRequiredSampleList.stream().collect(Collectors.groupingBy(w -> w.getSampleType()));
-            for(String type :boxListGroupByType.keySet()){
-                List<StockOutRequiredSampleDTO> boxCodeListGroupByType = boxListGroupByType.get(type);
-                List<String> codeList = new ArrayList<>();
-                boxCodeListGroupByType.forEach(s->codeList.add(s.getFrozenBoxCode1D()));
-                List<List<String>> boxCodeListEach1000 = Lists.partition(codeList, 1000);
-                for( List<String> code : boxCodeListEach1000){
-                    List<Object[]> sampleList = frozenTubeRepository.findByFrozenBoxCode1DInAndSampleType(code,type);
-                    for(Object[] obj :sampleList){
-                        StockOutRequiredSampleDTO stockOutRequiredSample = new StockOutRequiredSampleDTO();
-                        if(obj[0] != null){
-                            stockOutRequiredSample.setSampleCode(obj[0].toString());
-                            stockOutRequiredSample.setSampleType(type);
-                            stockOutRequiredSamples.add(stockOutRequiredSample);
-                        }
-                    }
-                }
-            }
-            //核对导入指定样本
-            status = stockOutReqFrozenTubeService.checkStockOutSampleByAppointedSample(stockOutRequiredSamples,stockOutRequirement);
+            status = stockOutReqFrozenTubeService.checkStockOutSampleByAppointedSampleOrAppointedBox(jsonArray,stockOutRequirement);
+
+//            status = stockOutReqFrozenTubeService.checkStockOutSampleByAppointedSample(stockOutRequiredSamples,stockOutRequirement);
         }else{
             //核对录入部分需求
             status = stockOutReqFrozenTubeService.checkStockOutSampleByRequirement(stockOutRequirement);
         }
         stockOutRequirement.setStatus(status);
         stockOutRequirementRepository.save(stockOutRequirement);
-        stockOutRequirementForApply.setId(id);
-        stockOutRequirementForApply.setStatus(status);
-        return stockOutRequirementForApply;
+        stockOutRequirementForApplyTable = stockOutApplyService.stockOutRequirementToStockOutRequirementForApplyTable(stockOutRequirement);
+        StockOutApply apply = stockOutRequirement.getStockOutApply();
+        if(apply==null || (apply!=null&&apply.getId() == null)){
+            throw new BankServiceException("核对的需求未查询到相应的申请！");
+        }
+        Long countOfStockOutPlanSample = stockOutReqFrozenTubeRepository.countByApply(apply.getId());
+        apply.countOfStockSample(countOfStockOutPlanSample.intValue());
+        stockOutApplyRepository.save(apply);
+
+        return stockOutRequirementForApplyTable;
     }
 
     @Override
@@ -475,12 +453,8 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         if(stockOutRequirement == null){
             throw new BankServiceException("未查询到样本需求！");
         }
-//        List<StockOutReqFrozenTube> stockOutRequiredSamples = stockOutReqFrozenTubeRepository.findByStockOutRequirementId(id);
-//        int countOfStockOutSample = stockOutReqFrozenTubeRepository.countByStockOutRequirementId(id);
-
         details.setId(id);
         details.setSex(stockOutRequirement.getSex());
-//        details.setCountOfStockOutSample(countOfStockOutSample);
         details.setCountOfStockOutSample(stockOutRequirement.getCountOfSampleReal());
         details.setCountOfSample(stockOutRequirement.getCountOfSample());
         details.setMemo(stockOutRequirement.getMemo());
@@ -532,8 +506,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
      * @return
      */
     @Override
-    public StockOutRequirementForApply revertStockOutRequirement(Long id) {
-        StockOutRequirementForApply stockOutRequirementForApply = new StockOutRequirementForApply();
+    public StockOutRequirementForApplyTable revertStockOutRequirement(Long id) {
         StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
         if(stockOutRequirement == null){
             throw new BankServiceException("未查询到样本需求！");
@@ -543,6 +516,12 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         stockOutRequirementRepository.save(stockOutRequirement);
         //删除核对通过的样本
 //        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
+//        List<Object> stockOutFrozenTubeObjStr = stockOutReqFrozenTubeRepository.findRowIdByStockOutRequirementId(id);
+//        List<List<Object>> stockOutFrozenTubeEach1000 = Lists.partition(stockOutFrozenTubeObjStr,1000);
+//        for(List<Object> ids : stockOutFrozenTubeEach1000){
+//
+//            stockOutReqFrozenTubeRepository.deleteByIdsIn(ids);
+//        }
         StringBuffer sql = new StringBuffer();
         sql.append("delete from stock_out_req_frozen_tube where stock_out_requirement_id = ?1");
 
@@ -550,10 +529,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         query.setParameter("1", id).executeUpdate();
 
 
-//        int a = 1/0;
-        stockOutRequirementForApply.setId(id);
-        stockOutRequirementForApply.setStatus(stockOutRequirement.getStatus());
-        return stockOutRequirementForApply;
+        return stockOutApplyService.stockOutRequirementToStockOutRequirementForApplyTable(stockOutRequirement);
     }
 
     /**
@@ -562,7 +538,8 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
      * @return
      */
     @Override
-    public void batchCheckStockOutRequirement(List<Long> ids) {
+    public  List<StockOutRequirementForApplyTable> batchCheckStockOutRequirement(List<Long> ids) {
+        List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<>();
         //查询全部样本需求
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByIdInAndStatusNot(ids,Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS);
 
@@ -570,9 +547,11 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             Map<Double,StockOutRequirement> map = getOrderStockOutRequirement(stockOutRequirementList);
             for(Double d :map.keySet()){
                 StockOutRequirement stockOutRequirements = map.get(d);
-                checkStockOutRequirement(stockOutRequirements.getId());
+                StockOutRequirementForApplyTable stockOutRequirementForApplyTable = checkStockOutRequirement(stockOutRequirements.getId());
+                stockOutRequirementForApplyTables.add(stockOutRequirementForApplyTable);
             }
         }
+        return stockOutRequirementForApplyTables;
     }
     /**
      * 权重说明：SUM（权重系数）/ COUNT(权重系数) = 权重
@@ -655,12 +634,15 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
      */
     @Override
     public ByteArrayOutputStream printStockOutRequirementDetailReport(Long id) {
+        //打印出库申请详情--构造
         StockOutRequirementDetailReportDTO requirementDTO = checkStockOutRequirementDetailReportDTO(id);
         ByteArrayOutputStream outputStream = reportExportingService.makeStockOutRequirementCheckReport(requirementDTO);
         return outputStream;
     }
-
-    private StockOutRequirementDetailReportDTO checkStockOutRequirementDetailReportDTO(Long id) {
+    /**
+     *  打印出库申请详情--构造
+     */
+    public StockOutRequirementDetailReportDTO checkStockOutRequirementDetailReportDTO(Long id) {
         StockOutRequirementDetailReportDTO report = new StockOutRequirementDetailReportDTO();
         StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
         if(stockOutRequirement == null){

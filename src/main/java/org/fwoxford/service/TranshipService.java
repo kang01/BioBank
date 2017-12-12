@@ -53,7 +53,7 @@ public interface TranshipService {
      * @param input
      * @return
      */
-    DataTablesOutput<TranshipResponse> findAllTranship(DataTablesInput input);
+    DataTablesOutput<TranshipResponse> findAllTranship(DataTablesInput input,String receiveType);
 
     /**
      * 根据转运记录ID查询转运记录以及冻存盒信息

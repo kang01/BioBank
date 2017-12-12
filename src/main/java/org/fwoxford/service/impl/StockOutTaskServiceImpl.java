@@ -270,7 +270,7 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             .stockOutDate(LocalDate.now()).countOfStockOutSample(0);
 
         stockOutTask = stockOutTaskRepository.save(stockOutTask);
-        List<StockOutTaskFrozenTube> tubes = new ArrayList<StockOutTaskFrozenTube>();
+
         //查询出计划下的所有需求
         List<Long> stockOutRequirementIds =stockOutRequirementRepository.findRequirementByStockOutApplyId(stockOutPlan.getStockOutApply().getId());
         StringBuffer sql = new StringBuffer();
@@ -286,20 +286,6 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(stockOutTask.getId(),statusList);
         stockOutTask.countOfStockOutSample(countOfStockOutSample.intValue());
         stockOutTask = stockOutTaskRepository.save(stockOutTask);
-
-//        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findAllByStockOutRequirementIdInAndFrozenBoxIdIn(stockOutRequirementIds,boxIds);
-//        List<StockOutReqFrozenTube> stockOutReqFrozenTubesLast = new ArrayList<>();
-//        for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){
-//            s.setStockOutTask(stockOutTask);
-//            stockOutReqFrozenTubesLast.add(s);
-//            if(stockOutReqFrozenTubesLast.size()>=1000){
-//                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
-//                stockOutReqFrozenTubesLast = new ArrayList<StockOutReqFrozenTube>();
-//            }
-//        }
-//        if(stockOutReqFrozenTubesLast.size()>0){
-//            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
-//        }
         StockOutTaskDTO result = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
         return result;
     }
@@ -313,7 +299,19 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             throw new BankServiceException("计划不存在！");
         }
         List<StockOutTask> stockOutTasks = stockOutTaskRepository.findByStockOutPlanId(id);
-        return stockOutTaskMapper.stockOutTasksToStockOutTaskDTOs(stockOutTasks);
+        List<StockOutTask> unStockOutTask = new ArrayList<>();
+        List<String> statusList = new ArrayList<>();
+        statusList.add(Constants.STOCK_OUT_SAMPLE_IN_USE);
+        statusList.add(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+        statusList.add(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
+        for(StockOutTask s : stockOutTasks){
+            Long count = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(s.getId(),statusList);
+            if(count.intValue()>0){
+                unStockOutTask.add(s);
+            }
+        }
+
+        return stockOutTaskMapper.stockOutTasksToStockOutTaskDTOs(unStockOutTask);
     }
 
     @Override

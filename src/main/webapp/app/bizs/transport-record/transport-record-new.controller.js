@@ -104,6 +104,9 @@
             if(vm.transportRecord.projectId){
                 ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError);
             }
+            if(vm.transportRecord.tempEquipmentId){
+                AreasByEquipmentIdService.query({id:vm.transportRecord.tempEquipmentId},onTransportRecordAreaSuccess, onError);
+            }
             //盒子类型
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
             //项目
@@ -1228,6 +1231,7 @@
             //设备
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = _.orderBy(data,['equipmentCode'],['asc']);
+                vm.transportRecordPlaceOptions = _.orderBy(data,['equipmentCode'],['asc']);
             }
             //盒子位置
             vm.frozenBoxPlaceConfig = {
@@ -1254,11 +1258,6 @@
                     }
                 }
             };
-            //区域
-            function onAreaSuccess(data) {
-                vm.frozenBoxAreaOptions = data;
-                vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
-            }
             vm.frozenBoxAreaConfig = {
                 valueField:'id',
                 labelField:'areaCode',
@@ -1282,6 +1281,29 @@
                     }
 
 
+                }
+            };
+
+            vm.transportRecordPlaceConfig = {
+                valueField:'id',
+                labelField:'equipmentCode',
+                maxItems: 1,
+                onChange:function (value) {
+                    vm.transportRecord.tempAreaId = "";
+                    if(value){
+                        AreasByEquipmentIdService.query({id:value},onTransportRecordAreaSuccess, onError);
+                    }else{
+                        vm.transportRecordAreaOptions = [];
+                        vm.transportRecordAreaOptions.push({id:"",areaCode:""});
+                        $scope.$apply();
+                    }
+                }
+            };
+            vm.transportRecordAreaConfig = {
+                valueField:'id',
+                labelField:'areaCode',
+                maxItems: 1,
+                onChange:function (value) {
                 }
             };
             //架子
@@ -1448,6 +1470,15 @@
         }
         //查询转运记录
         vm.queryTransportRecord = _fuQueryTransportRecord;
+        //区域
+        function onAreaSuccess(data) {
+            vm.frozenBoxAreaOptions = data;
+            vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
+        }
+        function onTransportRecordAreaSuccess(data) {
+            vm.transportRecordAreaOptions = data;
+            vm.transportRecordAreaOptions.push({id:"",areaCode:""});
+        }
         function _fuQueryTransportRecord() {
             TransportRecordService.get({id : vm.transportRecord.id},onRecordSuccess,onError);
         }

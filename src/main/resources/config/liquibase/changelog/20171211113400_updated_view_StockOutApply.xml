@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutApply.
+    -->
+    <changeSet id="20171211113400-1" author="jhipster">
+        <dropView viewName="view_stock_out_apply"></dropView>
+    </changeSet>
+
+    <changeSet id="20171211113400-2" author="jhipster">
+        <createView viewName="view_stock_out_apply">
+            SELECT
+            ap.id,ap.purpose_of_sample,0 as level_no,
+            (case when ap.start_time is not null then (TO_CHAR(ap.start_time,'yyyy-MM-dd')||'至'||TO_CHAR(ap.end_time,'yyyy-MM-dd')) else null end )  as apply_time,ap.apply_person_name,ap.apply_code,ap.status,
+            (select d.delegate_name from delegate d where d.id = ap.delegate_id) as delegate_name,
+            (select LISTAGG(TO_CHAR(sample),',') WITHIN GROUP (ORDER BY sample)
+                from
+                    (select distinct s.sample_type_name as sample
+                        from stock_out_requirement req
+                        left join sample_type s on req.sample_type_id=s.id
+                        where req.stock_out_apply_id=ap.id
+                     )
+            )as sample_types,
+            (select sum(req.count_of_sample) from stock_out_requirement req where req.stock_out_apply_id=ap.id) as count_of_sample,
+            ap.count_of_stock_sample,ap.parent_apply_id
+            FROM stock_out_apply ap
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

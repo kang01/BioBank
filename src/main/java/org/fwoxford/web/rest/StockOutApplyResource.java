@@ -179,6 +179,18 @@ public class StockOutApplyResource {
         List<StockOutApplyForDataTableEntity> result =  stockOutApplyService.getNextStockOutApplyList(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
+    /**
+     * 根据二级申请ID，取上一级出库申请
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/secondApply/{id}")
+    @Timed
+    public ResponseEntity<List<StockOutApplyForDataTableEntity>> getLastStockOutApplyList(@PathVariable Long id) throws URISyntaxException {
+        List<StockOutApplyForDataTableEntity> result =  stockOutApplyService.getLastStockOutApplyList(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
 
     /**
      * 出库申请，查看详情接口
@@ -320,6 +332,19 @@ public class StockOutApplyResource {
     @Timed
     public ResponseEntity<List<StockOutApplyDTO>> getStockOutApplyListOfApproved(){
         List<StockOutApplyDTO> result = stockOutApplyService.findAllStockOutApplyListOfApproved();
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
+    /**
+     * 根据申请编码获取申请详细信息
+     * @param applyCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/applyCode/{applyCode}")
+    @Timed
+    public ResponseEntity<StockOutApplyDTO> getByStockOutCode(@PathVariable String applyCode) throws URISyntaxException {
+        StockOutApplyDTO result = stockOutApplyService.findStockOutApplyByApplyCode(applyCode);
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 }

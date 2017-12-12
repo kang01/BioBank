@@ -86,11 +86,14 @@
                     var $box = $("<div class='transport-box'/>");
                     //盒子title
                     var $title = $("<div class='transport-box-title row m-0'></div>");
-                    var $boxTitleLeft = $("<div  class='col-md-4 box-title-left pl-0'/>");
-                    var $boxTitleRight = $("<div class='col-md-8 box-title-right pr-0 text-right'></div>");
+                    var $boxTitleLeft = $("<div  class='col-md-11 box-title-left pl-0'/>");
+                    var $boxTitleRight = $("<div class='col-md-1 box-title-right pr-0 text-right'></div>");
                     var $iconExpand = $("<i name='extend' class='fa fa-expand'></i>");
                     var $iconCompress = $("<i name='compress' class='fa fa-compress'></i>");
-                    $boxTitleLeft.text(box.frozenBoxCode);
+                    var status = MasterData.getFrozenBoxStatus(box.status);
+                    var sampleTypeName = box.sampleClassificationName ? box.sampleClassificationName : box.sampleTypeName;
+                    $boxTitleLeft.html("<span class='box-code'>"+box.frozenBoxCode+"</span><span>&nbsp;"+sampleTypeName+"&nbsp;</span><span>"+status+"</span>");
+                    // $boxTitleLeft.text(box.frozenBoxCode);
                     //盒子body 需要画出来
                     var $boxBody = drawTube(box,1);
                     $box.width($boxBody.outerWidth());
@@ -263,7 +266,7 @@
                         //展开的盒子
                         var compressBox = {};
                         var $box = $($boxTitleRight[i]).closest(".transport-box");
-                        var boxCode = $box.children('.transport-box-title').text();
+                        var boxCode = $box.find('.box-code').text();
                         compressBox = _.find(vm.boxList,{"frozenBoxCode":boxCode});
                         $($boxTitleRight[i]).empty();
                         $iconExpand.appendTo($boxTitleRight[i]);

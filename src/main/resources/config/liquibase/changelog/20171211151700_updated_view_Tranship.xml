@@ -6,11 +6,11 @@
     <!--
         Added the view for entity TranshipResponse.
     -->
-    <changeSet id="20171211151700-1" author="jhipster">
+    <changeSet id="20171211151701-1" author="jhipster">
         <dropView viewName="view_tranship"></dropView>
     </changeSet>
 
-    <changeSet id="20171211151700-2" author="jhipster">
+    <changeSet id="20171211151701-2" author="jhipster">
         <createView viewName="view_tranship">
             SELECT
             t.id,
@@ -22,8 +22,9 @@
             t.tranship_state,
             t.sample_satisfaction,t.track_number,
             (select u.last_name||u.first_name from jhi_user u where u.id=t.receiver_id) as receiver,
-            receive_type
+            receive_type,s.apply_code,t.return_back_people
             FROM  tranship t
+            LEFT JOIN stock_out_apply s on t.stock_out_apply_id = s.id
         </createView>
     </changeSet>
 

@@ -95,8 +95,17 @@ public class TranshipResponse {
     @Column(name = "track_number")
     private String trackNumber;
 
-    @Column(name="receive_type",length = 20)
+    @Column(name="receive_type")
     private String receiveType;
+
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "apply_code")
+    private String applyCode;
+
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name="return_back_people")
+    private String returnBackPeople;
+
 
     public Long getId() {
         return id;
@@ -186,6 +195,22 @@ public class TranshipResponse {
         this.receiveType = receiveType;
     }
 
+    public String getApplyCode() {
+        return applyCode;
+    }
+
+    public void setApplyCode(String applyCode) {
+        this.applyCode = applyCode;
+    }
+
+    public String getReturnBackPeople() {
+        return returnBackPeople;
+    }
+
+    public void setReturnBackPeople(String returnBackPeople) {
+        this.returnBackPeople = returnBackPeople;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -220,6 +245,8 @@ public class TranshipResponse {
             ", sampleSatisfaction='" + sampleSatisfaction + "'" +
             ", trackNumber='" + sampleSatisfaction + "'" +
             ", receiveType='" + receiveType + "'" +
+            ", applyCode='" + applyCode + "'" +
+            ", returnBackPeople='" + returnBackPeople + "'" +
             '}';
     }
 

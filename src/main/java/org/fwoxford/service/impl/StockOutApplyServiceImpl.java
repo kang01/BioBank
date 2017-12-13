@@ -772,6 +772,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         //获取本次出库申请的申请项目信息
         List<Project> projects = stockOutApplyProjectRepository.findProjectByStockOutApplyId(stockOutApply.getId());
         List<ProjectDTO> projectDTOS = projectMapper.projectsToProjectDTOs(projects);
+        projectDTOS.forEach(s->{
+            s.setProjectName(s.getProjectCode()+","+s.getProjectName());
+        });
         stockOutApplyDTO.setProjectDTOS(projectDTOS);
         return stockOutApplyDTO;
     }

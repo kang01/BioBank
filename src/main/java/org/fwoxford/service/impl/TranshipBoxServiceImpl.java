@@ -2,6 +2,7 @@ package org.fwoxford.service.impl;
 
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.Order;
+import liquibase.util.CollectionUtil;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -30,6 +31,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing TranshipBox.
@@ -85,6 +87,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     private FrozenTubeCheckService frozenTubeCheckService;
     @Autowired
     private StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
+    @Autowired
+    private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
 
     /**
      * Save a transhipBox.
@@ -888,7 +892,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
      */
     @Override
     public List<FrozenBoxAndFrozenTubeResponse> getStockOutFrozenBoxAndSample(String applyCode, String frozenBoxCodeStr) {
-
+        //定义返回结果
+        List<FrozenBoxAndFrozenTubeResponse> frozenBoxAndFrozenTubeResponses = new ArrayList<>();
         //从出库中获取
         String[] boxCodeStr = frozenBoxCodeStr.split(",");
         List<String> boxCodeList = Arrays.asList(boxCodeStr);
@@ -899,11 +904,25 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         for(List<String> boxCodes :boxCodeEach500){
             //从出库冻存盒中获取出库盒和出库样本的信息
             List<StockOutFrozenBox> stockOutFrozenBoxes = stockOutFrozenBoxRepository.findByFrozenBoxCodeAndStockOutApply(boxCodes,applyCode);
+            //获取出库冻存盒ID串
+            List<Long> stockOutFrozenBoxIds = stockOutFrozenBoxes.stream().map(s->s.getId()).collect(Collectors.toList());
+            //根据出库冻存盒ID查询出库样本
+            List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxIdIn(stockOutFrozenBoxIds);
+            //从出库冻存盒中查出冻存盒信息
+            List<FrozenBox> frozenBoxList = stockOutFrozenBoxes.stream().map(s->s.getFrozenBox()).collect(Collectors.toList());
+            //从出库样本中查询出样本的信息
+            List<FrozenTube> frozenTubeList = stockOutReqFrozenTubes.stream().map(s->s.getFrozenTube()).collect(Collectors.toList());
+            List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapper.frozenTubesToFrozenTubeDTOsForSample(frozenTubeList);
+            //将样本信息根据冻存盒ID进行分组
+            Map<Long,List<FrozenTubeDTO>> frozenTubeMapGroupByFrozenBoxId = frozenTubeDTOS.stream().collect(Collectors.groupingBy(s->s.getFrozenBoxId()));
+            List<FrozenBoxAndFrozenTubeResponse> frozenBoxAndFrozenTubeResponse = frozenBoxMapper.forzenBoxsAndTubesToFrozenBoxAndFrozenTubeResponses(frozenBoxList,frozenTubeMapGroupByFrozenBoxId);
+            frozenBoxAndFrozenTubeResponses.addAll(frozenBoxAndFrozenTubeResponse);
             stockOutFrozenBoxList.addAll(stockOutFrozenBoxes);
         }
 
         //验证 todo(1) 是否所有的冻存盒都是同一个项目，如果不是，需要根据项目拆成不同的归还记录；（2）是否冻存盒都在此次出库申请下
 
-        return null;
+
+        return frozenBoxAndFrozenTubeResponses;
     }
 }

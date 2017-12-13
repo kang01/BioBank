@@ -1,11 +1,16 @@
 package org.fwoxford.service.mapper;
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 
 import org.mapstruct.*;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Mapper for the entity FrozenBox and its DTO FrozenBoxDTO.
@@ -122,6 +127,8 @@ public interface FrozenBoxMapper {
         res.setProjectId(frozenBox.getProject()!=null?frozenBox.getProject().getId():null);
         res.setProjectCode(frozenBox.getProjectCode());
         res.setProjectName(frozenBox.getProjectName());
+        res.setMemo(frozenBox.getMemo());
+        res.setCountOfSample(frozenBox.getCountOfSample());
         SampleType sampleType = frozenBox.getSampleType();
         if(sampleType!=null){
             res.setSampleTypeId(sampleType.getId());
@@ -221,4 +228,21 @@ public interface FrozenBoxMapper {
         }
         return stockInBoxForIncomplete;
     }
+
+    default List<FrozenBoxAndFrozenTubeResponse> forzenBoxsAndTubesToFrozenBoxAndFrozenTubeResponses(List<FrozenBox> frozenBoxes, Map<Long, List<FrozenTubeDTO>> frozenTubeMapGroupByFrozenBoxId){
+        if(frozenBoxes == null){
+            return null;
+        }
+        List<FrozenBoxAndFrozenTubeResponse> frozenBoxAndFrozenTubeResponses = new ArrayList<>();
+        for(FrozenBox frozenBox :frozenBoxes){
+            FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse = forzenBoxAndTubeToResponse(frozenBox);
+            frozenBoxAndFrozenTubeResponse.setIsRealData(Constants.YES);
+            frozenBoxAndFrozenTubeResponse.setIsSplit(Constants.NO);
+            frozenBoxAndFrozenTubeResponse.setFrozenTubeDTOS(frozenTubeMapGroupByFrozenBoxId.get(frozenBox.getId()));
+            frozenBoxAndFrozenTubeResponses.add(frozenBoxAndFrozenTubeResponse);
+        }
+
+        return frozenBoxAndFrozenTubeResponses;
+    }
+
 }

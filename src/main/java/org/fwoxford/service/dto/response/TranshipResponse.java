@@ -97,15 +97,24 @@ public class TranshipResponse {
 
     @Column(name="receive_type")
     private String receiveType;
-
+    /**
+     * 申请编码
+     */
     @JsonView(DataTablesOutput.View.class)
     @Column(name = "apply_code")
     private String applyCode;
-
+    /**
+     * 归还人
+     */
     @JsonView(DataTablesOutput.View.class)
-    @Column(name="return_back_people")
-    private String returnBackPeople;
-
+    @Column(name="apply_person_name")
+    private String applyPersonName;
+    /**
+     * 委托方名称
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name="delegate_name")
+    private String delegateName;
 
     public Long getId() {
         return id;
@@ -203,12 +212,20 @@ public class TranshipResponse {
         this.applyCode = applyCode;
     }
 
-    public String getReturnBackPeople() {
-        return returnBackPeople;
+    public String getApplyPersonName() {
+        return applyPersonName;
     }
 
-    public void setReturnBackPeople(String returnBackPeople) {
-        this.returnBackPeople = returnBackPeople;
+    public void setApplyPersonName(String applyPersonName) {
+        this.applyPersonName = applyPersonName;
+    }
+
+    public String getDelegateName() {
+        return delegateName;
+    }
+
+    public void setDelegateName(String delegateName) {
+        this.delegateName = delegateName;
     }
 
     @Override
@@ -246,7 +263,8 @@ public class TranshipResponse {
             ", trackNumber='" + sampleSatisfaction + "'" +
             ", receiveType='" + receiveType + "'" +
             ", applyCode='" + applyCode + "'" +
-            ", returnBackPeople='" + returnBackPeople + "'" +
+            ", applyPersonName='" + applyPersonName + "'" +
+            ", delegateName='" + delegateName + "'" +
             '}';
     }
 

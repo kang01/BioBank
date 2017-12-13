@@ -150,7 +150,7 @@ public class TranshipBoxResource {
     public ResponseEntity<TranshipBoxListForSaveBatchDTO> createTranshipBox(@Valid @RequestBody TranshipBoxListDTO transhipBoxListDTO) throws URISyntaxException {
         log.debug("REST request to save TranshipBox : {}", transhipBoxListDTO);
         TranshipBoxListForSaveBatchDTO result = transhipBoxService.saveBatchTranshipBox(transhipBoxListDTO);
-        return ResponseEntity.created(new URI("/api/frozen-boxes/id/" + result.getTranshipId()))
+        return ResponseEntity.created(new URI("/api/tranships/id/" + result.getTranshipId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getTranshipId().toString()))
             .body(result);
     }
@@ -258,5 +258,35 @@ public class TranshipBoxResource {
     @RequestMapping(value = "/res/return-boxes/transhipCode/{transhipCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<FrozenBoxCodeForTranshipDTO> getFrozenBoxCodeByTranshipCodeForReturnBack(@PathVariable String transhipCode, @RequestBody DataTablesInput input) {
         return transhipBoxService.getPageFrozenBoxCodeByTranshipCode(transhipCode,input);
+    }
+
+    /**
+     * 归还冻存盒的保存
+     * @param transhipBoxListDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/return-boxes/batch")
+    @Timed
+    public ResponseEntity<TranshipBoxListForSaveBatchDTO> createTranshipBoxForReturn(@Valid @RequestBody TranshipBoxListDTO transhipBoxListDTO) throws URISyntaxException {
+        log.debug("REST request to save TranshipBox For return back box: {}", transhipBoxListDTO);
+        TranshipBoxListForSaveBatchDTO result = transhipBoxService.saveBatchTranshipBoxForReturn(transhipBoxListDTO);
+        return ResponseEntity.created(new URI("/api/return-back/id/" + result.getTranshipId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getTranshipId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 根据出库申请编码和冻存盒编码串获取出库冻存盒和样本信息
+     * @param applyCode
+     * @param frozenBoxCodeStr
+     * @return
+     */
+    @GetMapping("/return-boxes/stockOutApply/{applyCode}/frozenBoxCode/{frozenBoxCodeStr}")
+    @Timed
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getStockOutFrozenBoxAndSample(@PathVariable String applyCode, @PathVariable String frozenBoxCodeStr) {
+        log.debug("REST request to import FrozenBox And FrozenTubeDTOs From StockOutBox: {}", frozenBoxCodeStr);
+        List<FrozenBoxAndFrozenTubeResponse> res = transhipBoxService.getStockOutFrozenBoxAndSample(applyCode, frozenBoxCodeStr);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

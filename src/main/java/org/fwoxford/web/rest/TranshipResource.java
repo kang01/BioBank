@@ -269,11 +269,11 @@ public class TranshipResource {
      * @return
      * @throws URISyntaxException
      */
-    @PostMapping("/return-back/new-empty/{stockOutApplyId}")
+    @PostMapping("/return-back/new-empty/stockOutApply/{stockOutApplyId}/project/{projectId}")
     @Timed
-    public ResponseEntity<TranshipDTO> initReturnBack(@PathVariable Long stockOutApplyId) throws URISyntaxException {
-        log.debug("REST request to create Tranship first");
-        TranshipDTO result = transhipService.initReturnBack(stockOutApplyId);
+    public ResponseEntity<TranshipDTO> initReturnBack(@PathVariable Long stockOutApplyId,@PathVariable Long projectId) throws URISyntaxException {
+        log.debug("REST request to create Tranship For ReturnBack");
+        TranshipDTO result = transhipService.initReturnBack(projectId,stockOutApplyId);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

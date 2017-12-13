@@ -99,10 +99,11 @@ public interface TranshipService {
 
     /**
      * 初始化归还记录
+     * @param projectId
      * @param stockOutApplyId
      * @return
      */
-    TranshipDTO initReturnBack(Long stockOutApplyId);
+    TranshipDTO initReturnBack(Long projectId ,Long stockOutApplyId);
 
     /**
      * 修改保存归还记录

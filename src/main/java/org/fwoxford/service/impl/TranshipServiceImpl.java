@@ -44,51 +44,41 @@ public class TranshipServiceImpl implements TranshipService{
     private final TranshipMapper transhipMapper;
     private  TranshipRepositries transhipRepositries;
     @Autowired
-    private FrozenBoxService frozenBoxService;
+    FrozenBoxService frozenBoxService;
     @Autowired
-    private FrozenTubeService frozenTubeService;
+    FrozenBoxRepository frozenBoxRepository;
     @Autowired
-    private FrozenBoxMapper frozenBoxMapper;
+    FrozenTubeRepository frozenTubeRepository;
     @Autowired
-    private FrozenTubeMapper frozenTubeMapper;
+    ProjectRepository projectRepository;
     @Autowired
-    private TranshipBoxService transhipBoxService;
+    ProjectSiteRepository projectSiteRepository;
     @Autowired
-    private FrozenTubeTypeService frozenTubeTypeService;
+    TranshipBoxRepository transhipBoxRepository;
     @Autowired
-    private SampleTypeService sampleTypeService;
+    UserRepository userRepository;
     @Autowired
-    private FrozenBoxRepository frozenBoxRepository;
+    EquipmentRepository equipmentRepository;
     @Autowired
-    private FrozenTubeRepository frozenTubeRepository;
+    AreaRepository areaRepository;
     @Autowired
-    private ProjectRepository projectRepository;
+    BankUtil bankUtil;
     @Autowired
-    private ProjectSiteRepository projectSiteRepository;
+    UserService userService;
     @Autowired
-    private TranshipBoxRepository transhipBoxRepository;
+    StockInRepository stockInRepository;
     @Autowired
-    private UserRepository userRepository;
+    TranshipTubeRepository transhipTubeRepository;
     @Autowired
-    private EquipmentRepository equipmentRepository;
+    StockOutApplyRepository stockOutApplyRepository;
     @Autowired
-    private AreaRepository areaRepository;
+    AttachmentRepository attachmentRepository;
     @Autowired
-    private BankUtil bankUtil;
+    AttachmentMapper attachmentMapper;
     @Autowired
-    private UserService userService;
+    StockOutFilesRepository stockOutFilesRepository;
     @Autowired
-    private  StockInRepository stockInRepository;
-    @Autowired
-    private TranshipTubeRepository transhipTubeRepository;
-    @Autowired
-    private StockOutApplyRepository stockOutApplyRepository;
-    @Autowired
-    private AttachmentRepository attachmentRepository;
-    @Autowired
-    private AttachmentMapper attachmentMapper;
-    @Autowired
-    private StockOutFilesRepository stockOutFilesRepository;
+    StockOutApplyProjectRepository stockOutApplyProjectRepository;
 
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
@@ -344,8 +334,9 @@ public class TranshipServiceImpl implements TranshipService{
         tranship.setSampleNumber(0);
         tranship.setEffectiveSampleNumber(0);
         tranship.setReceiveType(Constants.RECEIVE_TYPE_PROJECT_SITE);
+        Project project = new Project();
         if (projectId != null){
-            Project project = projectRepository.findOne(projectId);
+            project = projectRepository.findOne(projectId);
             tranship.setProject(project);
             tranship.setProjectCode(project.getProjectCode());
             tranship.setProjectName(project.getProjectName());
@@ -364,6 +355,13 @@ public class TranshipServiceImpl implements TranshipService{
             }
             if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVED)){
                 throw new BankServiceException("申请未批准！");
+            }
+            if(projectId == null){
+                throw new BankServiceException("项目不能为空！");
+            }
+            StockOutApplyProject stockOutApplyProject = stockOutApplyProjectRepository.findByStockOutApplyIdAndProjectId(stockOutApply.getId(),projectId);
+            if(stockOutApplyProject == null){
+                throw new BankServiceException("该申请未关联"+project.getProjectCode()+"项目！");
             }
             tranship.setDelegate(stockOutApply.getDelegate());
             tranship.setStockOutApply(stockOutApply);
@@ -515,13 +513,14 @@ public class TranshipServiceImpl implements TranshipService{
 
     /**
      * 初始化归还记录
+     * @param projectId
      * @param stockOutApplyId
      * @return
      */
     @Override
-    public TranshipDTO initReturnBack(Long stockOutApplyId) {
+    public TranshipDTO initReturnBack(Long projectId ,Long stockOutApplyId) {
 
-        return initTranship(null,null,stockOutApplyId);
+        return initTranship(projectId,null,stockOutApplyId);
     }
 
     /**

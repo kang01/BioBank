@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * A DTO for the Project entity.
  */
-public class ProjectDTO extends AbstractAuditingDTO implements Serializable {
+public class ProjectDTO implements Serializable {
 
     private Long id;
 

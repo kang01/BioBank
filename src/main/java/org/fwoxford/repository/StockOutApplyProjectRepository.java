@@ -22,7 +22,7 @@ public interface StockOutApplyProjectRepository extends JpaRepository<StockOutAp
         " where r.id =?1 " ,nativeQuery = true)
     List<StockOutApplyProject> findByStockRequirementId(Long id);
 
-    @Query(value = "select count(*) from stock_out_apply_project p " +
+    @Query(value = "select count(p.id) from stock_out_apply_project p " +
         " left join stock_out_apply a on p.stock_out_apply_id = a.id " +
         " left join stock_out_requirement r on r.stock_out_apply_id = a.id " +
         " where r.id =?1 " ,nativeQuery = true)
@@ -33,4 +33,6 @@ public interface StockOutApplyProjectRepository extends JpaRepository<StockOutAp
 
     @Query("select t.project.id from StockOutApplyProject t left join StockOutRequirement r on t.stockOutApply.id = r.stockOutApply.id where r.id = ?1")
     List<Long> findProjectByStockRequirementId(Long id);
+
+    StockOutApplyProject findByStockOutApplyIdAndProjectId(Long id, Long projectId);
 }

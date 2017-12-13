@@ -4,6 +4,7 @@ import org.fwoxford.domain.Equipment;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.SupportRack;
 import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.service.dto.TranshipBoxListDTO;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,5 +77,8 @@ public class FrozenBoxCheckService {
         if(repeatCode.size()>0){
             throw new BankServiceException("请勿提交重复的冻存盒编码！",String.join(",",repeatCode));
         }
+    }
+
+    public void checkFrozenBoxCodeForStockOutReturn(TranshipBoxListDTO transhipBoxListDTO) {
     }
 }

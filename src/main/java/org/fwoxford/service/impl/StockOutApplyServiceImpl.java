@@ -7,8 +7,10 @@ import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutApplyProjectService;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.StockOutRequirementService;
+import org.fwoxford.service.dto.ProjectDTO;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.*;
+import org.fwoxford.service.mapper.ProjectMapper;
 import org.fwoxford.service.mapper.StockOutApplyMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -89,9 +91,11 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
 
     @Autowired
-    private BankUtil bankUtil;
+    BankUtil bankUtil;
     @Autowired
     CheckTypeRepository checkTypeRepository;
+    @Autowired
+    ProjectMapper projectMapper;
 
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
@@ -759,11 +763,16 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         stockOutApplyDTO.setDelegateName(stockOutApply.getDelegate().getDelegateName());
         Long checkTypeId = stockOutApplyDTO.getCheckTypeId();
         if(checkTypeId != null){
+            //获取检测类型
             CheckType checkType = checkTypeRepository.findByIdAndStatus(checkTypeId,Constants.VALID);
             if(checkType!=null){
                 stockOutApplyDTO.setCheckTypeName(checkType.getCheckTypeName());
             }
         }
+        //获取本次出库申请的申请项目信息
+        List<Project> projects = stockOutApplyProjectRepository.findProjectByStockOutApplyId(stockOutApply.getId());
+        List<ProjectDTO> projectDTOS = projectMapper.projectsToProjectDTOs(projects);
+        stockOutApplyDTO.setProjectDTOS(projectDTOS);
         return stockOutApplyDTO;
     }
 }

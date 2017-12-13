@@ -43,4 +43,7 @@ public interface StockOutFrozenBoxRepository extends JpaRepository<StockOutFroze
 
     @Query(value = "select * from stock_out_box t where t.frozen_box_code = ?1 and to_char(t.created_date,'yyyy-MM-dd') = ?2",nativeQuery = true)
     StockOutFrozenBox findByFrozenBoxCodeAndCreatedDateLike(String frozenBoxCode, String s);
+
+    @Query("SELECT S FROM StockOutFrozenBox S WHERE S.stockOutTask.stockOutPlan.stockOutApply.applyCode = ?2 AND (S.frozenBoxCode1D IN ?1 OR S.frozenBoxCode IN ?1)")
+    List<StockOutFrozenBox> findByFrozenBoxCodeAndStockOutApply(List<String> boxCodes, String applyCode);
 }

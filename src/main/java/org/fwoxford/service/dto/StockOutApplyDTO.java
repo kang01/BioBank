@@ -4,13 +4,14 @@ import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
 /**
  * A DTO for the StockOutApply entity.
  */
-public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializable {
+public class StockOutApplyDTO implements Serializable {
 
     private Long id;
     /**
@@ -258,6 +259,9 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
      * 委托方名称
      */
     private String delegateName;
+    /**
+     * 检测类型名称
+     */
     private String checkTypeName;
 
     public String getDelegateName() {
@@ -274,5 +278,15 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setCheckTypeName(String checkTypeName) {
         this.checkTypeName = checkTypeName;
+    }
+
+    private List<ProjectDTO> projectDTOS ;
+
+    public List<ProjectDTO> getProjectDTOS() {
+        return projectDTOS;
+    }
+
+    public void setProjectDTOS(List<ProjectDTO> projectDTOS) {
+        this.projectDTOS = projectDTOS;
     }
 }

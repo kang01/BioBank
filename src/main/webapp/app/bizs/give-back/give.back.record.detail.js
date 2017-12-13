@@ -16,6 +16,9 @@
         var modalInstance;
         //归还记录对象
         vm.giveBackRecord = {};
+        vm.box = {};
+        //设备
+        vm.frozenBoxPlaceOptions = [];
 
         _fnRecordInfo();
         _fnRecordBox();
@@ -132,7 +135,7 @@
             //获取盒子列表
             function _fnQueryBox() {
                 GiveBackService.queryGiveBackBox(vm.giveBackRecord.transhipCode).success(function (data) {
-                    vm.dtOptions.with("data",data);
+                    vm.boxOptions.withOption("data",data);
                 });
             }
 
@@ -145,10 +148,6 @@
         }
         //归还盒子信息
         function _fnRecordBox() {
-            vm.box = {};
-            vm.tubes = [];
-            //设备
-            vm.frozenBoxPlaceOptions = [];
             //盒列
             var columns = [
                 {
@@ -160,7 +159,6 @@
                 {
                     name:"frozenBoxCode",
                     title:"冻存盒号",
-                    notSortable:true,
                     renderWith:_fnRowRender
 
 
@@ -170,10 +168,9 @@
 
             _fnBoxInfoInit();
 
-
+            var dom = "<'row mt-10'<'col-xs-8 text-left pl-25' f> <'col-xs-4 text-right mb-5' > r> t <'row mt-0'<'col-xs-6'i> <'col-xs-6'p>>";
             vm.boxColumns = BioBankDataTable.buildDTColumn(columns);
-            vm.boxOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING","400")
-                .withOption('order', [[1, 'asc' ]])
+            vm.boxOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING","410",null,dom,null,1)
                 .withOption('rowCallback', rowCallback);
 
             function _fnRowRender(data, type, full, meta) {
@@ -300,7 +297,6 @@
             function _queryBoxDetail(boxId) {
                 StockInInputService.queryEditStockInBox(boxId).success(function (data) {
                     vm.box = data;
-                    vm.tubes = data.frozenTubeDTOS;
                     vm.htInstance.api.loadData(data, data.frozenTubeDTOS);
                 });
             }
@@ -316,7 +312,7 @@
             };
             //重新导入
             vm.reloadBoxData = function () {
-                _queryBox(53783);
+                _queryBoxDetail(53783);
             };
             //导入冻存盒
             vm.importBox = function () {

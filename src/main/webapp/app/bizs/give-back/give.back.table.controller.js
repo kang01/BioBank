@@ -15,7 +15,7 @@
 
         vm.add = _add;
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
-        var columns = [
+        var columns =  [
             {
                 name:"",
                 title:titleHtml,
@@ -24,8 +24,16 @@
                 renderWith:_fnRowSelectorRender
             },
             {
+                name:"transhipCode",
+                title:"归还记录单"
+            },
+            {
                 name:"applyCode",
-                title:"申请单号"
+                title:"出库申请单"
+            },
+            {
+                name:"returnBackPeople",
+                title:"归还单位"
             },
             {
                 name:"returnBackPeople",
@@ -37,7 +45,7 @@
             },
             {
                 name:"receiveDate",
-                title:"接收日期"
+                title:"归还日期"
             },
             {
                 name:"transhipState",
@@ -69,7 +77,7 @@
             })
             .withOption('createdRow', function (row, data, dataIndex) {
                 var giveBackStatus = MasterData.getStatus(data.transhipState);
-                $('td:eq(5)', row).html(giveBackStatus);
+                $('td:eq(7)', row).html(giveBackStatus);
 
                 $compile(angular.element(row).contents())($scope);
             });

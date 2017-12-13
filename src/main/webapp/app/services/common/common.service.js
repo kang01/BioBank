@@ -21,7 +21,7 @@
         }])
         .factory('BioBankDataTable',['DTOptionsBuilder','DTColumnBuilder','$timeout','$compile',function (DTOptionsBuilder, DTColumnBuilder,$timeout,$compile) {
             var service = {};
-            service.buildDTOption = function (type, scrollY, pageLength, dom, scope) {
+            service.buildDTOption = function (type, scrollY, pageLength, dom, scope,orderIndex) {
                 var options = DTOptionsBuilder.newOptions()
                     .withOption('processing',true);
 
@@ -91,7 +91,9 @@
                         }
                     });
                 }
-
+                if (orderIndex){
+                    options.withOption('order', [[orderIndex, 'asc' ]])
+                }
 
 
                 return options;

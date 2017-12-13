@@ -406,8 +406,8 @@
                     _changeTubeColumnWidth(_getTableCtrl());
                 });
                 var settings = vm.settings;
-                $(this.container).toggleClass("cell_value_editing", !!settings.isCellValueEditable)
-                $(this.container).toggleClass("cell_status_editing", !!settings.isCellStatusEditable)
+                // $(this.container).toggleClass("cell_value_editing", !!settings.isCellValueEditable)
+                // $(this.container).toggleClass("cell_status_editing", !!settings.isCellStatusEditable)
             }
 
             // 当获取列头DOM时触发

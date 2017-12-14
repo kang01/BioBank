@@ -115,6 +115,12 @@ public class TranshipResponse {
     @JsonView(DataTablesOutput.View.class)
     @Column(name="delegate_name")
     private String delegateName;
+    /**
+     * 项目ID
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name="project_id")
+    private Long projectId;
 
     public Long getId() {
         return id;
@@ -228,6 +234,14 @@ public class TranshipResponse {
         this.delegateName = delegateName;
     }
 
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -265,6 +279,7 @@ public class TranshipResponse {
             ", applyCode='" + applyCode + "'" +
             ", applyPersonName='" + applyPersonName + "'" +
             ", delegateName='" + delegateName + "'" +
+            ", projectId='" + projectId + "'" +
             '}';
     }
 

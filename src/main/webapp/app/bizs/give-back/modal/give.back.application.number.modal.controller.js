@@ -13,25 +13,43 @@
 
     function ApplicationNumberModalController($uibModalInstance,toastr,GiveBackService) {
         var vm = this;
-        _init();
-        function _init() {
+        vm.entity = {
+            applyCode:null,
+            projectId:null,
+            id:null
+        };
+        var _giveBackInfo = {
+            projectId:null,
+            applyId:null
+        };
+        vm.projectConfig = {
+            valueField:'id',
+            labelField:'projectName',
+            maxItems: 1,
+            searchField:'projectName',
+            onChange:function(value){}
+        };
+        vm.queryGiveBackInfo = function () {
+            if(vm.entity.applyCode){
+                GiveBackService.queryApplyInfo(vm.entity.applyCode).success(function (data) {
+                    _giveBackInfo.applyId = data.id;
+                    vm.projectOptions = data.projectDTOS;
+                }).error(function (data) {
+                    toastr.error(data.message);
+                });
+            }
 
-        }
+        };
 
 
 
 
-
-        this.cancel = function () {
+        vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
-        this.ok = function () {
-            GiveBackService.queryGiveBackId(vm.applyCode).success(function (data) {
-                $uibModalInstance.close(data.id);
-            }).error(function (data) {
-                toastr.error(data.message);
-            });
-
+        vm.ok = function () {
+            _giveBackInfo.projectId = vm.entity.projectId;
+            $uibModalInstance.close(_giveBackInfo);
         };
     }
 })();

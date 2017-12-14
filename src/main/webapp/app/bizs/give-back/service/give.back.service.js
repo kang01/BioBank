@@ -14,8 +14,8 @@
         var service = {
             //获取归还的盒子列表
             queryGiveBackTable:_queryGiveBackTable,
-            //获取归还信息
-            queryGiveBackId:_queryGiveBackId,
+            //获取出库申请单信息
+            queryApplyInfo:_queryApplyInfo,
             //保存一空归还信息
             saveGiveBackEmpty:_saveGiveBackEmpty,
             //获取归还信息
@@ -28,11 +28,11 @@
         function _queryGiveBackTable(data,oSettings) {
             return $http.post('api/res/return-back',JSON.stringify(data));
         }
-        function _queryGiveBackId(applyCode) {
+        function _queryApplyInfo(applyCode) {
             return $http.get('api/stock-out-applies/applyCode/'+applyCode);
         }
-        function _saveGiveBackEmpty(stockOutApplyId) {
-            return $http.post('api/return-back/new-empty/'+stockOutApplyId,{});
+        function _saveGiveBackEmpty(giveBackInfo) {
+            return $http.post('api/return-back/new-empty/stockOutApply/'+giveBackInfo.applyId+'/project/'+giveBackInfo.projectId,{});
         }
         function _queryGiveBackInfo(giveBackId) {
             return $http.get('api/return-back/id/'+giveBackId);

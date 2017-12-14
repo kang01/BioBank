@@ -13,7 +13,7 @@
 
         var vm = this;
         //设备
-        vm.frozenBoxPlaceOptions = items.frozenBoxPlaceOptions;
+        vm.equipmentOptions = items.equipmentOptions;
         _fnBoxInfo();
         _fnBoxCodeInput();
         _fnBoxTable();
@@ -25,7 +25,7 @@
             //暂存位置
             function _fnTempPos(){
                 //设备
-                vm.frozenBoxPlaceConfigTemp = {
+                vm.equipmentConfig = {
                     valueField:'id',
                     labelField:'equipmentCode',
                     maxItems: 1,

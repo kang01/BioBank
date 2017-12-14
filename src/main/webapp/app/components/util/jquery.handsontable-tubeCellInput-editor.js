@@ -85,7 +85,9 @@
             var that = this;
             var value = this.getInputElement().value;
             var data = _.cloneDeep(this.originalValue);
-            data.sampleCode = value;
+            if(data){
+                data.sampleCode = value;
+            }
 
             return data;
 
@@ -112,7 +114,9 @@
             if (_.isObject(newValue) && newValue.sampleCode){
                 value = newValue.sampleCode;
             } else {
-                value = this.originalValue.sampleCode;
+                if(this.originalValue){
+                    value = this.originalValue.sampleCode;
+                }
             }
 
             this.getInputElement().value = value||"";

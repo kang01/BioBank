@@ -32,20 +32,24 @@
                 title:"出库申请单"
             },
             {
-                name:"returnBackPeople",
+                name:"projectCode",
+                title:"项目编码"
+            },
+            {
+                name:"delegateName",
                 title:"归还单位"
             },
             {
-                name:"returnBackPeople",
+                name:"applyPersonName",
                 title:"归还人"
-            },
-            {
-                name:"receiver",
-                title:"接收人"
             },
             {
                 name:"receiveDate",
                 title:"归还日期"
+            },
+            {
+                name:"receiver",
+                title:"接收人"
             },
             {
                 name:"transhipState",
@@ -59,35 +63,35 @@
             }
         ];
         vm.dtInstance = {};
-        var t;
+        var _timer;
         vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY",null,10,null,$scope)
             .withOption('order', [[1, 'desc' ]])
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
-                if(!oSettings.oPreviousSearch.sSearch){
+                //各列搜索
+                var aoPreSearchCols = oSettings.aoPreSearchCols;
+                var len = _.filter(aoPreSearchCols,{sSearch:""}).length;
+                // 搜索框为空的时候不用timer
+                if(!oSettings.oPreviousSearch.sSearch && len == aoPreSearchCols.length){
                     _fnTransportSearch(sSource, aoData, fnCallback, oSettings);
                 }else{
-                    if(t){
-                        clearTimeout(t);
+                    if(_timer){
+                        clearTimeout(_timer);
                     }
-                    t=setTimeout(function () {
+                    _timer = setTimeout(function () {
                         _fnTransportSearch(sSource, aoData, fnCallback, oSettings);
                     },1000);
                 }
             })
             .withOption('createdRow', function (row, data, dataIndex) {
                 var giveBackStatus = MasterData.getStatus(data.transhipState);
-                $('td:eq(7)', row).html(giveBackStatus);
+                $('td:eq(8)', row).html(giveBackStatus);
 
                 $compile(angular.element(row).contents())($scope);
-            });
+            })
+            .withColumnFilter(_createColumnFilters());
         vm.dtColumns = BioBankDataTable.buildDTColumn(columns);
-        vm.toggleAll = function () {
-        };
-        function _fnRowRender(data, type, full, meta) {
-            var html = "<div class='text-ellipsis' style='width: 100px' title='"+full.transhipCode+"'>"+ full.transhipCode  +"</div>";
-            return html;
-        }
+        vm.toggleAll = function () {};
         function _fnTransportSearch(sSource, aoData, fnCallback, oSettings) {
             vm.selectAll = false;
             vm.selected = {};
@@ -132,17 +136,42 @@
             return html;
         }
         function actionsHtml(data, type, full, meta) {
+            console.log(full.applyCode);
             var html = '';
             if(full.transhipState != '1001'){
                 html = '<button type="button" class="btn btn-xs" ui-sref="transport-record-view({transhipId:'+ full.id +'})">' +
                     '   <i class="fa fa-eye"></i>' +
                     '</button>&nbsp;';
             }else{
-                html = '<button type="button" class="btn btn-xs" ui-sref="give-back-detail({giveBackId:'+ full.id +'})">' +
+                html = '<button type="button" class="btn btn-xs" ui-sref="give-back-detail({giveBackId:'+ full.id +',applyCode:\''+full.applyCode+'\'})">' +
                     '   <i class="fa fa-edit"></i>' +
                     '</button>&nbsp;';
             }
             return html;
+        }
+        function _createColumnFilters(){
+            var filters = {
+                aoColumns: [
+                    null,
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {
+                        type: 'select',
+                        // bRegex: true,
+                        bSmart: true,
+                        values: MasterData.frozenBoxStatus
+
+                    },
+                    null
+                ]
+            };
+
+            return filters;
         }
         //添加申请单号的归还详情
         function _add() {
@@ -156,9 +185,9 @@
                     items:{}
                 }
             });
-            modalInstance.result.then(function (applyId) {
-                GiveBackService.saveGiveBackEmpty(applyId).success(function (data) {
-                    $state.go("give-back-detail",{giveBackId:data.id});
+            modalInstance.result.then(function (giveBackInfo) {
+                GiveBackService.saveGiveBackEmpty(giveBackInfo).success(function (data) {
+                    $state.go("give-back-detail",{giveBackId:data.id,applyCode:giveBackInfo.applyCode});
                 });
 
             });

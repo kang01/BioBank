@@ -5,18 +5,27 @@
 </div>
 <div class="modal-body">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="form-group ">
                 <div class="form-group">
                     <label>申请单号<span class="required-field"></span></label>
-                    <input type="text" class="form-control" ng-model="vm.applyCode">
+                    <input type="text" class="form-control" ng-model="vm.entity.applyCode" ng-blur="vm.queryGiveBackInfo()">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group ">
+                <div class="form-group">
+                    <label>项目编码<span class="required-field"></span></label>
+                    <selectize options='vm.projectOptions' config="vm.projectConfig"
+                               ng-model="vm.entity.projectId"></selectize>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button"  ng-click="vm.ok()" ng-disabled="!vm.applyCode">确定</button>
+    <button class="btn btn-primary" type="button"  ng-click="vm.ok()" ng-disabled="!vm.entity.applyCode || !vm.entity.projectId">确定</button>
     <button class="btn btn-warning" type="button"  ng-click="vm.cancel()">取消</button>
 </div>
 

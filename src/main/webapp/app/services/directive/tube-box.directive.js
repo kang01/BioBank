@@ -405,9 +405,15 @@
                     // console.log(_getTableCtrl());
                     _changeTubeColumnWidth(_getTableCtrl());
                 });
+                var tableCtrl = _getTableCtrl();
                 var settings = vm.settings;
+                if(!$scope.dataBox){
+                    settings.editor = false;
+                }
+                tableCtrl.updateSettings(settings);
                 // $(this.container).toggleClass("cell_value_editing", !!settings.isCellValueEditable)
                 // $(this.container).toggleClass("cell_status_editing", !!settings.isCellStatusEditable)
+
             }
 
             // 当获取列头DOM时触发
@@ -786,6 +792,7 @@
                 tableSettings.minRows = boxRows;
                 tableSettings.rowHeaders = rows;
                 tableSettings.colHeaders = columns;
+                tableSettings.editor = "tubeCellInput";
                 _changeTubeColumnWidth(tableCtrl, tableSettings);
 
                 if (!tubes || !tubes.length){
@@ -811,6 +818,7 @@
                     vm.api.gridData = _.cloneDeep(gridData);
                     vm.api.columnHeaders = columns;
                     vm.api.rowHeaders = rows;
+                    console.log(gridData);
                     tableCtrl.loadData(gridData);
                 }
                 tableCtrl.render();
@@ -995,9 +1003,9 @@
                     tableSettings.editor = false;
                 }
 
-                var settings = tableSettings;
-                $(tableCtrl.container).toggleClass("cell_value_editing", !!settings.isCellValueEditable)
-                $(tableCtrl.container).toggleClass("cell_status_editing", !!settings.isCellStatusEditable)
+                // var settings = tableSettings;
+                // $(tableCtrl.container).toggleClass("cell_value_editing", !!settings.isCellValueEditable)
+                // $(tableCtrl.container).toggleClass("cell_status_editing", !!settings.isCellStatusEditable)
 
 
                 tableCtrl.updateSettings(tableSettings);

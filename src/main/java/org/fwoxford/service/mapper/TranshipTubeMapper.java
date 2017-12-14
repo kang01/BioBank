@@ -4,6 +4,8 @@ import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.TranshipTubeDTO;
 
 import org.mapstruct.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -90,5 +92,61 @@ public interface TranshipTubeMapper {
         SampleClassification sampleClassification = new SampleClassification();
         sampleClassification.setId(id);
         return sampleClassification;
+    }
+
+    default List<TranshipTubeDTO> frozenTubesToTranshipTubeDTOs(List<FrozenTube> frozenTubeList){
+        if(frozenTubeList == null){
+            return null;
+        }
+        List<TranshipTubeDTO> frozenTubeDTOS = new ArrayList<>();
+        for(FrozenTube frozenTube :frozenTubeList){
+            TranshipTubeDTO frozenTubeDTO = frozenTubeToTranshipTube(frozenTube);
+            frozenTubeDTOS.add(frozenTubeDTO);
+        }
+        return frozenTubeDTOS;
+    }
+
+    default TranshipTubeDTO frozenTubeToTranshipTube(FrozenTube frozenTube){
+        if ( frozenTube == null ) {
+            return null;
+        }
+
+        TranshipTubeDTO transhipTubeDTO = new TranshipTubeDTO();
+        transhipTubeDTO.setFrozenBoxId(frozenTube.getFrozenBox()!=null?frozenTube.getFrozenBox().getId():null);
+        transhipTubeDTO.setFrozenTubeId( frozenTube.getId() );
+        transhipTubeDTO.setSampleClassificationId( frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getId():null );
+        transhipTubeDTO.setSampleTypeId( frozenTube.getSampleType()!=null?frozenTube.getSampleType().getId():null );
+        transhipTubeDTO.setProjectSiteId( frozenTube.getProjectSite()!=null? frozenTube.getProjectSite().getId():null);
+        transhipTubeDTO.setProjectId( frozenTube.getProject()!=null? frozenTube.getProject().getId():null);
+        transhipTubeDTO.setFrozenTubeTypeId( frozenTube.getFrozenTubeType()!=null?frozenTube.getFrozenTubeType().getId():null );
+        transhipTubeDTO.setStatus( frozenTube.getStatus() );
+        transhipTubeDTO.setMemo( frozenTube.getMemo() );
+        transhipTubeDTO.setColumnsInTube( frozenTube.getTubeColumns() );
+        transhipTubeDTO.setRowsInTube( frozenTube.getTubeRows() );
+        transhipTubeDTO.setProjectCode( frozenTube.getProjectCode() );
+        transhipTubeDTO.setFrozenTubeCode( frozenTube.getFrozenTubeCode() );
+        transhipTubeDTO.setSampleTempCode( frozenTube.getSampleTempCode() );
+        transhipTubeDTO.setSampleCode( frozenTube.getSampleCode() );
+        transhipTubeDTO.setFrozenTubeTypeCode( frozenTube.getFrozenTubeTypeCode() );
+        transhipTubeDTO.setFrozenTubeTypeName( frozenTube.getFrozenTubeTypeName() );
+        transhipTubeDTO.setSampleTypeCode( frozenTube.getSampleTypeCode() );
+        transhipTubeDTO.setSampleTypeName( frozenTube.getSampleTypeName() );
+        transhipTubeDTO.setSampleUsedTimesMost( frozenTube.getSampleUsedTimesMost() );
+        transhipTubeDTO.setSampleUsedTimes( frozenTube.getSampleUsedTimes() );
+        transhipTubeDTO.setFrozenTubeVolumns( frozenTube.getFrozenTubeVolumns() );
+        transhipTubeDTO.setFrozenTubeVolumnsUnit( frozenTube.getFrozenTubeVolumnsUnit() );
+        transhipTubeDTO.setSampleVolumns( frozenTube.getSampleVolumns() );
+        transhipTubeDTO.setErrorType( frozenTube.getErrorType() );
+        transhipTubeDTO.setFrozenTubeState( frozenTube.getFrozenTubeState() );
+        transhipTubeDTO.setFrozenBoxCode( frozenTube.getFrozenBoxCode() );
+        transhipTubeDTO.setSampleClassificationCode( frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getSampleClassificationCode():null );
+        transhipTubeDTO.setSampleClassificationName(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getSampleClassificationName():null );
+        transhipTubeDTO.setProjectSiteCode( frozenTube.getProjectSiteCode() );
+        transhipTubeDTO.setFrontColorForClass(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getFrontColor():null);
+        transhipTubeDTO.setBackColorForClass(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getBackColor():null);
+        transhipTubeDTO.setIsMixed(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getIsMixed():null);
+        transhipTubeDTO.setFrontColor(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getFrontColor():null);
+        transhipTubeDTO.setBackColor(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getBackColor():null);
+        return transhipTubeDTO;
     }
 }

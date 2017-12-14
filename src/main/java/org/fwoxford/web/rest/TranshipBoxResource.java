@@ -284,9 +284,9 @@ public class TranshipBoxResource {
      */
     @GetMapping("/return-boxes/stockOutApply/{applyCode}/frozenBoxCode/{frozenBoxCodeStr}")
     @Timed
-    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getStockOutFrozenBoxAndSample(@PathVariable String applyCode, @PathVariable String frozenBoxCodeStr) {
+    public ResponseEntity<List<TranshipBoxDTO>> getStockOutFrozenBoxAndSample(@PathVariable String applyCode, @PathVariable String frozenBoxCodeStr) {
         log.debug("REST request to import FrozenBox And FrozenTubeDTOs From StockOutBox: {}", frozenBoxCodeStr);
-        List<FrozenBoxAndFrozenTubeResponse> res = transhipBoxService.getStockOutFrozenBoxAndSample(applyCode, frozenBoxCodeStr);
+        List<TranshipBoxDTO> res = transhipBoxService.getStockOutFrozenBoxAndSample(applyCode, frozenBoxCodeStr);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

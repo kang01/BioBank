@@ -110,6 +110,8 @@ public class FrozenBoxAndFrozenTubeResponse {
     private Integer isRealData;
     private Integer countOfSample;
 
+    private Long frozenBoxId;
+
     public Long getId() {
         return id;
     }
@@ -434,6 +436,14 @@ public class FrozenBoxAndFrozenTubeResponse {
         return this;
     }
 
+    public Long getFrozenBoxId() {
+        return frozenBoxId;
+    }
+
+    public void setFrozenBoxId(Long frozenBoxId) {
+        this.frozenBoxId = frozenBoxId;
+    }
+
     @Override
     public String toString() {
         return "FrozenBoxAndFrozenTubeResponse{" +
@@ -473,6 +483,7 @@ public class FrozenBoxAndFrozenTubeResponse {
             ", backColor='" + backColor + '\'' +
             ", isRealData=" + isRealData +
             ", countOfSample=" + countOfSample +
+            ", frozenBoxId=" + frozenBoxId +
             '}';
     }
 }

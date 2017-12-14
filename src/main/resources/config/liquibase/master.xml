@@ -192,6 +192,7 @@
     <include file="classpath:config/liquibase/changelog/20171202084047_added_entity_constraints_Tranship.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171211113400_updated_view_StockOutApply.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171211151700_updated_view_Tranship.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20171214154900_added_column_FrozenTube.xml" relativeToChangelogFile="false"/>
 
     <!--<include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>-->
 

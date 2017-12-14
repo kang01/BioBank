@@ -786,4 +786,32 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     public void setNation(String nation) {
         this.nation = nation;
     }
+
+    @Column(name = "parent_sample_id")
+    private Long parentSampleId;
+
+    @Column(name = "parent_sample_code")
+    private String parentSampleCode;
+
+    public Long getParentSampleId() {
+        return parentSampleId;
+    }
+    public FrozenTube parentSampleId(Long parentSampleId) {
+        this.parentSampleId = parentSampleId;
+        return this;
+    }
+    public void setParentSampleId(Long parentSampleId) {
+        this.parentSampleId = parentSampleId;
+    }
+
+    public String getParentSampleCode() {
+        return parentSampleCode;
+    }
+    public FrozenTube parentSampleCode(String parentSampleCode) {
+        this.parentSampleCode = parentSampleCode;
+        return this;
+    }
+    public void setParentSampleCode(String parentSampleCode) {
+        this.parentSampleCode = parentSampleCode;
+    }
 }

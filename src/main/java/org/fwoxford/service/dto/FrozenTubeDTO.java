@@ -670,4 +670,23 @@ public class FrozenTubeDTO implements Serializable {
     public void setRepealReason(String repealReason) {
         this.repealReason = repealReason;
     }
+
+    private Long parentSampleId;
+    private String parentSampleCode;
+
+    public Long getParentSampleId() {
+        return parentSampleId;
+    }
+
+    public void setParentSampleId(Long parentSampleId) {
+        this.parentSampleId = parentSampleId;
+    }
+
+    public String getParentSampleCode() {
+        return parentSampleCode;
+    }
+
+    public void setParentSampleCode(String parentSampleCode) {
+        this.parentSampleCode = parentSampleCode;
+    }
 }

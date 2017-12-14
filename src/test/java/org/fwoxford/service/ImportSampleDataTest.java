@@ -6657,4 +6657,63 @@ public class ImportSampleDataTest {
            }
        }
     }
+
+
+    //导入DNA样本类型
+    @Test
+    public void createSampleTypeDNA(){
+        SampleType sampleType = new SampleType().sampleTypeCode("DNA").sampleTypeName("DNA")
+                .status("0001").isMixed(0).frontColor("black").backColor("rgb(35,129,209)");
+        sampleTypeRepository.save(sampleType);
+        SampleClassification sampleClassification = new SampleClassification().sampleClassificationCode("DNA")
+                .sampleClassificationName("DNA")
+                .status("0001")
+                .backColor("rgb(35,129,209)")
+                .frontColor("black");
+        sampleClassificationRepository.save(sampleClassification);
+        Project project = projectRepository.findByProjectCode("0029");
+
+        ProjectSampleClass projectSampleClass =new ProjectSampleClass()
+                .project(project).projectCode(project.getProjectCode())
+                .sampleClassification(sampleClassification)
+                .sampleType(sampleType)
+                .columnsNumber(null).sampleClassificationCode("DNA").sampleClassificationName("DNA")
+                .status("0001");
+        projectSampleClassRepository.save(projectSampleClass);
+
+        project = projectRepository.findByProjectCode("0037");
+
+        ProjectSampleClass projectSampleClass1 =new ProjectSampleClass()
+                .project(project).projectCode(project.getProjectCode())
+                .sampleClassification(sampleClassification)
+                .sampleType(sampleType)
+                .columnsNumber(null).sampleClassificationCode("DNA").sampleClassificationName("DNA")
+                .status("0001");
+        projectSampleClassRepository.save(projectSampleClass1);
+    }
+
+
+    @Test
+    public void  tesss(){
+
+        for(int i=1;i<=96;i++){
+            Map map = getPos(i);
+            System.out.print(map);
+        }
+    }
+
+    private Map getPos(int i) {
+        Map map = new HashMap() ;
+        int tubeRowsInt = (i-1)/12+1;
+        int tubeColumns = (i-1)%12+1;
+
+        String tubeRows = String.valueOf((char) (tubeRowsInt + 64));
+        if (tubeRowsInt >= 9) {
+            tubeRows = String.valueOf((char) (tubeRowsInt + 65));
+        }
+
+        map.put("tubeRows",tubeRows);
+        map.put("tubeColumns",tubeColumns);
+        return map;
+    }
 }

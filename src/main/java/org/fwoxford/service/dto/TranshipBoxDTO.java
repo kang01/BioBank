@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * A DTO for the TranshipBox entity.
  */
-public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable {
+public class TranshipBoxDTO implements Serializable {
 
     private Long id;
     /**
@@ -167,8 +167,6 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
      * 区域Id
      */
     private Long areaId;
-
-    private List<FrozenTubeDTO> frozenTubeDTOList;
 
     public Long getId() {
         return id;
@@ -451,14 +449,6 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
         this.areaId = areaId;
     }
 
-    public List<FrozenTubeDTO> getFrozenTubeDTOList() {
-        return frozenTubeDTOList;
-    }
-
-    public void setFrozenTubeDTOList(List<FrozenTubeDTO> frozenTubeDTOList) {
-        this.frozenTubeDTOList = frozenTubeDTOList;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -519,7 +509,7 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
             ", equipmentId=" + equipmentId +
             ", supportRackId=" + supportRackId +
             ", areaId=" + areaId +
-            ", frozenTubeDTOList=" + frozenTubeDTOList +
+            ", frozenBoxCode1D=" + frozenBoxCode1D +
             '}';
     }
     private String frozenBoxCode1D;
@@ -530,5 +520,69 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
 
     public void setFrozenBoxCode1D(String frozenBoxCode1D) {
         this.frozenBoxCode1D = frozenBoxCode1D;
+    }
+    private Integer isMixed;
+    private String frontColor;
+    private String backColor;
+    private String frontColorForClass;
+    private String backColorForClass;
+    private String frozenBoxTypeName;
+
+    private List<TranshipTubeDTO> transhipTubeDTOS;
+
+    public Integer getIsMixed() {
+        return isMixed;
+    }
+
+    public void setIsMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+    }
+
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public void setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+    }
+
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public void setBackColor(String backColor) {
+        this.backColor = backColor;
+    }
+
+    public String getFrontColorForClass() {
+        return frontColorForClass;
+    }
+
+    public void setFrontColorForClass(String frontColorForClass) {
+        this.frontColorForClass = frontColorForClass;
+    }
+
+    public String getBackColorForClass() {
+        return backColorForClass;
+    }
+
+    public void setBackColorForClass(String backColorForClass) {
+        this.backColorForClass = backColorForClass;
+    }
+
+    public String getFrozenBoxTypeName() {
+        return frozenBoxTypeName;
+    }
+
+    public void setFrozenBoxTypeName(String frozenBoxTypeName) {
+        this.frozenBoxTypeName = frozenBoxTypeName;
+    }
+
+    public List<TranshipTubeDTO> getTranshipTubeDTOS() {
+        return transhipTubeDTOS;
+    }
+
+    public void setTranshipTubeDTOS(List<TranshipTubeDTO> transhipTubeDTOS) {
+        this.transhipTubeDTOS = transhipTubeDTOS;
     }
 }

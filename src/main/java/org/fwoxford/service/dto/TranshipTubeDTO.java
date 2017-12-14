@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * A DTO for the TranshipTube entity.
  */
-public class TranshipTubeDTO extends AbstractAuditingDTO implements Serializable {
+public class TranshipTubeDTO implements Serializable {
 
     private Long id;
 
@@ -134,6 +134,30 @@ public class TranshipTubeDTO extends AbstractAuditingDTO implements Serializable
     private Long transhipBoxId;
 
     private Long frozenTubeId;
+
+    /**
+     * 样本分类前景色
+     */
+    private String frontColorForClass;
+    /**
+     * 样本分类背景色
+     */
+    private String backColorForClass;
+    /**
+     * 样本类型是否混合
+     */
+    private Integer isMixed;
+
+    /**
+     * 样本类型前景色
+     */
+    private String frontColor;
+    /**
+     * 样本类型背景色
+     */
+    private String backColor;
+
+    private Long frozenBoxId;
 
     public Long getId() {
         return id;
@@ -379,6 +403,54 @@ public class TranshipTubeDTO extends AbstractAuditingDTO implements Serializable
         this.frozenTubeId = frozenTubeId;
     }
 
+    public String getFrontColorForClass() {
+        return frontColorForClass;
+    }
+
+    public void setFrontColorForClass(String frontColorForClass) {
+        this.frontColorForClass = frontColorForClass;
+    }
+
+    public String getBackColorForClass() {
+        return backColorForClass;
+    }
+
+    public void setBackColorForClass(String backColorForClass) {
+        this.backColorForClass = backColorForClass;
+    }
+
+    public Integer getIsMixed() {
+        return isMixed;
+    }
+
+    public void setIsMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+    }
+
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public void setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+    }
+
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public void setBackColor(String backColor) {
+        this.backColor = backColor;
+    }
+
+    public Long getFrozenBoxId() {
+        return frozenBoxId;
+    }
+
+    public void setFrozenBoxId(Long frozenBoxId) {
+        this.frozenBoxId = frozenBoxId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -436,4 +508,24 @@ public class TranshipTubeDTO extends AbstractAuditingDTO implements Serializable
             ", frozenTubeId=" + frozenTubeId +
             '}';
     }
+
+    private Long parentSampleId;
+    private String parentSampleCode;
+
+    public Long getParentSampleId() {
+        return parentSampleId;
+    }
+
+    public void setParentSampleId(Long parentSampleId) {
+        this.parentSampleId = parentSampleId;
+    }
+
+    public String getParentSampleCode() {
+        return parentSampleCode;
+    }
+
+    public void setParentSampleCode(String parentSampleCode) {
+        this.parentSampleCode = parentSampleCode;
+    }
+
 }

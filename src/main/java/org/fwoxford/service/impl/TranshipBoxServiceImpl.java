@@ -1,8 +1,7 @@
 package org.fwoxford.service.impl;
 
 import com.google.common.collect.Lists;
-import com.querydsl.core.types.Order;
-import liquibase.util.CollectionUtil;
+import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -12,7 +11,9 @@ import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipBoxMapper;
+import org.fwoxford.service.mapper.TranshipTubeMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,54 +43,57 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
     private final Logger log = LoggerFactory.getLogger(TranshipBoxServiceImpl.class);
     @Autowired
-    private TranshipBoxRepository transhipBoxRepository;
+    TranshipBoxRepository transhipBoxRepository;
     @Autowired
-    private FrozenBoxRepository frozenBoxRepository;
+    FrozenBoxRepository frozenBoxRepository;
     @Autowired
-    private FrozenTubeRepository frozenTubeRepository;
+    FrozenTubeRepository frozenTubeRepository;
     @Autowired
-    private SampleTypeRepository sampleTypeRepository;
+    SampleTypeRepository sampleTypeRepository;
     @Autowired
-    private FrozenBoxTypeRepository frozenBoxTypeRepository;
+    FrozenBoxTypeRepository frozenBoxTypeRepository;
     @Autowired
-    private TranshipRepository transhipRepository;
+    TranshipRepository transhipRepository;
     @Autowired
-    private EquipmentRepository equipmentRepository;
+    EquipmentRepository equipmentRepository;
     @Autowired
-    private AreaRepository areaRepository;
+    AreaRepository areaRepository;
     @Autowired
-    private SupportRackRepository supportRackRepository;
+    SupportRackRepository supportRackRepository;
     @Autowired
-    private FrozenTubeTypeRepository frozenTubeTypeRepository;
+    FrozenTubeTypeRepository frozenTubeTypeRepository;
     @Autowired
-    private TranshipBoxMapper transhipBoxMapper;
+    TranshipBoxMapper transhipBoxMapper;
     @Autowired
-    private FrozenBoxMapper frozenBoxMapper;
+    FrozenBoxMapper frozenBoxMapper;
     @Autowired
-    private FrozenTubeMapper frozenTubeMapper;
+    FrozenTubeMapper frozenTubeMapper;
     @Autowired
-    private ProjectSampleClassRepository projectSampleClassRepository;
+    ProjectSampleClassRepository projectSampleClassRepository;
     @Autowired
-    private SampleClassificationRepository sampleClassificationRepository;
+    SampleClassificationRepository sampleClassificationRepository;
     @Autowired
-    private TranshipBoxPositionService transhipBoxPositionService;
+    TranshipBoxPositionService transhipBoxPositionService;
     @Autowired
-    private TranshipTubeService transhipTubeService;
+    TranshipTubeService transhipTubeService;
     @Autowired
-    private TranshipTubeRepository transhipTubeRepository;
+    TranshipTubeRepository transhipTubeRepository;
     @Autowired
-    private TranshipBoxPositionRepository transhipBoxPositionRepository;
+    TranshipBoxPositionRepository transhipBoxPositionRepository;
     @Autowired
-    private FrozenBoxCheckService frozenBoxCheckService;
+    FrozenBoxCheckService frozenBoxCheckService;
     @Autowired
-    private TranshipBoxRepositories transhipBoxRepositories;
+    TranshipBoxRepositories transhipBoxRepositories;
     @Autowired
-    private FrozenTubeCheckService frozenTubeCheckService;
+    FrozenTubeCheckService frozenTubeCheckService;
     @Autowired
-    private StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
+    StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
     @Autowired
-    private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
-
+    StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
+    @Autowired
+    FrozenBoxImportService frozenBoxImportService;
+    @Autowired
+    TranshipTubeMapper transhipTubeMapper;
     /**
      * Save a transhipBox.
      *
@@ -891,16 +895,16 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
      * @return
      */
     @Override
-    public List<FrozenBoxAndFrozenTubeResponse> getStockOutFrozenBoxAndSample(String applyCode, String frozenBoxCodeStr) {
+    public List<TranshipBoxDTO> getStockOutFrozenBoxAndSample(String applyCode, String frozenBoxCodeStr) {
         //定义返回结果
-        List<FrozenBoxAndFrozenTubeResponse> frozenBoxAndFrozenTubeResponses = new ArrayList<>();
+        List<TranshipBoxDTO> frozenBoxAndFrozenTubeResponses = new ArrayList<>();
         //从出库中获取
         String[] boxCodeStr = frozenBoxCodeStr.split(",");
         List<String> boxCodeList = Arrays.asList(boxCodeStr);
         //对传入的需要导入的冻存盒每500条进行分组
         List<List<String>> boxCodeEach500 = Lists.partition(boxCodeList,500);
-        //所有的出库冻存盒
-        List<StockOutFrozenBox> stockOutFrozenBoxList = new ArrayList<>();
+        //未从出库冻存盒中获取到数据的冻存盒编码
+        List<String> unStockOutFrozenBoxCode = new ArrayList();
         for(List<String> boxCodes :boxCodeEach500){
             //从出库冻存盒中获取出库盒和出库样本的信息
             List<StockOutFrozenBox> stockOutFrozenBoxes = stockOutFrozenBoxRepository.findByFrozenBoxCodeAndStockOutApply(boxCodes,applyCode);
@@ -908,21 +912,138 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             List<Long> stockOutFrozenBoxIds = stockOutFrozenBoxes.stream().map(s->s.getId()).collect(Collectors.toList());
             //根据出库冻存盒ID查询出库样本
             List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxIdIn(stockOutFrozenBoxIds);
+            List<String> outFrozenBoxCodeStr = stockOutReqFrozenTubes.stream().map(s->s.getFrozenBoxCode()).collect(Collectors.toList());
+            List<String> outFrozenBoxCodeIdStr = stockOutReqFrozenTubes.stream().map(s->s.getFrozenBoxCode1D()).collect(Collectors.toList());
+            //是否全部获取到，如果没有获取到，需要从LIMS中获取
+
+            for(String s : boxCodes){
+                if(!outFrozenBoxCodeStr.contains(s)&&!outFrozenBoxCodeIdStr.contains(s)){
+                    unStockOutFrozenBoxCode.add(s);
+                }
+            }
+
             //从出库冻存盒中查出冻存盒信息
             List<FrozenBox> frozenBoxList = stockOutFrozenBoxes.stream().map(s->s.getFrozenBox()).collect(Collectors.toList());
             //从出库样本中查询出样本的信息
             List<FrozenTube> frozenTubeList = stockOutReqFrozenTubes.stream().map(s->s.getFrozenTube()).collect(Collectors.toList());
-            List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapper.frozenTubesToFrozenTubeDTOsForSample(frozenTubeList);
+            List<TranshipTubeDTO> transhipTubeDTOS =  transhipTubeMapper.frozenTubesToTranshipTubeDTOs(frozenTubeList);
             //将样本信息根据冻存盒ID进行分组
-            Map<Long,List<FrozenTubeDTO>> frozenTubeMapGroupByFrozenBoxId = frozenTubeDTOS.stream().collect(Collectors.groupingBy(s->s.getFrozenBoxId()));
-            List<FrozenBoxAndFrozenTubeResponse> frozenBoxAndFrozenTubeResponse = frozenBoxMapper.forzenBoxsAndTubesToFrozenBoxAndFrozenTubeResponses(frozenBoxList,frozenTubeMapGroupByFrozenBoxId);
+            Map<Long,List<TranshipTubeDTO>> frozenTubeMapGroupByFrozenBoxId = transhipTubeDTOS.stream().collect(Collectors.groupingBy(s->s.getFrozenBoxId()));
+            List<TranshipBoxDTO> frozenBoxAndFrozenTubeResponse = transhipBoxMapper.forzenBoxsAndTubesToFrozenBoxAndFrozenTubeResponses(frozenBoxList,frozenTubeMapGroupByFrozenBoxId);
             frozenBoxAndFrozenTubeResponses.addAll(frozenBoxAndFrozenTubeResponse);
-            stockOutFrozenBoxList.addAll(stockOutFrozenBoxes);
         }
 
         //验证 todo(1) 是否所有的冻存盒都是同一个项目，如果不是，需要根据项目拆成不同的归还记录；（2）是否冻存盒都在此次出库申请下
 
-
+        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode("96KB");
+        FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findByFrozenTubeTypeCode("2DDCG");
+        SampleType sampleType = sampleTypeRepository.findBySampleTypeCode("DNA");
+        SampleClassification sampleClassification = sampleClassificationRepository.findBySampleClassificationCode("12");
+        for(String boxCode : unStockOutFrozenBoxCode){
+            //从实验室获取所有的DNA数据
+            List<JSONObject> mapList = frozenBoxImportService.importFrozenBoxAndSampleAllDataFromLIMS(boxCode);
+            if(mapList==null || mapList.size()==0){
+                TranshipBoxDTO transhipBoxDTO = new TranshipBoxDTO();
+                transhipBoxDTO.setFrozenBoxCode(boxCode);
+                transhipBoxDTO.setIsRealData(Constants.NO);
+                frozenBoxAndFrozenTubeResponses.add(transhipBoxDTO);
+            }else{
+                TranshipBoxDTO frozenBoxAndFrozenTubeResponse = createFrozenBoxAndTypeFromLIMSData(mapList,frozenBoxType,frozenTubeType,sampleType,sampleClassification);
+                frozenBoxAndFrozenTubeResponses.add(frozenBoxAndFrozenTubeResponse);
+            }
+        }
         return frozenBoxAndFrozenTubeResponses;
+    }
+
+    private TranshipBoxDTO createFrozenBoxAndTypeFromLIMSData(List<JSONObject> mapList, FrozenBoxType frozenBoxType, FrozenTubeType frozenTubeType, SampleType sampleType, SampleClassification sampleClassification) {
+        //上一级样本编码
+        List<String> sampleCodeStr = mapList.stream().map(s->s.getString("LABEL_NR")).collect(Collectors.toList());
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndStatusNot(sampleCodeStr,Constants.INVALID);
+        //构造返回参数
+        TranshipBoxDTO transhipBoxDTO = new TranshipBoxDTO();
+        String frozenBoxCode = mapList.get(0).getString("TRAY_BARCODE");
+        transhipBoxDTO.setIsRealData(Constants.YES);
+        transhipBoxDTO.setFrozenBoxCode(mapList.get(0).getString("TRAY_BARCODE"));
+
+        //冻存盒类型
+        transhipBoxDTO.setFrozenBoxTypeId(frozenBoxType.getId());
+        transhipBoxDTO.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());
+        transhipBoxDTO.setFrozenBoxTypeName(frozenBoxType.getFrozenBoxTypeName());
+        transhipBoxDTO.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
+        transhipBoxDTO.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
+        transhipBoxDTO.setIsSplit(Constants.NO);
+        //冻存盒样本类型
+        transhipBoxDTO.setSampleTypeId(sampleType.getId());
+        transhipBoxDTO.setSampleTypeCode(sampleType.getSampleTypeCode());
+        transhipBoxDTO.setSampleTypeName(sampleType.getSampleTypeName());
+        transhipBoxDTO.setFrontColor(sampleType.getFrontColor());
+        transhipBoxDTO.setIsMixed(sampleType.getIsMixed());
+        transhipBoxDTO.setBackColor(sampleType.getBackColor());
+        //冻存盒样本分类
+        transhipBoxDTO.setSampleClassificationId(sampleClassification.getId());
+        transhipBoxDTO.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+        transhipBoxDTO.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+        transhipBoxDTO.setFrontColorForClass(sampleClassification.getFrontColor());
+        transhipBoxDTO.setBackColorForClass(sampleClassification.getBackColor());
+        transhipBoxDTO.setStatus(Constants.FROZEN_BOX_NEW);
+        transhipBoxDTO.setCountOfSample(mapList.size());
+        //构造样本
+        List<TranshipTubeDTO> transhipTubeDTOS = new ArrayList<>();
+        for(JSONObject jsonObject : mapList){
+            String parentSampleCode = jsonObject.getString("LABEL_NR");
+            String sampleCode = jsonObject.getString("TUBE_BARCODE");
+            String volumn = jsonObject.getString("VOLUME");
+            String pos = jsonObject.getString("SLOT");
+            Integer postison = Integer.valueOf(pos);
+            if(StringUtils.isEmpty(parentSampleCode) || StringUtils.isEmpty(sampleCode)){
+                throw new BankServiceException("冻存盒"+frozenBoxCode+"内获取样本为空！请联系管理员");
+            }
+            FrozenTube frozenTube = frozenTubeList.stream().filter(d->d.getSampleCode().equals(parentSampleCode)).findFirst().orElse(null);
+            if(frozenTube == null){
+                throw new BankServiceException("样本"+sampleCode+"未查询到上一级样本"+parentSampleCode);
+            }
+
+            int tubeRowsInt = postison/12+1;
+            int tubeColumns = postison%12+1;
+            String tubeRows = "";
+            if (tubeRowsInt >= 9) {
+                tubeRows = String.valueOf((char) (tubeRowsInt + 65));
+            }else{
+                tubeRows = String.valueOf((char) (tubeRowsInt + 64));
+            }
+            TranshipTubeDTO transhipTubeDTO = new TranshipTubeDTO();
+            transhipTubeDTO.setSampleCode(sampleCode);
+            transhipTubeDTO.setFrozenBoxCode(frozenBoxCode);
+            transhipTubeDTO.setParentSampleId(frozenTube.getId());
+            transhipTubeDTO.setParentSampleCode(frozenTube.getSampleCode());
+            //冻存管类型
+            transhipTubeDTO.setFrozenTubeTypeId(frozenTubeType.getId());
+            transhipTubeDTO.setFrozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName());
+            transhipTubeDTO.setFrozenTubeTypeCode(frozenTubeType.getFrozenTubeTypeCode());
+            //转运管样本类型
+            transhipTubeDTO.setSampleTypeId(sampleType.getId());
+            transhipTubeDTO.setSampleTypeCode(sampleType.getSampleTypeCode());
+            transhipTubeDTO.setSampleTypeName(sampleType.getSampleTypeName());
+            transhipTubeDTO.setFrontColor(sampleType.getFrontColor());
+            transhipTubeDTO.setIsMixed(sampleType.getIsMixed());
+            transhipTubeDTO.setBackColor(sampleType.getBackColor());
+            //转运管样本分类
+            transhipTubeDTO.setSampleClassificationId(sampleClassification.getId());
+            transhipTubeDTO.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+            transhipTubeDTO.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+            transhipTubeDTO.setFrontColorForClass(sampleClassification.getFrontColor());
+            transhipTubeDTO.setBackColorForClass(sampleClassification.getBackColor());
+            //盒内位置
+            transhipTubeDTO.setColumnsInTube(String.valueOf(tubeColumns));
+            transhipTubeDTO.setRowsInTube(tubeRows);
+
+            transhipTubeDTO.setFrozenTubeState(Constants.FROZEN_BOX_NEW);
+            transhipTubeDTO.setStatus(Constants.FROZEN_TUBE_NORMAL);
+            transhipTubeDTO.setSampleVolumns(!volumn.equals(null)?Double.valueOf(volumn):null);
+
+            transhipTubeDTOS.add(transhipTubeDTO);
+        }
+        transhipBoxDTO.setTranshipTubeDTOS(transhipTubeDTOS);
+        return transhipBoxDTO;
     }
 }

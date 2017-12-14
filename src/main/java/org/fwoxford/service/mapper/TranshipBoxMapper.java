@@ -1,10 +1,17 @@
 package org.fwoxford.service.mapper;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.TranshipBoxDTO;
 
+import org.fwoxford.service.dto.TranshipTubeDTO;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.mapstruct.*;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Mapper for the entity TranshipBox and its DTO TranshipBoxDTO.
@@ -123,4 +130,70 @@ public interface TranshipBoxMapper {
 
         return transhipBox;
     }
+    default List<TranshipBoxDTO> forzenBoxsAndTubesToFrozenBoxAndFrozenTubeResponses(List<FrozenBox> frozenBoxes, Map<Long, List<TranshipTubeDTO>> transhipTubeDTOS){
+        if(frozenBoxes == null){
+            return null;
+        }
+        List<TranshipBoxDTO> frozenBoxAndFrozenTubeResponses = new ArrayList<>();
+        for(FrozenBox frozenBox :frozenBoxes){
+            TranshipBoxDTO frozenBoxAndFrozenTubeResponse = forzenBoxAndTubeToTranshipBoxDTO(frozenBox);
+            frozenBoxAndFrozenTubeResponse.setIsRealData(Constants.YES);
+            frozenBoxAndFrozenTubeResponse.setIsSplit(Constants.NO);
+            frozenBoxAndFrozenTubeResponse.setTranshipTubeDTOS(transhipTubeDTOS.get(frozenBox.getId()));
+            frozenBoxAndFrozenTubeResponses.add(frozenBoxAndFrozenTubeResponse);
+        }
+
+        return frozenBoxAndFrozenTubeResponses;
+    }
+
+    default TranshipBoxDTO forzenBoxAndTubeToTranshipBoxDTO(FrozenBox frozenBox){
+        if(frozenBox == null){
+            return null;
+        }
+        TranshipBoxDTO res = new TranshipBoxDTO();
+
+        res.setFrozenBoxId(frozenBox.getId());
+        res.setStatus(frozenBox.getStatus());
+        res.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        res.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
+        res.setIsSplit(frozenBox.getIsSplit());
+        res.setMemo(frozenBox.getMemo());
+        res.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
+        res.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
+        res.setSupportRackId(frozenBox.getSupportRack()!=null?frozenBox.getSupportRack().getId():null);
+        res.setColumnsInShelf(frozenBox.getColumnsInShelf());
+        res.setRowsInShelf(frozenBox.getRowsInShelf());
+        res.setProjectId(frozenBox.getProject()!=null?frozenBox.getProject().getId():null);
+        res.setProjectCode(frozenBox.getProjectCode());
+        res.setProjectName(frozenBox.getProjectName());
+        res.setMemo(frozenBox.getMemo());
+        res.setCountOfSample(frozenBox.getCountOfSample());
+        SampleType sampleType = frozenBox.getSampleType();
+        if(sampleType!=null){
+            res.setSampleTypeId(sampleType.getId());
+            res.setSampleTypeCode(sampleType.getSampleTypeCode());
+            res.setSampleTypeName(sampleType.getSampleTypeName());
+            res.setIsMixed(sampleType.getIsMixed());
+            res.setFrontColor(sampleType.getFrontColor());
+            res.setBackColor(sampleType.getBackColor());
+        }
+        FrozenBoxType frozenBoxType = frozenBox.getFrozenBoxType();
+        if(frozenBoxType!=null){
+            res.setFrozenBoxTypeId(frozenBoxType.getId());
+            res.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());
+            res.setFrozenBoxTypeName(frozenBoxType.getFrozenBoxTypeName());
+            res.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
+            res.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
+        }
+        SampleClassification sampleClassification = frozenBox.getSampleClassification();
+        if(sampleClassification != null){
+            res.setSampleClassificationId(sampleClassification.getId());
+            res.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+            res.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+            res.setFrontColorForClass(sampleClassification.getFrontColor());
+            res.setBackColorForClass(sampleClassification.getBackColor());
+        }
+        return res;
+    }
+
 }

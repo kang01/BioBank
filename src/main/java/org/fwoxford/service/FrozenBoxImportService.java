@@ -503,4 +503,34 @@ public class FrozenBoxImportService {
 //        }
         return jsonObjects;
     }
+
+    public List<JSONObject> importFrozenBoxAndSampleAllDataFromLIMS(String frozenBoxCode) {
+        List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
+        // 配置导入API
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(Constants.HTTPURL_LIMS+frozenBoxCode);
+        // 接口的返回结果
+        try{
+            // 调用导入API
+            int statusCode = httpClient.executeMethod(getMethod);
+            if (statusCode != 200) {
+                log.error("Method failed: "
+                    + getMethod.getStatusLine());
+            } else {
+                byte[] responseBody = getMethod.getResponseBody();
+                String str = new String(responseBody);
+
+                if(!StringUtils.isEmpty(str)){
+                    jsonObjects = JSONArray.fromObject(str);
+                }
+            }
+        } catch (HttpException e) {
+            log.error("冻存盒导入失败", e);
+        } catch (IOException e) {
+            log.error("冻存盒导入失败", e);
+        } finally {
+            getMethod.releaseConnection();
+        }
+        return jsonObjects;
+    }
 }

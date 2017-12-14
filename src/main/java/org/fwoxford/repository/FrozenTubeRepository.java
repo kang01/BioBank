@@ -218,4 +218,6 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " or b.frozen_box_code in ?1)" +
         "and t.project_id in ?3 ",nativeQuery = true)
     List<FrozenTube> findByFrozenBoxCode1DInOrFrozenBoxCodeInAndSampleTypeAndProjectIdsIn(List<String> code, String type, List<Long> projectIds);
+
+    List<FrozenTube> findBySampleCodeInAndStatusNot(List<String> sampleCodeStr, String invalid);
 }

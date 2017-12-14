@@ -112,5 +112,5 @@ public interface TranshipBoxService {
      * @param frozenBoxCodeStr
      * @return
      */
-    List<FrozenBoxAndFrozenTubeResponse> getStockOutFrozenBoxAndSample(String applyCode, String frozenBoxCodeStr);
+    List<TranshipBoxDTO> getStockOutFrozenBoxAndSample(String applyCode, String frozenBoxCodeStr);
 }

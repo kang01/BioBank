@@ -94,6 +94,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     FrozenBoxImportService frozenBoxImportService;
     @Autowired
     TranshipTubeMapper transhipTubeMapper;
+    @Autowired
+    StockOutApplyRepository stockOutApplyRepository;
+
     /**
      * Save a transhipBox.
      *
@@ -896,6 +899,13 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
      */
     @Override
     public List<TranshipBoxDTO> getStockOutFrozenBoxAndSample(String applyCode, String frozenBoxCodeStr) {
+        StockOutApply stockOutApply = stockOutApplyRepository.findByApplyCode(applyCode);
+        if(stockOutApply == null){
+            throw new BankServiceException("申请不存在！");
+        }
+        if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVED)){
+            throw new BankServiceException("申请未批准！");
+        }
         //定义返回结果
         List<TranshipBoxDTO> frozenBoxAndFrozenTubeResponses = new ArrayList<>();
         //从出库中获取

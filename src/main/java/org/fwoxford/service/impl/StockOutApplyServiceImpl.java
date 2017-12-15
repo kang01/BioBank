@@ -168,10 +168,11 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         List<StockOutApplyForDataTableEntity> alist = new ArrayList<StockOutApplyForDataTableEntity>();
         output.getData().forEach(apply ->{
             StockOutApplyForDataTableEntity applyData = new StockOutApplyForDataTableEntity();
-//            Long CountOfextLevel = stockOutApplyRepository.countByParentApplyId(apply.getId());
-            if(apply.getParentApplyId()==null){
+            Long CountOfextLevel = stockOutApplyRepository.countByParentApplyId(apply.getId());
+            if(CountOfextLevel.intValue()>0){
                 applyData.setLevelNo(Constants.LEVEL_ONE);
-            }else{
+            }
+            if(apply.getParentApplyId()!=null){
                 applyData.setLevelNo(Constants.LEVEL_TWO);
             }
             applyData.setId(apply.getId());
@@ -288,9 +289,11 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         stockOutApplyForDataTableEntities.forEach(s->{
             StockOutApplyForDataTableEntity stockOutApplyForDataTableEntity = new StockOutApplyForDataTableEntity();
             BeanUtils.copyProperties(s,stockOutApplyForDataTableEntity);
-            if(s.getParentApplyId()==null){
+            Long CountOfextLevel = stockOutApplyRepository.countByParentApplyId(stockOutApplyForDataTableEntity.getId());
+            if(CountOfextLevel.intValue()>0){
                 stockOutApplyForDataTableEntity.setLevelNo(Constants.LEVEL_ONE);
-            }else{
+            }
+            if(s.getParentApplyId()!=null){
                 stockOutApplyForDataTableEntity.setLevelNo(Constants.LEVEL_TWO);
             }
             stockOutApplyForDataTableEntitiesForResponse.add(stockOutApplyForDataTableEntity);
@@ -409,9 +412,11 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         List<StockOutApplyForDataTableEntity> stockOutApplyForDataTableEntities = new ArrayList<StockOutApplyForDataTableEntity>();
         StockOutApplyForDataTableEntity stockOutApplyForDataTableEntity = new StockOutApplyForDataTableEntity();
         BeanUtils.copyProperties(stockOutApplyForParent,stockOutApplyForDataTableEntity);
-        if(stockOutApplyForParent.getParentApplyId()==null){
+        Long CountOfextLevel = stockOutApplyRepository.countByParentApplyId(stockOutApplyForDataTableEntity.getId());
+        if(CountOfextLevel.intValue()>0){
             stockOutApplyForDataTableEntity.setLevelNo(Constants.LEVEL_ONE);
-        }else{
+        }
+        if(stockOutApplyForParent.getParentApplyId()!=null){
             stockOutApplyForDataTableEntity.setLevelNo(Constants.LEVEL_TWO);
         }
         stockOutApplyForDataTableEntities.add(stockOutApplyForDataTableEntity);

@@ -10,9 +10,9 @@
         .controller('requirementListController', requirementListController)
         .controller('ConfirmModalController', ConfirmModalController);
 
-    requirementListController.$inject = ['$scope', '$compile', '$state', 'toastr', 'DTOptionsBuilder', 'DTColumnBuilder', 'RequirementService','$uibModal','BioBankDataTable'];
+    requirementListController.$inject = ['$scope', '$compile', '$state', 'toastr', 'DTOptionsBuilder', 'DTColumnBuilder','MasterData', 'RequirementService','$uibModal','BioBankDataTable'];
     ConfirmModalController.$inject = ['$uibModalInstance'];
-    function requirementListController($scope, $compile, $state, toastr, DTOptionsBuilder, DTColumnBuilder, RequirementService,$uibModal,BioBankDataTable) {
+    function requirementListController($scope, $compile, $state, toastr, DTOptionsBuilder, DTColumnBuilder,MasterData, RequirementService,$uibModal,BioBankDataTable) {
         var vm = this;
         var modalInstance;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
@@ -135,33 +135,34 @@
             DTColumnBuilder.newColumn('countOfStockSample').withTitle('满足样本量').withOption('width', '110px'),
             DTColumnBuilder.newColumn('sampleTypes').withTitle('样本类型').withOption('width', '80px'),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption('width', '70px'),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml).withOption('width', '50px'),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml).withOption('width', '80px'),
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         //列表中字段替换
         function createdRow(row, data, dataIndex) {
-            var status = '';
-            switch (data.status) {
-                case '1101':
-                    status = '进行中';
-                    break;
-                case '1102':
-                    status = '待批准';
-                    break;
-                case '1103':
-                    status = '已批准';
-                    break;
-                case '1190':
-                    status = '已作废';
-                    break;
-            }
+            var status = MasterData.getStatus(data.status);
+            // switch (data.status) {
+            //     case '1101':
+            //         status = '进行中';
+            //         break;
+            //     case '1102':
+            //         status = '待批准';
+            //         break;
+            //     case '1103':
+            //         status = '已批准';
+            //         break;
+            //     case '1190':
+            //         status = '已作废';
+            //         break;
+            // }
             $('td:eq(9)', row).html(status);
 
             $('td', row).unbind('click');
             $('td:first', row).css("cursor", "pointer");
-            if (data.levelNo == 1) {
+            if (data.levelNo) {
+                var levelNo = data.levelNo;
                 $('td:first', row).bind('click', function () {
-                    extraClickHandler(row);
+                    extraClickHandler(row,levelNo);
                 });
             }
 
@@ -192,7 +193,7 @@
 
 
         }
-        function extraClickHandler(tr) {
+        function extraClickHandler(tr,levelNo) {
             var row = vm.dtInstance.DataTable.row(tr);
             if (row.child.isShown()) {
                 // This row is already open - close it
@@ -200,19 +201,29 @@
                 $(tr).removeClass('shown');
             }
             else {
-                // Open this row
-                RequirementService.queryCopyRequirementList(row.data().id).then(function (res) {
-                    row.child(format(tr, res.data)).show();
-                    var child = row.child();
-                    $("td:eq(0)", child).addClass('p-0');
-                    $(tr).addClass('shown');
-                });
+                if(levelNo == 1){
+                    // Open this row
+                    RequirementService.queryCopyRequirementList(row.data().id).then(function (res) {
+                        row.child(format(tr, res.data)).show();
+                        var child = row.child();
+                        $("td:eq(0)", child).addClass('p-0 child-color');
+                        $(tr).addClass('shown');
+                    });
+                }else{
+                    RequirementService.queryStairRequirementListBySecondId(row.data().id).then(function (res) {
+                        row.child(format(tr, res.data)).show();
+                        var child = row.child();
+                        $("td:eq(0)", child).addClass('p-0 parent-color');
+                        $(tr).addClass('shown');
+                    });
+                }
+
 
             }
         }
 
         function format(parentRow, items) {
-            var html = $('<table class="table table-operate dataTable mt-0" style="width: 100%"><tbody></tbody></table>');
+            var html = $('<table class="table table-operate dataTable mt-0" style="width: 100%;"><tbody></tbody></table>');
             for (var i = 0; i < items.length; i++) {
                 var tr = $("<tr />").html(
                     "<td data-id="+ (items[i].id ||' ') +"> </td>" +
@@ -232,13 +243,13 @@
                     $(tr).append("<td ><button  class='viewApplyId btn btn-default btn-xs'><i class='fa fa-eye'></i></button></td>");
                 }
 
-
+                //附加
                 $(".addApplyId", tr).click(function () {
                     var tr = $(this).closest('tr');
                     var applyId = tr.find('td:eq(0)').data('id');
                     $state.go('requirement-additionApply', {applyId: applyId,viewFlag:2});
                 });
-
+                //查看页面
                 $(".viewApplyId", tr).click(function () {
                     var tr = $(this).closest('tr');
                     var applyId = tr.find('td:eq(0)').data('id');
@@ -254,22 +265,22 @@
             return html;
         }
 
-        function statusShow(staus) {
-            var statusVal = "";
-            switch (staus) {
-                case '1101':
-                    statusVal = '进行中';
-                    break;
-                case '1102':
-                    statusVal = '待批准';
-                    break;
-                case '1103':
-                    statusVal = '已批准';
-                    break;
-                case '1190':
-                    statusVal = '已作废';
-                    break;
-            }
+        function statusShow(status) {
+            var statusVal = MasterData.getStatus(status);
+            // switch (staus) {
+            //     case '1101':
+            //         statusVal = '进行中';
+            //         break;
+            //     case '1102':
+            //         statusVal = '待批准';
+            //         break;
+            //     case '1103':
+            //         statusVal = '已批准';
+            //         break;
+            //     case '1190':
+            //         statusVal = '已作废';
+            //         break;
+            // }
             return statusVal;
 
         }
@@ -296,6 +307,9 @@
             //有下一级
             if (full.levelNo == 1) {
                 html = '<div class="details-control"></div>';
+            }
+            if (full.levelNo == 2) {
+                html = '<div style="color:#0066FF;margin-left: 4px;"><i class="fa fa-paperclip"></i></div>';
             }
             return html;
         }

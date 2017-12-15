@@ -16,6 +16,8 @@
             queryRequirementList:_queryRequirementList,
             //附加列表
             queryCopyRequirementList:_queryCopyRequirementList,
+            //根据二级申请ID，取上一级出库申请
+            queryStairRequirementListBySecondId:_queryStairRequirementListBySecondId,
             //根据ID获取详情
             queryRequirementDesc:_queryRequirementDesc,
             //获取委托方
@@ -77,6 +79,9 @@
         }
         function _queryCopyRequirementList(id) {
             return $http.get('api/stock-out-applies/parentApply/'+id);
+        }
+        function _queryStairRequirementListBySecondId(id) {
+            return $http.get('api/stock-out-applies/secondApply/'+id);
         }
         function _queryRequirementDesc(id) {
             return $http.get('api/stock-out-applies/'+id).then(function(res){

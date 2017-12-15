@@ -12,38 +12,28 @@
 
     function PlanTaskSelectModalController($uibModalInstance,$uibModal,items,toastr,DTOptionsBuilder,PlanService,BioBankDataTable) {
         var vm = this;
-        var indexArray = [];
-        var _indexs = [];
+        var paginationIndexArray = [];
 
         function _fnVerification() {
             //输入有误
             vm.errorInfo = false;
-            vm.indexText = _.replace(vm.indexText, '，', ',');
-            indexArray = _.split(vm.indexText, ',');
+            vm.paginationText = _.replace(vm.paginationText, '，', ',');
+            paginationIndexArray = _.split(vm.paginationText, ',');
             var rgExp = /\d{1,3}-\d{1,3}/;
-            _.forEach(indexArray,function (indexStr) {
-                var index = indexStr.indexOf("-");
+            _.forEach(paginationIndexArray,function (pagination) {
+                var index = pagination.indexOf("-");
                 //检查输入的内容中是否包含-
                 if(index != -1){
-                    if(rgExp.test(indexStr)){
+                    if(rgExp.test(pagination)){
                         //匹配成功后，判断第一个数要小于第二个数，不然就输入错误
-                        var num1 = _.toNumber(indexStr.substr(0,index));
-                        var num2 = _.toNumber(indexStr.substring(index+1));
-
-
+                        var num1 = _.toNumber(pagination.substr(0,index));
+                        var num2 = _.toNumber(pagination.substring(index+1));
                         if(num1 > num2){
                             vm.errorInfo = true
-                        }else{
-                            for(var i = num1; i<= num2;i++){
-                                _indexs.push(i)
-                            }
-
                         }
                     }else{
                         vm.errorInfo = true;
                     }
-                }else{
-                    _indexs.push(Number(indexStr));
                 }
             });
         }
@@ -57,8 +47,7 @@
                 toastr.error("输入有误!");
                 return;
             }
-            _indexs = _.union(_indexs);
-            $uibModalInstance.close(_indexs);
+            $uibModalInstance.close(paginationIndexArray);
 
         };
         vm.cancel = function () {

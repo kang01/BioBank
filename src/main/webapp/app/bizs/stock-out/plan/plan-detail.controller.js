@@ -10,12 +10,11 @@
         .controller('PlanDetailController', PlanDetailController)
         .controller('PlanDelModalController', PlanDelModalController);
 
-    PlanDetailController.$inject = ['$scope','$compile','$state','$stateParams','toastr','$uibModal','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankBlockUi','BioBankDataTable','MasterData','$timeout'];
+    PlanDetailController.$inject = ['$scope','$compile','$state','$stateParams','toastr','$uibModal','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankBlockUi','BioBankDataTable','MasterData'];
     PlanDelModalController.$inject = ['$uibModalInstance'];
-    function PlanDetailController($scope,$compile,$state,$stateParams,toastr,$uibModal,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankBlockUi,BioBankDataTable,MasterData,$timeout) {
+    function PlanDetailController($scope,$compile,$state,$stateParams,toastr,$uibModal,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankBlockUi,BioBankDataTable,MasterData) {
         var vm = this;
         var modalInstance;
-        vm.boxData = [];
         vm.dtInstance = {};
         vm.tubeInstance = {};
         vm.taskInstance = {};
@@ -67,14 +66,14 @@
             vm.toggleAll = function (selectAll, selectedItems) {
                 selectedItems = vm.selected;
                 selectAll = vm.selectAll;
-                // var boxIdArray = [];
+                var boxIdArray = [];
                 for (var id in selectedItems) {
-                    // boxIdArray.push(id);
+                    boxIdArray.push(id);
                     if (selectedItems.hasOwnProperty(id)) {
                         selectedItems[id] = selectAll;
                     }
                 }
-                // vm.strBoxIds = _.join(boxIdArray,",");
+                vm.strBoxIds = _.join(boxIdArray,",");
                 //
                 if(!selectAll){
                     //全部不选中
@@ -95,16 +94,16 @@
                 }
                 vm.selectedLen = selectedBox.length;
                 vm.selectedOptions.withOption('data', selectedBox);
-                var boxIdArray = _.map(selectedBox, 'id');
-                vm.strBoxIds = _.join(boxIdArray,",");
             };
+            var clickFlag = false;
             //选择的计划的盒子列表
             selectedBox = [];
             vm.toggleOne = function (selectedItems) {
-                // var boxIdArray = [];
+                clickFlag = true;
+                var boxIdArray = [];
                 for (var id in selectedItems) {
                     if(selectedItems[id]){
-                        // boxIdArray.push(id);
+                        boxIdArray.push(id);
                         var obj = _.find(vm.boxData,{id:+id});
                         var len = _.filter(selectedBox,{id:+id}).length;
                         if(!len){
@@ -124,7 +123,6 @@
                 }
                 vm.selectedLen = selectedBox.length;
                 vm.selectedOptions.withOption('data', selectedBox);
-                var boxIdArray = _.map(selectedBox, 'id');
                 vm.strBoxIds = _.join(boxIdArray,",");
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
@@ -139,7 +137,7 @@
 
             };
             //盒子列表
-            // var boxId;
+            var boxId;
             vm.selectedLen = 0;
             // vm.boxData = [];
             // vm.dtOptions.withOption('data',vm.boxData);
@@ -189,18 +187,34 @@
 
 
             function _fnRowSelectorRender(data, type, full, meta) {
-                vm.selected[full.id] = false;
+                var len = _.filter(selectedBox,{id:full.id}).length;
+                if(len){
+                    vm.selected[full.id] = true;
+                }else{
+                    vm.selected[full.id] = false;
+                }
+                if(vm.selectedLen == vm.boxData.length){
+                    vm.selectAll = true;
+                }else{
+                    vm.selectAll = false;
+                }
                 var html = '';
                 html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
                 return html;
             }
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
                 $('td:nth-child(2)', nRow).html(iDisplayIndex + 1);
-                // $('td', nRow).unbind('click');
-                // $(nRow).bind('click', function() {
-                //     var tr = this;
-                //     rowClickHandler(tr,oData);
-                // });
+                $('td', nRow).unbind('click');
+                $(nRow).bind('click', function() {
+                    var tr = this;
+                    if(!clickFlag){
+                        rowClickHandler(tr,oData);
+                    }
+                    clickFlag = false;
+                });
+                if(boxId == oData.id){
+                    $(nRow).addClass('rowLight');
+                }
                 return nRow;
             }
             function rowClickHandler(tr,oData) {
@@ -211,15 +225,13 @@
             function _fnRowRender(data, type, full, meta) {
                 var frozenBoxCode = '';
                 if(full.frozenBoxCode1D){
-                    // frozenBoxCode = "1D:"+full.frozenBoxCode1D +"&nbsp;<br>" + "2D:"+full.frozenBoxCode;
-                    frozenBoxCode = "<a>1D:"+full.frozenBoxCode1D+"&nbsp;<br>2D:"+full.frozenBoxCode+"</a>"
+                    frozenBoxCode = "1D:"+full.frozenBoxCode1D +"&nbsp;<br>" + "2D:"+full.frozenBoxCode;
                 }else{
-                    frozenBoxCode = "<a ng-click='vm.loadTubes("+full.id+")'>2D:"+full.frozenBoxCode+"</a>";
+                    frozenBoxCode = "2D:"+full.frozenBoxCode;
                 }
 
                 return frozenBoxCode;
             }
-            vm.loadTubes = _loadTubes;
             //获取管子信息
             function _loadTubes(boxId) {
                 if(vm.sampleIds){
@@ -362,11 +374,8 @@
                 vm.select_all = false;
             }
 
+            // console.log(JSON.stringify(vm.checkedApply))
             vm.sampleIds = vm.checkedApply.join(",");
-            vm.selectAll = false;
-            selectedBox = [];
-            vm.selectedLen = 0;
-            vm.selectedOptions.withOption('data', []);
             _queryPlanBoxes();
         };
         //获取冻存盒列表
@@ -376,23 +385,24 @@
                 if(vm.sampleIds){
                     PlanService.queryPlanBoxes(vm.sampleIds,obj).success(function (res){
                         vm.boxData = res.data;
+                        vm.boxData = _.orderBy(vm.boxData, ['frozenBoxCode'], ['asc']);
                         vm.dtOptions.withOption('data',vm.boxData);
-                        // var array = [];
-                        // _.forEach(selectedBox,function (box) {
-                        //     var len = _.filter(vm.boxData,{frozenBoxCode:box.frozenBoxCode}).length;
-                        //     if(!len){
-                        //         array.push(box);
-                        //     }
-                        // });
-                        // _.forEach(array,function (box) {
-                        //     _.remove(selectedBox,{frozenBoxCode:box.frozenBoxCode});
-                        // });
-                        // vm.selectedLen = selectedBox.length;
-                        // if(vm.selectedLen == vm.boxData.length){
-                        //     vm.selectAll = true;
-                        // }else{
-                        //     vm.selectAll = false;
-                        // }
+                        var array = [];
+                        _.forEach(selectedBox,function (box) {
+                            var len = _.filter(vm.boxData,{frozenBoxCode:box.frozenBoxCode}).length;
+                            if(!len){
+                                array.push(box);
+                            }
+                        });
+                        _.forEach(array,function (box) {
+                            _.remove(selectedBox,{frozenBoxCode:box.frozenBoxCode});
+                        });
+                        vm.selectedLen = selectedBox.length;
+                        if(vm.selectedLen == vm.boxData.length){
+                            vm.selectAll = true;
+                        }else{
+                            vm.selectAll = false;
+                        }
                     });
                 }else{
                     vm.dtOptions.withOption('data',[]);
@@ -427,8 +437,7 @@
         }
         //自定义勾选
         function _fnSelectTask() {
-            vm.boxData = vm.dtInstance.DataTable.rows().data();
-            var modalInstance = $uibModal.open({
+            modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/plan/modal/plan-task-select-modal.html',
                 controller: 'PlanTaskSelectModalController',
@@ -444,48 +453,50 @@
                 }
             });
 
-            modalInstance.result.then(function (indexArray) {
-                selectedBox = [];
-                vm.selectedLen = 0;
-                vm.selectedOptions.withOption('data', selectedBox);
-                _.forEach(vm.boxData,function (box) {
-                    vm.selected[box.id] = false;
-                });
+            modalInstance.result.then(function (paginationIndexArray) {
+                vm.boxData = _.orderBy(vm.boxData, ['frozenBoxCode'], ['asc']);
+                var boxIdArray = [];
+                var rgExp = /\d{1,3}-\d{1,3}/;
+                _.forEach(paginationIndexArray,function (pagination) {
+                    var index = pagination.indexOf("-");
+                    //检查输入的内容中是否包含-
+                    if(index != -1){
+                        if(rgExp.test(pagination)){
+                            //匹配成功后，判断第一个数要小于第二个数，不然就输入错误
+                            var num1 = _.toNumber(pagination.substr(0,index));
+                            var num2 = _.toNumber(pagination.substring(index+1));
+                            if(num2 >= vm.boxData.length){
+                                num2 = vm.boxData.length;
+                                vm.selectAll = true;
+                            }
+                            for(var i = num1; i < num2+1; i++){
+                                _fnSelectBoxData(i);
 
-                _.forEach(indexArray,function (index) {
-                    if(vm.boxData.length >= index){
-                        _fnSelectBoxData(index);
+                            }
+                        }
+                    }else{
+                        var i = _.toNumber(pagination);
+                        _fnSelectBoxData(i);
                     }
+
                 });
+                //勾选冻存盒列表
+                function _fnSelectBoxData(index) {
+                    var len = _.filter(selectedBox,{id:vm.boxData[index-1].id}).length;
+                    if(!len){
+                        //要勾选的数据
+                        selectedBox.push(vm.boxData[index-1]);
+                        //盒子ID
+                        boxIdArray.push(vm.boxData[index-1].id);
+                    }
+                }
+                vm.selectedLen = selectedBox.length;
+                vm.dtInstance.rerender();
+                vm.selectedOptions.withOption('data', selectedBox);
+                vm.strBoxIds = _.join(boxIdArray,",");
 
             });
-
         }
-        //勾选冻存盒列表
-        function _fnSelectBoxData(index) {
-
-            var len = _.filter(selectedBox,{id:vm.boxData[index-1].id}).length;
-            if(!len){
-                //要勾选的数据
-                selectedBox.push(vm.boxData[index-1]);
-            }
-
-            vm.selectedLen = selectedBox.length;
-            _.forEach(selectedBox,function (box) {
-                vm.selected[box.id] = true;
-            });
-            if(vm.selectedLen == vm.boxData.length){
-                vm.selectAll = true;
-            }else{
-                vm.selectAll = false;
-            }
-            vm.selectedOptions.withOption('data', selectedBox);
-            //开始任务需要的id串
-            var boxIdArray = _.map(selectedBox, 'id');
-            vm.strBoxIds = _.join(boxIdArray,",");
-
-        }
-
         //查看选中的计划详情
         function _fnViewPlanDetail() {
             vm.checkedPlanFlag = true;

@@ -3,10 +3,10 @@
     <h3 class="modal-title" id="modal-title">自定义勾选</h3>
 </div>
 <div class="modal-body" id="modal-body">
-    <input type="text" class="form-control" ng-model="vm.indexText" onkeyup="value = value.replace(/[^\d,，-]/g,'') "
+    <input type="text" class="form-control" ng-model="vm.paginationText" onkeyup="value = value.replace(/[^\d,，-]/g,'') "
     placeholder="请输入勾选项的行号。（例如：1-20，15，20）">
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="!vm.indexText">确定</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="!vm.paginationText">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

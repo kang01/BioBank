@@ -81,7 +81,11 @@
         }
         var t;
         function _fnServerData( sSource, aoData, fnCallback, oSettings ) {
-            if(!oSettings.oPreviousSearch.sSearch){
+            //各列搜索
+            var aoPreSearchCols = oSettings.aoPreSearchCols;
+            var len = _.filter(aoPreSearchCols,{sSearch:""}).length;
+            // 搜索框为空的时候不用timer
+            if(!oSettings.oPreviousSearch.sSearch && len == aoPreSearchCols.length){
                 _fnStockInSeach(sSource, aoData, fnCallback, oSettings);
             }else{
                 if(t){
@@ -158,13 +162,13 @@
         function _createColumnFilters(){
             var filters = {
                 aoColumns: [
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
                     {type: 'text',bRegex: true,bSmart: true},
                     {type: 'text',bRegex: true,bSmart: true},
                     {

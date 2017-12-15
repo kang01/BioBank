@@ -33,23 +33,19 @@
                 aoColumns: [{
                     // 交接单编码
                     type: 'text',
-                    width:50,
-                    iFilterLength:3
+                    width:50
                 }, {
                     // 申请单编码
                     type: 'text',
-                    width:50,
-                    iFilterLength:3
+                    width:50
                 }, {
                     // 用途
                     type: 'text',
-                    width:50,
-                    iFilterLength:3
+                    width:50
                 }, {
                     // 交接样本
                     type: 'text',
-                    width:50,
-                    iFilterLength:3
+                    width:50
                 }, {
                     // 交接时间
                     type: 'Datepicker',
@@ -58,13 +54,11 @@
                 }, {
                     // 接收方
                     type: 'text',
-                    width:50,
-                    iFilterLength:3
+                    width:50
                 }, {
                     // 交付人
                     type: 'text',
-                    width:50,
-                    iFilterLength:3
+                    width:50
                 }, {
                     // 状态
                     type: 'select',
@@ -123,7 +117,11 @@
         }
         var t;
         function fnServerData ( sSource, aoData, fnCallback, oSettings ) {
-            if(!oSettings.oPreviousSearch.sSearch){
+            //各列搜索
+            var aoPreSearchCols = oSettings.aoPreSearchCols;
+            var len = _.filter(aoPreSearchCols,{sSearch:""}).length;
+            // 搜索框为空的时候不用timer
+            if(!oSettings.oPreviousSearch.sSearch && len == aoPreSearchCols.length){
                 _fnStockOutSeach(sSource, aoData, fnCallback, oSettings);
             }else{
                 if(t){

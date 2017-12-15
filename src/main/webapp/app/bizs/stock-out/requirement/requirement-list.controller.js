@@ -61,8 +61,11 @@
             .withOption('order', [['1', 'desc']])
             .withOption('serverSide', true)
             .withFnServerData(function (sSource, aoData, fnCallback, oSettings) {
-
-                if(!oSettings.oPreviousSearch.sSearch){
+                //各列搜索
+                var aoPreSearchCols = oSettings.aoPreSearchCols;
+                var len = _.filter(aoPreSearchCols,{sSearch:""}).length;
+                // 搜索框为空的时候不用timer
+                if(!oSettings.oPreviousSearch.sSearch && len == aoPreSearchCols.length){
                     _fnStockOutSeach(sSource, aoData, fnCallback, oSettings);
                 }else{
                     if(t){
@@ -79,13 +82,11 @@
                     null,
                     {
                         type: 'text',
-                        width: 50,
-                        iFilterLength: 3
+                        width: 50
                     }, {
                         type: 'text',
                         bRegex: true,
-                        bSmart: true,
-                        iFilterLength: 3
+                        bSmart: true
                     }, {
                         type: 'text',
                         bRegex: true,

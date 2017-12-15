@@ -62,7 +62,7 @@
     <include file="classpath:config/liquibase/changelog/20170904070135_added_entity_Coordinate.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170907023423_added_entity_Province.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170928120705_added_entity_StockOutHandoverBox.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20171130012956_added_entity_CheckType.xml" relativeToChangelogFile="false"/>
+    <!--<include file="classpath:config/liquibase/changelog/20171130012956_added_entity_CheckType.xml" relativeToChangelogFile="false"/>-->
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170316050525_added_entity_constraints_ProjectRelate.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317021528_added_entity_constraints_Equipment.xml" relativeToChangelogFile="false"/>
@@ -187,7 +187,7 @@
     <include file="classpath:config/liquibase/changelog/20171127143300_updated_view_StockOutApply.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171127153000_added_column_StockOutHandover.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171127154000_updated_view_StockOutHandover.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20171211113400_updated_view_StockOutApply.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20171201160541_added_column_StockOutFrozenBox.xml" relativeToChangelogFile="false"/>
 
     <!--<include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>-->
 

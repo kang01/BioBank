@@ -262,18 +262,16 @@ public class TranshipBoxResource {
 
     /**
      * 归还冻存盒的保存
-     * @param transhipBoxListDTO
+     * @param transhipBoxDTOS
      * @return
      * @throws URISyntaxException
      */
-    @PostMapping("/return-boxes/batch")
+    @PostMapping("/return-boxes/batch/return-back/{id}")
     @Timed
-    public ResponseEntity<TranshipBoxListForSaveBatchDTO> createTranshipBoxForReturn(@Valid @RequestBody TranshipBoxListDTO transhipBoxListDTO) throws URISyntaxException {
-        log.debug("REST request to save TranshipBox For return back box: {}", transhipBoxListDTO);
-        TranshipBoxListForSaveBatchDTO result = transhipBoxService.saveBatchTranshipBoxForReturn(transhipBoxListDTO);
-        return ResponseEntity.created(new URI("/api/return-back/id/" + result.getTranshipId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getTranshipId().toString()))
-            .body(result);
+    public ResponseEntity<List<TranshipBoxDTO>> createTranshipBoxForReturn(@PathVariable Long id ,@Valid @RequestBody List<TranshipBoxDTO> transhipBoxDTOS) throws URISyntaxException {
+        log.debug("REST request to save TranshipBox For return back box: {}", transhipBoxDTOS);
+        List<TranshipBoxDTO> result = transhipBoxService.saveBatchTranshipBoxForReturn(id,transhipBoxDTOS);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
     /**

@@ -149,4 +149,41 @@ public interface TranshipTubeMapper {
         transhipTubeDTO.setBackColor(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getBackColor():null);
         return transhipTubeDTO;
     }
+
+    default FrozenTube transhipTubeToFrozenTube(TranshipTube stockOutTube){
+        if ( stockOutTube == null ) {
+            return null;
+        }
+
+        FrozenTube frozenTube = new FrozenTube();
+
+        frozenTube.setFrozenTubeType( stockOutTube.getFrozenTubeType() );
+        frozenTube.setFrozenBox(stockOutTube.getTranshipBox().getFrozenBox());
+        frozenTube.setProject( stockOutTube.getProject() );
+        frozenTube.setProjectSite( stockOutTube.getProjectSite() );
+        frozenTube.setSampleType(stockOutTube.getSampleType() );
+        frozenTube.setSampleClassification( stockOutTube.getSampleClassification());
+        frozenTube.setProjectCode( stockOutTube.getProjectCode() );
+        frozenTube.setProjectSiteCode( stockOutTube.getProjectSiteCode() );
+        frozenTube.setFrozenTubeCode( stockOutTube.getFrozenTubeCode() );
+        frozenTube.setSampleTempCode( stockOutTube.getSampleTempCode() );
+        frozenTube.setSampleCode( stockOutTube.getSampleCode() );
+        frozenTube.setFrozenTubeTypeCode( stockOutTube.getFrozenTubeTypeCode() );
+        frozenTube.setFrozenTubeTypeName( stockOutTube.getFrozenTubeTypeName() );
+        frozenTube.setSampleTypeCode( stockOutTube.getSampleTypeCode() );
+        frozenTube.setSampleTypeName( stockOutTube.getSampleTypeName() );
+        frozenTube.setSampleUsedTimesMost( stockOutTube.getSampleUsedTimesMost() );
+        frozenTube.setSampleUsedTimes( stockOutTube.getSampleUsedTimes() );
+        frozenTube.setFrozenTubeVolumns( stockOutTube.getFrozenTubeVolumns() );
+        frozenTube.setSampleVolumns( stockOutTube.getSampleVolumns() );
+        frozenTube.setFrozenTubeVolumnsUnit( stockOutTube.getFrozenTubeVolumnsUnit() );
+        frozenTube.setTubeRows( stockOutTube.getRowsInTube() );
+        frozenTube.setTubeColumns( stockOutTube.getColumnsInTube() );
+        frozenTube.setMemo( stockOutTube.getMemo() );
+        frozenTube.setErrorType( stockOutTube.getErrorType() );
+        frozenTube.setFrozenTubeState( stockOutTube.getFrozenTubeState() );
+        frozenTube.setStatus( stockOutTube.getStatus() );
+        frozenTube.setFrozenBoxCode( stockOutTube.getFrozenBoxCode() );
+        return frozenTube;
+    }
 }

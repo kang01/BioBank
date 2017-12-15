@@ -1,9 +1,8 @@
 package org.fwoxford.service;
-import org.fwoxford.domain.Area;
-import org.fwoxford.domain.Equipment;
-import org.fwoxford.domain.FrozenBox;
-import org.fwoxford.domain.SupportRack;
+import org.fwoxford.config.Constants;
+import org.fwoxford.domain.*;
 import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.service.dto.TranshipBoxListDTO;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
@@ -14,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service class for checking boxes.
@@ -24,6 +24,8 @@ public class FrozenBoxCheckService {
 
     @Autowired
     private FrozenBoxRepository frozenBoxRepository;
+    @Autowired
+    private TranshipBoxService transhipBoxService;
 
     private final Logger log = LoggerFactory.getLogger(FrozenBoxCheckService.class);
 
@@ -78,7 +80,30 @@ public class FrozenBoxCheckService {
             throw new BankServiceException("请勿提交重复的冻存盒编码！",String.join(",",repeatCode));
         }
     }
-
-    public void checkFrozenBoxCodeForStockOutReturn(TranshipBoxListDTO transhipBoxListDTO) {
+    public List<TranshipBoxDTO> checkFrozenBoxCodeForStockOutReturn(List<TranshipBoxDTO> transhipBoxDTOS, Tranship tranship) {
+        if(tranship == null){
+            return null;
+        }
+        List<String> frozenBoxCodeStr = transhipBoxDTOS.stream().map(s->{
+            String boxCode = StringUtils.isEmpty(s.getFrozenBoxCode())?s.getFrozenBoxCode1D():s.getFrozenBoxCode();
+            if(StringUtils.isEmpty(boxCode)){
+                throw new BankServiceException("冻存盒编码不能为空");
+            }
+            return boxCode;
+        }).collect(Collectors.toList());
+        String boxCodeStr = String.join(",",frozenBoxCodeStr);
+        List<TranshipBoxDTO> stockOutFrozenBoxAndSampleList = transhipBoxService.getStockOutFrozenBox(tranship.getStockOutApply().getApplyCode(),boxCodeStr);
+        for(TranshipBoxDTO stockOutFrozenBox :stockOutFrozenBoxAndSampleList){
+            if(stockOutFrozenBox.getIsRealData().equals(Constants.NO)){
+                String boxCode = StringUtils.isEmpty(stockOutFrozenBox.getFrozenBoxCode())?stockOutFrozenBox.getFrozenBoxCode1D():stockOutFrozenBox.getFrozenBoxCode();
+                throw new BankServiceException("冻存盒"+boxCode+"导入失败！");
+            }
+        }
+//        for(TranshipBoxDTO transhipBoxDTO :transhipBoxDTOS){
+//            for(TranshipBoxDTO outBox :stockOutFrozenBoxAndSampleList){
+//
+//            }
+//        }
+        return stockOutFrozenBoxAndSampleList;
     }
 }

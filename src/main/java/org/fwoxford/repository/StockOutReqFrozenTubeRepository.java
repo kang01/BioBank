@@ -94,4 +94,6 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     @Query(value = "DELETE  FROM stock_out_req_frozen_tube T WHERE ROWID IN ?1",nativeQuery = true)
     void deleteByIdsIn(List<Object> ids);
 
+    @Query("SELECT s FROM StockOutReqFrozenTube s WHERE s.stockOutRequirement.stockOutApply.id = ?1 AND s.sampleTypeId = ?2 AND s.sampleCode in ?3 AND s.status = '"+Constants.STOCK_OUT_SAMPLE_COMPLETED+"'")
+    List<StockOutReqFrozenTube> findByStockOutApplyIdAndSampleTypeAndSampleCodeIn(Long id, Long sampleTypeId, List<String> sampleCodeStr);
 }

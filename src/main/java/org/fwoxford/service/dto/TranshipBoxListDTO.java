@@ -35,4 +35,14 @@ public class TranshipBoxListDTO implements Serializable {
     public void setFrozenBoxDTOList(List<FrozenBoxForSaveBatchDTO> frozenBoxDTOList) {
         this.frozenBoxDTOList = frozenBoxDTOList;
     }
+
+    private List<TranshipBoxDTO> transhipBoxDTOS;
+
+    public List<TranshipBoxDTO> getTranshipBoxDTOS() {
+        return transhipBoxDTOS;
+    }
+
+    public void setTranshipBoxDTOS(List<TranshipBoxDTO> transhipBoxDTOS) {
+        this.transhipBoxDTOS = transhipBoxDTOS;
+    }
 }

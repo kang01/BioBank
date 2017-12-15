@@ -139,7 +139,9 @@ public interface TranshipBoxMapper {
             TranshipBoxDTO frozenBoxAndFrozenTubeResponse = forzenBoxAndTubeToTranshipBoxDTO(frozenBox);
             frozenBoxAndFrozenTubeResponse.setIsRealData(Constants.YES);
             frozenBoxAndFrozenTubeResponse.setIsSplit(Constants.NO);
-            frozenBoxAndFrozenTubeResponse.setTranshipTubeDTOS(transhipTubeDTOS.get(frozenBox.getId()));
+            if(transhipTubeDTOS!=null) {
+                frozenBoxAndFrozenTubeResponse.setTranshipTubeDTOS(transhipTubeDTOS.get(frozenBox.getId()));
+            }
             frozenBoxAndFrozenTubeResponses.add(frozenBoxAndFrozenTubeResponse);
         }
 
@@ -196,4 +198,45 @@ public interface TranshipBoxMapper {
         return res;
     }
 
+    default FrozenBox transhipBoxDTOToFrozenBox(TranshipBox transhipBox){
+        if ( transhipBox == null ) {
+            return null;
+        }
+
+        FrozenBox frozenBox = new FrozenBox();
+
+        frozenBox.setArea( transhipBox.getArea() );
+        frozenBox.setSupportRack(transhipBox.getSupportRack() );
+        frozenBox.setFrozenBoxType( transhipBox.getFrozenBoxType() );
+        frozenBox.setProject( transhipBox.getProject() );
+        frozenBox.setEquipment( transhipBox.getEquipment() );
+        frozenBox.setProjectSite( transhipBox.getProjectSite());
+        frozenBox.setSampleType( transhipBox.getSampleType() );
+        frozenBox.setSampleClassification( transhipBox.getSampleClassification());
+        frozenBox.setFrozenBoxCode( transhipBox.getFrozenBoxCode() );
+        frozenBox.setFrozenBoxTypeCode( transhipBox.getFrozenBoxTypeCode() );
+        frozenBox.setFrozenBoxTypeRows( transhipBox.getFrozenBoxTypeRows() );
+        frozenBox.setFrozenBoxTypeColumns( transhipBox.getFrozenBoxTypeColumns() );
+        frozenBox.setProjectCode( transhipBox.getProjectCode() );
+        frozenBox.setProjectName( transhipBox.getProjectName() );
+        frozenBox.setProjectSiteCode( transhipBox.getProjectSiteCode() );
+        frozenBox.setProjectSiteName( transhipBox.getProjectSiteName() );
+        frozenBox.setEquipmentCode( transhipBox.getEquipmentCode() );
+        frozenBox.setAreaCode( transhipBox.getAreaCode() );
+        frozenBox.setSupportRackCode( transhipBox.getSupportRackCode() );
+        frozenBox.setSampleTypeCode( transhipBox.getSampleTypeCode() );
+        frozenBox.setSampleTypeName( transhipBox.getSampleTypeName() );
+        frozenBox.setCountOfSample( transhipBox.getCountOfSample() );
+        frozenBox.setIsSplit( transhipBox.getIsSplit() );
+        frozenBox.setMemo( transhipBox.getMemo() );
+        frozenBox.setStatus( transhipBox.getStatus() );
+        frozenBox.setEmptyTubeNumber( transhipBox.getEmptyTubeNumber() );
+        frozenBox.setEmptyHoleNumber( transhipBox.getEmptyHoleNumber() );
+        frozenBox.setDislocationNumber( transhipBox.getDislocationNumber() );
+        frozenBox.setIsRealData( transhipBox.getIsRealData() );
+        frozenBox.setRowsInShelf( transhipBox.getRowsInShelf() );
+        frozenBox.setColumnsInShelf( transhipBox.getColumnsInShelf() );
+        frozenBox.setFrozenBoxCode1D( transhipBox.getFrozenBoxCode1D() );
+        return frozenBox;
+    }
 }

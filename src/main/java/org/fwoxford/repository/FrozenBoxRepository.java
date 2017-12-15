@@ -279,5 +279,6 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     @Query(value = "SELECT B.ID FROM FROZEN_BOX B WHERE B.FROZEN_BOX_CODE = ?1 OR B.FROZEN_BOX_CODE_1D = ?1 AND B.STATUS = '"+Constants.FROZEN_BOX_STOCKED+"'",nativeQuery = true)
     Object findIdByFrozenBoxCode(String boxCode1D);
+
 }
 

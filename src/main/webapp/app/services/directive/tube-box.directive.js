@@ -952,7 +952,7 @@
                 var gridData = _.flattenDeep(_getGridData());
                 var tubes = [];
                 _.forEach(gridData,function (tube) {
-                    if(tube.sampleCode){
+                    if(tube){
                         tubes.push(tube);
                     }
                 });

@@ -41,29 +41,14 @@
 
 
 
+        vm.saveBox = _saveBox;
+        vm.saveGiveBackRecord = _saveGiveBackRecord;
+        vm.completeGiveBack = _completeGiveBack;
 
         //日期选择
         vm.openCalendar = function (date) {
             vm.datePickerOpenStatus[date] = true;
         };
-        //保存归还记录
-        vm.saveRecord = function () {
-            GiveBackService.saveGiveBackRecord(vm.giveBackRecord).success(function (data) {
-                toastr.success("归还记录保存成功!");
-            });
-        };
-        //接收完成
-        vm.receiveFinish = function () {
-
-        };
-        //保存冻存盒
-        vm.saveBox = function () {
-            var tubes = vm.htInstance.api.getTubesData();
-            vm.sampleCount = vm.htInstance.api.sampleCount();
-            vm.flagStatus = false;
-            vm.changeStatus();
-        };
-
         //删除盒子
         vm.delBox = function () {
 
@@ -84,7 +69,8 @@
                 resolve: {
                     items: function () {
                         return {
-                            equipmentOptions:vm.equipmentOptions
+                            equipmentOptions:vm.equipmentOptions,
+                            applyCode:vm.giveBackRecord.applyCode
                         };
                     }
                 }
@@ -151,6 +137,42 @@
             }
         };
 
+        //保存归还记录基本信息
+        function _saveGiveBackRecord(callback) {
+            _saveBox(function () {
+                GiveBackService.saveGiveBackRecord(vm.giveBackRecord).success(function (data) {
+                    if (typeof callback === "function"){
+                        callback();
+                    }else{
+                        toastr.success("归还记录保存成功!");
+                    }
+                });
+            });
+
+        }
+        //接收完成
+        function _completeGiveBack() {
+            _saveGiveBackRecord(function () {
+                toastr.success("接收完成!");
+            });
+
+        }
+        //保存冻存盒
+        function _saveBox(callback) {
+            var tubes = vm.htInstance.api.getTubesData();
+            if(tubes.length){
+                vm.sampleCount = vm.htInstance.api.sampleCount();
+                vm.flagStatus = false;
+                vm.changeStatus();
+            }
+
+            if (typeof callback === "function"){
+                callback();
+            }else{
+                toastr.success("冻存盒保存成功!");
+            }
+
+        }
         //归还控件信息（项目编码、委托方、接收人、临时位置）
         function _initRecordInfoControl() {
             //归还单id

@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="col-md-2 pull-right text-right">
-                <button class="btn btn-default" ng-click="vm.importSample()">导入样本</button>
+                <button class="btn btn-default" ng-click="vm.importBoxData()">导入数据</button>
             </div>
         </div>
         <div class="row">
@@ -58,9 +58,9 @@
                         <td><span ng-class="{'red-color': item.isRepeat == 1}">{{item.frozenBoxCode}}</span></td>
                         <td>{{item.frozenBoxCode1D}}</td>
                         <td>
-                            <span ng-if="item.status == 400" class="red-color">加载失败</span>
-                            <span ng-if="item.status == -1">&nbsp;</span>
-                            <span ng-if="item.status == 200">加载成功</span>
+                            <span ng-if="item.isRealData == 0" class="red-color">加载失败</span>
+                            <span ng-if="item.isRealData == -1">&nbsp;</span>
+                            <span ng-if="item.isRealData == 1">加载成功</span>
                         </td>
 
                         <td>{{item.sampleTypeName}}</td>
@@ -87,22 +87,10 @@
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>
-<script type="text/ng-template" id="stackedModal.html">
-    <div class="modal-header">
-        <h3 class="modal-title" >导入样本数据</h3>
-    </div>
-    <div class="modal-body" >
-        是否导入新数据？
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="ctrl.ok()">确定</button>
-        <button class="btn btn-warning" type="button" ng-click="ctrl.cancel()">取消</button>
-    </div>
-</script>
 <div class="mask-layer" ng-show="vm.progressFlag">
     <div class="row mr-0 progress-body">
         <div class="col-md-12">
-            <h4>需要导入的样本数：{{vm.codeList.length}}，导入失败的冻存盒数为：<span class="red-color">{{vm.errorLen}}</span>。</h4>
+            <h4>需要导入的样本数：{{vm.boxList.length}}，导入失败的冻存盒数为：<span class="red-color">{{vm.errorLen}}</span>。</h4>
         </div>
         <div class="col-md-12 pl-0 pr-0">
             <div class="progress text-center" style="margin: 20px;position: relative">

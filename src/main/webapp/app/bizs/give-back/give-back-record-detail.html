@@ -6,11 +6,11 @@
     </div>
     <div class="form-group pull-right pr-15">
         <div class="text-right">
-            <button type="button" class="btn btn-primary" ng-click="vm.receiveFinish()"
+            <button type="button" class="btn btn-primary" ng-click="vm.completeGiveBack()"
                     ng-disabled="myForm.$invalid">接收完成
             </button>
-            <button type="button" class="btn btn-default" ng-click="vm.saveRecord()"
-                    ng-disabled="myForm.$invalid">保存归还记录
+            <button type="button" class="btn btn-default" ng-click="vm.saveGiveBackRecord()"
+                    ng-disabled="myForm.$invalid">保存
             </button>
             <button type="button" class="btn btn-default" ng-click="vm.invalid()">作废</button>
             <button type="button" class="btn btn-default" ui-sref="give-back-table">关闭</button>

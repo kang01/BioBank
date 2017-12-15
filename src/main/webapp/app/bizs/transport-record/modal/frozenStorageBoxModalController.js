@@ -343,6 +343,7 @@
                            }
                         });
                     },function (data) {
+                        console.log(data);
                         var status = data.status;
                         _.forEach(vm.obox.frozenBoxDTOList,function (box) {
                             if(box.frozenBoxCode == code){

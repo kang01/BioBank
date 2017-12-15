@@ -910,6 +910,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 transhipTubeDTOFormStockOut.setFrozenBoxId(boxDTO.getFrozenBoxId());
                 transhipTubeDTOFormStockOut.setColumnsInTube(tubeDTO.getColumnsInTube());
                 transhipTubeDTOFormStockOut.setRowsInTube(tubeDTO.getRowsInTube());
+                transhipTubeDTOFormStockOut.setProjectId(boxDTO.getProjectId());
+                transhipTubeDTOFormStockOut.setProjectCode(boxDTO.getProjectCode());
+                transhipTubeDTOFormStockOut.setProjectSiteId(boxDTO.getProjectSiteId());
+                transhipTubeDTOFormStockOut.setProjectSiteCode(boxDTO.getProjectSiteCode());
                 TranshipTube transhipTube = transhipTubeMapper.transhipTubeDTOToTranshipTube(transhipTubeDTOFormStockOut);
                 //样本ID为空表示为新增的样本
                 if(tubeDTO.getFrozenTubeId() == null){
@@ -1164,8 +1168,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         for(List<String> boxCodes :boxCodeEach500){
             //从出库冻存盒中获取出库盒和出库样本的信息
             List<StockOutFrozenBox> stockOutFrozenBoxes = stockOutFrozenBoxRepository.findByFrozenBoxCodeAndStockOutApply(boxCodes,applyCode);
-            //获取出库冻存盒ID串
-            List<Long> stockOutFrozenBoxIds = stockOutFrozenBoxes.stream().map(s->s.getId()).collect(Collectors.toList());
             List<String> outFrozenBoxCodeStr = stockOutFrozenBoxes.stream().map(s->s.getFrozenBoxCode()).collect(Collectors.toList());
             List<String> outFrozenBoxCodeIdStr = stockOutFrozenBoxes.stream().map(s->s.getFrozenBoxCode1D()).collect(Collectors.toList());
             //是否全部获取到，如果没有获取到，需要从LIMS中获取
@@ -1203,15 +1205,12 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         return frozenBoxAndFrozenTubeResponses;
     }
     public TranshipBoxDTO createFrozenBoxFromLIMSData(List<JSONObject> mapList, FrozenBoxType frozenBoxType, FrozenTubeType frozenTubeType, SampleType sampleType, SampleClassification sampleClassification) {
-        //上一级样本编码
-        List<String> sampleCodeStr = mapList.stream().map(s->s.getString("LABEL_NR")).collect(Collectors.toList());
         //构造返回参数
         TranshipBoxDTO transhipBoxDTO = new TranshipBoxDTO();
         String frozenBoxCode = mapList.get(0).getString("TRAY_BARCODE");
         transhipBoxDTO.setIsRealData(Constants.YES);
         transhipBoxDTO.setFrozenBoxCode(mapList.get(0).getString("TRAY_BARCODE"));
         transhipBoxDTO.setFrozenBoxCode1D(mapList.get(0).getString("TRAY_BARCODE"));
-
         //冻存盒类型
         transhipBoxDTO.setFrozenBoxTypeId(frozenBoxType.getId());
         transhipBoxDTO.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());

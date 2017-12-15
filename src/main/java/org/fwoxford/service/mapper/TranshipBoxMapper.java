@@ -170,6 +170,9 @@ public interface TranshipBoxMapper {
         res.setProjectName(frozenBox.getProjectName());
         res.setMemo(frozenBox.getMemo());
         res.setCountOfSample(frozenBox.getCountOfSample());
+        res.setProjectSiteId(frozenBox.getProjectSite()!=null?frozenBox.getProjectSite().getId():null);
+        res.setProjectSiteCode(frozenBox.getProjectSiteCode());
+        res.setProjectSiteName(frozenBox.getProjectSiteName());
         SampleType sampleType = frozenBox.getSampleType();
         if(sampleType!=null){
             res.setSampleTypeId(sampleType.getId());

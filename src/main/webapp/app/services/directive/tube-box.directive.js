@@ -46,6 +46,8 @@
                 rollbackToOriginalGridData: _rollbackToOriginalGridData,
                 updateOriginalGridData: _updateOriginalGridData,
                 getGridData: _getGridData,
+                getTubesData: _getTubesData,
+                sampleCount: _sampleCount,
                 updateSettings: _updateSettings,
                 getSettings: _getSettings,
                 getSelectedData: _getSelectedData,
@@ -945,7 +947,32 @@
                 var tableCtrl = _getTableCtrl();
                 return tableCtrl.getData();
             }
+            // 获取表格中的所有有样本code数据
+            function _getTubesData(){
+                var gridData = _.flattenDeep(_getGridData());
+                var tubes = [];
+                _.forEach(gridData,function (tube) {
+                    if(tube.sampleCode){
+                        tubes.push(tube);
+                    }
+                });
+                return tubes;
+            }
+            //样本数统计
+            function _sampleCount() {
+                var tubes = _getTubesData();
+                var sampleCount = {};
+                //正常
+                sampleCount.normalCount =  _.filter(tubes,{'status':'3001'}).length;
+                //空管
+                sampleCount.emptyPipeCount =  _.filter(tubes,{'status':'3002'}).length;
+                //空孔
+                sampleCount.emptyHoleCount =  _.filter(tubes,{'status':'3003'}).length;
+                //异常
+                sampleCount.abnormalCount =  _.filter(tubes,{'status':'3004'}).length;
 
+                return sampleCount;
+            }
             // 获取表格的配置信息
             function _getSettings(){
                 var tableCtrl = _getTableCtrl();

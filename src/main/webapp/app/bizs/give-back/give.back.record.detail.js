@@ -23,6 +23,8 @@
         vm.datePickerOpenStatus = {};
         //管子实例
         vm.htInstance = {};
+        //冻存管状态编辑的开关
+        vm.flagStatus = false;
         //模态框
         var _modalInstance;
 
@@ -50,10 +52,18 @@
                 toastr.success("归还记录保存成功!");
             });
         };
-        //保存
-        vm.saveBox = function () {
-            var data = vm.htInstance.api.getGridData();
+        //接收完成
+        vm.receiveFinish = function () {
+
         };
+        //保存冻存盒
+        vm.saveBox = function () {
+            var tubes = vm.htInstance.api.getTubesData();
+            vm.sampleCount = vm.htInstance.api.sampleCount();
+            vm.flagStatus = false;
+            vm.changeStatus();
+        };
+
         //删除盒子
         vm.delBox = function () {
 
@@ -343,6 +353,7 @@
             StockInInputService.queryEditStockInBox(boxId).success(function (data) {
                 vm.box = data;
                 vm.htInstance.api.loadData(data, data.frozenTubeDTOS);
+                vm.sampleCount = vm.htInstance.api.sampleCount();
             });
         }
         //获取申请单中的项目编码

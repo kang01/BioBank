@@ -49,12 +49,12 @@
                               <div class="col-md-12" style="max-height: 200px;overflow: auto;border: 0px solid #ccc;">
                                   <div class="col-md-3 " ng-show="vm.plan.stockOutRequirement.length">
                                       <label class="checkbox">
-                                          <input type="checkbox" ng-model="vm.select_all" ng-click="vm.selectDemandAll()"> 全选
+                                          <input type="checkbox" ng-model="vm.select_demand_all" ng-click="vm.selectDemandAll(vm.select_demand_all,vm.demand)"> 全选
                                       </label>
                                   </div>
                                   <div class="col-md-3" ng-repeat="item in vm.plan.stockOutRequirement track by $index">
                                       <label class="checkbox">
-                                          <input type="checkbox" ng-model="vm.demand[item.id]" ng-click="vm.selectDemandOne()"> {{item.requirementName}}
+                                          <input type="checkbox" ng-model="vm.demand[item.id]" ng-click="vm.selectDemandOne(vm.demand)"> {{item.requirementName}}
                                       </label>
                                   </div>
                               </div>

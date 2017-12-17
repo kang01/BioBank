@@ -10,6 +10,8 @@ import javax.validation.constraints.NotNull;
  */
 public class FrozenBoxCodeForTranshipDTO {
     @JsonView(DataTablesOutput.View.class)
+    private Long id;
+    @JsonView(DataTablesOutput.View.class)
     private Long frozenBoxId;
     @JsonView(DataTablesOutput.View.class)
     private String frozenBoxCode;
@@ -19,10 +21,19 @@ public class FrozenBoxCodeForTranshipDTO {
     public FrozenBoxCodeForTranshipDTO() {
     }
 
-    public FrozenBoxCodeForTranshipDTO(Long frozenBoxId, String frozenBoxCode, String frozenBoxCode1D) {
+    public FrozenBoxCodeForTranshipDTO(Long id ,Long frozenBoxId, String frozenBoxCode, String frozenBoxCode1D) {
+        this.id = id;
         this.frozenBoxId = frozenBoxId;
         this.frozenBoxCode = frozenBoxCode;
         this.frozenBoxCode1D = frozenBoxCode1D;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getFrozenBoxId() {

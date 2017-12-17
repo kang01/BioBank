@@ -245,4 +245,34 @@ public interface TranshipBoxMapper {
         frozenBox.setFrozenBoxCode1D( transhipBox.getFrozenBoxCode1D() );
         return frozenBox;
     }
+
+    default TranshipBoxDTO transhipBoxToTranshipBoxDTOWithSampleType(TranshipBox transhipBox ,int i ){
+        if ( transhipBox == null ) {
+            return null;
+        }
+
+        TranshipBoxDTO transhipBoxDTO = transhipBoxToTranshipBoxDTO(transhipBox);
+        if(transhipBoxDTO == null){
+            return null;
+        }
+        transhipBoxDTO.setFrozenBoxTypeName(transhipBox.getFrozenBoxType()!=null?transhipBox.getFrozenBoxType().getFrozenBoxTypeName():null);
+        SampleType sampleType = transhipBox.getSampleType();
+        if(sampleType!=null){
+            transhipBoxDTO.setSampleTypeId(sampleType.getId());
+            transhipBoxDTO.setSampleTypeCode(sampleType.getSampleTypeCode());
+            transhipBoxDTO.setSampleTypeName(sampleType.getSampleTypeName());
+            transhipBoxDTO.setIsMixed(sampleType.getIsMixed());
+            transhipBoxDTO.setFrontColor(sampleType.getFrontColor());
+            transhipBoxDTO.setBackColor(sampleType.getBackColor());
+        }
+        SampleClassification sampleClassification = transhipBox.getSampleClassification();
+        if(sampleClassification != null){
+            transhipBoxDTO.setSampleClassificationId(sampleClassification.getId());
+            transhipBoxDTO.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+            transhipBoxDTO.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+            transhipBoxDTO.setFrontColorForClass(sampleClassification.getFrontColor());
+            transhipBoxDTO.setBackColorForClass(sampleClassification.getBackColor());
+        }
+        return transhipBoxDTO;
+    }
 }

@@ -48,22 +48,6 @@ public interface TranshipBoxService {
      *  @param id the id of the entity
      */
     void delete(Long id);
-
-    /**
-     * 批量保存转运与冻存盒的关系
-     * @param transhipBoxDTOList
-     * @return
-     */
-    List<TranshipBoxDTO> saveBatch(List<TranshipBoxDTO> transhipBoxDTOList);
-
-    /**
-     * 根据转运ID和冻存盒ID查询转运与冻存盒的关系
-     * @param transhipId
-     * @param id
-     * @return
-     */
-    TranshipBoxDTO findByTranshipIdAndFrozenBoxId(Long transhipId, Long id);
-
     /**
      * 批量保存转运的冻存盒
      * @param transhipBoxListDTO
@@ -120,4 +104,11 @@ public interface TranshipBoxService {
      * @return
      */
     List<TranshipBoxDTO> getStockOutFrozenBox(String applyCode, String boxCodeStr);
+
+    /**
+     * 根据冻存盒获取归还冻存盒和归还样本的信息
+     * @param id
+     * @return
+     */
+    TranshipBoxDTO findTranshipBoxAndSampleByTranshipBoxId(Long id);
 }

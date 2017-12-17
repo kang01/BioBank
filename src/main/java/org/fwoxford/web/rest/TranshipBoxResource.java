@@ -287,4 +287,17 @@ public class TranshipBoxResource {
         List<TranshipBoxDTO> res = transhipBoxService.getStockOutFrozenBoxAndSample(applyCode, frozenBoxCodeStr);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
+
+    /**
+     * 根据冻存盒获取归还冻存盒和归还样本的信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/return-boxes/{id}")
+    @Timed
+    public ResponseEntity<TranshipBoxDTO> getTranshipBoxAndSampleByTranshipBoxId(@PathVariable Long id) {
+        log.debug("REST request to get TranshipBoxDTO And TranshipTube : {}", id);
+        TranshipBoxDTO res = transhipBoxService.findTranshipBoxAndSampleByTranshipBoxId(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
 }

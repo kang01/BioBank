@@ -186,4 +186,33 @@ public interface TranshipTubeMapper {
         frozenTube.setFrozenBoxCode( stockOutTube.getFrozenBoxCode() );
         return frozenTube;
     }
+
+    default List<TranshipTubeDTO> transhipTubesToTranshipTubeDTOsWithSampleType(List<TranshipTube> transhipTubeList){
+        if(transhipTubeList == null){
+            return null;
+        }
+        List<TranshipTubeDTO> transhipTubeDTOS = new ArrayList<>();
+        for(TranshipTube transhipTube :transhipTubeList){
+            TranshipTubeDTO frozenTubeDTO = transhipTubeToTranshipTubeWithSampleType(transhipTube, 1);
+            transhipTubeDTOS.add(frozenTubeDTO);
+        }
+        return transhipTubeDTOS;
+    }
+
+    default TranshipTubeDTO transhipTubeToTranshipTubeWithSampleType(TranshipTube transhipTube,int i){
+        if ( transhipTube == null ) {
+            return null;
+        }
+
+        TranshipTubeDTO transhipTubeDTO = transhipTubeToTranshipTubeDTO(transhipTube);
+        if(transhipTubeDTO == null){
+            return null;
+        }
+        transhipTubeDTO.setFrontColorForClass(transhipTube.getSampleClassification()!=null?transhipTube.getSampleClassification().getFrontColor():null);
+        transhipTubeDTO.setBackColorForClass(transhipTube.getSampleClassification()!=null?transhipTube.getSampleClassification().getBackColor():null);
+        transhipTubeDTO.setIsMixed(transhipTube.getSampleType()!=null?transhipTube.getSampleType().getIsMixed():null);
+        transhipTubeDTO.setFrontColor(transhipTube.getSampleType()!=null?transhipTube.getSampleType().getFrontColor():null);
+        transhipTubeDTO.setBackColor(transhipTube.getSampleType()!=null?transhipTube.getSampleType().getBackColor():null);
+        return transhipTubeDTO;
+    }
 }

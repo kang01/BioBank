@@ -13,7 +13,6 @@ import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipBoxMapper;
 import org.fwoxford.service.mapper.TranshipTubeMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
-import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,32 +152,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         log.debug("Request to delete TranshipBox : {}", id);
         transhipBoxRepository.delete(id);
     }
-
-    /**
-     * 批量保存转运与冻存盒的关系
-     * @param transhipBoxDTOList
-     * @return
-     */
-    @Override
-    public List<TranshipBoxDTO> saveBatch(List<TranshipBoxDTO> transhipBoxDTOList) {
-        List<TranshipBox> transhipBoxes = transhipBoxMapper.transhipBoxDTOsToTranshipBoxes(transhipBoxDTOList);
-        List<TranshipBox> transhipBoxList =  transhipBoxRepository.save(transhipBoxes);
-        return transhipBoxMapper.transhipBoxesToTranshipBoxDTOs(transhipBoxList);
-    }
-
-    /**
-     * 根据转运ID和冻存盒ID查询转运与冻存盒的关系
-     * @param transhipId 转运ID
-     * @param frozenBoxId 冻存盒ID
-     * @return
-     */
-    @Override
-    public TranshipBoxDTO findByTranshipIdAndFrozenBoxId(Long transhipId, Long frozenBoxId) {
-        TranshipBox transhipBox = transhipBoxRepository.findByTranshipIdAndFrozenBoxId(transhipId,frozenBoxId);
-        TranshipBoxDTO transhipBoxDTO = transhipBoxMapper.transhipBoxToTranshipBoxDTO(transhipBox);
-        return transhipBoxDTO;
-    }
-
     /**
      * 批量保存转运的冻存盒
      *
@@ -662,6 +635,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         List<FrozenBoxCodeForTranshipDTO> frozenBoxCodeForTranshipDTOS = new ArrayList<FrozenBoxCodeForTranshipDTO>();
         for(TranshipBox t : transhipBoxes){
             FrozenBoxCodeForTranshipDTO frozenBoxCodeForTranshipDTO = new FrozenBoxCodeForTranshipDTO();
+            frozenBoxCodeForTranshipDTO.setId(t.getId());
             frozenBoxCodeForTranshipDTO.setFrozenBoxId(t.getFrozenBox()!=null?t.getFrozenBox().getId():null);
             frozenBoxCodeForTranshipDTO.setFrozenBoxCode(t.getFrozenBoxCode());
             frozenBoxCodeForTranshipDTO.setFrozenBoxCode1D(t.getFrozenBoxCode1D());
@@ -691,7 +665,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         Converter<TranshipBox, FrozenBoxCodeForTranshipDTO> convert = new Converter<TranshipBox, FrozenBoxCodeForTranshipDTO>() {
             @Override
             public FrozenBoxCodeForTranshipDTO convert(TranshipBox e) {
-                return new FrozenBoxCodeForTranshipDTO(e.getFrozenBox().getId(),e.getFrozenBoxCode(), e.getFrozenBoxCode1D());
+                return new FrozenBoxCodeForTranshipDTO(e.getId(),e.getFrozenBox().getId(),e.getFrozenBoxCode(), e.getFrozenBoxCode1D());
             }
         };
         Specification<TranshipBox> specification = new Specification<TranshipBox>() {
@@ -735,9 +709,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             throw new BankServiceException("归还记录未指定出库申请！");
         }
         List<SampleType> sampleTypes = sampleTypeRepository.findAllSampleTypes();
-        List<SampleClassification> sampleClassifications = sampleClassificationRepository.findAll();
         List<FrozenBoxType> boxTypes = frozenBoxTypeRepository.findAllFrozenBoxTypes();
-        List<FrozenTubeType> tubeTypes = frozenTubeTypeRepository.findAll();
         List<ProjectSampleClass> projectSampleClasses = projectSampleClassRepository.findSampleTypeByProjectCode(tranship.getProjectCode());
         List<Equipment> equipments = equipmentRepository.findAllEquipments();
         List<Area> areas = areaRepository.findAll();
@@ -862,6 +834,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             boxDTO.setEmptyHoleNumber(countOfEmptyHole);
             boxDTO.setCountOfSample(countOfSample);
             boxDTO.setFrozenBoxId(stockOutFrozenBox.getFrozenBoxId());
+            boxDTO.setStatus(Constants.FROZEN_BOX_NEW);
             TranshipBox transhipBox = transhipBoxMapper.transhipBoxDTOToTranshipBox(boxDTO);
             //如果冻存盒ID为空，或者冻存盒的状态是新建，则可以编辑修改
             //如果冻存盒ID不为空，状态是已交接，则表示为归还的冻存盒，此时，不能更改冻存盒的数据，只能更改转运盒的数据，当接受完成时才可以更改冻存盒的数据
@@ -928,6 +901,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     frozenTube.setParentSampleId(transhipTubeDTOFormStockOut.getParentSampleId());
                     frozenTube.setParentSampleCode(transhipTubeDTOFormStockOut.getParentSampleCode());
                     frozenTube.setFrozenBox(transhipBox.getFrozenBox());
+                    frozenTube.setParentSampleId(tubeDTO.getParentSampleId() );
+                    frozenTube.setParentSampleCode(tubeDTO.getParentSampleCode());
                     frozenTubeRepository.save(frozenTube);
                     transhipTube.setFrozenTube(frozenTube);
                 }
@@ -1209,6 +1184,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         }
         return frozenBoxAndFrozenTubeResponses;
     }
+
     public TranshipBoxDTO createFrozenBoxFromLIMSData(List<JSONObject> mapList, FrozenBoxType frozenBoxType, FrozenTubeType frozenTubeType, SampleType sampleType, SampleClassification sampleClassification) {
         //构造返回参数
         TranshipBoxDTO transhipBoxDTO = new TranshipBoxDTO();
@@ -1309,4 +1285,27 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         transhipBoxDTO.setTranshipTubeDTOS(transhipTubeDTOS);
         return transhipBoxDTO;
     }
+
+
+
+    /**
+     * 根据冻存盒获取归还冻存盒和归还样本的信息
+     * @param id
+     * @return
+     */
+    @Override
+    public TranshipBoxDTO findTranshipBoxAndSampleByTranshipBoxId(Long id){
+        //查询冻存盒的转运记录
+        TranshipBox transhipBox = transhipBoxRepository.findOne(id);
+        if(transhipBox == null){
+            throw new BankServiceException("未查询到该冻存盒的转运记录！",id.toString());
+        }
+        //查询转运冻存管
+        List<TranshipTube> transhipTubeList = transhipTubeRepository.findByTranshipBoxIdAndStatusNot(transhipBox.getId(),Constants.INVALID);
+        List<TranshipTubeDTO> transhipTubeDTOS = transhipTubeMapper.transhipTubesToTranshipTubeDTOsWithSampleType(transhipTubeList);
+        TranshipBoxDTO transhipBoxDTO = transhipBoxMapper.transhipBoxToTranshipBoxDTOWithSampleType(transhipBox,1);
+        transhipBoxDTO.setTranshipTubeDTOS(transhipTubeDTOS);
+        return transhipBoxDTO;
+    }
+
 }

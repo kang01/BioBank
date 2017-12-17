@@ -300,4 +300,37 @@ public class TranshipBoxResource {
         TranshipBoxDTO res = transhipBoxService.findTranshipBoxAndSampleByTranshipBoxId(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
+
+    /**
+     * 修改保存归还冻存盒
+     * @param id
+     * @param transhipBoxDTOS
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/return-boxes/batch/return-back/{id}")
+    @Timed
+    public ResponseEntity<List<TranshipBoxDTO>> updateTranshipBoxForReturn(@PathVariable Long id ,@Valid @RequestBody List<TranshipBoxDTO> transhipBoxDTOS) throws URISyntaxException {
+        log.debug("REST request to save TranshipBox For return back box: {}", transhipBoxDTOS);
+        transhipBoxDTOS.forEach(s->{
+            if(s.getId() == null){
+                throw new BankServiceException("归还冻存盒的ID不能为空！");
+            }
+        });
+        List<TranshipBoxDTO> result = transhipBoxService.saveBatchTranshipBoxForReturn(id,transhipBoxDTOS);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
+    /**
+     * 删除归还冻存盒
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/return-boxes/{id}")
+    @Timed
+    public ResponseEntity<Void> deleteTranshipBoxForReturnBack(@PathVariable Long id) {
+        log.debug("REST request to delete ReturnBackBox : {}", id);
+        transhipBoxService.deleteReturnBackBox(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
 }

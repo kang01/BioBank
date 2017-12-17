@@ -698,6 +698,13 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         return createBatchTranshipBoxForReturn(id,transhipBoxDTOS,Constants.RECEIVE_TYPE_RETURN_BACK);
     }
 
+    /**
+     * 创建归还冻存盒的实现
+     * @param transhipId
+     * @param transhipBoxDTOS
+     * @param receiveType
+     * @return
+     */
     public List<TranshipBoxDTO> createBatchTranshipBoxForReturn(Long transhipId, List<TranshipBoxDTO> transhipBoxDTOS, String receiveType) {
 
         Tranship tranship = transhipRepository.findOne(transhipId);
@@ -813,7 +820,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         for(TranshipBoxDTO boxDTO : transhipBoxDTOS){
             String boxCode = StringUtils.isEmpty(boxDTO.getFrozenBoxCode())?boxDTO.getFrozenBoxCode1D():boxDTO.getFrozenBoxCode();
             TranshipBoxDTO stockOutFrozenBox = transhipBoxDTOListForOld.stream().filter(s->s.getFrozenBoxCode().equals(boxCode)||s.getFrozenBoxCode1D().equals(boxCode)).findFirst().orElse(null);
-            if(stockOutFrozenBox == null ||(stockOutFrozenBox!=null && boxDTO.getFrozenBoxId() != null && !stockOutFrozenBox.getFrozenBoxId().equals(boxDTO.getFrozenBoxId()))){
+            if(stockOutFrozenBox == null ||(stockOutFrozenBox!=null && boxDTO.getFrozenBoxId() != null
+                    && stockOutFrozenBox.getFrozenBoxId()!=null
+                    && !stockOutFrozenBox.getFrozenBoxId().equals(boxDTO.getFrozenBoxId()))){
                 throw new BankServiceException("冻存盒编码不能重复！");
             }
             //获取盒内空管数，空孔数，样本数量
@@ -846,28 +855,44 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
             transhipBox.setTranship(tranship);
             transhipBoxRepository.save(transhipBox);
-
+            boxDTO = transhipBoxMapper.transhipBoxToTranshipBoxDTO(transhipBox);
             //转运盒位置
             TranshipBoxPosition transhipBoxPosition = transhipBoxPositionService.saveTranshipBoxPosition(transhipBox);
 
-            //获取原冻存管，与当前冻存管比对，删除原来有而当前没有的冻存管 todo
+            //获取原冻存管，与当前冻存管比对，删除原来有而当前没有的冻存管
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxId(transhipBox.getFrozenBox().getId());
+
             List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdAndStatusNot(transhipBox.getId(),Constants.INVALID);
             //需要保存的转运冻存管ID，新增时为空----为了删除不需要保存的转运冻存管
+            List<Long> forSaveTranshipTubeIds = new ArrayList<>();
+            //需要保存的冻存管ID，新增时为空-
             List<Long> forSaveTubeIds = new ArrayList<>();
             boxDTO.getTranshipTubeDTOS().forEach(s->{
                 if(s.getId()!=null){
-                    forSaveTubeIds.add(s.getId());
+                    forSaveTranshipTubeIds.add(s.getId());
+                }
+                if(s.getFrozenTubeId()!=null){
+                    forSaveTubeIds.add(s.getFrozenTubeId());
                 }
             });
-            List<TranshipTube> frozenTubeListForDelete = new ArrayList<TranshipTube>();
+            List<TranshipTube> transhipTubeListForDelete = new ArrayList<TranshipTube>();
             for(TranshipTube f:transhipTubes){
-                if(!forSaveTubeIds.contains(f.getId())){
+                if(!forSaveTranshipTubeIds.contains(f.getId())){
+                    f.setStatus(Constants.INVALID);
+                    transhipTubeListForDelete.add(f);
+                }
+            }
+            transhipTubeRepository.save(transhipTubeListForDelete);
+            //获取传入过来的新增冻存管的ID
+            List<FrozenTube> frozenTubeListForDelete = new ArrayList<FrozenTube>();
+            for(FrozenTube f:frozenTubes){
+                if(!forSaveTubeIds.contains(f.getId())&&f.getFrozenTubeState().equals(Constants.FROZEN_BOX_NEW)){
                     f.setStatus(Constants.INVALID);
                     frozenTubeListForDelete.add(f);
                 }
             }
-            transhipTubeRepository.save(frozenTubeListForDelete);
+            frozenTubeRepository.save(frozenTubeListForDelete);
+
             List<TranshipTube> transhipTubeForLastSave = new ArrayList<>();
             for(TranshipTubeDTO tubeDTO : boxDTO.getTranshipTubeDTOS()){
 
@@ -1297,7 +1322,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     public TranshipBoxDTO findTranshipBoxAndSampleByTranshipBoxId(Long id){
         //查询冻存盒的转运记录
         TranshipBox transhipBox = transhipBoxRepository.findOne(id);
-        if(transhipBox == null){
+        if(transhipBox == null || (transhipBox!=null&&transhipBox.getStatus().equals(Constants.INVALID))){
             throw new BankServiceException("未查询到该冻存盒的转运记录！",id.toString());
         }
         //查询转运冻存管
@@ -1307,5 +1332,29 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         transhipBoxDTO.setTranshipTubeDTOS(transhipTubeDTOS);
         return transhipBoxDTO;
     }
+
+    /**
+     * 删除归还冻存盒
+     * @param id
+     */
+    @Override
+    public void deleteReturnBackBox(Long id) {
+        if(id == null){
+            throw new BankServiceException("归还冻存盒ID不能为空！");
+        }
+        TranshipBox transhipBox = transhipBoxRepository.findOne(id);
+        if(transhipBox == null){
+            throw new BankServiceException("归还冻存盒不存在！");
+        }
+        FrozenBox frozenBox = transhipBox.getFrozenBox();
+        if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_NEW)){
+            frozenBox.setStatus(Constants.INVALID);
+            frozenBoxRepository.save(frozenBox);
+            frozenTubeRepository.updateStatusByFrozenBoxId(Constants.INVALID,frozenBox.getId());
+        }
+        transhipBox.status(Constants.INVALID);
+        transhipBoxRepository.save(transhipBox);
+        transhipTubeRepository.updateStatusByTranshipBoxId(Constants.INVALID,id);
+     }
 
 }

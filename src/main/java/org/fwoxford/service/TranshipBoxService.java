@@ -111,4 +111,10 @@ public interface TranshipBoxService {
      * @return
      */
     TranshipBoxDTO findTranshipBoxAndSampleByTranshipBoxId(Long id);
+
+    /**
+     * 删除归还冻存盒
+     * @param id
+     */
+    void deleteReturnBackBox(Long id);
 }

@@ -220,4 +220,8 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     List<FrozenTube> findByFrozenBoxCode1DInOrFrozenBoxCodeInAndSampleTypeAndProjectIdsIn(List<String> code, String type, List<Long> projectIds);
 
     List<FrozenTube> findBySampleCodeInAndStatusNot(List<String> sampleCodeStr, String invalid);
+
+    @Modifying
+    @Query("update FrozenTube t set t.status = ?1  where t.frozenBox.id = ?2 and t.frozenTubeState = '"+Constants.FROZEN_BOX_NEW+"'")
+    void updateStatusByFrozenBoxId(String status, Long id);
 }

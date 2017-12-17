@@ -213,6 +213,10 @@ public interface TranshipTubeMapper {
         transhipTubeDTO.setIsMixed(transhipTube.getSampleType()!=null?transhipTube.getSampleType().getIsMixed():null);
         transhipTubeDTO.setFrontColor(transhipTube.getSampleType()!=null?transhipTube.getSampleType().getFrontColor():null);
         transhipTubeDTO.setBackColor(transhipTube.getSampleType()!=null?transhipTube.getSampleType().getBackColor():null);
+        FrozenTube frozenTube = transhipTube.getFrozenTube();
+        transhipTubeDTO.setParentSampleCode(frozenTube!=null?frozenTube.getParentSampleCode():null);
+        transhipTubeDTO.setParentSampleId(frozenTube!=null?frozenTube.getParentSampleId():null);
+        transhipTubeDTO.setFrozenBoxId(frozenTube!=null?frozenTube.getFrozenBox().getId():null);
         return transhipTubeDTO;
     }
 }

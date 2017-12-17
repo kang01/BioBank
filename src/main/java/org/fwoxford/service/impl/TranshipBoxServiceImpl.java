@@ -841,7 +841,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         for(TranshipBoxDTO boxDTO : transhipBoxDTOS){
             String boxCode = StringUtils.isEmpty(boxDTO.getFrozenBoxCode())?boxDTO.getFrozenBoxCode1D():boxDTO.getFrozenBoxCode();
             TranshipBoxDTO stockOutFrozenBox = transhipBoxDTOListForOld.stream().filter(s->s.getFrozenBoxCode().equals(boxCode)||s.getFrozenBoxCode1D().equals(boxCode)).findFirst().orElse(null);
-            if(stockOutFrozenBox == null || (stockOutFrozenBox!=null && boxDTO.getFrozenBoxId() == null) ||(stockOutFrozenBox!=null && boxDTO.getFrozenBoxId() != null && stockOutFrozenBox.getId()!=boxDTO.getFrozenBoxId())){
+            if(stockOutFrozenBox == null ||(stockOutFrozenBox!=null && boxDTO.getFrozenBoxId() != null && !stockOutFrozenBox.getFrozenBoxId().equals(boxDTO.getFrozenBoxId()))){
                 throw new BankServiceException("冻存盒编码不能重复！");
             }
             //获取盒内空管数，空孔数，样本数量
@@ -857,7 +857,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     countOfSample++;
                 }
             }
-            boxDTO.setStatus(Constants.FROZEN_BOX_NEW);
             boxDTO.setIsRealData(Constants.YES);
             boxDTO.setEmptyTubeNumber(countOfEmptyTube);
             boxDTO.setEmptyHoleNumber(countOfEmptyHole);
@@ -868,14 +867,17 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             //如果冻存盒ID不为空，状态是已交接，则表示为归还的冻存盒，此时，不能更改冻存盒的数据，只能更改转运盒的数据，当接受完成时才可以更改冻存盒的数据
             if(boxDTO.getFrozenBoxId() == null || boxDTO.getStatus().equals(Constants.FROZEN_BOX_NEW)){
                 FrozenBox frozenBox = transhipBoxMapper.transhipBoxDTOToFrozenBox(transhipBox);
+                frozenBox.setStatus(Constants.FROZEN_BOX_NEW);
                 frozenBoxRepository.save(frozenBox);
+                transhipBox.setFrozenBox(frozenBox);
             }
+            transhipBox.setTranship(tranship);
             transhipBoxRepository.save(transhipBox);
 
             //转运盒位置
             TranshipBoxPosition transhipBoxPosition = transhipBoxPositionService.saveTranshipBoxPosition(transhipBox);
 
-            //获取原冻存管，与当前冻存管比对，删除原来有而当前没有的冻存管
+            //获取原冻存管，与当前冻存管比对，删除原来有而当前没有的冻存管 todo
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxId(transhipBox.getFrozenBox().getId());
             List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdAndStatusNot(transhipBox.getId(),Constants.INVALID);
             //需要保存的转运冻存管ID，新增时为空----为了删除不需要保存的转运冻存管
@@ -901,19 +903,21 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 if(transhipTubeDTOFormStockOut ==  null){
                     throw new BankServiceException("冻存管"+tubeDTO.getSampleCode()+"不存在！");
                 }
-                if(transhipTubeDTOFormStockOut.getFrozenTubeId()!=null&&tubeDTO.getFrozenTubeId()!=null && transhipTubeDTOFormStockOut.getFrozenTubeId()!=tubeDTO.getFrozenTubeId()){
+                if(transhipTubeDTOFormStockOut.getFrozenTubeId()!=null&&tubeDTO.getFrozenTubeId()!=null
+                        && !transhipTubeDTOFormStockOut.getFrozenTubeId().equals(tubeDTO.getFrozenTubeId())){
                     throw new BankServiceException("冻存管"+tubeDTO.getSampleCode()+"传入的ID错误！");
                 }
                 transhipTubeDTOFormStockOut.setFrozenBoxCode(boxDTO.getFrozenBoxCode());
                 transhipTubeDTOFormStockOut.setId(tubeDTO.getId());
                 transhipTubeDTOFormStockOut.setStatus(tubeDTO.getStatus());
-                transhipTubeDTOFormStockOut.setFrozenBoxId(boxDTO.getFrozenBoxId());
                 transhipTubeDTOFormStockOut.setColumnsInTube(tubeDTO.getColumnsInTube());
                 transhipTubeDTOFormStockOut.setRowsInTube(tubeDTO.getRowsInTube());
                 transhipTubeDTOFormStockOut.setProjectId(boxDTO.getProjectId());
                 transhipTubeDTOFormStockOut.setProjectCode(boxDTO.getProjectCode());
                 transhipTubeDTOFormStockOut.setProjectSiteId(boxDTO.getProjectSiteId());
                 transhipTubeDTOFormStockOut.setProjectSiteCode(boxDTO.getProjectSiteCode());
+                transhipTubeDTOFormStockOut.setTranshipBoxId(transhipBox.getId());
+                transhipTubeDTOFormStockOut.setFrozenBoxId(transhipBox.getFrozenBox().getId());
                 TranshipTube transhipTube = transhipTubeMapper.transhipTubeDTOToTranshipTube(transhipTubeDTOFormStockOut);
                 //样本ID为空表示为新增的样本
                 if(tubeDTO.getFrozenTubeId() == null){
@@ -923,10 +927,11 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     FrozenTube frozenTube = transhipTubeMapper.transhipTubeToFrozenTube(transhipTube);
                     frozenTube.setParentSampleId(transhipTubeDTOFormStockOut.getParentSampleId());
                     frozenTube.setParentSampleCode(transhipTubeDTOFormStockOut.getParentSampleCode());
+                    frozenTube.setFrozenBox(transhipBox.getFrozenBox());
                     frozenTubeRepository.save(frozenTube);
                     transhipTube.setFrozenTube(frozenTube);
-                    transhipTubeForLastSave.add(transhipTube);
                 }
+                transhipTubeForLastSave.add(transhipTube);
             }
             transhipTubeRepository.save(transhipTubeForLastSave);
         }
@@ -961,7 +966,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
      */
     public void checkTranshipBox(TranshipBoxDTO boxDTO, List<ProjectSampleClass> projectSampleClasses) {
         if((StringUtils.isEmpty(boxDTO.getColumnsInShelf())&&!StringUtils.isEmpty(boxDTO.getRowsInShelf())
-            ||!(StringUtils.isEmpty(boxDTO.getColumnsInShelf())&&StringUtils.isEmpty(boxDTO.getRowsInShelf())))){
+            ||(!StringUtils.isEmpty(boxDTO.getColumnsInShelf())&&StringUtils.isEmpty(boxDTO.getRowsInShelf())))){
             throw new BankServiceException("不能仅指定所在架子的行号或列号！");
         }
         if((!StringUtils.isEmpty(boxDTO.getRowsInShelf())||!(StringUtils.isEmpty(boxDTO.getColumnsInShelf())))
@@ -1025,7 +1030,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             if(boxDTO.getEquipmentId() == null){
                 throw new BankServiceException("当选择冻存架时必须指定设备！");
             }
-            SupportRack supportRack = supportRacks.stream().filter(s->s.getId().equals(boxDTO.getSupportRackId())&&boxDTO.getAreaId().equals(s.getArea().getId())).findFirst().orElse(null);
+            SupportRack supportRack = supportRacks.stream().filter(s->s.getId().equals(boxDTO.getSupportRackId())).findFirst().orElse(null);
             if(supportRack == null){
                 throw new BankServiceException("冻存架不存在！");
             }
@@ -1276,6 +1281,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             transhipTubeDTO.setFrozenTubeTypeId(frozenTubeType.getId());
             transhipTubeDTO.setFrozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName());
             transhipTubeDTO.setFrozenTubeTypeCode(frozenTubeType.getFrozenTubeTypeCode());
+            transhipTubeDTO.setFrozenTubeVolumns(frozenTubeType.getFrozenTubeVolumn());
+            transhipTubeDTO.setFrozenTubeVolumnsUnit(frozenTubeType.getFrozenTubeVolumnUnit());
             //转运管样本类型
             transhipTubeDTO.setSampleTypeId(sampleType.getId());
             transhipTubeDTO.setSampleTypeCode(sampleType.getSampleTypeCode());

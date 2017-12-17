@@ -161,8 +161,11 @@ public interface TranshipBoxMapper {
         res.setIsSplit(frozenBox.getIsSplit());
         res.setMemo(frozenBox.getMemo());
         res.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
+        res.setEquipmentCode(frozenBox.getEquipmentCode());
         res.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
+        res.setAreaCode(frozenBox.getAreaCode());
         res.setSupportRackId(frozenBox.getSupportRack()!=null?frozenBox.getSupportRack().getId():null);
+        res.setSupportRackCode(frozenBox.getSupportRackCode());
         res.setColumnsInShelf(frozenBox.getColumnsInShelf());
         res.setRowsInShelf(frozenBox.getRowsInShelf());
         res.setProjectId(frozenBox.getProject()!=null?frozenBox.getProject().getId():null);

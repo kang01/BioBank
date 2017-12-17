@@ -156,7 +156,7 @@ public interface TranshipTubeMapper {
         }
 
         FrozenTube frozenTube = new FrozenTube();
-
+        frozenTube.setId(stockOutTube.getFrozenTube()!=null?stockOutTube.getFrozenTube().getId():null);
         frozenTube.setFrozenTubeType( stockOutTube.getFrozenTubeType() );
         frozenTube.setFrozenBox(stockOutTube.getTranshipBox().getFrozenBox());
         frozenTube.setProject( stockOutTube.getProject() );

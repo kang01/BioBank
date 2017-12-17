@@ -210,7 +210,7 @@ public interface TranshipBoxMapper {
         }
 
         FrozenBox frozenBox = new FrozenBox();
-
+        frozenBox.setId(transhipBox.getFrozenBox()!=null?transhipBox.getFrozenBox().getId():null);
         frozenBox.setArea( transhipBox.getArea() );
         frozenBox.setSupportRack(transhipBox.getSupportRack() );
         frozenBox.setFrozenBoxType( transhipBox.getFrozenBoxType() );

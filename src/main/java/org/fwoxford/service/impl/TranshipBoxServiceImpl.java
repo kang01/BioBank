@@ -842,7 +842,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             boxDTO.setEmptyTubeNumber(countOfEmptyTube);
             boxDTO.setEmptyHoleNumber(countOfEmptyHole);
             boxDTO.setCountOfSample(countOfSample);
-            boxDTO.setFrozenBoxId(stockOutFrozenBox.getFrozenBoxId());
             boxDTO.setStatus(Constants.FROZEN_BOX_NEW);
             TranshipBox transhipBox = transhipBoxMapper.transhipBoxDTOToTranshipBox(boxDTO);
             //如果冻存盒ID为空，或者冻存盒的状态是新建，则可以编辑修改
@@ -855,7 +854,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
             transhipBox.setTranship(tranship);
             transhipBoxRepository.save(transhipBox);
-            boxDTO = transhipBoxMapper.transhipBoxToTranshipBoxDTO(transhipBox);
             //转运盒位置
             TranshipBoxPosition transhipBoxPosition = transhipBoxPositionService.saveTranshipBoxPosition(transhipBox);
 
@@ -895,8 +893,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
             List<TranshipTube> transhipTubeForLastSave = new ArrayList<>();
             for(TranshipTubeDTO tubeDTO : boxDTO.getTranshipTubeDTOS()){
-
-
                 TranshipTubeDTO transhipTubeDTOFormStockOut = transhipTubeDTOSForCheckAndSave.stream().filter(s->s.getSampleCode().equals(tubeDTO.getSampleCode())).findFirst().orElse(null);
                 if(transhipTubeDTOFormStockOut ==  null){
                     throw new BankServiceException("冻存管"+tubeDTO.getSampleCode()+"不存在！");
@@ -916,9 +912,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 transhipTubeDTOFormStockOut.setProjectSiteCode(boxDTO.getProjectSiteCode());
                 transhipTubeDTOFormStockOut.setTranshipBoxId(transhipBox.getId());
                 transhipTubeDTOFormStockOut.setFrozenBoxId(transhipBox.getFrozenBox().getId());
+                transhipTubeDTOFormStockOut.setFrozenTubeId(tubeDTO.getFrozenTubeId());
                 TranshipTube transhipTube = transhipTubeMapper.transhipTubeDTOToTranshipTube(transhipTubeDTOFormStockOut);
                 //样本ID为空表示为新增的样本
-                if(tubeDTO.getFrozenTubeId() == null){
+                if(tubeDTO.getFrozenTubeId() == null || boxDTO.getStatus().equals(Constants.FROZEN_BOX_NEW) ){
                     if(StringUtils.isEmpty(tubeDTO.getParentSampleCode())||tubeDTO.getParentSampleId() == null){
                         throw new BankServiceException("DNA样本未指定上一级样本ID！");
                     }
@@ -934,6 +931,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 transhipTubeForLastSave.add(transhipTube);
             }
             transhipTubeRepository.save(transhipTubeForLastSave);
+            boxDTO = transhipBoxMapper.transhipBoxToTranshipBoxDTOWithSampleType(transhipBox,1);
+            boxDTO.setTranshipTubeDTOS(transhipTubeMapper.transhipTubesToTranshipTubeDTOsWithSampleType(transhipTubeForLastSave));
         }
         this.updateTranshipSampleNumber(tranship);
 

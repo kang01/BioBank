@@ -485,6 +485,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     }
 
     public void updateTranshipSampleNumber(Tranship tranship) {
+        if(tranship == null){
+            return;
+        }
         List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship.getId());
         int countOfEmptyHole = 0;int countOfEmptyTube = 0;
         int countOfTube = 0;//有效样本数
@@ -706,7 +709,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
      * @return
      */
     public List<TranshipBoxDTO> createBatchTranshipBoxForReturn(Long transhipId, List<TranshipBoxDTO> transhipBoxDTOS, String receiveType) {
-
+        List<TranshipBoxDTO> transhipBoxDTOSForResponse = new ArrayList<>();
         Tranship tranship = transhipRepository.findOne(transhipId);
         if (tranship == null){
             // 转运ID无效的情况
@@ -892,6 +895,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             frozenTubeRepository.save(frozenTubeListForDelete);
 
             List<TranshipTube> transhipTubeForLastSave = new ArrayList<>();
+            List<TranshipTubeDTO> transhipTubeDTOS = new ArrayList<>();
             for(TranshipTubeDTO tubeDTO : boxDTO.getTranshipTubeDTOS()){
                 TranshipTubeDTO transhipTubeDTOFormStockOut = transhipTubeDTOSForCheckAndSave.stream().filter(s->s.getSampleCode().equals(tubeDTO.getSampleCode())).findFirst().orElse(null);
                 if(transhipTubeDTOFormStockOut ==  null){
@@ -932,15 +936,22 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     frozenTubeRepository.save(frozenTube);
                     transhipTube.setFrozenTube(frozenTube);
                 }
+                transhipTubeDTOS.add(transhipTubeDTOFormStockOut);
                 transhipTubeForLastSave.add(transhipTube);
             }
             transhipTubeRepository.save(transhipTubeForLastSave);
-            boxDTO = transhipBoxMapper.transhipBoxToTranshipBoxDTOWithSampleType(transhipBox,1);
-            boxDTO.setTranshipTubeDTOS(transhipTubeMapper.transhipTubesToTranshipTubeDTOsWithSampleType(transhipTubeForLastSave));
+            boxDTO.setId(transhipBox.getId());
+            transhipTubeDTOS.forEach(a->{
+                TranshipTube transhipTube = transhipTubeForLastSave.stream().filter(s->s.getSampleCode().equals(a.getSampleCode())&&a.getSampleTypeCode().equals(s.getSampleTypeCode())).findFirst().orElse(null);
+                if(transhipTube!=null){
+                    a.setId(transhipTube.getId());
+                }
+            });
+            boxDTO.setTranshipTubeDTOS(transhipTubeDTOS);
+            transhipBoxDTOSForResponse.add(boxDTO);
         }
         this.updateTranshipSampleNumber(tranship);
-
-        return transhipBoxDTOS;
+        return transhipBoxDTOSForResponse;
     }
 
     private TranshipBoxDTO createTranshipBoxForProjectAndSite(TranshipBoxDTO boxDTO, Tranship tranship) {
@@ -1358,6 +1369,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         transhipBox.status(Constants.INVALID);
         transhipBoxRepository.save(transhipBox);
         transhipTubeRepository.updateStatusByTranshipBoxId(Constants.INVALID,id);
+        Tranship tranship = transhipBox.getTranship();
+        this.updateTranshipSampleNumber(tranship);
      }
 
 }

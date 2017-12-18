@@ -2,6 +2,7 @@ package org.fwoxford.service;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.repository.TranshipBoxRepository;
 import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.service.dto.TranshipBoxListDTO;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -26,6 +27,8 @@ public class FrozenBoxCheckService {
     private FrozenBoxRepository frozenBoxRepository;
     @Autowired
     private TranshipBoxService transhipBoxService;
+    @Autowired
+    private TranshipBoxRepository transhipBoxRepository;
 
     private final Logger log = LoggerFactory.getLogger(FrozenBoxCheckService.class);
 
@@ -92,6 +95,27 @@ public class FrozenBoxCheckService {
             return boxCode;
         }).collect(Collectors.toList());
         String boxCodeStr = String.join(",",frozenBoxCodeStr);
+        //验证归还冻存盒是否重复
+        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByFrozenBoxCodeInAndStatus(frozenBoxCodeStr,Constants.FROZEN_BOX_NEW);
+        ArrayList<String> repeatCode = new ArrayList<>();
+        for(TranshipBox transhipBox :transhipBoxes){
+            for(TranshipBoxDTO transhipBoxDTO : transhipBoxDTOS){
+                if(transhipBox.getFrozenBoxCode1D()!=null && transhipBoxDTO.getFrozenBoxCode1D()!=null
+                        && transhipBox.getFrozenBoxCode1D().equals( transhipBoxDTO.getFrozenBoxCode1D())
+                        && (transhipBoxDTO.getId() == null|| (transhipBoxDTO.getId()!=null && !transhipBoxDTO.getId().equals(transhipBox.getId())) )){
+                    repeatCode.add(transhipBox.getFrozenBoxCode1D());
+                }
+                if(transhipBox.getFrozenBoxCode()!=null && transhipBoxDTO.getFrozenBoxCode()!=null
+                        && transhipBox.getFrozenBoxCode().equals( transhipBoxDTO.getFrozenBoxCode())
+                        && (transhipBoxDTO.getId() == null|| (transhipBoxDTO.getId()!=null && !transhipBoxDTO.getId().equals(transhipBox.getId())) )){
+                    repeatCode.add(transhipBox.getFrozenBoxCode());
+                }
+            }
+        }
+
+        if(repeatCode.size()>0){
+            throw new BankServiceException("请勿提交重复的冻存盒编码！",String.join(",",repeatCode));
+        }
         List<TranshipBoxDTO> stockOutFrozenBoxAndSampleList = transhipBoxService.getStockOutFrozenBox(tranship.getStockOutApply().getApplyCode(),boxCodeStr);
         for(TranshipBoxDTO stockOutFrozenBox :stockOutFrozenBoxAndSampleList){
             if(stockOutFrozenBox.getIsRealData().equals(Constants.NO)){

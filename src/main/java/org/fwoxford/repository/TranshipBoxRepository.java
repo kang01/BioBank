@@ -41,4 +41,7 @@ public interface TranshipBoxRepository extends JpaRepository<TranshipBox,Long> {
     List<TranshipBox> findByFrozenBoxCodesAndStatus(List<String> transhipCodeList);
 
     List<TranshipBox> findByFrozenBoxCode1DIn(List<String> boxCode1Str);
+
+    @Query("select t from TranshipBox t where t.status = ?2 and ( t.frozenBoxCode in ?1 or t.frozenBoxCode1D in ?1 )")
+    List<TranshipBox> findByFrozenBoxCodeInAndStatus(List<String> frozenBoxCodeStr, String status);
 }

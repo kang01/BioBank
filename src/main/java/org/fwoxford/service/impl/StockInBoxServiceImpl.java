@@ -948,7 +948,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         //如果样本的状态是待入库，新建，就删除掉样本
         if(frozenTubeIdsOld!=null&&frozenTubeIdsOld.size()>0){
-            frozenTubeRepository.updateStatusByNotInAndFrozenTubeStateAndFrozenBox(frozenTubeIdsOld,frozenBox.getId());
+            frozenTubeRepository.updateStatusByFrozenBoxIdNotInAndFrozenTubeStateAndFrozenBox(frozenTubeIdsOld,frozenBox.getId());
         }
         //盒内新增样本
         List<StockInTube> stockInTubes = new ArrayList<StockInTube>();

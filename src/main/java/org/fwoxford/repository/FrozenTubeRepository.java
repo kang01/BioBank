@@ -191,7 +191,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     @Modifying
     @Query("update FrozenTube b set b.status='"+Constants.INVALID+"' where b.id not in ?1 and b.frozenTubeState in ('"+Constants.FROZEN_BOX_NEW+"','"+Constants.FROZEN_BOX_STOCKING+"') and b.frozenBox.id = ?2")
-    void updateStatusByNotInAndFrozenTubeStateAndFrozenBox(List<Long> frozenTubeIdsOld, Long frozenBoxId);
+    void updateStatusByFrozenBoxIdNotInAndFrozenTubeStateAndFrozenBox(List<Long> frozenTubeIdsOld, Long frozenBoxId);
 
     @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '"+Constants.FROZEN_BOX_STOCKED+"' " +
         " and t.status!='"+Constants.INVALID+"'" +

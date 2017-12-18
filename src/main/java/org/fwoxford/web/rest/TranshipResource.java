@@ -307,4 +307,32 @@ public class TranshipResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipDTO.getId().toString()))
             .body(result);
     }
+
+    /**
+     * 接收完成
+     * @param returnBackCode
+     * @param transhipToStockInDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/return-back/{returnBackCode}/completed")
+    @Timed
+    public ResponseEntity<StockInForDataDetail> completedReturnBack(@PathVariable String returnBackCode, @RequestBody @Valid TranshipToStockInDTO transhipToStockInDTO) throws URISyntaxException {
+        log.debug("REST request to save StockIn for completedReturnBack : {}", returnBackCode);
+
+        StockInForDataDetail result = transhipService.completedReturnBack(returnBackCode,transhipToStockInDTO);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
+
+    @PutMapping("/return-back/invalid/{returnBackCode}")
+    @Timed
+    public ResponseEntity<TranshipDTO> invalidTranshipForReturnBack(@PathVariable String returnBackCode) throws URISyntaxException {
+        log.debug("REST request to invalidTranshipForReturnBack : {}", returnBackCode);
+        TranshipDTO result = transhipService.invalidTranship(returnBackCode);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
 }

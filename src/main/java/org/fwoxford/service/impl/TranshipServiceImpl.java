@@ -149,66 +149,7 @@ public class TranshipServiceImpl implements TranshipService{
      */
     @Override
     public StockInForDataDetail completedTranship(String transhipCode, TranshipToStockInDTO transhipToStockInDTO) {
-        StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
-        stockInForDataDetail.setTranshipCode(transhipCode);
-
-        if(transhipCode == null){
-            throw new BankServiceException("转运编码不能为空！",transhipCode);
-        }
-        if(transhipToStockInDTO.getReceiveId()==null){
-            throw new BankServiceException("接收人不能为空！");
-        }
-        LocalDate receiveDate = transhipToStockInDTO.getReceiveDate();
-        String password = transhipToStockInDTO.getPassword();
-        User user = userRepository.findOne(transhipToStockInDTO.getReceiveId());
-        if(user==null){
-            throw new BankServiceException("接收人不存在！");
-        }
-
-        userService.isCorrectUser(user.getLogin(),password);
-
-        Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
-        if(tranship == null){
-            throw new BankServiceException("转运记录不存在！",transhipCode);
-        }
-        if(tranship.getTrackNumber()==null||tranship.getTrackNumber()==""){
-            throw new BankServiceException("运单号不能为空！",tranship.toString());
-        }
-        int number = stockInRepository.countByTranshipCode(transhipCode);
-        if(number>0){
-            throw new BankServiceException("此次转运已经在执行入库！",transhipCode);
-        }
-        List<FrozenBox> frozenBoxList =  frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship.getId());
-        if(frozenBoxList.size()==0){
-            throw new BankServiceException("此次转运没有冻存盒数据！",transhipCode);
-        }
-        List<String> frozenBoxCodes = new ArrayList<String>();
-        for(FrozenBox frozenBox:frozenBoxList){
-            frozenBoxCodes.add(frozenBox.getFrozenBoxCode());
-        }
-        //修改转运表中数据状态为转运完成
-        tranship.setTranshipState(Constants.TRANSHIPE_IN_COMPLETE);
-
-        tranship.setReceiverId(user!=null?user.getId():null);
-        tranship.setReceiver(user.getLastName()+user.getFirstName());
-        tranship.setReceiveDate(receiveDate);
-        transhipRepository.save(tranship);
-
-        //转运盒的状态更改为转运完成
-        transhipBoxRepository.updateStatusByTranshipId(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,tranship.getId());
-        //冻存盒的状态更改为转运完成
-        frozenBoxRepository.updateStatusByFrozenBoxCodes(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
-//        冻存管的状态更改为转运完成
-        frozenTubeRepository.updateFrozenTubeStateByFrozenBoxCodes(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
-        //转运冻存管的状态为转运完成
-        transhipTubeRepository.updateFrozenTubeStateByFrozenBoxCodesAndTranshipCode(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
-        stockInForDataDetail.setProjectCode(tranship.getProjectCode());
-        stockInForDataDetail.setProjectSiteCode(tranship.getProjectSiteCode());
-        stockInForDataDetail.setReceiver(tranship.getReceiver());
-        stockInForDataDetail.setReceiveDate(tranship.getReceiveDate());
-        stockInForDataDetail.setStatus(Constants.TRANSHIPE_IN_COMPLETE);
-        stockInForDataDetail.setId(tranship.getId());
-        return stockInForDataDetail;
+        return completedReceiveBox(transhipCode,transhipToStockInDTO,Constants.RECEIVE_TYPE_PROJECT_SITE );
     }
 
 
@@ -410,29 +351,31 @@ public class TranshipServiceImpl implements TranshipService{
      */
     @Override
     public TranshipDTO invalidTranship(String transhipCode) {
-        TranshipDTO transhipDTO = new TranshipDTO();
         Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
         if(tranship == null){
-            throw new BankServiceException("转运记录不存在！",transhipCode);
+            throw new BankServiceException("接收记录不存在！",transhipCode);
         }
         if(!tranship.getTranshipState().equals(Constants.TRANSHIPE_IN_PENDING)){
-            throw new BankServiceException("转运已不在进行中的状态，不能作废！",transhipCode);
+            throw new BankServiceException("接收已不在进行中的状态，不能作废！",transhipCode);
         }
 
         tranship.setTranshipState(Constants.TRANSHIPE_IN_INVALID);
         transhipRepository.save(tranship);
         //更改转运盒
         List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipId(tranship.getId());
+        List<FrozenBox> frozenBoxList = new ArrayList<>();
         for(TranshipBox tBox:transhipBoxes){
             tBox.setStatus(Constants.FROZEN_BOX_INVALID);
-            transhipBoxRepository.save(tBox);
+            FrozenBox frozenBox = tBox.getFrozenBox();
+            if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_NEW)){
+                frozenBox.setStatus(Constants.FROZEN_BOX_INVALID);
+                frozenBoxList.add(frozenBox);
+                frozenTubeRepository.updateStatusByFrozenBoxId(Constants.FROZEN_BOX_INVALID,frozenBox.getId());
+            }
+            transhipTubeRepository.updateStatusByTranshipBoxId(Constants.FROZEN_BOX_INVALID,tBox.getId());
         }
-        //更改冻存盒
-        List<FrozenBox> frozenBoxes = frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship.getId());
-        for(FrozenBox frozenBox :frozenBoxes){
-            frozenBox.setStatus(Constants.FROZEN_BOX_INVALID);
-            frozenBoxRepository.save(frozenBox);
-        }
+        transhipBoxRepository.save(transhipBoxes);
+        frozenBoxRepository.save(frozenBoxList);
         return transhipMapper.transhipToTranshipDTO(tranship);
     }
 
@@ -623,5 +566,82 @@ public class TranshipServiceImpl implements TranshipService{
         Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
         transhipRepository.save(tranship);
         return transhipDTO;
+    }
+
+    /**
+     * 接收完成
+     * @param returnBackCode
+     * @param transhipToStockInDTO
+     * @return
+     */
+    @Override
+    public StockInForDataDetail completedReturnBack(String returnBackCode, TranshipToStockInDTO transhipToStockInDTO) {
+        return completedReceiveBox(returnBackCode,transhipToStockInDTO,Constants.RECEIVE_TYPE_RETURN_BACK );
+    }
+
+    private StockInForDataDetail completedReceiveBox(String transhipCode, TranshipToStockInDTO transhipToStockInDTO, String receiveType) {
+        StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
+        stockInForDataDetail.setTranshipCode(transhipCode);
+
+        if(transhipCode == null){
+            throw new BankServiceException("编码不能为空！",transhipCode);
+        }
+        if(transhipToStockInDTO.getReceiveId()==null){
+            throw new BankServiceException("接收人不能为空！");
+        }
+        LocalDate receiveDate = transhipToStockInDTO.getReceiveDate();
+        String password = transhipToStockInDTO.getPassword();
+        User user = userRepository.findOne(transhipToStockInDTO.getReceiveId());
+        if(user==null){
+            throw new BankServiceException("接收人不存在！");
+        }
+
+        userService.isCorrectUser(user.getLogin(),password);
+
+        Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
+        if(tranship == null){
+            throw new BankServiceException("接收记录不存在！",transhipCode);
+        }
+        if(receiveType.equals(Constants.RECEIVE_TYPE_PROJECT_SITE)){
+            if(tranship.getTrackNumber()==null||tranship.getTrackNumber()==""){
+                throw new BankServiceException("运单号不能为空！",tranship.toString());
+            }
+        }
+        int number = stockInRepository.countByTranshipCode(transhipCode);
+        if(number>0){
+            throw new BankServiceException("此次接收已经在执行入库！",transhipCode);
+        }
+
+        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipId(tranship.getId());
+        if(transhipBoxes.size()==0){
+            throw new BankServiceException("此次接收没有冻存盒数据！",transhipCode);
+        }
+        List<String> frozenBoxCodes = new ArrayList<String>();
+        for(TranshipBox frozenBox:transhipBoxes){
+            frozenBoxCodes.add(frozenBox.getFrozenBoxCode());
+        }
+        //修改转运表中数据状态为转运完成
+        tranship.setTranshipState(Constants.TRANSHIPE_IN_COMPLETE);
+
+        tranship.setReceiverId(user!=null?user.getId():null);
+        tranship.setReceiver(user.getLastName()+user.getFirstName());
+        tranship.setReceiveDate(receiveDate);
+        transhipRepository.save(tranship);
+
+        //转运盒的状态更改为转运完成
+        transhipBoxRepository.updateStatusByTranshipId(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,tranship.getId());
+        //冻存盒的状态更改为转运完成
+        frozenBoxRepository.updateStatusByFrozenBoxCodes(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
+//        冻存管的状态更改为转运完成
+        frozenTubeRepository.updateFrozenTubeStateByFrozenBoxCodes(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
+        //转运冻存管的状态为转运完成
+        transhipTubeRepository.updateFrozenTubeStateByFrozenBoxCodesAndTranshipCode(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
+        stockInForDataDetail.setProjectCode(tranship.getProjectCode());
+        stockInForDataDetail.setProjectSiteCode(tranship.getProjectSiteCode());
+        stockInForDataDetail.setReceiver(tranship.getReceiver());
+        stockInForDataDetail.setReceiveDate(tranship.getReceiveDate());
+        stockInForDataDetail.setStatus(Constants.TRANSHIPE_IN_COMPLETE);
+        stockInForDataDetail.setId(tranship.getId());
+        return stockInForDataDetail;
     }
 }

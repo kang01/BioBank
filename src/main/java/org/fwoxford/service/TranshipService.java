@@ -111,4 +111,12 @@ public interface TranshipService {
      * @return
      */
     TranshipDTO saveReturnBack(TranshipDTO transhipDTO);
+
+    /**
+     * 接收完成
+     * @param returnBackCode
+     * @param transhipToStockInDTO
+     * @return
+     */
+    StockInForDataDetail completedReturnBack(String returnBackCode, TranshipToStockInDTO transhipToStockInDTO);
 }

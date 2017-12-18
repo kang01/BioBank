@@ -97,7 +97,8 @@ public class TranshipTubeServiceImpl implements TranshipTubeService{
         if(transhipBox == null){
             return null;
         }
-        List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdLast(transhipBox.getId());
+        List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdAndStatusNotIn(transhipBox.getId()
+                ,new ArrayList<String>(){{add(Constants.INVALID);add(Constants.FROZEN_BOX_INVALID);}});
         List<Long> oldTubeIds = new ArrayList<Long>();
         for (FrozenTube frozenTube : frozenTubeList) {
             oldTubeIds.add(frozenTube.getId());

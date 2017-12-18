@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.TranshipTube;
 
 import org.springframework.data.jpa.repository.*;
@@ -14,18 +15,7 @@ public interface TranshipTubeRepository extends JpaRepository<TranshipTube,Long>
 
     Long countByColumnsInTubeAndRowsInTubeAndStatusAndTranshipBoxIdAndFrozenTubeId(String tubeColumns, String tubeRows, String status, Long transhipBoxId, Long frozenTubeId);
 
-    @Query(value = " select * from (" +
-        "   select row_number() over(partition by frozen_tube_id order by CREATED_DATE desc) rn, a.* from  tranship_tube a where a.tranship_box_id = ?1 and a.status !='0000'" +
-        ") where rn = 1 " , nativeQuery = true)
-
-    List<TranshipTube> findByTranshipBoxIdLast(Long id);
-
     TranshipTube findByTranshipBoxIdAndFrozenTubeId(Long transhipBoxId, Long frozenTubeId);
-
-    @Query(value = " select * from (" +
-        "   select row_number() over(partition by frozen_tube_id order by CREATED_DATE desc) rn, a.* from  tranship_tube a where tranship_box_id = ?1 and frozen_tube_id = ?2 and status !='0000'" +
-        ") where rn = 1 " , nativeQuery = true)
-    TranshipTube findByTranshipBoxIdAndFrozenTubeIdLast(Long id, Long id1);
 
     @Query(value = "select count(distinct t.id) from tranship_tube t " +
         " left join frozen_tube f on t.frozen_tube_id = f.id " +
@@ -36,7 +26,7 @@ public interface TranshipTubeRepository extends JpaRepository<TranshipTube,Long>
     Long countUnStockInTubeByTranshipCodeAndStatus(String transhipCode, String status);
 
     @Modifying
-    @Query("update TranshipTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2 and t.status not in ('0000')")
+    @Query("update TranshipTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2 and t.status not in  ('"+ Constants.INVALID+"','"+Constants.FROZEN_BOX_INVALID+"')")
     void updateFrozenTubeStateByFrozenBoxCodesAndTranshipCode(String status, List<String> frozenBoxCodes);
 
     List<TranshipTube> findByTranshipBoxIdAndStatusNotIn(Long id,List<String> status);
@@ -44,4 +34,17 @@ public interface TranshipTubeRepository extends JpaRepository<TranshipTube,Long>
     @Modifying
     @Query("update TranshipTube t set t.status = ?1  where t.transhipBox.id = ?2")
     void updateStatusByTranshipBoxId(String status, Long id);
+
+    @Query(value = "select count(1) from tranship_tube t where t.tranship_box_id in ?1 and t.status=?2" ,nativeQuery = true)
+    int countByTranshipBoxIdsStrAndStatus(List<Long> boxIds, String status);
+
+    @Query(value = "select t.sample_temp_code,count(t.sample_temp_code) as noo from tranship_tube t " +
+            " where t.tranship_box_id in ?1 and t.status not in ('"+ Constants.INVALID+"','"+Constants.FROZEN_BOX_INVALID+"') and t.sample_code is null " +
+            " GROUP BY t.sample_temp_code" ,nativeQuery = true)
+    List<Object[]> countByTranshipBoxIdsAndGroupBySampleTempCode(List<Long> boxIds);
+
+    @Query(value = "select t.sample_code,count(t.sample_code) as noo from tranship_tube t " +
+            " where t.tranship_box_id in ?1 and t.status not in ('"+ Constants.INVALID+"','"+Constants.FROZEN_BOX_INVALID+"') " +
+            " GROUP BY t.sample_code " ,nativeQuery = true)
+    List<Object[]> countByTranshipBoxIdsAndGroupBySampleCode(List<Long> boxIds);
 }

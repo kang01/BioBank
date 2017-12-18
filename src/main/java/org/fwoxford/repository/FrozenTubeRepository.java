@@ -108,11 +108,11 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     List<FrozenTube> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleType(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId);
 
     @Modifying
-    @Query("update FrozenTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"')")
+    @Query("update FrozenTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_BOX_INVALID+"')")
     void updateFrozenTubeStateByFrozenBoxCodes(String status, List<String> frozenBoxCodes);
 
     @Query(value = "select count(t.id) from frozen_tube t left join tranship_box b on t.frozen_box_id = b.frozen_box_id left join tranship s on s.id = b.tranship_id left join frozen_box x on x.id = t.id and x.status not in ('"+Constants.FROZEN_BOX_INVALID+"','"+Constants.INVALID+"')" +
-        "where s.tranship_code in ?1 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"')" ,nativeQuery = true)
+        "where s.tranship_code in ?1 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_BOX_INVALID+"')" ,nativeQuery = true)
     Long countByTranshipCodes(List<String> transhipCodeList);
 
     @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"' and t.frozenTubeState=?2")

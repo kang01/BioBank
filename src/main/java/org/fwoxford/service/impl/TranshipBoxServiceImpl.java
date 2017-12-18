@@ -363,6 +363,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             FrozenTubeType tubeType = tubeTypes.get(0);
             if(box.getSampleTypeCode().equals("RNA")){
                 tubeType = tubeTypes.stream().filter(t->t.getFrozenTubeTypeCode().equals("RNA")).findFirst().orElse(tubeTypes.get(0));
+            }else if(box.getSampleTypeCode().equals("DNA")){
+                tubeType = tubeTypes.stream().filter(t->t.getFrozenTubeTypeCode().equals("2DDCG")).findFirst().orElse(tubeTypes.get(0));
             }
 
             tube.setFrozenTubeType(tubeType);
@@ -488,23 +490,21 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         if(tranship == null){
             return;
         }
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship.getId());
+        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipId(tranship.getId());
+        List<Long> boxIds = transhipBoxes.stream().map(s->s.getId()).collect(Collectors.toList());
         int countOfEmptyHole = 0;int countOfEmptyTube = 0;
         int countOfTube = 0;//有效样本数
         final  Integer[] countOfPeople = {0};//样本人份
-        List<Long> boxIds = new ArrayList<Long>();
-        for(FrozenBox box : frozenBoxList){
-            frozenBoxRepository.save(box);
-            boxIds.add(box.getId());
-        }
         if(boxIds.size()>0){
-            countOfEmptyHole = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_HOLE_EMPTY);
-            countOfEmptyTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_EMPTY);
-            countOfTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_NORMAL);
+            countOfEmptyHole = transhipTubeRepository.countByTranshipBoxIdsStrAndStatus(boxIds,Constants.FROZEN_TUBE_HOLE_EMPTY);
+            countOfEmptyTube = transhipTubeRepository.countByTranshipBoxIdsStrAndStatus(boxIds,Constants.FROZEN_TUBE_EMPTY);
+            countOfTube = transhipTubeRepository.countByTranshipBoxIdsStrAndStatus(boxIds,Constants.FROZEN_TUBE_NORMAL);
             //查询临时样本人份
-            List<Object[]> countOfTempSampleCodeGroupBySampleTempCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleTempCode(boxIds);
+//            List<Object[]> countOfTempSampleCodeGroupBySampleTempCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleTempCode(boxIds);
+            List<Object[]> countOfTempSampleCodeGroupBySampleTempCode = transhipTubeRepository.countByTranshipBoxIdsAndGroupBySampleTempCode(boxIds);
             //查询扫码后的样本人份
-            List<Object[]> countOfSampleCodeGroupBySampleCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleCode(boxIds);
+//            List<Object[]> countOfSampleCodeGroupBySampleCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleCode(boxIds);
+            List<Object[]> countOfSampleCodeGroupBySampleCode = transhipTubeRepository.countByTranshipBoxIdsAndGroupBySampleCode(boxIds);
             countOfTempSampleCodeGroupBySampleTempCode.forEach(s->{
                 if(s[0]!=null){
                     countOfPeople[0]++;
@@ -517,7 +517,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             });
         }
         tranship.setSampleNumber(countOfPeople[0]);
-        tranship.setFrozenBoxNumber(frozenBoxList.size());
+        tranship.setFrozenBoxNumber(transhipBoxes.size());
         tranship.setEmptyHoleNumber(countOfEmptyHole);
         tranship.setEmptyTubeNumber(countOfEmptyTube);
         tranship.setEffectiveSampleNumber(countOfTube);
@@ -553,7 +553,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             frozenBox.setColumnsInShelf(transhipBoxPosition.getColumnsInShelf());
         }
         //查询转运冻存管
-        List<TranshipTube> transhipTubeList = transhipTubeRepository.findByTranshipBoxIdLast(transhipBox.getId());
+        List<TranshipTube> transhipTubeList = transhipTubeRepository.findByTranshipBoxIdAndStatusNotIn(transhipBox.getId()
+                ,new ArrayList<String>(){{add(Constants.FROZEN_BOX_INVALID);add(Constants.INVALID);}});
         List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
         for(TranshipTube f: transhipTubeList){
             FrozenTube frozenTube = f.getFrozenTube();

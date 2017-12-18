@@ -326,6 +326,12 @@ public class TranshipResource {
                 .body(result);
     }
 
+    /**
+     * 作废归还记录
+     * @param returnBackCode
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping("/return-back/invalid/{returnBackCode}")
     @Timed
     public ResponseEntity<TranshipDTO> invalidTranshipForReturnBack(@PathVariable String returnBackCode) throws URISyntaxException {

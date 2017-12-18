@@ -602,7 +602,7 @@ public class StockInServiceImpl implements StockInService {
         }
         String[] transhipCodeStr = transhipCode.split(",");
         if(transhipCodeStr.length == 0){
-            throw new BankServiceException("未选择转运记录！");
+            throw new BankServiceException("未选择接收记录！");
         }
         Project project =null;
         List<Tranship> tranships = new ArrayList<Tranship>();
@@ -610,18 +610,18 @@ public class StockInServiceImpl implements StockInService {
             //判断转运是否完成，转运完成，才可以入库；
             Tranship tranship = transhipRepository.findByTranshipCode(code);
             if(tranship == null){
-                throw new BankServiceException("转运编码为"+code+"的转运记录不存在！");
+                throw new BankServiceException("编码为"+code+"的接收记录不存在！");
             }
             if(!tranship.getTranshipState().equals(Constants.TRANSHIPE_IN_COMPLETE)){
-                throw new BankServiceException("转运编码为"+code+"的转运记录转运未完成，不能入库！");
+                throw new BankServiceException("编码为"+code+"的接收记录转运未完成，不能入库！");
             }
             if(tranship.getProject() == null){
-                throw new BankServiceException("转运编码为"+code+"的转运记录未指定项目，不能入库！");
+                throw new BankServiceException("编码为"+code+"的接收记录未指定项目，不能入库！");
             }
             if(project != null &&
                 (project.getProjectCode()!=tranship.getProjectCode()
                     &&!project.getProjectCode().equals(tranship.getProjectCode()))){
-                throw new BankServiceException("转运编码为"+code+"的转运记录与其他转运记录项目不一致，不能同时入库！");
+                throw new BankServiceException("编码为"+code+"的接收记录与其他转运记录项目不一致，不能同时入库！");
             }else{
                 project = tranship.getProject();
             }

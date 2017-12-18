@@ -271,4 +271,23 @@ public class StockInResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+
+    /**
+     * 多个归还记录，开始入库
+     * @param returnBackCodes
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-in/return-back/codes/{returnBackCodes}")
+    @Timed
+    public ResponseEntity<StockInDTO> createStockInByReturnBackCodes(@PathVariable String returnBackCodes) throws URISyntaxException {
+        log.debug("REST request to createStockInByReturnBackCodes : {}", returnBackCodes);
+
+        StockInDTO result = stockInService.createStockInByTranshipCodes(returnBackCodes);
+        return ResponseEntity.created(new URI("/api/res/stock-in" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
+
+
 }

@@ -10,7 +10,9 @@ import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.response.StockInForDataTableEntity;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
+import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.StockInMapper;
+import org.fwoxford.service.mapper.TranshipTubeMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
@@ -44,41 +46,43 @@ public class StockInServiceImpl implements StockInService {
     private final StockInRepositries stockInRepositries;
 
     @Autowired
-    private TranshipService transhipService;
+    TranshipService transhipService;
     @Autowired
-    private TranshipRepository transhipRepository;
+    TranshipRepository transhipRepository;
     @Autowired
-    private FrozenBoxRepository frozenBoxRepository;
+    FrozenBoxRepository frozenBoxRepository;
     @Autowired
-    private FrozenBoxMapper frozenBoxMapper;
+    FrozenBoxMapper frozenBoxMapper;
     @Autowired
-    private TranshipBoxRepository transhipBoxRepository;
+    TranshipBoxRepository transhipBoxRepository;
     @Autowired
-    private StockInBoxRepository stockInBoxRepository;
+    StockInBoxRepository stockInBoxRepository;
     @Autowired
-    private FrozenTubeRepository frozenTubeRepository;
+    FrozenTubeRepository frozenTubeRepository;
     @Autowired
-    private StockInTubeRepository stockInTubeRepository;
+    StockInTubeRepository stockInTubeRepository;
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
     @Autowired
-    private UserService userService;
+    UserService userService;
     @Autowired
-    private StockInTubeService stockInTubeService;
+    StockInTubeService stockInTubeService;
     @Autowired
-    private StockInBoxPositionRepository stockInBoxPositionRepository;
+    StockInBoxPositionRepository stockInBoxPositionRepository;
     @Autowired
-    private ProjectRepository projectRepository;
+    ProjectRepository projectRepository;
     @Autowired
-    private ProjectSiteRepository projectSiteRepository;
+    ProjectSiteRepository projectSiteRepository;
     @Autowired
-    private BankUtil bankUtil;
+    BankUtil bankUtil;
     @Autowired
-    private TranshipStockInRepository transhipStockInRepository;
+    TranshipStockInRepository transhipStockInRepository;
     @Autowired
-    private TranshipTubeRepository transhipTubeRepository;
+    TranshipTubeRepository transhipTubeRepository;
     @Autowired
-    private FrozenBoxService frozenBoxService;
+    FrozenBoxService frozenBoxService;
+    @Autowired
+    TranshipTubeMapper transhipTubeMapper;
     public StockInServiceImpl(StockInRepository stockInRepository,
                               StockInMapper stockInMapper,
                               StockInRepositries stockInRepositries) {
@@ -598,7 +602,7 @@ public class StockInServiceImpl implements StockInService {
     @Override
     public StockInDTO createStockInByTranshipCodes(String transhipCode) {
         if(StringUtils.isEmpty(transhipCode)){
-            throw new BankServiceException("请传入有效的转运编码！");
+            throw new BankServiceException("请传入有效的接收记录编码！");
         }
         String[] transhipCodeStr = transhipCode.split(",");
         if(transhipCodeStr.length == 0){
@@ -650,7 +654,6 @@ public class StockInServiceImpl implements StockInService {
         List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipCodesAndStatus(transhipCodeList);
         List<String> frozenBoxCodes = new ArrayList<String>();
         List<FrozenBox> frozenBoxes = new ArrayList<>();
-//        List<StockInBox> stockInBoxes = new ArrayList<StockInBox>();
         for(TranshipBox transhipBox : transhipBoxes){
             frozenBoxCodes.add(transhipBox.getFrozenBoxCode());
             FrozenBox frozenBox = transhipBox.getFrozenBox();
@@ -672,10 +675,19 @@ public class StockInServiceImpl implements StockInService {
                 .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).frozenBox(frozenBox);
             stockInBoxRepository.save(stockInBox);
             //保存入库管子
-            List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
+            List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdAndStatusNotIn(transhipBox.getId(),
+                    new ArrayList<String>(){{
+                        add(Constants.FROZEN_BOX_INVALID);
+                        add(Constants.INVALID);
+            }});
+
+//            List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
             List<StockInTube> stockInTubes = new ArrayList<StockInTube>();
             List<FrozenTube> frozenTubes = new ArrayList<FrozenTube>();
-            for (FrozenTube tube : frozenTubeList) {
+            for (TranshipTube transhipTube : transhipTubes) {
+                FrozenTube frozenTube = transhipTubeMapper.transhipTubeToFrozenTube(transhipTube);
+                FrozenTube tube = transhipTube.getFrozenTube();
+                BeanUtils.copyProperties(frozenTube,tube);
                 if (!tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_TRANSHIP_COMPLETE)) {
                     continue;
                 }

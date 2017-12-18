@@ -865,7 +865,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             //获取原冻存管，与当前冻存管比对，删除原来有而当前没有的冻存管
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxId(transhipBox.getFrozenBox().getId());
 
-            List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdAndStatusNot(transhipBox.getId(),Constants.INVALID);
+            List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdAndStatusNotIn(transhipBox.getId(),new ArrayList<String>(){{add(Constants.INVALID);add(Constants.FROZEN_BOX_INVALID);}});
             //需要保存的转运冻存管ID，新增时为空----为了删除不需要保存的转运冻存管
             List<Long> forSaveTranshipTubeIds = new ArrayList<>();
             //需要保存的冻存管ID，新增时为空-
@@ -1342,7 +1342,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             throw new BankServiceException("未查询到该冻存盒的转运记录！",id.toString());
         }
         //查询转运冻存管
-        List<TranshipTube> transhipTubeList = transhipTubeRepository.findByTranshipBoxIdAndStatusNot(transhipBox.getId(),Constants.INVALID);
+        List<TranshipTube> transhipTubeList = transhipTubeRepository.findByTranshipBoxIdAndStatusNotIn(transhipBox.getId(), new ArrayList<String>(){{
+            add(Constants.FROZEN_BOX_INVALID);
+            add(Constants.INVALID);
+        }});
         List<TranshipTubeDTO> transhipTubeDTOS = transhipTubeMapper.transhipTubesToTranshipTubeDTOsWithSampleType(transhipTubeList);
         TranshipBoxDTO transhipBoxDTO = transhipBoxMapper.transhipBoxToTranshipBoxDTOWithSampleType(transhipBox,1);
         transhipBoxDTO.setTranshipTubeDTOS(transhipTubeDTOS);

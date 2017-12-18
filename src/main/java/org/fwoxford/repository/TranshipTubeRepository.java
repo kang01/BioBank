@@ -39,7 +39,7 @@ public interface TranshipTubeRepository extends JpaRepository<TranshipTube,Long>
     @Query("update TranshipTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2 and t.status not in ('0000')")
     void updateFrozenTubeStateByFrozenBoxCodesAndTranshipCode(String status, List<String> frozenBoxCodes);
 
-    List<TranshipTube> findByTranshipBoxIdAndStatusNot(Long id,String status);
+    List<TranshipTube> findByTranshipBoxIdAndStatusNotIn(Long id,List<String> status);
 
     @Modifying
     @Query("update TranshipTube t set t.status = ?1  where t.transhipBox.id = ?2")

@@ -291,6 +291,8 @@ public class StockInServiceImpl implements StockInService {
 
     /**
      * 入库完成
+     *
+     *  拆单时，已经入库的是新单子，未入库的是原单子
      * @param stockInCode
      * @return
      */

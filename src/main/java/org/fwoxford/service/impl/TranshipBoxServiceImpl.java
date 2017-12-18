@@ -849,12 +849,14 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             TranshipBox transhipBox = transhipBoxMapper.transhipBoxDTOToTranshipBox(boxDTO);
             //如果冻存盒ID为空，或者冻存盒的状态是新建，则可以编辑修改
             //如果冻存盒ID不为空，状态是已交接，则表示为归还的冻存盒，此时，不能更改冻存盒的数据，只能更改转运盒的数据，当接受完成时才可以更改冻存盒的数据
-            if(boxDTO.getFrozenBoxId() == null || boxDTO.getStatus().equals(Constants.FROZEN_BOX_NEW)){
+
+            if(boxDTO.getFrozenBoxId() == null && stockOutFrozenBox.getStatus().equals(Constants.FROZEN_BOX_NEW)){
                 FrozenBox frozenBox = transhipBoxMapper.transhipBoxDTOToFrozenBox(transhipBox);
                 frozenBox.setStatus(Constants.FROZEN_BOX_NEW);
                 frozenBoxRepository.save(frozenBox);
                 transhipBox.setFrozenBox(frozenBox);
             }
+
             transhipBox.setTranship(tranship);
             transhipBoxRepository.save(transhipBox);
             //转运盒位置

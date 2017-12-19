@@ -9,10 +9,7 @@ import org.fwoxford.service.dto.response.SampleCountByTypeForm;
 import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.response.StockInForDataTableEntity;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
-import org.fwoxford.service.mapper.FrozenBoxMapper;
-import org.fwoxford.service.mapper.FrozenTubeMapper;
-import org.fwoxford.service.mapper.StockInMapper;
-import org.fwoxford.service.mapper.TranshipTubeMapper;
+import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
@@ -83,6 +80,9 @@ public class StockInServiceImpl implements StockInService {
     FrozenBoxService frozenBoxService;
     @Autowired
     TranshipTubeMapper transhipTubeMapper;
+    @Autowired
+    TranshipBoxMapper transhipBoxMapper;
+
     public StockInServiceImpl(StockInRepository stockInRepository,
                               StockInMapper stockInMapper,
                               StockInRepositries stockInRepositries) {
@@ -656,7 +656,7 @@ public class StockInServiceImpl implements StockInService {
         List<FrozenBox> frozenBoxes = new ArrayList<>();
         for(TranshipBox transhipBox : transhipBoxes){
             frozenBoxCodes.add(transhipBox.getFrozenBoxCode());
-            FrozenBox frozenBox = transhipBox.getFrozenBox();
+            FrozenBox frozenBox = transhipBoxMapper.transhipBoxDTOToFrozenBox(transhipBox);
             //冻存盒状态变为待入库
             frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
             frozenBoxes.add(frozenBox);

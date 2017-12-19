@@ -10,8 +10,6 @@ import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
 import org.fwoxford.service.mapper.AttachmentMapper;
-import org.fwoxford.service.mapper.FrozenBoxMapper;
-import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -29,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import org.springframework.security.crypto.codec.Base64;
 /**
  * Service Implementation for managing Tranship.
@@ -79,6 +79,8 @@ public class TranshipServiceImpl implements TranshipService{
     StockOutFilesRepository stockOutFilesRepository;
     @Autowired
     StockOutApplyProjectRepository stockOutApplyProjectRepository;
+    @Autowired
+    TranshipBoxPositionRepository transhipBoxPositionRepository;
 
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
@@ -508,7 +510,7 @@ public class TranshipServiceImpl implements TranshipService{
             String username = user!=null?(user.getLastName()+user.getFirstName()):null;
             transhipDTO.setReceiver(user!=null?username:transhipDTO.getReceiver());
         }
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipDTO.getId());
+        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipId(transhipDTO.getId());
         Equipment equipment = new Equipment();
         Area area = new Area();
         //接收样本的暂存位置，如果转运有了暂存位置，则盒子上的暂存位置也改成相应的位置
@@ -518,28 +520,41 @@ public class TranshipServiceImpl implements TranshipService{
         if(transhipDTO.getTempAreaId()!=null){
             area = areaRepository.findOne(transhipDTO.getTempAreaId());
         }
-        int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfTube = 0;
-        final  Integer[] countOfPeople = {0};//样本人份
-        List<Long> boxIds = new ArrayList<Long>();
-        for(FrozenBox box : frozenBoxList){
+        List<FrozenBox> frozenBoxList = new ArrayList<>();
+        List<TranshipBoxPosition> transhipBoxPositions = new ArrayList<>();
+        for(TranshipBox box : transhipBoxes){
+            FrozenBox frozenBox = box.getFrozenBox();
             if(transhipDTO.getTempEquipmentId()!=null){
-                box.setEquipment(equipment);
-                box.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
-
-                box.setArea(area);
-                box.setAreaCode(area!=null?area.getAreaCode():null);
+                TranshipBoxPosition transhipBoxPosition = transhipBoxPositionRepository.findByTranshipBoxId(box.getId());
+                transhipBoxPosition.equipmentCode(equipment!=null?equipment.getEquipmentCode():null).equipment(equipment)
+                        .area(area).areaCode(area!=null?area.getAreaCode():null).supportRack(null).supportRackCode(null).columnsInShelf(null).rowsInShelf(null);
+                box.equipmentCode(equipment!=null?equipment.getEquipmentCode():null).equipment(equipment)
+                        .area(area).areaCode(area!=null?area.getAreaCode():null).supportRack(null).supportRackCode(null).columnsInShelf(null).rowsInShelf(null);
+                if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_NEW)){
+                    frozenBox.equipmentCode(equipment!=null?equipment.getEquipmentCode():null).equipment(equipment)
+                            .area(area).areaCode(area!=null?area.getAreaCode():null).supportRack(null).supportRackCode(null).columnsInShelf(null).rowsInShelf(null);
+                    frozenBoxList.add(frozenBox);
+                }
+                transhipBoxPositions.add(transhipBoxPosition);
             }
-            frozenBoxRepository.save(box);
-            boxIds.add(box.getId());
         }
+        frozenBoxRepository.save(frozenBoxList);
+        transhipBoxRepository.save(transhipBoxes);
+        transhipBoxPositionRepository.save(transhipBoxPositions);
+        List<Long> boxIds = transhipBoxes.stream().map(s->s.getId()).collect(Collectors.toList());
+        int countOfEmptyHole = 0;int countOfEmptyTube = 0;
+        int countOfTube = 0;//有效样本数
+        final  Integer[] countOfPeople = {0};//样本人份
         if(boxIds.size()>0){
-            countOfEmptyHole = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_HOLE_EMPTY);
-            countOfEmptyTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_EMPTY);
-            countOfTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_NORMAL);
+            countOfEmptyHole = transhipTubeRepository.countByTranshipBoxIdsStrAndStatus(boxIds,Constants.FROZEN_TUBE_HOLE_EMPTY);
+            countOfEmptyTube = transhipTubeRepository.countByTranshipBoxIdsStrAndStatus(boxIds,Constants.FROZEN_TUBE_EMPTY);
+            countOfTube = transhipTubeRepository.countByTranshipBoxIdsStrAndStatus(boxIds,Constants.FROZEN_TUBE_NORMAL);
             //查询临时样本人份
-            List<Object[]> countOfTempSampleCodeGroupBySampleTempCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleTempCode(boxIds);
+//            List<Object[]> countOfTempSampleCodeGroupBySampleTempCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleTempCode(boxIds);
+            List<Object[]> countOfTempSampleCodeGroupBySampleTempCode = transhipTubeRepository.countByTranshipBoxIdsAndGroupBySampleTempCode(boxIds);
             //查询扫码后的样本人份
-            List<Object[]> countOfSampleCodeGroupBySampleCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleCode(boxIds);
+//            List<Object[]> countOfSampleCodeGroupBySampleCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleCode(boxIds);
+            List<Object[]> countOfSampleCodeGroupBySampleCode = transhipTubeRepository.countByTranshipBoxIdsAndGroupBySampleCode(boxIds);
             countOfTempSampleCodeGroupBySampleTempCode.forEach(s->{
                 if(s[0]!=null){
                     countOfPeople[0]++;
@@ -632,7 +647,7 @@ public class TranshipServiceImpl implements TranshipService{
         transhipBoxRepository.updateStatusByTranshipId(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,tranship.getId());
         //冻存盒的状态更改为转运完成
         frozenBoxRepository.updateStatusByFrozenBoxCodes(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
-//        冻存管的状态更改为转运完成
+        //冻存管的状态更改为转运完成
         frozenTubeRepository.updateFrozenTubeStateByFrozenBoxCodes(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
         //转运冻存管的状态为转运完成
         transhipTubeRepository.updateFrozenTubeStateByFrozenBoxCodesAndTranshipCode(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);

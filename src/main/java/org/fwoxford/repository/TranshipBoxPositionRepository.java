@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.TranshipBoxPosition;
 
 import org.springframework.data.jpa.repository.*;
@@ -12,9 +13,8 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface TranshipBoxPositionRepository extends JpaRepository<TranshipBoxPosition,Long> {
 
-    @Query(value = "select * from tranship_box_pos a where a.tranship_box_id = ?1 and a.status != '0000' order by CREATED_DATE desc " +
-        " FETCH FIRST 1 ROWS ONLY  " , nativeQuery = true)
-    TranshipBoxPosition findByTranshipBoxIdLast(Long id);
+    @Query( "select a from TranshipBoxPosition a where a.transhipBox.id = ?1 and a.status != '"+ Constants.INVALID+"'")
+    TranshipBoxPosition findByTranshipBoxId(Long id);
 
     Long countByTranshipBoxIdAndEquipmentCodeAndAreaCodeAndSupportRackCodeAndRowsInShelfAndColumnsInShelf(Long TranshipBoxIid, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf);
 }

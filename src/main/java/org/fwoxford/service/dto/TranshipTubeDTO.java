@@ -23,11 +23,11 @@ public class TranshipTubeDTO implements Serializable {
 
     @NotNull
     @Size(max = 20)
-    private String columnsInTube;
+    private String tubeColumns;
 
     @NotNull
     @Size(max = 20)
-    private String rowsInTube;
+    private String tubeRows;
     /**
      * 项目编码
      */
@@ -180,19 +180,21 @@ public class TranshipTubeDTO implements Serializable {
     public void setMemo(String memo) {
         this.memo = memo;
     }
-    public String getColumnsInTube() {
-        return columnsInTube;
+
+    public String getTubeColumns() {
+        return tubeColumns;
     }
 
-    public void setColumnsInTube(String columnsInTube) {
-        this.columnsInTube = columnsInTube;
-    }
-    public String getRowsInTube() {
-        return rowsInTube;
+    public void setTubeColumns(String tubeColumns) {
+        this.tubeColumns = tubeColumns;
     }
 
-    public void setRowsInTube(String rowsInTube) {
-        this.rowsInTube = rowsInTube;
+    public String getTubeRows() {
+        return tubeRows;
+    }
+
+    public void setTubeRows(String tubeRows) {
+        this.tubeRows = tubeRows;
     }
 
     public String getProjectCode() {
@@ -478,8 +480,8 @@ public class TranshipTubeDTO implements Serializable {
             "id=" + id +
             ", status='" + status + '\'' +
             ", memo='" + memo + '\'' +
-            ", columnsInTube='" + columnsInTube + '\'' +
-            ", rowsInTube='" + rowsInTube + '\'' +
+            ", tubeColumns='" + tubeColumns + '\'' +
+            ", tubeRows='" + tubeRows + '\'' +
             ", projectCode='" + projectCode + '\'' +
             ", frozenTubeCode='" + frozenTubeCode + '\'' +
             ", sampleTempCode='" + sampleTempCode + '\'' +

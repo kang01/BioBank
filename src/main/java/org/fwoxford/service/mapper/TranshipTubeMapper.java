@@ -21,6 +21,8 @@ public interface TranshipTubeMapper {
     @Mapping(source = "sampleClassification.id", target = "sampleClassificationId")
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "projectSite.id", target = "projectSiteId")
+    @Mapping(source = "columnsInTube", target = "tubeColumns")
+    @Mapping(source = "rowsInTube", target = "tubeRows")
     TranshipTubeDTO transhipTubeToTranshipTubeDTO(TranshipTube transhipTube);
 
     List<TranshipTubeDTO> transhipTubesToTranshipTubeDTOs(List<TranshipTube> transhipTubes);
@@ -32,6 +34,8 @@ public interface TranshipTubeMapper {
     @Mapping(source = "sampleClassificationId", target = "sampleClassification")
     @Mapping(source = "projectId", target = "project")
     @Mapping(source = "projectSiteId", target = "projectSite")
+    @Mapping(source = "tubeColumns", target = "columnsInTube")
+    @Mapping(source = "tubeRows", target = "rowsInTube")
     TranshipTube transhipTubeDTOToTranshipTube(TranshipTubeDTO transhipTubeDTO);
 
     List<TranshipTube> transhipTubeDTOsToTranshipTubes(List<TranshipTubeDTO> transhipTubeDTOs);
@@ -121,8 +125,8 @@ public interface TranshipTubeMapper {
         transhipTubeDTO.setFrozenTubeTypeId( frozenTube.getFrozenTubeType()!=null?frozenTube.getFrozenTubeType().getId():null );
         transhipTubeDTO.setStatus( frozenTube.getStatus() );
         transhipTubeDTO.setMemo( frozenTube.getMemo() );
-        transhipTubeDTO.setColumnsInTube( frozenTube.getTubeColumns() );
-        transhipTubeDTO.setRowsInTube( frozenTube.getTubeRows() );
+        transhipTubeDTO.setTubeColumns( frozenTube.getTubeColumns() );
+        transhipTubeDTO.setTubeRows( frozenTube.getTubeRows() );
         transhipTubeDTO.setProjectCode( frozenTube.getProjectCode() );
         transhipTubeDTO.setFrozenTubeCode( frozenTube.getFrozenTubeCode() );
         transhipTubeDTO.setSampleTempCode( frozenTube.getSampleTempCode() );

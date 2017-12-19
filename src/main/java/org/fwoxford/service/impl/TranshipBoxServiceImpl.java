@@ -541,7 +541,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             throw new BankServiceException("未查询到该冻存盒的转运记录！",frozenBoxCode);
         }
         //查询转运盒的位置
-        TranshipBoxPosition transhipBoxPosition = transhipBoxPositionRepository.findByTranshipBoxIdLast(transhipBox.getId());
+        TranshipBoxPosition transhipBoxPosition = transhipBoxPositionRepository.findByTranshipBoxId(transhipBox.getId());
         if(transhipBoxPosition != null){
             frozenBox.setEquipment(transhipBoxPosition.getEquipment()!=null?transhipBoxPosition.getEquipment():null);
             frozenBox.setEquipmentCode(transhipBoxPosition.getEquipmentCode());
@@ -769,7 +769,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
              //验证设备，区域，架子，盒类型，样本类型，样本分类的必填
             checkTranshipBox(s,projectSampleClasses);
             //构造转运冻存盒的设备，区域，架子，盒类型，样本类型，样本分类
-            s = createTranshipBoxForPostionAndType(s,equipments,areas,supportRacks,boxTypes,sampleTypes,projectSampleClasses);
+            s = createTranshipBoxForPostionAndType(s,equipments,areas,supportRacks,boxTypes,sampleTypes,projectSampleClasses,tranship);
             //构造项目，样本点
             s = createTranshipBoxForProjectAndSite(s,tranship);
             //验证冻存管数量
@@ -911,8 +911,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 transhipTubeDTOFormStockOut.setFrozenBoxCode(boxDTO.getFrozenBoxCode());
                 transhipTubeDTOFormStockOut.setId(tubeDTO.getId());
                 transhipTubeDTOFormStockOut.setStatus(tubeDTO.getStatus());
-                transhipTubeDTOFormStockOut.setColumnsInTube(tubeDTO.getColumnsInTube());
-                transhipTubeDTOFormStockOut.setRowsInTube(tubeDTO.getRowsInTube());
+                transhipTubeDTOFormStockOut.setTubeColumns(tubeDTO.getTubeColumns());
+                transhipTubeDTOFormStockOut.setTubeRows(tubeDTO.getTubeRows());
                 transhipTubeDTOFormStockOut.setProjectId(boxDTO.getProjectId());
                 transhipTubeDTOFormStockOut.setProjectCode(boxDTO.getProjectCode());
                 transhipTubeDTOFormStockOut.setProjectSiteId(boxDTO.getProjectSiteId());
@@ -1015,27 +1015,40 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
      * @param projectSampleClasses
      * @return
      */
-    public TranshipBoxDTO createTranshipBoxForPostionAndType(TranshipBoxDTO boxDTO, List<Equipment> equipments, List<Area> areas, List<SupportRack> supportRacks, List<FrozenBoxType> boxTypes, List<SampleType> sampleTypes, List<ProjectSampleClass> projectSampleClasses) {
+    public TranshipBoxDTO createTranshipBoxForPostionAndType(TranshipBoxDTO boxDTO, List<Equipment> equipments, List<Area> areas, List<SupportRack> supportRacks,
+                List<FrozenBoxType> boxTypes, List<SampleType> sampleTypes, List<ProjectSampleClass> projectSampleClasses,Tranship tranship) {
         if(boxDTO == null){
             return null;
         }
+        //如果转运选择了临时位置
+        if(boxDTO.getEquipmentId() == null && boxDTO.getAreaId() ==null){
+            boxDTO.setSupportRackId(null);
+            boxDTO.setSupportRackCode(null);
+            boxDTO.setColumnsInShelf(null);
+            boxDTO.setRowsInShelf(null);
+        }
+
+        Long equipmentId = boxDTO.getEquipmentId()!=null?boxDTO.getEquipmentId():tranship.getTempEquipmentId();
         //设备
-        if(boxDTO.getEquipmentId()!=null){
-            Equipment equipment = equipments.stream().filter(s->s.getId().equals(boxDTO.getEquipmentId())).findFirst().orElse(null);
+        if(equipmentId!=null){
+            Equipment equipment = equipments.stream().filter(s->s.getId().equals(equipmentId)).findFirst().orElse(null);
             if(equipment == null){
                 throw new BankServiceException("设备不存在！");
             }
+            boxDTO.setEquipmentId(equipmentId);
             boxDTO.setEquipmentCode(equipment.getEquipmentCode());
         }
+        Long areaId = boxDTO.getAreaId()!=null?boxDTO.getAreaId():tranship.getTempAreaId();
         //区域
-        if(boxDTO.getAreaId()!=null){
-            if(boxDTO.getEquipmentId() == null){
+        if(areaId!=null){
+            if(equipmentId == null){
                 throw new BankServiceException("当选择区域时必须指定设备！");
             }
-            Area area = areas.stream().filter(s->s.getId().equals(boxDTO.getAreaId())&&boxDTO.getEquipmentId().equals(s.getEquipment().getId())).findFirst().orElse(null);
+            Area area = areas.stream().filter(s->s.getId().equals(areaId)&&equipmentId.equals(s.getEquipment().getId())).findFirst().orElse(null);
             if(area == null){
                 throw new BankServiceException("区域不存在！");
             }
+            boxDTO.setAreaId(area.getId());
             boxDTO.setAreaCode(area.getAreaCode());
         }
 
@@ -1315,8 +1328,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             transhipTubeDTO.setFrontColorForClass(sampleClassification.getFrontColor());
             transhipTubeDTO.setBackColorForClass(sampleClassification.getBackColor());
             //盒内位置
-            transhipTubeDTO.setColumnsInTube(String.valueOf(tubeColumns));
-            transhipTubeDTO.setRowsInTube(tubeRows);
+            transhipTubeDTO.setTubeColumns(String.valueOf(tubeColumns));
+            transhipTubeDTO.setTubeRows(tubeRows);
 
             transhipTubeDTO.setFrozenTubeState(Constants.FROZEN_BOX_NEW);
             transhipTubeDTO.setStatus(Constants.FROZEN_TUBE_NORMAL);

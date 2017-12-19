@@ -97,7 +97,7 @@ public class TranshipBoxPositionServiceImpl implements TranshipBoxPositionServic
         if(transhipBox == null || transhipBox.getId() ==null){
             return null;
         }
-        TranshipBoxPosition transhipBoxPosition = transhipBoxPositionRepository.findByTranshipBoxIdLast(transhipBox.getId());
+        TranshipBoxPosition transhipBoxPosition = transhipBoxPositionRepository.findByTranshipBoxId(transhipBox.getId());
         if(transhipBoxPosition == null){
             transhipBoxPosition = new TranshipBoxPosition();
         }

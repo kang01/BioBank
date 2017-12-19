@@ -6,17 +6,17 @@ import java.time.LocalDate;
  * Created by gengluying on 2017/4/25.
  */
 public class TranshipToStockInDTO {
-    Long receiveId;
+    Long receiverId;
     String login;
     String password;
     LocalDate receiveDate;
 
-    public Long getReceiveId() {
-        return receiveId;
+    public Long getReceiverId() {
+        return receiverId;
     }
 
-    public void setReceiveId(Long receiveId) {
-        this.receiveId = receiveId;
+    public void setReceiverId(Long receiverId) {
+        this.receiverId = receiverId;
     }
 
     public String getLogin() {

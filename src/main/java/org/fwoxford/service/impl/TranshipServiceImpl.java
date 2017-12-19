@@ -691,12 +691,12 @@ public class TranshipServiceImpl implements TranshipService{
         if(transhipCode == null){
             throw new BankServiceException("编码不能为空！",transhipCode);
         }
-        if(transhipToStockInDTO.getReceiveId()==null){
+        if(transhipToStockInDTO.getReceiverId()==null){
             throw new BankServiceException("接收人不能为空！");
         }
         LocalDate receiveDate = transhipToStockInDTO.getReceiveDate();
         String password = transhipToStockInDTO.getPassword();
-        User user = userRepository.findOne(transhipToStockInDTO.getReceiveId());
+        User user = userRepository.findOne(transhipToStockInDTO.getReceiverId());
         if(user==null){
             throw new BankServiceException("接收人不存在！");
         }

@@ -95,7 +95,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     TranshipTubeMapper transhipTubeMapper;
     @Autowired
     StockOutApplyRepository stockOutApplyRepository;
-
     /**
      * Save a transhipBox.
      *
@@ -1136,6 +1135,12 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         for(List<String> boxCodes :boxCodeEach500){
             //从出库冻存盒中获取出库盒和出库样本的信息
             List<StockOutFrozenBox> stockOutFrozenBoxes = stockOutFrozenBoxRepository.findByFrozenBoxCodeAndStockOutApply(boxCodes,applyCode);
+            stockOutFrozenBoxes.forEach(s->{
+                FrozenBox frozenBox = s.getFrozenBox();
+                if(!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
+                    throw new BankServiceException("冻存盒"+s.getFrozenBoxCode()+"未交接!");
+                }
+            });
             //获取出库冻存盒ID串
             List<Long> stockOutFrozenBoxIds = stockOutFrozenBoxes.stream().map(s->s.getId()).collect(Collectors.toList());
             //根据出库冻存盒ID查询出库样本

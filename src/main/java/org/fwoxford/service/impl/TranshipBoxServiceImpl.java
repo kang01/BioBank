@@ -1059,7 +1059,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             if(boxDTO.getEquipmentId() == null){
                 throw new BankServiceException("当选择冻存架时必须指定设备！");
             }
-            SupportRack supportRack = supportRacks.stream().filter(s->s.getId().equals(boxDTO.getSupportRackId()) && s.getArea().getEquipment().equals(areaId)).findFirst().orElse(null);
+            SupportRack supportRack = supportRacks.stream().filter(s->s.getId().equals(boxDTO.getSupportRackId())
+                   ).findFirst().orElse(null);
             if(supportRack == null){
                 throw new BankServiceException("冻存架不存在！");
             }

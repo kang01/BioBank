@@ -919,14 +919,14 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 transhipTubeDTOFormStockOut.setProjectSiteCode(boxDTO.getProjectSiteCode());
                 transhipTubeDTOFormStockOut.setTranshipBoxId(transhipBox.getId());
                 transhipTubeDTOFormStockOut.setFrozenBoxId(transhipBox.getFrozenBox().getId());
-                transhipTubeDTOFormStockOut.setFrozenTubeId(tubeDTO.getFrozenTubeId());
+//                transhipTubeDTOFormStockOut.setFrozenTubeId(tubeDTO.getFrozenTubeId());
                 TranshipTube transhipTube = transhipTubeMapper.transhipTubeDTOToTranshipTube(transhipTubeDTOFormStockOut);
                 //样本ID为空表示为新增的样本
                 FrozenTube tube = null;
-                if(tubeDTO.getFrozenTubeId()!=null ){
-                    tube = frozenTubes.stream().filter(s->s.getId().equals(tubeDTO.getFrozenTubeId())).findFirst().orElse(null);
+                if(transhipTubeDTOFormStockOut.getFrozenTubeId()!=null ){
+                    tube = frozenTubes.stream().filter(s->s.getId().equals(transhipTubeDTOFormStockOut.getFrozenTubeId())).findFirst().orElse(null);
                 }
-                if(tubeDTO.getFrozenTubeId() == null || (tube!=null && tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_NEW)) ){
+                if(transhipTubeDTOFormStockOut.getFrozenTubeId() == null || (tube!=null && tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_NEW)) ){
                     if(StringUtils.isEmpty(tubeDTO.getParentSampleCode())||tubeDTO.getParentSampleId() == null){
                         throw new BankServiceException("DNA样本未指定上一级样本ID！");
                     }
@@ -1060,7 +1060,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             if(boxDTO.getEquipmentId() == null){
                 throw new BankServiceException("当选择冻存架时必须指定设备！");
             }
-            SupportRack supportRack = supportRacks.stream().filter(s->s.getId().equals(boxDTO.getSupportRackId())).findFirst().orElse(null);
+            SupportRack supportRack = supportRacks.stream().filter(s->s.getId().equals(boxDTO.getSupportRackId()) && s.getArea().getEquipment().equals(areaId)).findFirst().orElse(null);
             if(supportRack == null){
                 throw new BankServiceException("冻存架不存在！");
             }

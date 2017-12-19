@@ -102,9 +102,9 @@ public class TranshipBoxPositionServiceImpl implements TranshipBoxPositionServic
             transhipBoxPosition = new TranshipBoxPosition();
         }
             transhipBoxPosition.transhipBox(transhipBox).memo(transhipBox.getMemo()).status(Constants.VALID)
-                .equipment(transhipBox.getFrozenBox().getEquipment()).equipmentCode(transhipBox.getEquipmentCode())
-                .area(transhipBox.getFrozenBox().getArea()).areaCode(transhipBox.getAreaCode())
-                .supportRack(transhipBox.getFrozenBox().getSupportRack()).supportRackCode(transhipBox.getSupportRackCode())
+                .equipment(transhipBox.getEquipment()).equipmentCode(transhipBox.getEquipmentCode())
+                .area(transhipBox.getArea()).areaCode(transhipBox.getAreaCode())
+                .supportRack(transhipBox.getSupportRack()).supportRackCode(transhipBox.getSupportRackCode())
                 .rowsInShelf(transhipBox.getRowsInShelf()).columnsInShelf(transhipBox.getColumnsInShelf());
             transhipBoxPositionRepository.save(transhipBoxPosition);
         return transhipBoxPosition;

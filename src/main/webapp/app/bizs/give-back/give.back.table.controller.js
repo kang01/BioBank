@@ -136,7 +136,6 @@
             return html;
         }
         function actionsHtml(data, type, full, meta) {
-            console.log(full.applyCode);
             var html = '';
             if(full.transhipState != '1001'){
                 html = '<button type="button" class="btn btn-xs" ui-sref="transport-record-view({transhipId:'+ full.id +'})">' +

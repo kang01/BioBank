@@ -25,6 +25,7 @@
         vm.htInstance = {};
         //冻存管状态编辑的开关
         vm.flagStatus = false;
+        vm.boxInstance = {};
         //模态框
         var _modalInstance;
 
@@ -51,7 +52,12 @@
         };
         //删除盒子
         vm.delBox = function () {
-
+            GiveBackService.delBox(vm.box.id).success(function (data) {
+                toastr.success("删除成功!");
+                _fnQueryBoxByGiveBackId();
+                vm.box = {};
+                vm.htInstance.api.clearData();
+            });
         };
         //重新导入
         vm.reloadBoxData = function () {
@@ -70,14 +76,15 @@
                     items: function () {
                         return {
                             equipmentOptions:vm.equipmentOptions,
-                            applyCode:vm.giveBackRecord.applyCode
+                            applyCode:vm.giveBackRecord.applyCode,
+                            giveBackId:$stateParams.giveBackId
                         };
                     }
                 }
 
             });
             _modalInstance.result.then(function (data) {
-                vm.boxOptions.withOption("data",data);
+                _fnQueryBoxByGiveBackId();
             },function () {
 
             })
@@ -296,7 +303,7 @@
                     var tr = this;
                     $(tr).closest('table').find('.rowLight').removeClass("rowLight");
                     $(tr).addClass('rowLight');
-                    _queryBoxDetail(53783);
+                    _queryBoxDetail(oData.id);
                 });
             }
 
@@ -372,9 +379,9 @@
         }
         //获取冻存盒信息详情（盒子信息和管子信息）
         function _queryBoxDetail(boxId) {
-            StockInInputService.queryEditStockInBox(boxId).success(function (data) {
+            GiveBackService.queryBoxDesc(boxId).success(function (data) {
                 vm.box = data;
-                vm.htInstance.api.loadData(data, data.frozenTubeDTOS);
+                vm.htInstance.api.loadData(data, data.transhipTubeDTOS);
                 vm.sampleCount = vm.htInstance.api.sampleCount();
             });
         }

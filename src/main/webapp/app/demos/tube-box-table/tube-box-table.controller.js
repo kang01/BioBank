@@ -71,7 +71,9 @@
             var data = vm.htInstance.api.getGridData();
             console.log(data);
         };
-
+        vm.getSelectedData = function () {
+            var data = vm.htInstance.api.getSelectedData();
+        };
         vm.exchange = function(){
             vm.htInstance.api.exchangeSelectedTubePosition();
         }

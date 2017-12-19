@@ -43,6 +43,7 @@
                 splitInformation: [],
                 refresh: _refresh,
                 loadData: _loadData,
+                clearData: _clearData,
                 rollbackToOriginalGridData: _rollbackToOriginalGridData,
                 updateOriginalGridData: _updateOriginalGridData,
                 getGridData: _getGridData,
@@ -123,6 +124,7 @@
                 }
                 if (!newOne){
                     vm.projectSampleTypeOptions.length = 0;
+                    return;
                 }
                 var projectId = newOne.projectId;
                 var sampleTypeId = newOne.sampleTypeId;
@@ -485,7 +487,7 @@
 
             // 当表格数据发生改变后，触发这个响应
             function _onTubeCellChanged(changes, source){
-                console.log("_onTubeCellChanged", arguments)
+                // console.log("_onTubeCellChanged", arguments)
 
                 if (source != "edit" || !changes[0]){
                     return;
@@ -820,7 +822,6 @@
                     vm.api.gridData = _.cloneDeep(gridData);
                     vm.api.columnHeaders = columns;
                     vm.api.rowHeaders = rows;
-                    console.log(gridData);
                     tableCtrl.loadData(gridData);
                 }
                 tableCtrl.render();
@@ -831,7 +832,29 @@
                 var tableCtrl = _getTableCtrl();
                 tableCtrl.render();
             }
-
+            //清空Table
+            function _clearData() {
+                vm.api.columnHeaders = [];
+                vm.api.rowHeaders = [];
+                vm.api.gridData = [];
+                vm.api.selectedTubes = [];
+                vm.api.selectedTubeElements = [];
+                vm.api.splitInformation = [];
+                var frozenTubeArray = [];
+                // initFrozenTube();
+                // function initFrozenTube(row,col) {
+                //
+                // }
+                for(var i = 0; i < 10; i++){
+                    frozenTubeArray[i] = [];
+                    for(var j = 0;j < 10; j++){
+                        frozenTubeArray[i][j] = "";
+                    }
+                }
+                var tableCtrl = _getTableCtrl();
+                tableCtrl.loadData(frozenTubeArray);
+                tableCtrl.render();
+            }
             // 回滚数据到初始状态
             function _rollbackToOriginalGridData(){
                 var gridData = vm.api.gridData;

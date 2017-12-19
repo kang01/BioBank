@@ -1406,8 +1406,8 @@
                     controllerAs: 'vm'
 
                 });
-                modalInstance.result.then(function (flage) {
-                    if (flage){
+                modalInstance.result.then(function (flag) {
+                    if (flag){
                         FrozenBoxDelService.delete({code:vm.box.frozenBoxCode},onDelBoxSuccess,onError);
                     }
                     function onDelBoxSuccess() {

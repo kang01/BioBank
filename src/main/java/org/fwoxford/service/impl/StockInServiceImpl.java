@@ -625,7 +625,7 @@ public class StockInServiceImpl implements StockInService {
             if(project != null &&
                 (project.getProjectCode()!=tranship.getProjectCode()
                     &&!project.getProjectCode().equals(tranship.getProjectCode()))){
-                throw new BankServiceException("编码为"+code+"的接收记录与其他转运记录项目不一致，不能同时入库！");
+                throw new BankServiceException("编码为"+code+"的接收记录与其他接收记录项目不一致，不能同时入库！");
             }else{
                 project = tranship.getProject();
             }
@@ -652,11 +652,9 @@ public class StockInServiceImpl implements StockInService {
             transhipRepository.save(tranship);
         }
         List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipCodesAndStatus(transhipCodeList);
-        List<String> frozenBoxCodes = new ArrayList<String>();
         List<FrozenBox> frozenBoxes = new ArrayList<>();
         for(TranshipBox transhipBox : transhipBoxes){
-            frozenBoxCodes.add(transhipBox.getFrozenBoxCode());
-            FrozenBox frozenBox = transhipBoxMapper.transhipBoxDTOToFrozenBox(transhipBox);
+            FrozenBox frozenBox = transhipBox.getFrozenBox();
             //冻存盒状态变为待入库
             frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
             frozenBoxes.add(frozenBox);
@@ -675,19 +673,10 @@ public class StockInServiceImpl implements StockInService {
                 .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).frozenBox(frozenBox);
             stockInBoxRepository.save(stockInBox);
             //保存入库管子
-            List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdAndStatusNotIn(transhipBox.getId(),
-                    new ArrayList<String>(){{
-                        add(Constants.FROZEN_BOX_INVALID);
-                        add(Constants.INVALID);
-            }});
-
-//            List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
+            List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
             List<StockInTube> stockInTubes = new ArrayList<StockInTube>();
             List<FrozenTube> frozenTubes = new ArrayList<FrozenTube>();
-            for (TranshipTube transhipTube : transhipTubes) {
-                FrozenTube frozenTube = transhipTubeMapper.transhipTubeToFrozenTube(transhipTube);
-                FrozenTube tube = transhipTube.getFrozenTube();
-                BeanUtils.copyProperties(frozenTube,tube);
+            for (FrozenTube tube : frozenTubeList) {
                 if (!tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_TRANSHIP_COMPLETE)) {
                     continue;
                 }

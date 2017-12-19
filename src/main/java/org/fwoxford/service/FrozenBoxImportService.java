@@ -137,6 +137,7 @@ public class FrozenBoxImportService {
 
                 frozenBoxAndFrozenTubeResponse.setIsRealData(Constants.YES);
                 frozenBoxAndFrozenTubeResponse.setFrozenBoxCode(frozenBoxCode);
+                frozenBoxAndFrozenTubeResponse.setFrozenBoxCode1D(frozenBoxCode);
                 frozenBoxAndFrozenTubeResponse.setFrozenBoxType(frozenBoxType);
                 frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeId(frozenBoxType.getId());
                 frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());

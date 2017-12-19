@@ -92,6 +92,11 @@ public class TranshipBoxPositionServiceImpl implements TranshipBoxPositionServic
         transhipBoxPositionRepository.delete(id);
     }
 
+    /**
+     * 保存转运冻存盒的位置
+     * @param transhipBox
+     * @return
+     */
     @Override
     public TranshipBoxPosition saveTranshipBoxPosition(TranshipBox transhipBox) {
         if(transhipBox == null || transhipBox.getId() ==null){

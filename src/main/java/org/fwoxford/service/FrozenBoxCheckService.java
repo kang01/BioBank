@@ -96,7 +96,8 @@ public class FrozenBoxCheckService {
         }).collect(Collectors.toList());
         String boxCodeStr = String.join(",",frozenBoxCodeStr);
         //验证归还冻存盒是否重复
-        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByFrozenBoxCodeInAndStatus(frozenBoxCodeStr,Constants.FROZEN_BOX_NEW);
+        //todo
+        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByFrozenBoxCodeInAndStatus(frozenBoxCodeStr,Constants.FROZEN_BOX_RETURN_BACK);
         ArrayList<String> repeatCode = new ArrayList<>();
         for(TranshipBox transhipBox :transhipBoxes){
             for(TranshipBoxDTO transhipBoxDTO : transhipBoxDTOS){

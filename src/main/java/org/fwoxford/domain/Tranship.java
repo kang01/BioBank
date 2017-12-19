@@ -569,6 +569,7 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     /**
      * 接收类型：项目点 实验室
      */
+    @NotNull
     @Column(name="receive_type",length = 20)
     private String receiveType;
 

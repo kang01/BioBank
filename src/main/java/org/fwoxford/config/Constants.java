@@ -43,7 +43,7 @@ public final class Constants {
     public static final String TRANSHIPE_IN_INVALID = "1090";
     public static final String TRANSHIPE_IN_COMPLETE = "1005";
     /**
-     * 冻存盒状态：2001：新建，2011：转运完成；2002：待入库，2003：已分装，2004：已入库，2090：已作废，2006：已上架，2008：待出库，2009：已出库，2010：已交接,2012：已销毁
+     * 冻存盒状态：2001：新建，2011：转运完成；2002：待入库，2003：已分装，2004：已入库，2090：已作废，2006：已上架，2008：待出库，2009：已出库，2010：已交接,2012：已销毁, 2013：归还中
      */
     public static final  String FROZEN_BOX_NEW = "2001" ;
     public static final  String FROZEN_BOX_TRANSHIP_COMPLETE = "2011" ;
@@ -57,6 +57,7 @@ public final class Constants {
     public static final String FROZEN_BOX_STOCK_OUT_COMPLETED = "2009";
     public static final String FROZEN_BOX_STOCK_OUT_HANDOVER = "2010";
     public static final String FROZEN_BOX_DESTROY = "2012";
+    public static final String FROZEN_BOX_RETURN_BACK = "2013" ;
     /**
      * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常; 3005:销毁
      */

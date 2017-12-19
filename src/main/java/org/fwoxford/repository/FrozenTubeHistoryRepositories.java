@@ -44,11 +44,11 @@ public interface FrozenTubeHistoryRepositories extends DataTablesRepository<Froz
         "            tranship.sample_classification_id,\n" +
         "            tranship.frozen_tube_state,tranship.CREATED_DATE\n" +
         "\n" +
-        "            from (select * from tranship_tube where frozen_tube_id in ?1 and status!='0000') tranship" +
+        "            from (select * from tranship_tube where frozen_tube_id in ?1 and  status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_BOX_INVALID+"')) tranship" +
         "            left join tranship_box tbox on tranship.tranship_box_id = tbox.id\n" +
-        "            left join  tranship tran on tbox.tranship_id = tran.id\n" +
+        "            left join  (select * from tranship tr where tr.receive_type = '"+Constants.RECEIVE_TYPE_PROJECT_SITE+"') tran on tbox.tranship_id = tran.id\n" +
         "            left join frozen_box box on tbox.frozen_box_id = box.id\n" +
-        "            left join jhi_user u on tran.receiver_id = u.id",nativeQuery = true)
+        "            left join jhi_user u on tran.receiver_id = u.id where tran.id is not null",nativeQuery = true)
     List<Object[]> findTranshipHistoryBySamples(List<Long> ids);
 
     @Query(value = "select stockIn.frozen_tube_id as frozen_tube_id,\n" +
@@ -252,4 +252,38 @@ public interface FrozenTubeHistoryRepositories extends DataTablesRepository<Froz
         "            left join jhi_user u on  p.operator_id_1 = u.id\n" +
         "            left join jhi_user u2 on  p.operator_id_2 = u2.id\n",nativeQuery = true)
     List<Object[]> findDestroyHistoryBySamples(List<Long> ids);
+
+    @Query(value ="select tranship.frozen_tube_id as frozen_tube_id,\n" +
+            "            tranship.project_code,\n" +
+            "            tran.id as tranship_id,\n" +
+            "            tran.tranship_code,\n" +
+            "            null as stock_in_id,\n" +
+            "            null as stock_in_code,\n" +
+            "            null as stock_out_task_id,\n" +
+            "            null as stock_out_task_code,\n" +
+            "            null as handover_id,\n" +
+            "            null as handover_code,\n" +
+            "            tranship.sample_code,\n" +
+            "            108 as type,\n" +
+            "            tranship.status,box.id as frozen_box_id,box.frozen_box_code,tranship.rows_in_tube as tube_rows,tranship.columns_in_tube as tube_columns\n" +
+            "            ,tran.TRANSHIP_DATE as operate_time,\n" +
+            "            (tbox.equipment_code||'.'||tbox.area_code||'.'||tbox.support_rack_code||'.'||tbox.columns_in_shelf||tbox.rows_in_shelf) as position,\n" +
+            "            (tranship.ROWS_IN_TUBE||tranship.COLUMNS_IN_TUBE) as position_in_box,\n" +
+            "            tbox.equipment_code,tbox.equipment_id,tbox.area_code,tbox.area_id,tbox.support_rack_code as shelves_code ,\n" +
+            "            tbox.support_rack_id as shelves_id,\n" +
+            "            tbox.columns_in_shelf,tbox.rows_in_shelf,tranship.memo, u.last_name||u.first_name as operator,\n" +
+            "            tranship.sample_type_id,tranship.sample_type_code,tranship.sample_type_name,\n" +
+            "            tranship.frozen_tube_type_id,tranship.frozen_tube_type_code,tranship.frozen_tube_type_name,tranship.frozen_tube_volumns,tranship.frozen_tube_volumns_unit,\n" +
+            "            tranship.sample_used_times_most,tranship.sample_used_times,tranship.sample_volumns,\n" +
+            "            tranship.project_id,\n" +
+            "            tranship.project_site_id,tranship.project_site_code,\n" +
+            "            tranship.sample_classification_id,\n" +
+            "            tranship.frozen_tube_state,tranship.CREATED_DATE\n" +
+            "\n" +
+            "            from (select * from tranship_tube where frozen_tube_id in ?1 and status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_BOX_INVALID+"')) tranship" +
+            "            left join tranship_box tbox on tranship.tranship_box_id = tbox.id\n" +
+            "            left join (select * from tranship tr where tr.receive_type = '"+Constants.RECEIVE_TYPE_RETURN_BACK+"')tran on tbox.tranship_id = tran.id\n" +
+            "            left join frozen_box box on tbox.frozen_box_id = box.id\n" +
+            "            left join jhi_user u on tran.receiver_id = u.id  where tran.id is not null",nativeQuery = true)
+    List<Object[]> findReturnHistoryBySamples(List<Long> ids);
 }

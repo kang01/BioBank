@@ -62,10 +62,6 @@ public class StockListServiceImpl implements StockListService {
     private AreasListRepositories areasListRepositories;
     @Autowired
     private AreasListByProjectRepositories areasListByProjectRepositories;
-    @Autowired
-    private FrozenTubeRepository frozenTubeRepository;
-    @Autowired
-    private FrozenBoxRepository frozenBoxRepository;
     /**
      * 冻存位置清单
      * @param input
@@ -182,6 +178,8 @@ public class StockListServiceImpl implements StockListService {
         List<Object[]> histroy = new ArrayList<>();
         //查詢转运历史
         List<Object[]> transhipHistory = frozenTubeHistoryRepositories.findTranshipHistoryBySamples(ids);
+        //查询归还记录
+        List<Object[]> returnHistory = frozenTubeHistoryRepositories.findReturnHistoryBySamples(ids);
         //查詢入库历史
         List<Object[]> stockInHistory = frozenTubeHistoryRepositories.findStockInHistoryBySamples(ids);
         //查询出库历史
@@ -197,7 +195,7 @@ public class StockListServiceImpl implements StockListService {
         histroy.addAll(transhipHistory); histroy.addAll(stockInHistory);
         histroy.addAll(stockOutHistory); histroy.addAll(handOverHistory);
         histroy.addAll(moveHistory); histroy.addAll(changeHistory);
-        histroy.addAll(destroyHistory);
+        histroy.addAll(destroyHistory); histroy.addAll(returnHistory);
         Map<String, List<Object[]>> histroyMap =
             histroy.stream().collect(Collectors.groupingBy(w ->(w[17]!=null?w[17].toString():null)+"&"+w[46].toString()));
         TreeMap<String,List<Object[]>> listTreeMap = new TreeMap<>(Collections.reverseOrder());

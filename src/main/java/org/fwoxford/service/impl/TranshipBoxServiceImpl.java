@@ -846,14 +846,14 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             boxDTO.setEmptyTubeNumber(countOfEmptyTube);
             boxDTO.setEmptyHoleNumber(countOfEmptyHole);
             boxDTO.setCountOfSample(countOfSample);
-            boxDTO.setStatus(Constants.FROZEN_BOX_NEW);
+            boxDTO.setStatus(Constants.FROZEN_BOX_RETURN_BACK);
             TranshipBox transhipBox = transhipBoxMapper.transhipBoxDTOToTranshipBox(boxDTO);
             //如果冻存盒ID为空，或者冻存盒的状态是新建，则可以编辑修改
             //如果冻存盒ID不为空，状态是已交接，则表示为归还的冻存盒，此时，不能更改冻存盒的数据，只能更改转运盒的数据，当接受完成时才可以更改冻存盒的数据
 
-            if(stockOutFrozenBox.getStatus().equals(Constants.FROZEN_BOX_NEW)){
+            if(stockOutFrozenBox.getStatus().equals(Constants.FROZEN_BOX_RETURN_BACK)){
                 FrozenBox frozenBox = transhipBoxMapper.transhipBoxDTOToFrozenBox(transhipBox);
-                frozenBox.setStatus(Constants.FROZEN_BOX_NEW);
+                frozenBox.setStatus(Constants.FROZEN_BOX_RETURN_BACK);
                 frozenBoxRepository.save(frozenBox);
                 transhipBox.setFrozenBox(frozenBox);
             }
@@ -890,7 +890,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             //获取传入过来的新增冻存管的ID
             List<FrozenTube> frozenTubeListForDelete = new ArrayList<FrozenTube>();
             for(FrozenTube f:frozenTubes){
-                if(!forSaveTubeIds.contains(f.getId())&&f.getFrozenTubeState().equals(Constants.FROZEN_BOX_NEW)){
+                if(!forSaveTubeIds.contains(f.getId())&&f.getFrozenTubeState().equals(Constants.FROZEN_BOX_RETURN_BACK)){
                     f.setStatus(Constants.INVALID);
                     frozenTubeListForDelete.add(f);
                 }
@@ -919,14 +919,14 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 transhipTubeDTOFormStockOut.setProjectSiteCode(boxDTO.getProjectSiteCode());
                 transhipTubeDTOFormStockOut.setTranshipBoxId(transhipBox.getId());
                 transhipTubeDTOFormStockOut.setFrozenBoxId(transhipBox.getFrozenBox().getId());
-//                transhipTubeDTOFormStockOut.setFrozenTubeId(tubeDTO.getFrozenTubeId());
+                transhipTubeDTOFormStockOut.setFrozenTubeState(Constants.FROZEN_BOX_RETURN_BACK);
                 TranshipTube transhipTube = transhipTubeMapper.transhipTubeDTOToTranshipTube(transhipTubeDTOFormStockOut);
                 //样本ID为空表示为新增的样本
                 FrozenTube tube = null;
                 if(transhipTubeDTOFormStockOut.getFrozenTubeId()!=null ){
                     tube = frozenTubes.stream().filter(s->s.getId().equals(transhipTubeDTOFormStockOut.getFrozenTubeId())).findFirst().orElse(null);
                 }
-                if(transhipTubeDTOFormStockOut.getFrozenTubeId() == null || (tube!=null && tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_NEW)) ){
+                if(transhipTubeDTOFormStockOut.getFrozenTubeId() == null || (tube!=null && tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_RETURN_BACK)) ){
                     if(StringUtils.isEmpty(tubeDTO.getParentSampleCode())||tubeDTO.getParentSampleId() == null){
                         throw new BankServiceException("DNA样本未指定上一级样本ID！");
                     }
@@ -1267,7 +1267,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         transhipBoxDTO.setSampleClassificationName(sampleClassification.getSampleClassificationName());
         transhipBoxDTO.setFrontColorForClass(sampleClassification.getFrontColor());
         transhipBoxDTO.setBackColorForClass(sampleClassification.getBackColor());
-        transhipBoxDTO.setStatus(Constants.FROZEN_BOX_NEW);
+        transhipBoxDTO.setStatus(Constants.FROZEN_BOX_RETURN_BACK);
         transhipBoxDTO.setCountOfSample(mapList.size());
         return transhipBoxDTO;
     }
@@ -1331,7 +1331,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             transhipTubeDTO.setTubeColumns(String.valueOf(tubeColumns));
             transhipTubeDTO.setTubeRows(tubeRows);
 
-            transhipTubeDTO.setFrozenTubeState(Constants.FROZEN_BOX_NEW);
+            transhipTubeDTO.setFrozenTubeState(Constants.FROZEN_BOX_RETURN_BACK);
             transhipTubeDTO.setStatus(Constants.FROZEN_TUBE_NORMAL);
             transhipTubeDTO.setSampleVolumns(!volumn.equals(null)?Double.valueOf(volumn):null);
 

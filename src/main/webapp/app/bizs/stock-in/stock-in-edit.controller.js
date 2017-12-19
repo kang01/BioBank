@@ -648,18 +648,18 @@
             var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
 
             var columns = [
-                DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
-                DTColumnBuilder.newColumn('orderNO').withTitle('序号').withOption("width", "50"),
+                DTColumnBuilder.newColumn("").withOption("width", "20").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
+                DTColumnBuilder.newColumn('orderNO').withTitle('序号').withOption("width", "30"),
                 DTColumnBuilder.newColumn('transhipCode').withTitle('转运编码').withOption("width", "100"),
-                DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点').withOption("width", "100"),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').withOption("width", "100"),
+                DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点').withOption("width", "60"),
+                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').withOption("width", "90"),
                 DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "100"),
-                DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
+                DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "60").withTitle('样本类型'),
                 DTColumnBuilder.newColumn('sampleClassificationName').withOption("width", "120").withTitle('样本分类'),
                 DTColumnBuilder.newColumn('position').withOption("width", "auto").withTitle('冻存位置'),
-                DTColumnBuilder.newColumn('countOfSample').withOption("width", "90").withTitle('样本量'),
-                DTColumnBuilder.newColumn('isSplit').withOption("width", "100").withTitle('是否分装'),
-                DTColumnBuilder.newColumn('status').withOption("width", "80").withTitle('状态'),
+                DTColumnBuilder.newColumn('countOfSample').withOption("width", "50").withTitle('样本量'),
+                DTColumnBuilder.newColumn('isSplit').withOption("width", "60").withTitle('是否分装'),
+                DTColumnBuilder.newColumn('status').withOption("width", "60").withTitle('状态'),
                 DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').withOption('searchable',false).notSortable().renderWith(_fnActionButtonsRender)
             ];
 

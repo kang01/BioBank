@@ -633,6 +633,16 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     padding-left: 12px;
 }
 /*入库*/
+.split-tube-style{
+    width:28px;
+    height:28px;
+    line-height:25px;
+    text-align:center;
+    font-size:8pt;
+    border:2px solid;
+    border-radius:5px;
+    -moz-border-radius:5px;
+}
 .transport-code{
     width: 330px;
 }
@@ -1705,6 +1715,11 @@ ul.rating {
 
 /*1920*/
 @media (min-width: 1900px) {
+    .split-tube-style{
+        width: 31px;
+        height: 31px;
+        line-height: 28px;
+    }
     /*.transport-record-new .three-col{*/
     /*width: 25%;*/
     /*}*/

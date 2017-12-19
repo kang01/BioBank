@@ -33,11 +33,13 @@
             },
             {
                 name:"projectCode",
-                title:"项目编码"
+                title:"项目编码",
+                width:"80"
             },
             {
                 name:"delegateName",
-                title:"归还单位"
+                title:"归还单位",
+                width:"240"
             },
             {
                 name:"applyPersonName",

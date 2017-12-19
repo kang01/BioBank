@@ -1,0 +1,61 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.cancel()"
+            style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span>&times;</span></button>
+    <h3 class="modal-title" id="modal-title">转运操作</h3>
+</div>
+<div class="modal-body" id="modal-body">
+
+    <div >
+        <form class="">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            接收日期
+                            <span class="required-field"></span>
+
+                        </label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="receiveDate"
+                                   uib-datepicker-popup="{{dateformat}}" ng-model="vm.giveBackRecord.receiveDate"
+                                   is-open="vm.datePickerOpenStatus.receiveDate"
+                                   required/>
+                            <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i
+                            class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            接收人
+                            <span class="required-field"></span>
+                        </label>
+                        <selectize options='vm.receiverOptions' config="vm.receiverConfig"
+                                   ng-model="vm.giveBackRecord.receiverId"></selectize>
+                        <input type="hidden" class="form-control" ng-model="vm.transportRecord.receiverId">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            密码
+                            <span class="required-field"></span>
+                        </label>
+                        <input type="password" class="form-control" ng-model="vm.giveBackRecord.password">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()"
+            ng-disabled="!vm.giveBackRecord.password || !vm.giveBackRecord.receiveDate || !vm.giveBackRecord.receiverId">
+        确定
+    </button>
+    <button class="btn btn-warning" type="button"  ng-click="vm.cancel()">取消</button>
+</div>
+

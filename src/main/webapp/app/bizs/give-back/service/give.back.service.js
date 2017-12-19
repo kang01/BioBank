@@ -77,7 +77,7 @@
             return $http.get('api/return-boxes/'+boxId);
         }
         function _invalidGiveBack(returnBackCode) {
-            return $http.put('api/return-back/invalid'+returnBackCode);
+            return $http.put('api/return-back/invalid/'+returnBackCode);
         }
         function _completeGiveBack(returnBackCode) {
             return $http.put('api/return-back/'+returnBackCode+'/completed');

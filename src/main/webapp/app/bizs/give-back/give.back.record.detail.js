@@ -64,7 +64,7 @@
                 resolve: {
                     items: function () {
                         return {
-                            status:'1'
+                            status:'3'
                         };
                     }
                 }
@@ -198,9 +198,32 @@
         }
         //接收完成
         function _completeGiveBack() {
-            _saveGiveBackRecord(function () {
-                toastr.success("接收完成!");
-            });
+
+                _modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/give-back/modal/complete-give-back-modal.html',
+                    controller: 'CompleteGiveBackModalController',
+                    backdrop:'static',
+                    controllerAs: 'vm',
+                    resolve:{
+                        items:function () {
+                            return{
+                                receiverId:vm.giveBackRecord.receiverId,
+                                receiveDate: vm.giveBackRecord.receiveDate,
+                                giveBackCode:vm.giveBackRecord.transhipCode
+                            };
+                        }
+                    }
+                });
+                _modalInstance.result.then(function () {
+                    _saveGiveBackRecord(function () {
+                        toastr.success("接收完成!");
+                    });
+                });
+
+
+
+
 
         }
         //保存冻存盒
@@ -218,7 +241,9 @@
                 if (typeof callback === "function"){
                     callback();
                 }else{
+                    _queryGiveBackInfo();
                     toastr.success("冻存盒保存成功!");
+
                 }
             });
 
@@ -241,12 +266,11 @@
                 }
             });
             _modalInstance.result.then(function () {
-                _queryBoxDetail(vm.box.id);
+                _invalidGiveBack();
             }, function () {
             });
         }
-        //归还控件信息（项目编码、委托方、接收人、临时位置）
-        function _initRecordInfoControl() {
+        function _queryGiveBackInfo() {
             //归还单id
             var giveBackId = $stateParams.giveBackId;
             if(giveBackId){
@@ -261,6 +285,10 @@
 
                 });
             }
+        }
+        //归还控件信息（项目编码、委托方、接收人、临时位置）
+        function _initRecordInfoControl() {
+            _queryGiveBackInfo();
 
             //项目编码
             vm.projectConfig = {
@@ -323,7 +351,15 @@
                 vm.boxOptions.withOption("data",data);
             });
         }
+        //作废
+        function _invalidGiveBack() {
+            GiveBackService.invalidGiveBack(vm.giveBackRecord.transhipCode).success(function(data){
+                $state.go('give-back-table');
+                toastr.success("作废成功!");
+            }).error(function (data) {
 
+            });
+        }
         //归还盒子信息
         function _initBoxDataTable() {
             //盒列

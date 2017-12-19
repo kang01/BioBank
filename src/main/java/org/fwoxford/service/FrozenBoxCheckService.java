@@ -88,24 +88,18 @@ public class FrozenBoxCheckService {
             return null;
         }
         List<String> frozenBoxCodeStr = transhipBoxDTOS.stream().map(s->{
-            String boxCode = StringUtils.isEmpty(s.getFrozenBoxCode())?s.getFrozenBoxCode1D():s.getFrozenBoxCode();
+            String boxCode = s.getFrozenBoxCode();
             if(StringUtils.isEmpty(boxCode)){
                 throw new BankServiceException("冻存盒编码不能为空");
             }
             return boxCode;
         }).collect(Collectors.toList());
         String boxCodeStr = String.join(",",frozenBoxCodeStr);
-        //验证归还冻存盒是否重复
-        //todo
+        //验证归还冻存盒是否重复（1） 在转运盒中看归还中的是否重复
         List<TranshipBox> transhipBoxes = transhipBoxRepository.findByFrozenBoxCodeInAndStatus(frozenBoxCodeStr,Constants.FROZEN_BOX_RETURN_BACK);
         ArrayList<String> repeatCode = new ArrayList<>();
         for(TranshipBox transhipBox :transhipBoxes){
             for(TranshipBoxDTO transhipBoxDTO : transhipBoxDTOS){
-                if(transhipBox.getFrozenBoxCode1D()!=null && transhipBoxDTO.getFrozenBoxCode1D()!=null
-                        && transhipBox.getFrozenBoxCode1D().equals( transhipBoxDTO.getFrozenBoxCode1D())
-                        && (transhipBoxDTO.getId() == null|| (transhipBoxDTO.getId()!=null && !transhipBoxDTO.getId().equals(transhipBox.getId())) )){
-                    repeatCode.add(transhipBox.getFrozenBoxCode1D());
-                }
                 if(transhipBox.getFrozenBoxCode()!=null && transhipBoxDTO.getFrozenBoxCode()!=null
                         && transhipBox.getFrozenBoxCode().equals( transhipBoxDTO.getFrozenBoxCode())
                         && (transhipBoxDTO.getId() == null|| (transhipBoxDTO.getId()!=null && !transhipBoxDTO.getId().equals(transhipBox.getId())) )){
@@ -113,7 +107,23 @@ public class FrozenBoxCheckService {
                 }
             }
         }
-
+        //（2） 从冻存盒的接收完成，待入库，已入库状态中判断冻存盒是否重复
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByFrozenBoxCodeInAndStatusIn(frozenBoxCodeStr,
+                new ArrayList<String>(){{add(Constants.FROZEN_BOX_NEW);
+                    add(Constants.FROZEN_BOX_STOCKED);
+                    add(Constants.FROZEN_BOX_STOCKING);
+                    add(Constants.FROZEN_BOX_TRANSHIP_COMPLETE);
+                    add(Constants.FROZEN_BOX_PUT_SHELVES);}});
+        for(FrozenBox frozenBox :frozenBoxList){
+            for(TranshipBoxDTO transhipBoxDTO : transhipBoxDTOS){
+                if(frozenBox.getFrozenBoxCode()!=null && transhipBoxDTO.getFrozenBoxCode()!=null
+                        && frozenBox.getFrozenBoxCode().equals( transhipBoxDTO.getFrozenBoxCode())
+                        && (transhipBoxDTO.getFrozenBoxId() == null||
+                        (transhipBoxDTO.getFrozenBoxId()!=null && !transhipBoxDTO.getFrozenBoxId().equals(frozenBox.getId())) )){
+                    repeatCode.add(transhipBoxDTO.getFrozenBoxCode());
+                }
+            }
+        }
         if(repeatCode.size()>0){
             throw new BankServiceException("请勿提交重复的冻存盒编码！",String.join(",",repeatCode));
         }
@@ -124,11 +134,6 @@ public class FrozenBoxCheckService {
                 throw new BankServiceException("冻存盒"+boxCode+"导入失败！");
             }
         }
-//        for(TranshipBoxDTO transhipBoxDTO :transhipBoxDTOS){
-//            for(TranshipBoxDTO outBox :stockOutFrozenBoxAndSampleList){
-//
-//            }
-//        }
         return stockOutFrozenBoxAndSampleList;
     }
 }

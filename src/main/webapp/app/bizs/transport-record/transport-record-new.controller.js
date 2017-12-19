@@ -363,12 +363,14 @@
                                         if(data[k].columnsNumber == j+1){
                                             vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId;
                                             vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                            vm.frozenTubeArray[i][j].frontColor = vm.box.frontColor;
                                         }
                                     }
                                 }
                                 for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
                                     if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
                                         vm.box.frozenTubeDTOS[m].sampleClassificationId = data[k].sampleClassificationId;
+                                        vm.box.frozenTubeDTOS[m].frontColor = vm.box.frontColor;
                                     }
                                 }
                             }
@@ -397,23 +399,29 @@
                             for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                                 if(vm.box.sampleClassification){
                                     vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+                                    vm.frozenTubeArray[i][j].frontColor = vm.box.sampleClassification.frontColor;
                                 }
                                 if(vm.frozenTubeArray[i][j]){
                                     vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                    vm.frozenTubeArray[i][j].frontColor = vm.box.frontColor;
                                 }
                             }
                         }
                         for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
                             if(vm.box.frozenTubeDTOS[m].sampleClassification){
                                 vm.box.frozenTubeDTOS[m].sampleClassification.id = vm.box.sampleClassificationId;
+                                vm.box.frozenTubeDTOS[m].frontColor = vm.box.sampleClassification.frontColor;
                             }else{
                                 vm.box.frozenTubeDTOS[m].sampleClassificationId = vm.box.sampleClassificationId;
+                                vm.box.frozenTubeDTOS[m].frontColor = vm.box.frontColor;
                             }
                             if(vm.box.frozenTubeDTOS[m].sampleType){
                                 vm.box.frozenTubeDTOS[m].sampleType.id = vm.box.sampleTypeId;
+                                vm.box.frozenTubeDTOS[m].frontColor = vm.box.frozenTubeDTOS[m].sampleType.frontColor;
 
                             }else{
                                 vm.box.frozenTubeDTOS[m].sampleTypeId = vm.box.sampleTypeId;
+                                vm.box.frozenTubeDTOS[m].frontColor = vm.box.frontColor;
                             }
                         }
                     }
@@ -760,7 +768,8 @@
             function myCustomRenderer(hotInstance, td, row, col, prop, value, cellProperties) {
                 var tube= value||{};
                 td.style.position = 'relative';
-
+                td.style.color = tube.frontColor;
+                cellProperties.comment = {};
                 if(tube.memo && tube.memo != " "){
                     cellProperties.comment = {value:tube.memo};
                 }
@@ -880,6 +889,7 @@
                     if((!domArray[0].sampleCode && !domArray[1].sampleCode)
                         && (!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)){
                         toastr.error("两个空冻存盒不能被交换!");
+                        aRemarkArray = [];
                         return;
                     }
                     var row = getTubeRowIndex(domArray[0].tubeRows);
@@ -908,11 +918,13 @@
 
 
                     domArray = [];
+                    aRemarkArray = [];
                     vm.exchangeFlag = false;
 
                 }else{
                     toastr.error("只能选择两个进行交换！",{},'center');
                     domArray = [];
+                    aRemarkArray = [];
                 }
                 hotRegisterer.getInstance('my-handsontable').render();
             };
@@ -944,6 +956,8 @@
                         aRemarkArray = [];
                         hotRegisterer.getInstance('my-handsontable').render();
                     });
+                }else{
+                    toastr.error("请选择要备注的冻存管!");
                 }
             };
 
@@ -981,6 +995,7 @@
                     memo: "",
                     tubeRows: pos.tubeRows,
                     tubeColumns: pos.tubeColumns,
+                    frontColor:null,
                     rowNO: rowNO,
                     colNO: colNO
                 };
@@ -996,6 +1011,7 @@
                     tube.status = tubeInBox.status;
                     tube.memo = tubeInBox.memo;
                     tube.frozenBoxId = tubeInBox.frozenBoxId;
+                    tube.frontColor = tubeInBox.frontColor;
                     if(tubeInBox.sampleClassification){
                         tube.sampleClassificationId = tubeInBox.sampleClassification.id;
                     }
@@ -1037,7 +1053,7 @@
                         var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
                         var tube = _createTubeForTableCell(tubeInBox, box, i, j + 1, pos);
                         //混合类型
-                        if(box.sampleType.isMixed == "1"){
+                        if(isMixed == "1"){
                             for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
                                 if (vm.projectSampleTypeOptions[l].columnsNumber == pos.tubeColumns) {
                                     if(!tube.sampleClassificationId){
@@ -1132,6 +1148,7 @@
                                 sampleTempCode: vm.box.frozenBoxCode + "-" + rowNO + (k + 1),
                                 sampleTypeId: vm.box.sampleTypeId,
                                 sampleClassificationId: vm.box.sampleClassificationId,
+                                frontColor:vm.box.frontColor,
                                 status: "3001",
                                 tubeRows: rowNO,
                                 tubeColumns: k + 1+""
@@ -1174,12 +1191,13 @@
                     if(!value){
                         return;
                     }
-                    var isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
+                    isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
                     var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
 
                     vm.box.sampleTypeId = value;
                     vm.box.sampleTypeCode = sampleTypeCode;
                     vm.box.sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeName;
+                    vm.box.frontColor = _.find(vm.sampleTypeOptions,{'id':+value}).frontColor;
 
                     vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value,isMixed);
                     if(isMixed == 1){

@@ -28,6 +28,9 @@
                 case "RNA":
                     boxTypeCode = "DJH";
                     break;
+                case "DNA":
+                    boxTypeCode = "96KB";
+                    break;
                 default:
                     boxTypeCode = "DCH";
                     break;

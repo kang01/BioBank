@@ -105,11 +105,12 @@
                 },300);
             };
             vm.boxCodeConfig.onItemRemove = function (value) {
-                _.remove(vm.boxList,{frozenBoxCode:value});
+                _.remove(_boxList,{frozenBoxCode:value});
             };
         }
         //盒子table详情
         function _initBoxTable() {
+            vm.dtInstance = {};
             var columns = [
                 {name:"frozenBoxCode",title:"冻存盒号",width:"auto",notSortable:true},
                 {name:"frozenBoxCode1D",title:"一维编码",width:"auto",notSortable:true},
@@ -125,7 +126,9 @@
                 });
             vm.dtColumns = BioBankDataTable.buildDTColumn(columns);
 
-            _updateTableDataOption(_boxList)
+            $timeout(function () {
+                vm.dtInstance.rerender();
+            },200)
         }
         //操作
         function _actionsHtml(data, type, full, meta) {
@@ -260,17 +263,18 @@
         }
         //扫码时，更新冻存盒列表
         function _changeBoxTable() {
-            _boxList = [];
-            var arrayBoxCode = _.reverse(vm.arrayBoxCode);
+            // _boxList = [];
 
-            _.forEach(arrayBoxCode,function (code) {
+
+            _.forEach(vm.arrayBoxCode,function (code) {
                 var len = _.filter(_boxList,{frozenBoxCode:code}).length;
                 if(!len){
                     var box = _createTempBox(code);
 
-                    _boxList.push(box);
+                    _boxList.unshift(box);
                 }
             });
+            // var arrayBox = _.reverse(_boxList);
             _updateTableDataOption(_boxList);
         }
         //创建临时盒子
@@ -307,6 +311,7 @@
         //保存冻存盒
         function _saveBox(callback) {
             _importBoxData(function(){
+                blockUI.start("正在保存冻存盒中……");
                 _.forEach(_boxList,function (box) {
                     if(vm.tempPos.equipmentId){
                         box.equipmentId = vm.tempPos.equipmentId;
@@ -318,11 +323,13 @@
                 });
                 GiveBackService.saveBox(_giveBackId,_boxList).success(function (data) {
                     toastr.success("保存成功!");
+                    blockUI.stop();
                     if (typeof callback === "function"){
                         callback();
                     }
                 }).error(function (data) {
                     toastr.error(data.message);
+                    blockUI.stop();
                 });
             });
         }
@@ -341,7 +348,6 @@
                 $uibModalInstance.close();
             });
         };
-
 
     }
 

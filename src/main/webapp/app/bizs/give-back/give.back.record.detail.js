@@ -6,10 +6,12 @@
 
     angular
         .module('bioBankApp')
-        .controller('GiveBackDetailController', GiveBackDetailController);
+        .controller('GiveBackDetailController', GiveBackDetailController)
+        .controller('WarningModalCtrl', WarningModalCtrl);
 
     GiveBackDetailController.$inject = ['$scope', '$compile', 'BioBankDataTable','$uibModal', 'toastr', '$stateParams','Principal',
         'GiveBackService','StockInInputService','EquipmentAllService','SampleUserService','AreasByEquipmentIdService','SupportacksByAreaIdService','RequirementService'];
+    WarningModalCtrl.$inject = ['$uibModalInstance','items'];
     function GiveBackDetailController($scope, $compile, BioBankDataTable, $uibModal, toastr, $stateParams,Principal,
                                       GiveBackService,StockInInputService,EquipmentAllService,SampleUserService,AreasByEquipmentIdService,SupportacksByAreaIdService,RequirementService) {
         var vm = this;
@@ -45,6 +47,7 @@
         vm.saveBox = _saveBox;
         vm.saveGiveBackRecord = _saveGiveBackRecord;
         vm.completeGiveBack = _completeGiveBack;
+        vm.invalid = _invalid;
 
         //日期选择
         vm.openCalendar = function (date) {
@@ -52,16 +55,52 @@
         };
         //删除盒子
         vm.delBox = function () {
-            GiveBackService.delBox(vm.box.id).success(function (data) {
-                toastr.success("删除成功!");
-                _fnQueryBoxByGiveBackId();
-                vm.box = {};
-                vm.htInstance.api.clearData();
+            _modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'warningModal.html',
+                size: 'sm',
+                controller: 'WarningModalCtrl',
+                controllerAs: 'vm',
+                resolve: {
+                    items: function () {
+                        return {
+                            status:'1'
+                        };
+                    }
+                }
             });
+            _modalInstance.result.then(function () {
+                GiveBackService.delBox(vm.box.id).success(function (data) {
+                    toastr.success("删除成功!");
+                    _fnQueryBoxByGiveBackId();
+                    vm.box = {};
+                    vm.htInstance.api.clearData();
+                });
+            }, function () {
+            });
+
         };
         //重新导入
         vm.reloadBoxData = function () {
-            _queryBoxDetail(53783);
+            _modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'warningModal.html',
+                size: 'sm',
+                controller: 'WarningModalCtrl',
+                controllerAs: 'vm',
+                resolve: {
+                    items: function () {
+                        return {
+                           status:'1'
+                        };
+                    }
+                }
+            });
+            _modalInstance.result.then(function () {
+                _queryBoxDetail(vm.box.id);
+            }, function () {
+            });
+
         };
         //导入冻存盒
         vm.importBox = function () {
@@ -167,18 +206,44 @@
         //保存冻存盒
         function _saveBox(callback) {
             var tubes = vm.htInstance.api.getTubesData();
+            var boxList = [];
             if(tubes.length){
                 vm.sampleCount = vm.htInstance.api.sampleCount();
                 vm.flagStatus = false;
                 vm.changeStatus();
             }
+            vm.box.transhipTubeDTOS = tubes;
+            boxList.push(vm.box);
+            GiveBackService.editSaveBox($stateParams.giveBackId,boxList).success(function (data) {
+                if (typeof callback === "function"){
+                    callback();
+                }else{
+                    toastr.success("冻存盒保存成功!");
+                }
+            });
 
-            if (typeof callback === "function"){
-                callback();
-            }else{
-                toastr.success("冻存盒保存成功!");
-            }
 
+        }
+        //作废
+        function _invalid() {
+            _modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'warningModal.html',
+                size: 'sm',
+                controller: 'WarningModalCtrl',
+                controllerAs: 'vm',
+                resolve: {
+                    items: function () {
+                        return {
+                            status:'2'
+                        };
+                    }
+                }
+            });
+            _modalInstance.result.then(function () {
+                _queryBoxDetail(vm.box.id);
+            }, function () {
+            });
         }
         //归还控件信息（项目编码、委托方、接收人、临时位置）
         function _initRecordInfoControl() {
@@ -471,5 +536,19 @@
             // vm.repeatSampleArray = JSON.parse(error.data.params[0]);
             // hotRegisterer.getInstance('my-handsontable').render();
         }
+    }
+
+    function WarningModalCtrl($uibModalInstance,items) {
+        var vm = this;
+        vm.status = items.status;
+        vm.ok = function () {
+            $uibModalInstance.close(true);
+        };
+        vm.unSave = function () {
+            $uibModalInstance.close(false);
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     }
 })();

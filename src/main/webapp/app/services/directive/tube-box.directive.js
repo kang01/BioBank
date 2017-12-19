@@ -289,10 +289,10 @@
                 var settings = _getSettings();
                 var coord = {row:null, col:null};
 
-                if (row){
+                if (row || row == 0){
                     coord.row = settings.rowHeaders[row];
                 }
-                if (col){
+                if (col || col == 0){
                     coord.col = settings.colHeaders[col];
                 }
 
@@ -975,7 +975,7 @@
                 var gridData = _.flattenDeep(_getGridData());
                 var tubes = [];
                 _.forEach(gridData,function (tube) {
-                    if(tube){
+                    if(tube.sampleCode || tube.sampleTempCode){
                         tubes.push(tube);
                     }
                 });

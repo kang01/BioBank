@@ -163,7 +163,7 @@
                         type: 'select',
                         // bRegex: true,
                         bSmart: true,
-                        values: MasterData.frozenBoxStatus
+                        values: MasterData.transportStatus
 
                     },
                     null

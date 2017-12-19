@@ -56,5 +56,25 @@
 
                 }
             })
+            .state('give-back-view', {
+                parent: 'bizs',
+                url: '/give-back-view/{giveBackId}',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN']
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/give-back/give-back-view.html',
+                        controller: 'GiveBackViewController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        return $translate.refresh();
+                    }]
+
+                }
+            })
     }
 })();

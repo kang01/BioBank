@@ -9,10 +9,10 @@
         .controller('GiveBackDetailController', GiveBackDetailController)
         .controller('WarningModalCtrl', WarningModalCtrl);
 
-    GiveBackDetailController.$inject = ['$scope', '$compile', 'BioBankDataTable','$uibModal', 'toastr', '$stateParams','Principal',
+    GiveBackDetailController.$inject = ['$scope', '$compile', '$state','BioBankDataTable','$uibModal', 'toastr', '$stateParams','Principal',
         'GiveBackService','StockInInputService','EquipmentAllService','SampleUserService','AreasByEquipmentIdService','SupportacksByAreaIdService','RequirementService'];
     WarningModalCtrl.$inject = ['$uibModalInstance','items'];
-    function GiveBackDetailController($scope, $compile, BioBankDataTable, $uibModal, toastr, $stateParams,Principal,
+    function GiveBackDetailController($scope, $compile, $state,BioBankDataTable, $uibModal, toastr, $stateParams,Principal,
                                       GiveBackService,StockInInputService,EquipmentAllService,SampleUserService,AreasByEquipmentIdService,SupportacksByAreaIdService,RequirementService) {
         var vm = this;
         //归还记录对象
@@ -209,15 +209,22 @@
                         items:function () {
                             return{
                                 receiverId:vm.giveBackRecord.receiverId,
-                                receiveDate: vm.giveBackRecord.receiveDate,
-                                giveBackCode:vm.giveBackRecord.transhipCode
+                                receiveDate: vm.giveBackRecord.receiveDate
                             };
                         }
                     }
                 });
-                _modalInstance.result.then(function () {
+                _modalInstance.result.then(function (completeInfo) {
                     _saveGiveBackRecord(function () {
-                        toastr.success("接收完成!");
+                        GiveBackService.completeGiveBack(vm.giveBackRecord.transhipCode,completeInfo).success(function (data) {
+                            toastr.success("接收完成!");
+                            $state.go('give-back-table');
+                        }).error(function (data) {
+                            toastr.error(data.message);
+                        });
+
+
+
                     });
                 });
 
@@ -228,24 +235,29 @@
         }
         //保存冻存盒
         function _saveBox(callback) {
-            var tubes = vm.htInstance.api.getTubesData();
-            var boxList = [];
-            if(tubes.length){
-                vm.sampleCount = vm.htInstance.api.sampleCount();
-                vm.flagStatus = false;
-                vm.changeStatus();
-            }
-            vm.box.transhipTubeDTOS = tubes;
-            boxList.push(vm.box);
-            GiveBackService.editSaveBox($stateParams.giveBackId,boxList).success(function (data) {
-                if (typeof callback === "function"){
-                    callback();
-                }else{
-                    _queryGiveBackInfo();
-                    toastr.success("冻存盒保存成功!");
-
+            if(vm.box.frozenBoxCode){
+                var tubes = vm.htInstance.api.getTubesData();
+                var boxList = [];
+                if(tubes.length){
+                    vm.sampleCount = vm.htInstance.api.sampleCount();
+                    vm.flagStatus = false;
+                    vm.changeStatus();
                 }
-            });
+                vm.box.transhipTubeDTOS = tubes;
+                boxList.push(vm.box);
+                GiveBackService.editSaveBox($stateParams.giveBackId,boxList).success(function (data) {
+                    if (typeof callback === "function"){
+                        callback();
+                    }else{
+                        _queryGiveBackInfo();
+                        toastr.success("冻存盒保存成功!");
+
+                    }
+                });
+            }else{
+                callback();
+            }
+
 
 
         }
@@ -348,6 +360,7 @@
         //根据归还记录单号查询冻存盒
         function _fnQueryBoxByGiveBackId() {
             GiveBackService.queryGiveBackBox(vm.giveBackRecord.transhipCode).success(function (data) {
+                vm.boxList  = data;
                 vm.boxOptions.withOption("data",data);
             });
         }

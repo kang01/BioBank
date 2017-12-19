@@ -7,7 +7,7 @@
     <div class="form-group pull-right pr-15">
         <div class="text-right">
             <button type="button" class="btn btn-primary" ng-click="vm.completeGiveBack()"
-                    ng-disabled="myForm.$invalid">接收完成
+                    ng-disabled="myForm.$invalid || !vm.boxList.length">接收完成
             </button>
             <button type="button" class="btn btn-default" ng-click="vm.saveGiveBackRecord()"
                     ng-disabled="myForm.$invalid">保存

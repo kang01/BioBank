@@ -20,7 +20,8 @@
         };
         var _giveBackInfo = {
             projectId:null,
-            applyId:null
+            applyId:null,
+            applyCode:null
         };
         vm.projectConfig = {
             valueField:'id',
@@ -49,6 +50,7 @@
         };
         vm.ok = function () {
             _giveBackInfo.projectId = vm.entity.projectId;
+            _giveBackInfo.applyCode = vm.entity.applyCode;
             $uibModalInstance.close(_giveBackInfo);
         };
     }

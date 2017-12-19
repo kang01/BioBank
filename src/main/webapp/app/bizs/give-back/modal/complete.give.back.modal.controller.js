@@ -13,7 +13,6 @@
     function CompleteGiveBackModalController($uibModalInstance,items,SampleUserService,toastr,GiveBackService) {
 
         var vm = this;
-        var _giveBackCode = items.giveBackCode;
         vm.giveBackRecord = {
             receiveDate:items.receiveDate,
             receiverId:items.receiverId,
@@ -44,12 +43,7 @@
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
-            GiveBackService.invalidGiveBack().success(function (data) {
-                $uibModalInstance.close();
-            }).error(function (data) {
-               toastr.error(data.message);
-            });
-
+            $uibModalInstance.close(vm.giveBackRecord);
         };
     }
 })();

@@ -7,13 +7,16 @@
 
     angular
         .module('bioBankApp')
-        .controller('GiveBackTableController', GiveBackTableController);
+        .controller('GiveBackTableController', GiveBackTableController)
+        .controller('StartStockInModalController', StartStockInModalController);
 
-    GiveBackTableController.$inject = ['$scope', '$compile', 'BioBankDataTable','$uibModal', 'toastr', '$state','MasterData','GiveBackService'];
-    function GiveBackTableController($scope, $compile, BioBankDataTable, $uibModal, toastr, $state,MasterData,GiveBackService) {
+    GiveBackTableController.$inject = ['$scope', '$compile', 'BioBankDataTable','$uibModal', 'toastr', '$state','MasterData','GiveBackService','TranshipStockInService'];
+    StartStockInModalController.$inject = ['$uibModalInstance'];
+    function GiveBackTableController($scope, $compile, BioBankDataTable, $uibModal, toastr, $state,MasterData,GiveBackService,TranshipStockInService) {
         var vm = this;
 
         vm.add = _add;
+        vm.startStockIn = _startStockIn;
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         var columns =  [
             {
@@ -61,7 +64,7 @@
                 title:"操作",
                 width:"30",
                 notSortable:true,
-                renderWith:actionsHtml
+                renderWith:_actionsHtml
             }
         ];
         vm.dtInstance = {};
@@ -88,12 +91,30 @@
             .withOption('createdRow', function (row, data, dataIndex) {
                 var giveBackStatus = MasterData.getStatus(data.transhipState);
                 $('td:eq(8)', row).html(giveBackStatus);
-
                 $compile(angular.element(row).contents())($scope);
             })
             .withColumnFilter(_createColumnFilters());
         vm.dtColumns = BioBankDataTable.buildDTColumn(columns);
-        vm.toggleAll = function () {};
+        vm.toggleAll = function (selectAll, selectedItems) {
+            selectedItems = vm.selected;
+            selectAll = vm.selectAll;
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    selectedItems[id] = selectAll;
+                }
+            }
+        };
+        vm.toggleOne = function (selectedItems) {
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(!selectedItems[id]) {
+                        vm.selectAll = false;
+                        return;
+                    }
+                }
+            }
+            vm.selectAll = true;
+        };
         function _fnTransportSearch(sSource, aoData, fnCallback, oSettings) {
             vm.selectAll = false;
             vm.selected = {};
@@ -131,16 +152,16 @@
         function _fnRowSelectorRender(data, type, full, meta) {
 
             var html = '';
-            // if(full.transhipState == '1005'){
+            if(full.transhipState == '1005'){
                 vm.selected[full.transhipCode] = false;
                 html = '<input type="checkbox" ng-model="vm.selected[\'' + full.transhipCode + '\']" ng-click="vm.toggleOne(vm.selected)">';
-            // }
+            }
             return html;
         }
-        function actionsHtml(data, type, full, meta) {
+        function _actionsHtml(data, type, full, meta) {
             var html = '';
             if(full.transhipState != '1001'){
-                html = '<button type="button" class="btn btn-xs" ui-sref="transport-record-view({transhipId:'+ full.id +'})">' +
+                html = '<button type="button" class="btn btn-xs" ui-sref="give-back-view({giveBackId:'+ full.id +'})">' +
                     '   <i class="fa fa-eye"></i>' +
                     '</button>&nbsp;';
             }else{
@@ -193,5 +214,42 @@
 
             });
         }
+        //开始入库
+        function _startStockIn() {
+            var codeArray = [];
+            for(var code in vm.selected){
+                if(vm.selected[code]){
+                    codeArray.push(code)
+                }
+            }
+            if(codeArray.length){
+                var transhipCodes = _.join(codeArray, ',');
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'startStockIn.html',
+                    controller: 'StartStockInModalController',
+                    controllerAs: 'vm'
+                });
+                modalInstance.result.then(function () {
+                    TranshipStockInService.saveStockIn(transhipCodes).success(function (data) {
+                        $state.go('stock-in-edit',{id:data.id});
+                    }).error(function (data) {
+                        toastr.error(data.message);
+                    })
+                }, function () {
+                });
+            }else{
+                toastr.error("请选择转运完成的转运记录!");
+                vm.selectAll = false;
+            }
+        }
+    }
+    function StartStockInModalController($uibModalInstance) {
+        var vm = this;
+        vm.ok = function () {
+            $uibModalInstance.close();
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     }
 })();

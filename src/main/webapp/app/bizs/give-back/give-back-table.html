@@ -2,7 +2,7 @@
     <h2 class="pull-left">归还记录</h2>
     <div class="pull-right">
         <form class="form-inline mr-10">
-            <button  ng-click="vm.stockIn()" class="btn btn-primary">开始入库</button>
+            <button  ng-click="vm.startStockIn()" class="btn btn-primary">开始入库</button>
             <button  ng-click="vm.add()" class="btn btn-primary">添加</button>
         </form>
     </div>
@@ -25,3 +25,15 @@
         </table>
     </div>
 </div>
+<script type="text/ng-template" id="startStockIn.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">入库操作</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <h4>确定开始入库?</h4>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+        <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+    </div>
+</script>

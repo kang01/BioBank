@@ -234,9 +234,41 @@
 
             });
             $q.all(arrayPromise).then(function(res){
+                if(vm.progressBar.width == '100%'){
+                    vm.progressFlag = false;
+                    setTimeout(function () {
+                        // vm.progressFlag = false;
+                        // blockUIConfig.autoBlock = true;
+                    },500)
+                }
                 if (typeof callback === "function"){
                     callback();
                 }
+            });
+        }
+        //保存冻存盒
+        function _saveBox(callback) {
+            _importBoxData(function(){
+                blockUI.start("正在保存冻存盒中……");
+                _.forEach(_boxList,function (box) {
+                    if(vm.tempPos.equipmentId){
+                        box.equipmentId = vm.tempPos.equipmentId;
+                    }
+                    if(vm.tempPos.areaId){
+                        box.areaId = vm.tempPos.areaId;
+                    }
+
+                });
+                GiveBackService.saveBox(_giveBackId,_boxList).success(function (data) {
+                    toastr.success("保存成功!");
+                    blockUI.stop();
+                    if (typeof callback === "function"){
+                        callback();
+                    }
+                }).error(function (data) {
+                    toastr.error(data.message);
+                    blockUI.stop();
+                });
             });
         }
         //导入单个冻存盒数据
@@ -308,31 +340,7 @@
             vm.boxLen = _boxList.length;
             _updateTableDataOption(_boxList);
         }
-        //保存冻存盒
-        function _saveBox(callback) {
-            _importBoxData(function(){
-                blockUI.start("正在保存冻存盒中……");
-                _.forEach(_boxList,function (box) {
-                    if(vm.tempPos.equipmentId){
-                        box.equipmentId = vm.tempPos.equipmentId;
-                    }
-                    if(vm.tempPos.areaId){
-                        box.areaId = vm.tempPos.areaId;
-                    }
 
-                });
-                GiveBackService.saveBox(_giveBackId,_boxList).success(function (data) {
-                    toastr.success("保存成功!");
-                    blockUI.stop();
-                    if (typeof callback === "function"){
-                        callback();
-                    }
-                }).error(function (data) {
-                    toastr.error(data.message);
-                    blockUI.stop();
-                });
-            });
-        }
 
         function onAreaTempSuccess(data) {
             vm.frozenBoxHoldAreaOptions = data;

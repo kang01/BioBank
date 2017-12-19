@@ -79,8 +79,8 @@
         function _invalidGiveBack(returnBackCode) {
             return $http.put('api/return-back/invalid/'+returnBackCode);
         }
-        function _completeGiveBack(returnBackCode) {
-            return $http.put('api/return-back/'+returnBackCode+'/completed');
+        function _completeGiveBack(returnBackCode,data) {
+            return $http.put('api/return-back/'+returnBackCode+'/completed',data);
         }
         return service;
     }

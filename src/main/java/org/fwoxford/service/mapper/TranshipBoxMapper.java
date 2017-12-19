@@ -26,6 +26,9 @@ public interface TranshipBoxMapper {
     @Mapping(source = "sampleClassification.id", target = "sampleClassificationId")
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "projectSite.id", target = "projectSiteId")
+    @Mapping(source = "equipment.id", target = "equipmentId")
+    @Mapping(source = "area.id", target = "areaId")
+    @Mapping(source = "supportRack.id", target = "supportRackId")
     TranshipBoxDTO transhipBoxToTranshipBoxDTO(TranshipBox transhipBox);
 
     List<TranshipBoxDTO> transhipBoxesToTranshipBoxDTOs(List<TranshipBox> transhipBoxes);
@@ -37,6 +40,9 @@ public interface TranshipBoxMapper {
     @Mapping(source = "sampleClassificationId", target = "sampleClassification")
     @Mapping(source = "projectId", target = "project")
     @Mapping(source = "projectSiteId", target = "projectSite")
+    @Mapping(source = "equipmentId", target = "equipment")
+    @Mapping(source = "areaId", target = "area")
+    @Mapping(source = "supportRackId", target = "supportRack")
     TranshipBox transhipBoxDTOToTranshipBox(TranshipBoxDTO transhipBoxDTO);
 
     List<TranshipBox> transhipBoxDTOsToTranshipBoxes(List<TranshipBoxDTO> transhipBoxDTOs);
@@ -102,7 +108,30 @@ public interface TranshipBoxMapper {
         sampleClassification.setId(id);
         return sampleClassification;
     }
-
+    default Equipment equipmentFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        Equipment equipment = new Equipment();
+        equipment.setId(id);
+        return equipment;
+    }
+    default Area areaFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        Area area = new Area();
+        area.setId(id);
+        return area;
+    }
+    default SupportRack supportFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        SupportRack supportRack = new SupportRack();
+        supportRack.setId(id);
+        return supportRack;
+    }
     default TranshipBox initTranshipToTranship(TranshipBox box){
 
         TranshipBox transhipBox = new TranshipBox();

@@ -799,7 +799,7 @@ tr.shown td .details-control {
     width: 198px;
 }
 .stock-out-task-scan .input-group-addon{
-    padding: 6px;
+    padding: 6px 10px;
 }
 .modal-90 {
     width: 90%;

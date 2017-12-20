@@ -33,6 +33,8 @@
         //最开始的盒子对象字符串
         var _startBoxStr;
 
+        //归还单信息数据
+        _queryGiveBackInfo();
         //归还控件信息（项目编码、委托方、接收人、临时位置）
         _initRecordInfoControl();
         //委托方
@@ -52,6 +54,8 @@
         vm.saveGiveBackRecord = _saveGiveBackRecord;
         vm.completeGiveBack = _completeGiveBack;
         vm.invalid = _invalid;
+        vm.uploadFile = _uploadFile;
+        vm.delUploadFile = _delUploadFile;
 
         //日期选择
         vm.openCalendar = function (date) {
@@ -102,6 +106,8 @@
                 }
             });
             _modalInstance.result.then(function () {
+                vm.flagStatus = false;
+                vm.changeStatus();
                 _queryBoxDetail(vm.box.id);
             }, function () {
             });
@@ -307,14 +313,14 @@
                     _initRecordAreaAndDate();
                     //根据归还记录单号查询冻存盒
                     _fnQueryBoxByGiveBackId();
+                    //获取附件
+                    _queryAttachmentFile();
 
                 });
             }
         }
         //归还控件信息（项目编码、委托方、接收人、临时位置）
         function _initRecordInfoControl() {
-            _queryGiveBackInfo();
-
             //项目编码
             vm.projectConfig = {
                 valueField:'id',
@@ -451,7 +457,14 @@
                         templateUrl: 'app/bizs/common/prompt-modal.html',
                         size: 'sm',
                         controller: 'PromptModalController',
-                        controllerAs: 'vm'
+                        controllerAs: 'vm',
+                        resolve:{
+                            items:function () {
+                                return{
+                                    status: '4'
+                                };
+                            }
+                        }
                     });
                     _modalInstance.result.then(function (flag) {
                         if(flag){
@@ -624,6 +637,69 @@
             vm.box.columnsInShelf = "";
             vm.box.rowsInShelf = "";
         }
+        //附件
+        function _queryAttachmentFile() {
+            GiveBackService.queryAttachment(vm.giveBackRecord.transhipCode).success(function (data) {
+                vm.transportRecordUploadInfo = data;
+            }).error(function (data) {
+                toastr.error(data.message);
+            })
+        }
+        //上传
+        function _uploadFile(status,imgData) {
+            _modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/transport-record/modal/transport-record-upload-image-modal.html',
+                controller: 'transportUploadImageModalCtrl',
+                backdrop:'static',
+                controllerAs: 'vm',
+                resolve:{
+                    items:function () {
+                        return{
+                            transportId:vm.giveBackRecord.id,
+                            status:status,
+                            imgData:imgData
+                        };
+                    }
+                }
+            });
+            _modalInstance.result.then(function () {
+                _queryAttachmentFile();
+            },function (data) {
+                _queryAttachmentFile();
+            });
+        }
+        //删除附件
+        function _delUploadFile(imgId) {
+            _modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/common/prompt-modal.html',
+                controller: 'PromptModalController',
+                backdrop:'static',
+                controllerAs: 'vm',
+                size: 'sm',
+                resolve:{
+                    items:function () {
+                        return{
+                            status: '5'
+                        };
+                    }
+                }
+            });
+            _modalInstance.result.then(function () {
+                //删除
+                GiveBackService.deleteAttachment(imgId).success(function (data) {
+                    toastr.success("删除成功!");
+                    _queryAttachmentFile();
+                }).error(function (data) {
+                    toastr.error(data.message);
+                });
+
+            },function (data) {
+                _queryAttachmentFile();
+            });
+        }
+
         //区域
         function onAreaSuccess(data) {
             vm.frozenBoxAreaOptions = data;

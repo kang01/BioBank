@@ -37,7 +37,11 @@
             //作废
             invalidGiveBack :_invalidGiveBack,
             //接收完成
-            completeGiveBack :_completeGiveBack
+            completeGiveBack :_completeGiveBack,
+            //获取附件
+            queryAttachment :_queryAttachment,
+            //删除附件
+            deleteAttachment :_deleteAttachment
         };
         function _queryGiveBackTable(data,oSettings) {
             return $http.post('api/res/return-back',JSON.stringify(data));
@@ -81,6 +85,12 @@
         }
         function _completeGiveBack(returnBackCode,data) {
             return $http.put('api/return-back/'+returnBackCode+'/completed',data);
+        }
+        function _queryAttachment(returnBackCode) {
+            return $http.get('api/attachments/transhipCode/'+returnBackCode);
+        }
+        function _deleteAttachment(imgId) {
+            return $http.delete('api/attachments/'+imgId);
         }
         return service;
     }

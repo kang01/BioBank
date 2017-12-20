@@ -389,7 +389,32 @@
     </div>
 </div>
 <!--上传附件-->
-<div class="give-back-upload"></div>
+<div class="give-back-upload row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h4>附件</h4>
+                    </div>
+                    <div class="col-md-8 text-right" style="margin-top: 8px !important;">
+                        <button class="btn btn-default btn-xs" ng-click="vm.uploadFile(1)" ngf-max-size="2MB">上传附件</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="panel-body" >
+                <!--<img ng-src="{{vm.thumb.imgSrc}}" id="transportImage">-->
+                <div  viewer
+                      images-data="vm.transportRecordUploadInfo"
+                      upload-file = "vm.uploadFile(status,imgData)"
+                      del-file = "vm.delUploadFile(id)"
+                ></div>
+
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/ng-template" id="warningModal.html">
     <div class="modal-header">
         <h3 class="modal-title">提示</h3>

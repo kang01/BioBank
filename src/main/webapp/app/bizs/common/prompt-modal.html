@@ -1,11 +1,16 @@
 <div class="modal-header">
-    <h3 class="modal-title">切换冻存盒</h3>
+    <h3 class="modal-title">
+        <span ng-if="vm.status == '4'">切换冻存盒</span>
+        <span ng-if="vm.status != '4'">提示</span>
+    </h3>
 </div>
 <div class="modal-body">
-    是否保存本次对冻存盒的修改？
+    <p ng-if="vm.status == '4'">是否保存本次对冻存盒的修改？</p>
+    <p ng-if="vm.status == '5'">是否删除附件？</p>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()">保存</button>
-    <button class="btn btn-primary" type="button" ng-click="vm.unSave()">不保存</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()"     ng-if="vm.status != '4'">确定</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()"     ng-if="vm.status == '4'">保存</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.unSave()" ng-if="vm.status == '4'">不保存</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

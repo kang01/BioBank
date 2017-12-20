@@ -8,11 +8,13 @@
         .module('bioBankApp')
         .controller('PromptModalController', PromptModalController);
 
-    PromptModalController.$inject = ['$uibModalInstance'];
+    PromptModalController.$inject = ['$uibModalInstance','items'];
 
-    function PromptModalController($uibModalInstance) {
+    function PromptModalController($uibModalInstance,items) {
 
         var vm = this;
+        vm.status = items.status;
+
         vm.ok = function () {
             $uibModalInstance.close(true);
         };

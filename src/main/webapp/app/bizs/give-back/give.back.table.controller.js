@@ -161,11 +161,11 @@
         function _actionsHtml(data, type, full, meta) {
             var html = '';
             if(full.transhipState != '1001'){
-                html = '<button type="button" class="btn btn-xs" ui-sref="give-back-view({giveBackId:'+ full.id +'})">' +
+                html = '<button type="button" class="btn btn-default btn-xs" ui-sref="give-back-view({giveBackId:'+ full.id +'})">' +
                     '   <i class="fa fa-eye"></i>' +
                     '</button>&nbsp;';
             }else{
-                html = '<button type="button" class="btn btn-xs" ui-sref="give-back-detail({giveBackId:'+ full.id +',applyCode:\''+full.applyCode+'\'})">' +
+                html = '<button type="button" class="btn btn-default btn-xs" ui-sref="give-back-detail({giveBackId:'+ full.id +',applyCode:\''+full.applyCode+'\'})">' +
                     '   <i class="fa fa-edit"></i>' +
                     '</button>&nbsp;';
             }
@@ -238,7 +238,7 @@
                 }, function () {
                 });
             }else{
-                toastr.error("请选择转运完成的转运记录!");
+                toastr.error("请选择接收完成的记录!");
                 vm.selectAll = false;
             }
         }

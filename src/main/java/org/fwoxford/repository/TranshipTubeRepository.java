@@ -50,4 +50,6 @@ public interface TranshipTubeRepository extends JpaRepository<TranshipTube,Long>
     List<Object[]> countByTranshipBoxIdsAndGroupBySampleCode(List<Long> boxIds);
 
     List<TranshipTube> findByFrozenTubeIdInAndFrozenTubeStateInAndStatusNot(List<Long> ids, List<String> frozenTubeState,String status);
+
+    List<TranshipTube> findBySampleCodeInAndFrozenTubeStateInAndStatusNot(List<String> sampleCodeStr, ArrayList<String> frozenTubeState,String status);
 }

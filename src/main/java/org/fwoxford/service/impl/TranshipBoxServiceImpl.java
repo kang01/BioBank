@@ -874,7 +874,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             //获取原冻存管，与当前冻存管比对，删除原来有而当前没有的冻存管
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxId(transhipBox.getFrozenBox().getId());
 
-            List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdAndStatusNotIn(transhipBox.getId(),new ArrayList<String>(){{add(Constants.INVALID);add(Constants.FROZEN_BOX_INVALID);}});
+            List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdAndStatusNotIn(transhipBox.getId()
+                    ,new ArrayList<String>(){{add(Constants.INVALID);add(Constants.FROZEN_BOX_INVALID);}});
             //需要保存的转运冻存管ID，新增时为空----为了删除不需要保存的转运冻存管
             List<Long> forSaveTranshipTubeIds = new ArrayList<>();
             //需要保存的冻存管ID，新增时为空-
@@ -908,28 +909,11 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             List<TranshipTube> transhipTubeForLastSave = new ArrayList<>();
             List<TranshipTubeDTO> transhipTubeDTOS = new ArrayList<>();
             //查询到原来的样本，并验证冻存管编码是否重复
-            List<TranshipTubeDTO> repeatSampleList = new ArrayList<>();
+            frozenTubeCheckService.checkSampleCodeRepeatForReturnBack(boxDTO.getTranshipTubeDTOS(),transhipTubeDTOSForCheckAndSave,tranship);
 
             for(TranshipTubeDTO tubeDTO : boxDTO.getTranshipTubeDTOS()){
-                TranshipTubeDTO transhipTubeDTOFormStockOut = transhipTubeDTOSForCheckAndSave.stream().filter(s->s.getSampleCode().equals(tubeDTO.getSampleCode())).findFirst().orElse(null);
-                if(transhipTubeDTOFormStockOut ==  null){
-                    repeatSampleList.add(tubeDTO);
-                }
-            }
-            JSONArray jsonArray = new JSONArray();
-            for(TranshipTubeDTO transhipTubeDTO :repeatSampleList){
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id",transhipTubeDTO.getId());
-                jsonObject.put("sampleCode",transhipTubeDTO.getSampleCode());
-                jsonObject.put("tubeColumns",transhipTubeDTO.getTubeColumns());
-                jsonObject.put("tubeRows",transhipTubeDTO.getTubeRows());
-                jsonArray.add(jsonObject);
-            }
-            if(jsonArray.size()>0){
-                throw new BankServiceException("盒内有不是此次申请出库的冻存管，不能保存！",jsonArray.toString());
-            }
-            for(TranshipTubeDTO tubeDTO : boxDTO.getTranshipTubeDTOS()){
-                TranshipTubeDTO transhipTubeDTOFormStockOut = transhipTubeDTOSForCheckAndSave.stream().filter(s->s.getSampleCode().equals(tubeDTO.getSampleCode())).findFirst().orElse(null);
+                TranshipTubeDTO transhipTubeDTOFormStockOut = transhipTubeDTOSForCheckAndSave.stream().filter(s->s.getSampleCode().equals(tubeDTO.getSampleCode())
+                &&s.getSampleTypeCode().equals(tubeDTO.getSampleTypeCode())).findFirst().orElse(null);
 
                 if(transhipTubeDTOFormStockOut.getFrozenTubeId()!=null&&tubeDTO.getFrozenTubeId()!=null
                         && !transhipTubeDTOFormStockOut.getFrozenTubeId().equals(tubeDTO.getFrozenTubeId())){

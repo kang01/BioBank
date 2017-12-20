@@ -30,6 +30,8 @@
         vm.boxInstance = {};
         //模态框
         var _modalInstance;
+        //最开始的盒子对象字符串
+        var _startBoxStr;
 
         //归还控件信息（项目编码、委托方、接收人、临时位置）
         _initRecordInfoControl();
@@ -75,6 +77,7 @@
                 GiveBackService.delBox(vm.box.id).success(function (data) {
                     toastr.success("删除成功!");
                     _fnQueryBoxByGiveBackId();
+                    _queryGiveBackInfo();
                     vm.box = {};
                     vm.htInstance.api.clearData();
                 });
@@ -126,6 +129,7 @@
             });
             _modalInstance.result.then(function (data) {
                 _fnQueryBoxByGiveBackId();
+                _queryGiveBackInfo();
             },function () {
 
             })
@@ -287,6 +291,7 @@
             }, function () {
             });
         }
+        //获取归还信息
         function _queryGiveBackInfo() {
             //归还单id
             var giveBackId = $stateParams.giveBackId;
@@ -397,7 +402,7 @@
                 }
 
             ];
-            var dom = "<'row mt-10'<'col-xs-8 text-left pl-25' f> <'col-xs-4 text-right mb-5' > r> t <'row mt-0'<'col-xs-6'i> <'col-xs-6'p>>";
+            var dom = "<'row mt-10'<'col-xs-12 text-left pl-25' f> <'col-xs-1 text-right mb-5' > r> t <'row mt-0'<'col-xs-6'i> <'col-xs-6'p>>";
             vm.boxColumns = BioBankDataTable.buildDTColumn(columns);
             vm.boxOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING","410",null,dom,null,1)
                 .withOption('rowCallback', rowCallback);
@@ -411,19 +416,66 @@
                 }
                 return frozenBoxCode;
             }
-
+            var rowBoxCode;
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull) {
                 $('td:first', nRow).html(iDisplayIndex+1);
                 $('td', nRow).unbind('click');
                 $(nRow).bind('click', function() {
                     var tr = this;
-                    $(tr).closest('table').find('.rowLight').removeClass("rowLight");
-                    $(tr).addClass('rowLight');
-                    _queryBoxDetail(oData.id);
+                    if(rowBoxCode && rowBoxCode != oData.frozenBoxCode){
+                        _switchRowClick(tr,oData);
+                    }else{
+                        _changeRowStyle(tr,oData);
+                        _queryBoxDetail(oData.id);
+                    }
+
                 });
             }
+            //切换盒子
+            function _switchRowClick(tr,oData) {
+                if(vm.box.frozenBoxCode){
+                    var tubes = vm.htInstance.api.getTubesData();
+                    vm.box.transhipTubeDTOS = tubes;
+                }
+                var _endBoxStr = JSON.stringify(vm.box);
 
+                if(_startBoxStr == _endBoxStr){
+                    _queryBoxDetail(oData.id);
+                    _changeRowStyle(tr,oData);
+                }else{
+                    _modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: 'app/bizs/common/prompt-modal.html',
+                        size: 'sm',
+                        controller: 'PromptModalController',
+                        controllerAs: 'vm'
+                    });
+                    _modalInstance.result.then(function (flag) {
+                        if(flag){
+                            //保存
+                            _saveBox(function () {
+                                _queryBoxDetail(oData.id);
+                            });
+                        }else{
+                            //不保存
+                            _queryBoxDetail(oData.id);
+                            vm.flagStatus = false;
+                            vm.changeStatus();
+                        }
+                        _changeRowStyle(tr,oData);
+                    }, function () {
+                    // 取消
+                    });
+                }
+            }
+            //改变行的选中样式
+            function _changeRowStyle(tr,oData) {
+                $(tr).closest('table').find('.rowLight').removeClass("rowLight");
+                $(tr).addClass('rowLight');
+                rowBoxCode = oData.frozenBoxCode;
+            }
         }
+
         //初始化盒子上暂存位置
         function _initBoxTempPos() {
             vm.equipmentConfig = {
@@ -490,8 +542,6 @@
         function _queryBoxDetail(boxId) {
             GiveBackService.queryBoxDesc(boxId).success(function (data) {
                 vm.box = data;
-                vm.htInstance.api.loadData(data, data.transhipTubeDTOS);
-                vm.sampleCount = vm.htInstance.api.sampleCount();
                 if(vm.box.equipmentId){
                     _queryArea(vm.box.equipmentId);
                 }
@@ -501,7 +551,11 @@
                 if(vm.box.columnsInShelf && vm.box.rowsInShelf){
                     vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
                 }
+                vm.htInstance.api.loadData(data, data.transhipTubeDTOS);
+                vm.sampleCount = vm.htInstance.api.sampleCount();
 
+                vm.box.transhipTubeDTOS =  _.sortBy(vm.box.transhipTubeDTOS, ["tubeRows", function(o){return +o.tubeColumns}]);
+                _startBoxStr = JSON.stringify(vm.box);
             });
         }
         //获取申请单中的项目编码

@@ -137,10 +137,12 @@
         }
         function actionsHtml(data, type, full, meta) {
             var html;
-            // {id:"1603",name:"已出库"},
-            // {id:"1604",name:"异常出库"},
-            // {id:"1690",name:"已作废"}
-            if(full.status == '1603'|| full.status == '1604' || full.status == '1690'){
+            if(full.status == '1601'){
+                html =
+                    '<button type="button" class="btn btn-xs" ui-sref="task-edit({taskId:'+ full.id +'})">' +
+                    '   <i class="fa fa-play"></i>' +
+                    '</button>&nbsp;';
+            }else if(full.status == '1603'|| full.status == '1604' || full.status == '1690'){
                 html =
                     '<button type="button" class="btn btn-xs" ui-sref="task-view({taskId:'+ full.id +'})">' +
                     '   <i class="fa fa-eye"></i>' +

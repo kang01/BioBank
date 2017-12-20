@@ -510,7 +510,7 @@
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "100"),
             DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "100"),
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "80"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "80"),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
             DTColumnBuilder.newColumn('sex').withTitle('标签').withOption("width", "80"),
@@ -532,10 +532,6 @@
             return html;
         }
         function createdRow(row, data, dataIndex) {
-            var projectName;
-            if(data.projectCode){
-                projectName = data.projectCode+","+data.projectName;
-            }
             var tag = '';
             if(data.sex){
                 var sex;
@@ -561,7 +557,6 @@
             var status = MasterData.getStatus(data.status);
             var frozenTubeStatus = "";
             frozenTubeStatus = MasterData.getFrozenBoxStatus(data.frozenTubeState);
-            $('td:eq(6)', row).html(projectName);
             $('td:eq(9)', row).html(tag);
             $('td:eq(10)', row).html(status);
             $('td:eq(11)', row).html(frozenTubeStatus);

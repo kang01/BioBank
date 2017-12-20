@@ -506,18 +506,17 @@
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('position').withTitle('位置').withOption("width", "140"),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "110").renderWith(_fnRowBoxCodeRender),
-            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "110"),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目名称').withOption("width", "180"),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "90").renderWith(_fnRowBoxCodeRender),
+            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "90"),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "80"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "80"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
-            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒类型').withOption("width", "120"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "100"),
+            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
             DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", 'auto'),
             DTColumnBuilder.newColumn('lockFlag').withTitle('是否锁定').withOption("width", '80'),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60").withOption('searchable',false).notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60")
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
             var len = _.filter(selectedBox,{id:full.id}).length;
@@ -540,10 +539,6 @@
             return html;
         }
         function createdRow(row, data, dataIndex) {
-            var projectName;
-            if(data.projectCode){
-                projectName = data.projectCode+","+data.projectName;
-            }
             var lock;
             if(data.lockFlag){
                 lock = "是";
@@ -552,7 +547,6 @@
             }
             var status = "";
             status = MasterData.getFrozenBoxStatus(data.status);
-            $('td:eq(4)', row).html(projectName);
             $('td:eq(11)', row).html(lock);
             $('td:eq(12)', row).html(status);
             $compile(angular.element(row).contents())($scope);

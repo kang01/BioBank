@@ -34,11 +34,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                data:{
-                    receiveDate:transportRecord.receiveDate,
-                    receiveId:transportRecord.receiverId,
-                    password:transportRecord.password
-                }
+                data:transportRecord
             };
 
             return $http(req);

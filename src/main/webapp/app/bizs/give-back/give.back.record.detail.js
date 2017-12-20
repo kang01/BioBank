@@ -41,6 +41,8 @@
         _queryApplyProject();
         //冻存盒列表
         _initBoxDataTable();
+        //初始化盒子上暂存位置
+        _initBoxTempPos();
 
 
 
@@ -239,6 +241,7 @@
                 var tubes = vm.htInstance.api.getTubesData();
                 var boxList = [];
                 if(tubes.length){
+                    //统计样本
                     vm.sampleCount = vm.htInstance.api.sampleCount();
                     vm.flagStatus = false;
                     vm.changeStatus();
@@ -253,6 +256,8 @@
                         toastr.success("冻存盒保存成功!");
 
                     }
+                }).error(function (data) {
+                    toastr.error(data.message);
                 });
             }else{
                 callback();
@@ -392,9 +397,6 @@
                 }
 
             ];
-            //初始化盒子上暂存位置
-            _initBoxTempPos();
-
             var dom = "<'row mt-10'<'col-xs-8 text-left pl-25' f> <'col-xs-4 text-right mb-5' > r> t <'row mt-0'<'col-xs-6'i> <'col-xs-6'p>>";
             vm.boxColumns = BioBankDataTable.buildDTColumn(columns);
             vm.boxOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING","410",null,dom,null,1)
@@ -475,13 +477,6 @@
                 maxItems: 1,
                 onChange:function (value) {
                     _clearPos();
-                    // if(value){
-                        // for(var i = 0; i < vm.frozenBoxShelfOptions.length; i++){
-                        //     if(value == vm.frozenBoxShelfOptions[i].id){
-                        //         vm.box.supportRackCode = vm.frozenBoxShelfOptions[i].areaCode;
-                        //     }
-                        // }
-                    // }
                     $scope.$apply();
                 }
             };
@@ -497,6 +492,16 @@
                 vm.box = data;
                 vm.htInstance.api.loadData(data, data.transhipTubeDTOS);
                 vm.sampleCount = vm.htInstance.api.sampleCount();
+                if(vm.box.equipmentId){
+                    _queryArea(vm.box.equipmentId);
+                }
+                if(vm.box.areaId){
+                    _queryShelf(vm.box.areaId);
+                }
+                if(vm.box.columnsInShelf && vm.box.rowsInShelf){
+                    vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
+                }
+
             });
         }
         //获取申请单中的项目编码

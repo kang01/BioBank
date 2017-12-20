@@ -209,6 +209,7 @@
 
 
             blockUIConfig.autoBlock = false;
+            vm.boxLen = arrayBoxCode.length;
             _.forEach(boxCodeArray,function (code,i) {
                 var codeStr = _.join(code, ',');
                 console.log(codeStr);
@@ -217,7 +218,7 @@
                     importData.success(function (res) {
                         _updateBoxData(res);
                     }).error(function (res) {
-
+                        toastr.error(res.message);
                     }).finally(function (res) {
                         vm.count++;
                         var percentage = parseInt((vm.count/boxCodeArray.length)*100);
@@ -235,9 +236,9 @@
             });
             $q.all(arrayPromise).then(function(res){
                 if(vm.progressBar.width == '100%'){
-                    vm.progressFlag = false;
+
                     setTimeout(function () {
-                        // vm.progressFlag = false;
+                        vm.progressFlag = false;
                         // blockUIConfig.autoBlock = true;
                     },500)
                 }
@@ -257,7 +258,9 @@
                     if(vm.tempPos.areaId){
                         box.areaId = vm.tempPos.areaId;
                     }
-
+                    box.supportRackId = "";
+                    box.columnsInShelf = "";
+                    box.rowsInShelf = "";
                 });
                 GiveBackService.saveBox(_giveBackId,_boxList).success(function (data) {
                     toastr.success("保存成功!");
@@ -280,6 +283,8 @@
                     }
                 }
                 _updateTableDataOption(_boxList);
+            }).error(function (data) {
+                toastr.error(data.message);
             });
         }
         //中止正在导入的数据
@@ -337,7 +342,6 @@
                     }
                 }
             }
-            vm.boxLen = _boxList.length;
             _updateTableDataOption(_boxList);
         }
 

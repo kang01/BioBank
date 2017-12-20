@@ -166,6 +166,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             // 转运ID无效的情况
             throw new BankServiceException("转运记录不存在！",transhipBoxListDTO.toString());
         }
+        if(StringUtils.isEmpty(tranship.getProjectCode())){
+            throw new BankServiceException("此次接收记录未指定项目！");
+        }
         List<SampleType> sampleTypes = sampleTypeRepository.findAllSampleTypes();
         List<SampleClassification> sampleClassifications = sampleClassificationRepository.findAll();
         List<FrozenBoxType> boxTypes = frozenBoxTypeRepository.findAllFrozenBoxTypes();
@@ -717,6 +720,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         }
         if(tranship!=null && tranship.getStockOutApply() == null){
             throw new BankServiceException("归还记录未指定出库申请！");
+        }
+        if(StringUtils.isEmpty(tranship.getProjectCode())){
+            throw new BankServiceException("此次接收记录未指定项目！");
         }
         List<SampleType> sampleTypes = sampleTypeRepository.findAllSampleTypes();
         List<FrozenBoxType> boxTypes = frozenBoxTypeRepository.findAllFrozenBoxTypes();

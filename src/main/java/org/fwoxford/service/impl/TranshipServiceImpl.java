@@ -125,7 +125,7 @@ public class TranshipServiceImpl implements TranshipService{
         transhipDTO.setStatus(oldTranship.getStatus());
         transhipDTO.setProjectCode(oldTranship.getProjectCode());
         transhipDTO.setProjectName(oldTranship.getProjectName());
-        transhipDTO.setProjectId(oldTranship.getProject()!=null?oldTranship.getProject().getId():null);
+        transhipDTO.setProjectId(oldTranship.getProject()!=null?oldTranship.getProject().getId():transhipDTO.getProjectId());
         transhipDTO.setReceiveType(Constants.RECEIVE_TYPE_PROJECT_SITE);
         return updateTranship(transhipDTO);
 

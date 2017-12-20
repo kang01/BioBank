@@ -1,6 +1,7 @@
 package org.fwoxford.service.impl;
 
 import com.google.common.collect.Lists;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
@@ -827,8 +828,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
         //根据样本编码获取所有的冻存盒
         for(TranshipBoxDTO boxDTO : transhipBoxDTOS){
-            String boxCode = StringUtils.isEmpty(boxDTO.getFrozenBoxCode())?boxDTO.getFrozenBoxCode1D():boxDTO.getFrozenBoxCode();
-            TranshipBoxDTO stockOutFrozenBox = transhipBoxDTOListForOld.stream().filter(s->s.getFrozenBoxCode().equals(boxCode)||s.getFrozenBoxCode1D().equals(boxCode)).findFirst().orElse(null);
+            if(StringUtils.isEmpty(boxDTO.getFrozenBoxCode())){
+                throw new BankServiceException("冻存盒编码不能为空！");
+            }
+            TranshipBoxDTO stockOutFrozenBox = transhipBoxDTOListForOld.stream().filter(s->s.getFrozenBoxCode().equals(boxDTO.getFrozenBoxCode())).findFirst().orElse(null);
             if(stockOutFrozenBox == null ||(stockOutFrozenBox!=null && boxDTO.getFrozenBoxId() != null
                     && stockOutFrozenBox.getFrozenBoxId()!=null
                     && !stockOutFrozenBox.getFrozenBoxId().equals(boxDTO.getFrozenBoxId()))){
@@ -904,11 +907,30 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
             List<TranshipTube> transhipTubeForLastSave = new ArrayList<>();
             List<TranshipTubeDTO> transhipTubeDTOS = new ArrayList<>();
+            //查询到原来的样本，并验证冻存管编码是否重复
+            List<TranshipTubeDTO> repeatSampleList = new ArrayList<>();
+
             for(TranshipTubeDTO tubeDTO : boxDTO.getTranshipTubeDTOS()){
                 TranshipTubeDTO transhipTubeDTOFormStockOut = transhipTubeDTOSForCheckAndSave.stream().filter(s->s.getSampleCode().equals(tubeDTO.getSampleCode())).findFirst().orElse(null);
                 if(transhipTubeDTOFormStockOut ==  null){
-                    throw new BankServiceException("冻存管"+tubeDTO.getSampleCode()+"不存在！");
+                    repeatSampleList.add(tubeDTO);
                 }
+            }
+            JSONArray jsonArray = new JSONArray();
+            for(TranshipTubeDTO transhipTubeDTO :repeatSampleList){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id",transhipTubeDTO.getId());
+                jsonObject.put("sampleCode",transhipTubeDTO.getSampleCode());
+                jsonObject.put("tubeColumns",transhipTubeDTO.getTubeColumns());
+                jsonObject.put("tubeRows",transhipTubeDTO.getTubeRows());
+                jsonArray.add(jsonObject);
+            }
+            if(jsonArray.size()>0){
+                throw new BankServiceException("盒内有不是此次申请出库的冻存管，不能保存！",jsonArray.toString());
+            }
+            for(TranshipTubeDTO tubeDTO : boxDTO.getTranshipTubeDTOS()){
+                TranshipTubeDTO transhipTubeDTOFormStockOut = transhipTubeDTOSForCheckAndSave.stream().filter(s->s.getSampleCode().equals(tubeDTO.getSampleCode())).findFirst().orElse(null);
+
                 if(transhipTubeDTOFormStockOut.getFrozenTubeId()!=null&&tubeDTO.getFrozenTubeId()!=null
                         && !transhipTubeDTOFormStockOut.getFrozenTubeId().equals(tubeDTO.getFrozenTubeId())){
                     throw new BankServiceException("冻存管"+tubeDTO.getSampleCode()+"传入的ID错误！");
@@ -1150,14 +1172,35 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             });
             //获取出库冻存盒ID串
             List<Long> stockOutFrozenBoxIds = stockOutFrozenBoxes.stream().map(s->s.getId()).collect(Collectors.toList());
-            //根据出库冻存盒ID查询出库样本
-            List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxIdIn(stockOutFrozenBoxIds);
+            //根据出库冻存盒ID查询出库样本---此方法已经限制只查询样本状态为已交接的
+            List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxIdInForReturnBack(stockOutFrozenBoxIds);
+           //验证样本是否都归还了，如果已经归还了，需要从出库样本中排除已经归还的
+            List<Long> frozenTubeIdsForReturnBack = stockOutReqFrozenTubes.stream().map(s->s.getFrozenTube().getId()).collect(Collectors.toList());
+            //查询归还样本中是否有重复的
+            List<List<Long>> frozenTubeIdsForReturnBackEach1000 = Lists.partition(frozenTubeIdsForReturnBack,1000);
+            List<FrozenTube> frozenTubeListForReturnBacking = new ArrayList<>();
+            for(List<Long> ids : frozenTubeIdsForReturnBackEach1000){
+                List<TranshipTube> transhipTubeList = transhipTubeRepository.findByFrozenTubeIdInAndFrozenTubeStateInAndStatusNot(ids
+                        ,new ArrayList<String>(){{add(Constants.FROZEN_BOX_RETURN_BACK);}},Constants.INVALID);
+                frozenTubeListForReturnBacking.addAll(transhipTubeList.stream().map(s->s.getFrozenTube()).collect(Collectors.toList()));
+            }
+            //排除掉已经在归还中的样本
+            if(frozenTubeListForReturnBacking!=null && frozenTubeListForReturnBacking.size()>0){
+                for (Iterator<StockOutReqFrozenTube> iterator = stockOutReqFrozenTubes.iterator();iterator.hasNext();){
+                    StockOutReqFrozenTube oldFrozenTube = iterator.next();
+                    FrozenTube frozenTube = frozenTubeListForReturnBacking.stream().filter(s->
+                            s.getId().equals(oldFrozenTube.getFrozenTube().getId())).findFirst().orElse(null);
+                    if(frozenTube!=null){
+                        iterator.remove();
+                    }
+                }
+            }
+
             List<String> outFrozenBoxCodeStr = stockOutReqFrozenTubes.stream().map(s->s.getFrozenBoxCode()).collect(Collectors.toList());
-            List<String> outFrozenBoxCodeIdStr = stockOutReqFrozenTubes.stream().map(s->s.getFrozenBoxCode1D()).collect(Collectors.toList());
-            //是否全部获取到，如果没有获取到，需要从LIMS中获取
+          //是否全部获取到，如果没有获取到，需要从LIMS中获取
 
             for(String s : boxCodes){
-                if(!outFrozenBoxCodeStr.contains(s)&&!outFrozenBoxCodeIdStr.contains(s)){
+                if(!outFrozenBoxCodeStr.contains(s)){
                     unStockOutFrozenBoxCode.add(s);
                 }
             }

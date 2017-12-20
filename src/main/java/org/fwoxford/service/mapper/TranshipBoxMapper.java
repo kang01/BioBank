@@ -170,6 +170,9 @@ public interface TranshipBoxMapper {
             frozenBoxAndFrozenTubeResponse.setIsSplit(Constants.NO);
             if(transhipTubeDTOS!=null) {
                 frozenBoxAndFrozenTubeResponse.setTranshipTubeDTOS(transhipTubeDTOS.get(frozenBox.getId()));
+                if(transhipTubeDTOS.get(frozenBox.getId())!=null){
+                    frozenBoxAndFrozenTubeResponse.setCountOfSample(transhipTubeDTOS.get(frozenBox.getId()).size());
+                }
             }
             frozenBoxAndFrozenTubeResponses.add(frozenBoxAndFrozenTubeResponse);
         }

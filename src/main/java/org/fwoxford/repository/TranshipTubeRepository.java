@@ -5,6 +5,7 @@ import org.fwoxford.domain.TranshipTube;
 
 import org.springframework.data.jpa.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,4 +48,6 @@ public interface TranshipTubeRepository extends JpaRepository<TranshipTube,Long>
             " where t.tranship_box_id in ?1 and t.status not in ('"+ Constants.INVALID+"','"+Constants.FROZEN_BOX_INVALID+"') " +
             " GROUP BY t.sample_code " ,nativeQuery = true)
     List<Object[]> countByTranshipBoxIdsAndGroupBySampleCode(List<Long> boxIds);
+
+    List<TranshipTube> findByFrozenTubeIdInAndFrozenTubeStateInAndStatusNot(List<Long> ids, List<String> frozenTubeState,String status);
 }

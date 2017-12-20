@@ -289,6 +289,10 @@
                                 <label>样本类型<span class="required-field"></span></label>
                                 <input type="text" class="form-control" ng-model="vm.box.sampleTypeName"
                                        ng-disabled="true">
+                                <label class="checkbox-inline pb-10">
+                                    <input type="checkbox" ng-model="vm.box.isSplit" ng-disabled="!vm.box.frozenBoxCode || vm.isMixedFlag"
+                                           ng-true-value="1" ng-false-value="0">是否分装
+                                </label>
                             </div>
                             <div class="form-group col-md-6">
                                 <label>样本分类</label>

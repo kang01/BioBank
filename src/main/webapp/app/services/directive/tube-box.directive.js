@@ -33,7 +33,8 @@
 
             // 盒子中可以使用的样本分类
             vm.projectSampleTypeOptions = [];
-
+            //错误的样本
+            var _errorSampleArray = [];
             vm.api = {
                 columnHeaders: [],
                 rowHeaders:[],
@@ -44,6 +45,7 @@
                 refresh: _refresh,
                 loadData: _loadData,
                 clearData: _clearData,
+                errorData:_errorData,
                 rollbackToOriginalGridData: _rollbackToOriginalGridData,
                 updateOriginalGridData: _updateOriginalGridData,
                 getGridData: _getGridData,
@@ -593,7 +595,17 @@
                 // 添加样本状态标识
                 $("<div  class='tube-status'>"+value.status+"</div>")
                     .appendTo(td);
-
+                if(_errorSampleArray.length){
+                    var len;
+                    if(value.sampleCode){
+                        len = _.filter(_errorSampleArray,{sampleCode:value.sampleCode}).length;
+                    }else{
+                        len = _.filter(_errorSampleArray,{sampleCode:value.sampleTempCode}).length;
+                    }
+                    if(len){
+                        $("<div class='repeat-sample-class stockInAnimation'/>").appendTo(td);
+                    }
+                }
             }
 
             // 当选中单元格后，触发这个响应
@@ -724,7 +736,7 @@
                     var row = selectedRow;
                     var col = selectedCol + 1;
                     for (; row < rowCount; row++){
-                        var nextRowCells = tableCtrl.getDataAtRow(selectedRow+coord.row);
+                        var nextRowCells = tableCtrl.getDataAtRow(selectedRow);
                         for(;col < colCount; col++){
                             var nextCell = nextRowCells[col];
                             if (nextCell && nextCell.flag == 2){
@@ -853,6 +865,13 @@
                 }
                 var tableCtrl = _getTableCtrl();
                 tableCtrl.loadData(frozenTubeArray);
+                tableCtrl.render();
+            }
+            //错误的样本，闪烁
+            function _errorData(errorSampleArray) {
+                console.log(errorSampleArray);
+                _errorSampleArray = errorSampleArray;
+                var tableCtrl = _getTableCtrl();
                 tableCtrl.render();
             }
             // 回滚数据到初始状态

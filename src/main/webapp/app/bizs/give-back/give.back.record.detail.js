@@ -257,11 +257,14 @@
                         callback();
                     }else{
                         _queryGiveBackInfo();
+                        _startBoxStr = JSON.stringify(vm.box);
                         toastr.success("冻存盒保存成功!");
 
                     }
                 }).error(function (data) {
                     toastr.error(data.message);
+                    var errorSampleArray = JSON.parse(data.params[0]);
+                    vm.htInstance.api.errorData(errorSampleArray);
                 });
             }else{
                 callback();

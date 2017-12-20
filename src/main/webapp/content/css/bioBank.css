@@ -796,9 +796,11 @@ tr.shown td .details-control {
 .stock-out-task-scan {
     display: inline-block;
     vertical-align: middle;
-    width: 248px;
+    width: 198px;
 }
-
+.stock-out-task-scan .input-group-addon{
+    padding: 6px;
+}
 .modal-90 {
     width: 90%;
 }

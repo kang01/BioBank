@@ -29,6 +29,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -56,63 +57,56 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     private final StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
 
     private final StockOutFrozenBoxMapper stockOutFrozenBoxMapper;
+    @Autowired
+    StockOutTaskRepository stockOutTaskRepository;
 
     @Autowired
-    private StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
+    FrozenBoxRepository frozenBoxRepository;
 
     @Autowired
-    private StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository;
+    StockOutBoxTubeRepository stockOutBoxTubeRepository;
 
     @Autowired
-    private StockOutTaskRepository stockOutTaskRepository;
+    FrozenTubeRepository frozenTubeRepository;
 
     @Autowired
-    private FrozenBoxRepository frozenBoxRepository;
+    FrozenBoxTypeRepository frozenBoxTypeRepository;
 
     @Autowired
-    private StockOutBoxTubeRepository stockOutBoxTubeRepository;
+    FrozenTubeMapper frozenTubeMapper;
 
     @Autowired
-    private FrozenTubeRepository frozenTubeRepository;
+    FrozenBoxMapper frozenBoxMapper;
 
     @Autowired
-    private FrozenBoxTypeRepository frozenBoxTypeRepository;
+    StockOutHandoverRepository stockOutHandoverRepository;
 
     @Autowired
-    private FrozenTubeMapper frozenTubeMapper;
+    StockOutBoxPositionRepository stockOutBoxPositionRepository;
 
     @Autowired
-    private FrozenBoxMapper frozenBoxMapper;
+    UserRepository userRepository;
 
     @Autowired
-    private StockOutHandoverRepository stockOutHandoverRepository;
+    UserService userService;
 
     @Autowired
-    private StockOutBoxPositionRepository stockOutBoxPositionRepository;
+    EquipmentRepository equipmentRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    AreaRepository areaRepository;
 
     @Autowired
-    private UserService userService;
+    StockOutTaskMapper stockOutTaskMapper;
 
     @Autowired
-    private EquipmentRepository equipmentRepository;
+    ReportExportingService reportExportingService;
 
     @Autowired
-    private AreaRepository areaRepository;
+    StockOutApplyRepository stockOutApplyRepository;
 
     @Autowired
-    private StockOutTaskMapper stockOutTaskMapper;
-
-    @Autowired
-    private ReportExportingService reportExportingService;
-
-    @Autowired
-    private StockOutApplyRepository stockOutApplyRepository;
-
-    @Autowired
-    private StockOutHandoverFrozenBoxRepositries stockOutHandoverFrozenBoxRepositries;
+    StockOutHandoverFrozenBoxRepositries stockOutHandoverFrozenBoxRepositries;
 
     @Autowired
     StockOutPlanRepository stockOutPlanRepository;
@@ -127,10 +121,18 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
 
     @Autowired
-    private FrozenBoxCheckService frozenBoxCheckService;
+    FrozenBoxCheckService frozenBoxCheckService;
 
     @Autowired
     EntityManager entityManager;
+
+    @Autowired
+    SampleTypeRepository sampleTypeRepository;
+
+    @Autowired
+    ProjectRepository projectRepository ;
+    @Autowired
+    ProjectSampleClassRepository projectSampleClassRepository;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper) {
@@ -242,6 +244,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             if(box.getFrozenBoxCode() == null){
                 throw new BankServiceException("冻存盒编码不能为空！");
             }
+            if(box.getSampleTypeId()==null){
+                throw new BankServiceException("样本类型不能为空！");
+            }
+            if(StringUtils.isEmpty(box.getProjectCode())){
+                throw new BankServiceException("项目编码不能为空！");
+            }
             //验证盒子编码是否存在
             Map<String,Long> map = new HashMap<String,Long>();
             Long id = box.getId()==null?-1:box.getId();
@@ -249,7 +257,10 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             frozenBoxCheckService.checkFrozenBoxCodeRepead(map);
             FrozenBox frozenBox = new FrozenBox();
             if(box.getId()!=null){
-                frozenBox = frozenBoxRepository.findOne(box.getId())!=null?frozenBoxRepository.findOne(box.getId()):new FrozenBox();
+                frozenBox = frozenBoxRepository.findOne(box.getId());
+                if(frozenBox == null){
+                    frozenBox =  new FrozenBox();
+                }
             }
             //验证冻存盒类型是否一致
             FrozenBoxType boxType = new FrozenBoxType();
@@ -266,6 +277,28 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 }else {
                     throw new BankServiceException("冻存盒类型不能为空！",box.toString());
                 }
+            }
+            Project project = projectRepository.findByProjectCode(box.getProjectCode());
+            if(project == null){
+                throw new BankServiceException("项目"+box.getProjectCode()+"不存在！");
+            }
+            frozenBox.project(project).projectCode(project.getProjectCode()).projectName(project.getProjectName());
+            SampleType sampleType = sampleTypeRepository.findOne(box.getSampleTypeId());
+            if(sampleType == null){
+                throw new BankServiceException("样本类型不能为空！",box.getSampleTypeId().toString());
+            }
+            frozenBox.sampleType(sampleType).sampleTypeName(sampleType.getSampleTypeName()).sampleTypeCode(sampleType.getSampleTypeCode());
+            List<ProjectSampleClass> projectSampleClasses = projectSampleClassRepository.findByProjectIdAndSampleTypeId(project.getId(),sampleType.getId());
+            if(projectSampleClasses!=null && projectSampleClasses.size()>0){
+                if(box.getSampleClassificationId() == null){
+                    throw new BankServiceException(project.getProjectCode()+"项目下，"+sampleType.getSampleTypeName()+"类型，已经配置了样本分类，样本分类不能为空！");
+                }
+                ProjectSampleClass projectSampleClass = projectSampleClasses.stream().filter(s->
+                        s.getProject().getId().equals(project.getId())&& s.getSampleClassification().equals(box.getSampleClassificationId())).findFirst().orElse(null);
+                if(projectSampleClass == null){
+                    throw new BankServiceException("样本分类不存在！");
+                }
+                frozenBox.setSampleClassification(projectSampleClass.getSampleClassification());
             }
             //验证冻存盒数量是否错误（不能超过冻存盒的最大规格）
             String columns = boxType.getFrozenBoxTypeColumns()!=null?boxType.getFrozenBoxTypeColumns():new String("0");
@@ -325,6 +358,10 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                         //更改样本所属的冻存盒以及盒内的位置
                         FrozenTube frozenTube =s.getFrozenTube()
                             .frozenBox(frozenBox).frozenBoxCode(frozenBox.getFrozenBoxCode()).tubeColumns(f.getTubeColumns()).tubeRows(f.getTubeRows()).frozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
+                        if(StringUtils.isEmpty(frozenTube.getProjectCode())
+                                ||(!StringUtils.isEmpty(frozenTube.getProjectCode()) && !frozenTube.getProjectCode().equals(project.getProjectCode())) ){
+                            throw new BankServiceException("样本"+frozenTube.getSampleCode()+"与冻存盒所属项目不一致！");
+                        }
                         frozenTubeList.add(frozenTube);
                     }
                 }
@@ -391,6 +428,8 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             box.setCountOfSample(f.getCountOfSample()!=null?Long.valueOf(f.getCountOfSample()):0L);
             box.setMemo(f.getMemo());
             box.setStatus(f.getStatus());
+            box.setProjectCode(f.getProjectCode());
+            box.setProjectName(f.getProjectName());
             box.setStockOutHandoverTime(f.getHandoverTime());
             alist.add(box);
         }

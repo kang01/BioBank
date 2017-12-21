@@ -59,7 +59,11 @@
             .withOption('order', [['0', 'desc']])
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
-                if(!oSettings.oPreviousSearch.sSearch){
+                //各列搜索
+                var aoPreSearchCols = oSettings.aoPreSearchCols;
+                var len = _.filter(aoPreSearchCols,{sSearch:""}).length;
+                // 搜索框为空的时候不用timer
+                if(!oSettings.oPreviousSearch.sSearch && len == aoPreSearchCols.length){
                     _fnStockOutSeach(sSource, aoData, fnCallback, oSettings);
                 }else{
                     if(t){
@@ -74,26 +78,21 @@
             .withColumnFilter({
                 aoColumns: [{
                     type: 'text',
-                    width:50,
-                    iFilterLength:3
+                    width:50
                 },{
                     type: 'text',
-                    width:50,
-                    iFilterLength:3
+                    width:50
                 },{
                     type: 'text',
-                    width:50,
-                    iFilterLength:3
+                    width:50
                 }, {
                     type: 'text',
                     bRegex: true,
-                    bSmart: true,
-                    iFilterLength:3
+                    bSmart: true
                 }, {
                     type: 'text',
                     bRegex: true,
-                    bSmart: true,
-                    iFilterLength:3
+                    bSmart: true
                 }, {
                     type: 'text',
                     bRegex: true,
@@ -138,10 +137,12 @@
         }
         function actionsHtml(data, type, full, meta) {
             var html;
-            // {id:"1603",name:"已出库"},
-            // {id:"1604",name:"异常出库"},
-            // {id:"1690",name:"已作废"}
-            if(full.status == '1603'|| full.status == '1604' || full.status == '1690'){
+            if(full.status == '1601'){
+                html =
+                    '<button type="button" class="btn btn-xs" ui-sref="task-edit({taskId:'+ full.id +'})">' +
+                    '   <i class="fa fa-play"></i>' +
+                    '</button>&nbsp;';
+            }else if(full.status == '1603'|| full.status == '1604' || full.status == '1690'){
                 html =
                     '<button type="button" class="btn btn-xs" ui-sref="task-view({taskId:'+ full.id +'})">' +
                     '   <i class="fa fa-eye"></i>' +

@@ -575,6 +575,7 @@
                 templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-approval-modal.html',
                 controller: 'RequirementApprovalModalController',
                 controllerAs:'vm',
+                backdrop:'static',
                 size:'lg',
                 resolve: {
                     items: function () {

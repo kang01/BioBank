@@ -13,6 +13,7 @@
                 <span>累计用时: {{vm.usedTime}}</span>&nbsp;
                 <button class="btn btn-primary" ng-click="vm.takeOver()" ng-disabled="!vm.stockOutLen">样本交接</button>
                 <button class="btn btn-default" ng-click="vm.saveTask()">保存任务</button>
+                <button class="btn btn-default" ng-click="">作废</button>
                 <button class="btn btn-default" ng-click="vm.close()">关闭</button>
             </div>
         </div>
@@ -96,15 +97,15 @@
                     <div class="col-md-2 pl-0">
                         <h4>待出库样本</h4>
                     </div>
-                    <div class="col-md-10 pr-0 text-right">
+                    <div class="col-md-10 pr-0 pl-0 text-right">
                         <div  class="stock-out-task-scan">
                             <div class="input-group">
                                 <input type="text" class="form-control" ng-model="vm.sampleCode" >
                                 <div class="input-group-addon btn-sm" ng-click="vm.scanClick()"
                                      ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus" uib-btn-checkbox >
-                                    扫码取样
+                                    <i class="fa fa-qrcode"></i>
                                 </div>
-                                <div class="input-group-addon btn-sm position-relative" ng-click="vm.viewSampleDesc()" ng-disabled="!vm.boxInTubes.length">
+                                <div style="padding: 2px" class="input-group-addon btn-sm position-relative" ng-click="vm.viewSampleDesc()" ng-disabled="!vm.boxInTubes.length">
                                     &nbsp;&nbsp;<i class="fa fa-shopping-cart"></i>&nbsp;&nbsp;
                                     <div class="circle2" ng-if="vm.boxInTubes.length == 100">{{vm.boxInTubes.length}}</div>
                                     <div class="circle1" ng-if="vm.boxInTubes.length && vm.boxInTubes.length != 100">{{vm.boxInTubes.length}}</div>
@@ -118,8 +119,9 @@
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(2)"  ng-if="vm.boxInFullFlag"  >原盒出库</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.nextBox()"   >下一盒</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(1)" ng-disabled="!vm.boxInTubes.length || !vm.tempBoxObj.frozenBoxCode" >装盒出库</button>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()">异常</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealModal()">撤销申请</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="">整盒撤销</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()">异常</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.commentModal(1)">批注</button>
 
                     </div>
@@ -133,7 +135,7 @@
                                 &nbsp;&nbsp;临时盒编码:{{vm.tempBoxObj.frozenBoxCode}}
                                 装盒位置:{{vm.tempBoxObj.startPos}}
                                 已有样本数:<span ng-if="vm.totalLen">{{vm.sampleOutCount}}/{{vm.totalLen}}</span>
-                                将装盒样本数:{{vm.boxInTubes.length}}
+                                待装盒样本数:{{vm.boxInTubes.length}}
                             </h4>
                         </div>
                         <div class="col-md-12">

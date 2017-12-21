@@ -225,7 +225,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
-                        <div class="col-md-10">
+                        <div class="col-md-10 pr-0">
                             <h4>
                                 <span ng-if="!vm.boxDetailFlag">分装后样本盒</span>
                                 <span ng-if="vm.boxDetailFlag">{{vm.frozenBox.frozenBoxCode}}&nbsp;{{vm.frozenBox.sampleClassificationName?vm.frozenBox.sampleClassificationName:vm.frozenBox.sampleTypeName}}</span></h4>
@@ -269,17 +269,17 @@
                         <div class="col-md-12 ml-10 mt-5 mb-5" ng-if="vm.boxDetailFlag">
                             <table class="p-10">
                                 <tr ng-repeat="tubes in vm.frozenBox.stockInFrozenTubeList1 | orderBy: 'tubeRows' | groupBy: 'tubeRows'">
-                                    <td style="padding:2px" ng-repeat="tube in tubes | orderBy: 'tubeColumns'">
+                                    <td style="padding:1px" ng-repeat="tube in tubes | orderBy: 'tubeColumns'">
                                         <!--构建的样本-->
-                                        <div ng-if="tube.flag == '3'" style="width:31px;height:31px;line-height:23px;text-align:center;font-size:8pt;border:2px solid;border-radius:5px;-moz-border-radius:5px;padding:3px;background-color: #fff">
+                                        <div ng-if="tube.flag == '3'" class="split-tube-style" style="background-color: #fff">
 
                                         </div>
                                         <!--已有样本-->
-                                        <div ng-if="tube.flag == '1'" style="width:31px;height:31px;line-height:23px;text-align:center;font-size:8pt;border:2px solid;border-radius:5px;-moz-border-radius:5px;padding:3px;background-color: #777">
+                                        <div ng-if="tube.flag == '1'" class="split-tube-style" style="background-color: #777">
                                             {{tube.tubeRows + tube.tubeColumns}}
                                         </div>
                                         <!--分装的样本-->
-                                        <div ng-if="tube.flag == '2'" style="width:31px;height:31px;line-height:23px;text-align:center;font-size:8pt;border:2px solid;border-radius:5px;-moz-border-radius:5px;padding:3px;background-color: {{vm.obox.backColor}}">
+                                        <div ng-if="tube.flag == '2'" class="split-tube-style" style="background-color: {{vm.obox.backColor}}">
                                             {{tube.tubeRows + tube.tubeColumns}}
                                         </div>
                                     </td>

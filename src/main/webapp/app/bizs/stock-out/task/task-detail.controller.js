@@ -227,7 +227,7 @@
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
             DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('冻存盒编码').withOption("width", "100").renderWith(_fnRowRender),
-            DTColumnBuilder.newColumn('sampleTypeName').withTitle('类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('类型').withOption("width", "50"),
             DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "auto"),
             DTColumnBuilder.newColumn('countOfSample').withTitle('数量').withOption("width", "50")
         ];

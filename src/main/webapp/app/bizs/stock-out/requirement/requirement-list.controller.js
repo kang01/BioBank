@@ -61,8 +61,11 @@
             .withOption('order', [['1', 'desc']])
             .withOption('serverSide', true)
             .withFnServerData(function (sSource, aoData, fnCallback, oSettings) {
-
-                if(!oSettings.oPreviousSearch.sSearch){
+                //各列搜索
+                var aoPreSearchCols = oSettings.aoPreSearchCols;
+                var len = _.filter(aoPreSearchCols,{sSearch:""}).length;
+                // 搜索框为空的时候不用timer
+                if(!oSettings.oPreviousSearch.sSearch && len == aoPreSearchCols.length){
                     _fnStockOutSeach(sSource, aoData, fnCallback, oSettings);
                 }else{
                     if(t){
@@ -79,13 +82,11 @@
                     null,
                     {
                         type: 'text',
-                        width: 50,
-                        iFilterLength: 3
+                        width: 50
                     }, {
                         type: 'text',
                         bRegex: true,
-                        bSmart: true,
-                        iFilterLength: 3
+                        bSmart: true
                     }, {
                         type: 'text',
                         bRegex: true,
@@ -127,12 +128,12 @@
             DTColumnBuilder.newColumn("").withTitle('').withOption('width', '10px')
                 .withOption('searchable',false).notSortable().renderWith(extraHtml),
             DTColumnBuilder.newColumn('applyCode').withTitle('申请单号').withOption('width', '100px'),
-            DTColumnBuilder.newColumn('delegateName').withTitle('委托方').withOption('width', '240px'),
+            DTColumnBuilder.newColumn('delegateName').withTitle('委托方').withOption('width', '150px').renderWith(_fnEllipsisRowRender),
             DTColumnBuilder.newColumn('applyPersonName').withTitle('委托人').withOption('width', '80px'),
-            DTColumnBuilder.newColumn('applyTime').withTitle('需求日期').withOption('width', '170px'),
+            DTColumnBuilder.newColumn('applyTime').withTitle('需求日期').withOption('width', '100px').renderWith(_timeRowRender),
             DTColumnBuilder.newColumn('purposeOfSample').withTitle('用途').withOption('width', 'auto'),
             DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption('width', '60px'),
-            DTColumnBuilder.newColumn('countOfStockSample').withTitle('满足样本量').withOption('width', '110px'),
+            DTColumnBuilder.newColumn('countOfStockSample').withTitle('满足样本量').withOption('width', '90px'),
             DTColumnBuilder.newColumn('sampleTypes').withTitle('样本类型').withOption('width', '80px'),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption('width', '70px'),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml).withOption('width', '80px'),
@@ -169,6 +170,17 @@
             $compile(angular.element(row).contents())($scope);
         }
 
+        function _fnEllipsisRowRender(data, type, full, meta) {
+            var delegateName = full.delegateName ? full.delegateName : "";
+
+            var html = "<div style='width:150px;' class='text-ellipsis' title='"+delegateName+"'>"+delegateName+"</div>";
+            // $(html).css({"width":"150px"});
+            return html;
+        }
+        function _timeRowRender(data, type, full, meta) {
+            var applyTime = _.replace(full.applyTime,'至','至<br>');
+            return applyTime;
+        }
         //展开
         function rowCallback(nRow, oData) {
 

@@ -680,6 +680,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 String position =  BankUtil.getPositionString(s.getEquipmentCode(),s.getAreaCode(),s.getSupportRackCode(),s.getColumnsInShelf(),s.getRowsInShelf(),null,null);
                 dto.setPosition(position);
                 dto.setCountOfSample(s.getCountOfSample());
+                dto.setStockOutRequirementId(s.getStockOutRequirementId());
                 alist.add(dto);
             }else{
                 long filterRecord = output.getRecordsFiltered()-1;

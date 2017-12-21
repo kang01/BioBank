@@ -71,6 +71,7 @@ public class FrozenBoxForStockOutDataTableEntity  extends StockOutFrozenBoxBaseD
     @Column(name ="project_code")
     private String projectCode;
 
+    @JsonView(DataTablesOutput.View.class)
     @Column(name ="stock_out_requirement_id")
     private Long stockOutRequirementId;
 

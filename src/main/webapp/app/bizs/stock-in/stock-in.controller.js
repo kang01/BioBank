@@ -81,7 +81,11 @@
         }
         var t;
         function _fnServerData( sSource, aoData, fnCallback, oSettings ) {
-            if(!oSettings.oPreviousSearch.sSearch){
+            //各列搜索
+            var aoPreSearchCols = oSettings.aoPreSearchCols;
+            var len = _.filter(aoPreSearchCols,{sSearch:""}).length;
+            // 搜索框为空的时候不用timer
+            if(!oSettings.oPreviousSearch.sSearch && len == aoPreSearchCols.length){
                 _fnStockInSeach(sSource, aoData, fnCallback, oSettings);
             }else{
                 if(t){
@@ -158,13 +162,13 @@
         function _createColumnFilters(){
             var filters = {
                 aoColumns: [
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
                     {type: 'text',bRegex: true,bSmart: true},
                     {type: 'text',bRegex: true,bSmart: true},
                     {
@@ -186,13 +190,13 @@
             var columns = [
                 DTColumnBuilder.newColumn('stockInCode').withTitle('入库编码').withOption('width','100'),
                 DTColumnBuilder.newColumn('transhipCode').withTitle('转运编码').withOption('width','auto').renderWith(_fnTransportRowRender),
+                DTColumnBuilder.newColumn('projectCode').withTitle('项目').withOption('width','90'),
                 DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点').withOption('width','70').renderWith(_fnSiteRowRender),
-                DTColumnBuilder.newColumn('projectCode').withTitle('项目编号').withOption('width','90'),
-                DTColumnBuilder.newColumn('recordDate').withTitle('创建日期').withOption('width','110'),
-                DTColumnBuilder.newColumn('stockInDate').withTitle('入库日期').withOption('width','110'),
+                DTColumnBuilder.newColumn('recordDate').withTitle('创建日期').withOption('width','120'),
+                DTColumnBuilder.newColumn('stockInDate').withTitle('入库日期').withOption('width','120'),
                 DTColumnBuilder.newColumn('storeKeeper1').withTitle('库管员').withOption('width','160'),
-                DTColumnBuilder.newColumn('countOfSample').withTitle('样本数量').withOption('width','80'),
-                DTColumnBuilder.newColumn('countOfBox').withTitle('冻存盒数量').withOption('width','100'),
+                DTColumnBuilder.newColumn('countOfSample').withTitle('样本数量').withOption('width','100'),
+                DTColumnBuilder.newColumn('countOfBox').withTitle('盒数量').withOption('width','80'),
                 DTColumnBuilder.newColumn('status').withTitle('状态').withOption('width','80'),
                 DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(_fnActionButtonsRender).withOption('width','40')
             ];

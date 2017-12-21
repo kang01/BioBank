@@ -84,6 +84,7 @@
     </div>
 </div>
 <div class="modal-footer">
+    <a href="content/templates/stock-out-requirement.xlsx" style="float: left;margin-top: 7px;">样本导入清单模板</a>
     <button class="btn btn-primary" type="button" ng-if="vm.file" ng-click="vm.saveSampleRequirement(vm.file)" ng-disabled="!vm.sampleRequirement.requirementName">确定</button>
     <button class="btn btn-primary" type="button" ng-if="!vm.file" ng-click="vm.saveSampleRequirement(vm.file)" ng-disabled="!vm.sampleRequirement.requirementName || !vm.sampleRequirement.countOfSample">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>

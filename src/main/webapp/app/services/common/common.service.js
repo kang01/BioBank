@@ -195,6 +195,7 @@
                 {value:"2010",label:"已交接"},
                 {value:"2011",label:"转运完成"},
                 {value:"2012",label:"已销毁"},
+                {value:"2013",label:"归还中"},
                 {value:"2090",label:"已作废"},
                 {value:"2101",label:"交接进行中"},
                 {value:"2102",label:"交接完成"},

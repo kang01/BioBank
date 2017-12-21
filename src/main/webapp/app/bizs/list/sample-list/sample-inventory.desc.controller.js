@@ -56,6 +56,8 @@
                     type = "换位";break;
                 case "107" :
                     type = "销毁";break;
+                case "108" :
+                    type = "归还";break;
             }
             $('td:eq(0)', row).html(operateTime);
             $('td:eq(1)', row).html(type);

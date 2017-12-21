@@ -250,7 +250,7 @@
             DTColumnBuilder.newColumn('receiveDate').withTitle('接收日期'),
             DTColumnBuilder.newColumn('sampleSatisfaction').withTitle('满意度'),
             DTColumnBuilder.newColumn('transhipState').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml).withOption("width","80")
         ];
         function createdRow(row, data, dataIndex) {
             var transhipState = '';
@@ -280,11 +280,11 @@
         function actionsHtml(data, type, full, meta) {
             var html = '';
             if(full.transhipState != '1001'){
-                html = '<button type="button" class="btn btn-xs" ui-sref="transport-record-view({transhipId:'+ full.id +'})">' +
+                html = '<button type="button" class="btn btn-default btn-xs" ui-sref="transport-record-view({transhipId:'+ full.id +'})">' +
                     '   <i class="fa fa-eye"></i>' +
                     '</button>&nbsp;';
             }else{
-                html = '<button type="button" class="btn btn-xs" ui-sref="transport-record-edit({transhipId:'+ full.id +'})">' +
+                html = '<button type="button" class="btn btn-default btn-xs" ui-sref="transport-record-edit({transhipId:'+ full.id +'})">' +
                     '   <i class="fa fa-edit"></i>' +
                     '</button>&nbsp;';
             }

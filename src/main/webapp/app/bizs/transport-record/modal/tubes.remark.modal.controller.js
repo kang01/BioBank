@@ -13,7 +13,8 @@
     function TubesRemarkModalController($scope,$uibModalInstance,$uibModal,items) {
         var vm = this;
         vm.items = items;
-        $("#tubeContent").focus();
+        vm.memo = items.memo;
+        // $("#tubeContent").focus();
         // $scope.$apply();
         this.cancel = function () {
             $uibModalInstance.dismiss('cancel');

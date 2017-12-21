@@ -106,14 +106,14 @@
             });
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('applyNumber').withTitle('申请单号').withOption("data","100"),
-            DTColumnBuilder.newColumn('stockOutPlanCode').withTitle('计划编号').withOption("data","100"),
-            DTColumnBuilder.newColumn('planDate').withTitle('计划时间').withOption("data","100"),
-            DTColumnBuilder.newColumn('purposeOfSample').withTitle('出库目的').withOption("data","100"),
-            DTColumnBuilder.newColumn('countOfStockOutPlanSample').withTitle('计划样本量').withOption("data","100"),
-            DTColumnBuilder.newColumn('countOfStockOutTask').withTitle('出库任务量').withOption("data","100"),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("data","100"),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml).withOption("data","100"),
+            DTColumnBuilder.newColumn('applyNumber').withTitle('申请单号').withOption("width","80"),
+            DTColumnBuilder.newColumn('stockOutPlanCode').withTitle('计划编号').withOption("width","80"),
+            DTColumnBuilder.newColumn('planDate').withTitle('计划时间').withOption("width","80"),
+            DTColumnBuilder.newColumn('purposeOfSample').withTitle('出库目的').withOption("width","auto"),
+            DTColumnBuilder.newColumn('countOfStockOutPlanSample').withTitle('计划样本量').withOption("width","100"),
+            DTColumnBuilder.newColumn('countOfStockOutTask').withTitle('出库任务量').withOption("width","100"),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width","80"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         function createdRow(row, data, dataIndex) {
@@ -124,11 +124,11 @@
         function actionsHtml(data, type, full, meta) {
             var html;
             if(full.status == '1401'){
-                html = '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
+                html = '<button type="button" class="btn btn-default btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
                     '   <i class="fa fa-edit"></i>' +
                     '</button>&nbsp;';
             }else{
-                html = '<button type="button" class="btn btn-xs" ui-sref="plan-view({planId:'+ full.id +'})">' +
+                html = '<button type="button" class="btn btn-default btn-xs" ui-sref="plan-view({planId:'+ full.id +'})">' +
                     '   <i class="fa fa-eye"></i>' +
                     '</button>&nbsp;';
             }

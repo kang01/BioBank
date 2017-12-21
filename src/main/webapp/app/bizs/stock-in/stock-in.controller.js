@@ -121,22 +121,22 @@
             }else{
                 if(full.transhipCode){
                     if(full.status == '7002'){
-                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-view({id:'+ full.id +'})">' +
+                        return '<button type="button" class="btn btn-default btn-xs" ui-sref="stock-in-view({id:'+ full.id +'})">' +
                             '   <i class="fa fa-eye"></i>' +
                             '</button>&nbsp;';
                     }else{
-                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-edit({id:'+ full.id +'})">' +
+                        return '<button type="button" class="btn btn-default btn-xs" ui-sref="stock-in-edit({id:'+ full.id +'})">' +
                             '   <i class="fa fa-edit"></i>' +
                             '</button>&nbsp;';
                     }
 
                 }else{
                     if(full.status == '7002'){
-                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-view({id:'+ full.id +'})">' +
+                        return '<button type="button" class="btn btn-default btn-xs" ui-sref="stock-in-view({id:'+ full.id +'})">' +
                             '   <i class="fa fa-eye"></i>' +
                             '</button>&nbsp;';
                     }else{
-                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-add-box-edit({id:'+ full.id +'})">' +
+                        return '<button type="button" class="btn btn-default btn-xs" ui-sref="stock-in-add-box-edit({id:'+ full.id +'})">' +
                             '   <i class="fa fa-edit"></i>' +
                             '</button>&nbsp;';
                     }

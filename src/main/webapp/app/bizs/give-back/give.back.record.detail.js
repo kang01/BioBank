@@ -147,6 +147,12 @@
         //添加备注
         vm.tubeRemark = function () {
             var selectedData = vm.htInstance.api.getSelectedData();
+            var memo;
+            if(selectedData.length == 1){
+                memo = selectedData[0].data.memo;
+            }else{
+                memo = ""
+            }
             if(selectedData.length){
                 _modalInstance = $uibModal.open({
                     animation: true,
@@ -156,7 +162,9 @@
                     controllerAs: 'vm',
                     resolve: {
                         items: function () {
-                            return {};
+                            return {
+                                memo:memo
+                            };
                         }
                     }
 

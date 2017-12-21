@@ -235,29 +235,38 @@
                             && (row != rowIndex || col != colIndex)){
                             if (!box.isMixed){
                                 errorPos.push([rowIndex, colIndex, tube, "盒内样本重复，相同的样本编码。"]);
+                                toastr.error("盒内样本重复，相同的样本编码。");
                             } else if (box.sampleTypeCode == "98") {
                                 if (tubeData.sampleClassificationId && tube.sampleClassificationId == tubeData.sampleClassificationId){
                                     errorPos.push([rowIndex, colIndex, tube, "盒内样本重复，相同的样本分类。"]);
+                                    toastr.error("盒内样本重复，相同的样本分类。");
                                 } else if (tube.sampleTypeId == tubeData.sampleTypeId){
                                     errorPos.push([rowIndex, colIndex, tube, "盒内样本重复，相同的样本类型。"]);
+                                    toastr.error("盒内样本重复，相同的样本类型。");
                                 }
                             } else if (box.sampleTypeCode == "99" || box.isMixed) {
                                 if (!tubeData.sampleClassificationId){
                                     errorPos.push([rowIndex, colIndex, tube, "混合样本类型的样本，无样本分类信息。"]);
+                                    toastr.error("混合样本类型的样本，无样本分类信息。");
                                 } else if (tube.sampleClassificationId == tubeData.sampleClassificationId){
                                     errorPos.push([rowIndex, colIndex, tube, "盒内样本重复，相同的样本分类。"]);
+                                    toastr.error("盒内样本重复，相同的样本分类。");
                                 }
                             }
                         } else if (row == rowIndex && col == colIndex){
                             if (tube.flage && tube.flage == 2 && !_.isEuqal(tube, tubeData)){
                                 errorPos.push([rowIndex, colIndex, tubeData, "此样本为原盒样本，不能被修改。"]);
+                                toastr.error("此样本为原盒样本，不能被修改。");
                             } else if (box.sampleTypeCode != "98" && box.sampleTypeCode != "97"){
                                 if (tubeData.projectId != box.projectId) {
                                     errorPos.push([rowIndex, colIndex, tubeData, "样本的项目与盒子不一致。"]);
+                                    toastr.error("样本的项目与盒子不一致。");
                                 } else if (tubeData.sampleTypeId != box.sampleTypeId){
                                     errorPos.push([rowIndex, colIndex, tubeData, "样本的类型与盒子不一致。"]);
+                                    toastr.error("样本的类型与盒子不一致。");
                                 } else if (!box.isMixed && tubeData.sampleClassificationId != box.sampleClassificationId){
                                     errorPos.push([rowIndex, colIndex, tubeData, "样本的分类与盒子不一致。"]);
+                                    toastr.error("样本的分类与盒子不一致。");
                                 }
                             }
                         }
@@ -541,7 +550,7 @@
                     $(td).removeClass("error-tube-color empty-tube-color empty-hole-color");
                     return;
                 }
-
+                cellProperties.comment = {};
                 if (value.memo && value.memo.length){
                     // 增加MEMO的Tooltip
                     cellProperties.comment = {value:value.memo};

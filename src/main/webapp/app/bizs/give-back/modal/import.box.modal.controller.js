@@ -212,13 +212,31 @@
             vm.boxLen = arrayBoxCode.length;
             _.forEach(boxCodeArray,function (code,i) {
                 var codeStr = _.join(code, ',');
-                console.log(codeStr);
                 var importData = GiveBackService.queryBatchGiveBackBox(_applyCode,codeStr,_deferred);
                 arrayPromise.push(
                     importData.success(function (res) {
                         _updateBoxData(res);
                     }).error(function (res) {
-                        toastr.error(res.message);
+                        console.log(code)
+                        for(var i = 0; i < code.length; i++){
+                            for(var j = 0; j < _boxList.length; j++){
+                                if(code[i] == _boxList[j].frozenBoxCode){
+                                    _boxList[j].isRealData = 0;
+                                }
+                            }
+                        }
+                        vm.errorLen = _.filter(_boxList,{isRealData:0}).length;
+                        // _.forEach(_boxList,function (box) {
+                        //     if(box.frozenBoxCode == code){
+                        //         box.status = status;
+                        //     }
+                        // });
+                        _updateTableDataOption(_boxList);
+                        setTimeout(function () {
+                            vm.progressFlag = false;
+                            // blockUIConfig.autoBlock = true;
+                            $scope.$apply();
+                        },500)
                     }).finally(function (res) {
                         vm.count++;
                         var percentage = parseInt((vm.count/boxCodeArray.length)*100);

@@ -30,7 +30,7 @@
                         return;
                     }
 
-                    if(viewer && viewer.ready){
+                    if(viewer /* && viewer.ready */){
                         viewer.update();
                     } else {
                         setTimeout(function (data) {

@@ -106,14 +106,14 @@
             });
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('applyNumber').withTitle('申请单号'),
-            DTColumnBuilder.newColumn('stockOutPlanCode').withTitle('计划编号'),
-            DTColumnBuilder.newColumn('planDate').withTitle('计划时间'),
-            DTColumnBuilder.newColumn('purposeOfSample').withTitle('出库目的'),
-            DTColumnBuilder.newColumn('countOfStockOutPlanSample').withTitle('计划样本量'),
-            DTColumnBuilder.newColumn('countOfStockOutTask').withTitle('出库任务量'),
-            DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
+            DTColumnBuilder.newColumn('applyNumber').withTitle('申请单号').withOption("data","100"),
+            DTColumnBuilder.newColumn('stockOutPlanCode').withTitle('计划编号').withOption("data","100"),
+            DTColumnBuilder.newColumn('planDate').withTitle('计划时间').withOption("data","100"),
+            DTColumnBuilder.newColumn('purposeOfSample').withTitle('出库目的').withOption("data","100"),
+            DTColumnBuilder.newColumn('countOfStockOutPlanSample').withTitle('计划样本量').withOption("data","100"),
+            DTColumnBuilder.newColumn('countOfStockOutTask').withTitle('出库任务量').withOption("data","100"),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("data","100"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml).withOption("data","100"),
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         function createdRow(row, data, dataIndex) {

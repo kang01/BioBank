@@ -186,7 +186,13 @@
                         type: 'select',
                         // bRegex: true,
                         bSmart: true,
-                        values: MasterData.transportStatus
+                        values: [
+                            {value:"1001",label:"进行中"},
+                            {value:"1002",label:"待入库"},
+                            {value:"1003",label:"已入库"},
+                            {value:"1005",label:"接收完成"},
+                            {value:"1090",label:"已作废"}
+                        ]
 
                     },
                     null

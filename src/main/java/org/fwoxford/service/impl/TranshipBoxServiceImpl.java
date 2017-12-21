@@ -924,13 +924,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 transhipTubeDTOFormStockOut.setStatus(tubeDTO.getStatus());
                 transhipTubeDTOFormStockOut.setTubeColumns(tubeDTO.getTubeColumns());
                 transhipTubeDTOFormStockOut.setTubeRows(tubeDTO.getTubeRows());
-                transhipTubeDTOFormStockOut.setProjectId(boxDTO.getProjectId());
-                transhipTubeDTOFormStockOut.setProjectCode(boxDTO.getProjectCode());
-                transhipTubeDTOFormStockOut.setProjectSiteId(boxDTO.getProjectSiteId());
-                transhipTubeDTOFormStockOut.setProjectSiteCode(boxDTO.getProjectSiteCode());
                 transhipTubeDTOFormStockOut.setTranshipBoxId(transhipBox.getId());
                 transhipTubeDTOFormStockOut.setFrozenBoxId(transhipBox.getFrozenBox().getId());
                 transhipTubeDTOFormStockOut.setFrozenTubeState(Constants.FROZEN_BOX_RETURN_BACK);
+                transhipTubeDTOFormStockOut.setMemo(tubeDTO.getMemo());
                 TranshipTube transhipTube = transhipTubeMapper.transhipTubeDTOToTranshipTube(transhipTubeDTOFormStockOut);
                 //样本ID为空表示为新增的样本
                 FrozenTube tube = null;

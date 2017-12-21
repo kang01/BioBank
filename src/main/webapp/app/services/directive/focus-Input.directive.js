@@ -26,8 +26,8 @@
             restrict: 'AC',
             link: function(_scope, _element) {
                 $timeout(function(){
-                    _element[0].focus();
-                }, 0);
+                    $(_element[0]).focus();
+                }, 100);
             }
         };
     }

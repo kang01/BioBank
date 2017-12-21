@@ -32,6 +32,9 @@
         var _modalInstance;
         //最开始的盒子对象字符串
         var _startBoxStr;
+        var _startTubes = [];
+        //切换冻存盒时，上一次的盒子编码
+        var _rowBoxCode;
 
         //归还单信息数据
         _queryGiveBackInfo();
@@ -50,7 +53,7 @@
 
 
 
-        vm.saveBox = _saveBox;
+        vm.saveBox = _onSaveBoxHandler;
         vm.saveGiveBackRecord = _saveGiveBackRecord;
         vm.completeGiveBack = _completeGiveBack;
         vm.invalid = _invalid;
@@ -84,6 +87,7 @@
                     _queryGiveBackInfo();
                     vm.box = {};
                     vm.htInstance.api.clearData();
+                    _startBoxStr = JSON.stringify(vm.box);
                 });
             }, function () {
             });
@@ -154,24 +158,27 @@
                 memo = ""
             }
             if(selectedData.length){
-                _modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'app/bizs/transport-record/modal/tubes-remark-modal.html',
-                    controller: 'TubesRemarkModalController',
-                    backdrop:'static',
-                    controllerAs: 'vm',
-                    resolve: {
-                        items: function () {
-                            return {
-                                memo:memo
-                            };
+                setTimeout(function(){
+                    _modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: 'app/bizs/transport-record/modal/tubes-remark-modal.html',
+                        controller: 'TubesRemarkModalController',
+                        backdrop:'static',
+                        controllerAs: 'vm',
+                        resolve: {
+                            items: function () {
+                                return {
+                                    memo:memo
+                                };
+                            }
                         }
-                    }
 
-                });
-                _modalInstance.result.then(function (memo) {
-                    vm.htInstance.api.setMemoOfSelectedTubes(memo);
-                });
+                    });
+                    _modalInstance.result.then(function (memo) {
+                        vm.htInstance.api.setMemoOfSelectedTubes(memo);
+                    },function () {
+                    });
+                }, 200);
             }else{
                 toastr.error("请选择要加备注的冻存管!");
             }
@@ -205,7 +212,7 @@
 
         //保存归还记录基本信息
         function _saveGiveBackRecord(callback) {
-            _saveBox(function () {
+            _onSaveBoxHandler(function () {
                 GiveBackService.saveGiveBackRecord(vm.giveBackRecord).success(function (data) {
                     if (typeof callback === "function"){
                         callback();
@@ -254,7 +261,7 @@
 
         }
         //保存冻存盒
-        function _saveBox(callback) {
+        function _onSaveBoxHandler(callback,tr,oData) {
             if(vm.box.frozenBoxCode){
                 var tubes = vm.htInstance.api.getTubesData();
                 var boxList = [];
@@ -266,26 +273,56 @@
                 }
                 vm.box.transhipTubeDTOS = tubes;
                 boxList.push(vm.box);
-                GiveBackService.editSaveBox($stateParams.giveBackId,boxList).success(function (data) {
-                    if (typeof callback === "function"){
-                        callback();
-                    }else{
-                        _queryGiveBackInfo();
-                        _startBoxStr = JSON.stringify(vm.box);
-                        toastr.success("冻存盒保存成功!");
+                var isValidTubeDataFlag = vm.htInstance.api.validTubeDataSampleCountOrSampleCode(_startTubes);
+                if(!isValidTubeDataFlag){
+                    _modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: 'app/bizs/common/prompt-modal.html',
+                        size: 'sm',
+                        controller: 'PromptModalController',
+                        controllerAs: 'vm',
+                        resolve: {
+                            items: function () {
+                                return {
+                                    status:'6'
+                                };
+                            }
+                        }
+                    });
+                    _modalInstance.result.then(function () {
+                        _editSaveBox(callback,boxList,tr,oData);
+                    }, function () {
 
-                    }
-                }).error(function (data) {
-                    toastr.error(data.message);
-                    var errorSampleArray = JSON.parse(data.params[0]);
-                    vm.htInstance.api.errorData(errorSampleArray);
-                });
+                    });
+                }else{
+                    _editSaveBox(callback,boxList);
+                }
             }else{
                 callback();
             }
+        }
+        function _editSaveBox(callback,boxList,tr,oData) {
+            return GiveBackService.editSaveBox($stateParams.giveBackId,boxList).success(function (data) {
+                if (typeof callback === "function"){
+                    callback();
+                    if(tr){
+                        _changeRowStyle(tr,oData);
+                        toastr.success("冻存盒保存成功!");
+                    }
+                }else{
+                    _startBoxStr = JSON.stringify(vm.box);
+                    _startTubes = vm.box.transhipTubeDTOS;
+                    _queryGiveBackInfo();
+                    toastr.success("冻存盒保存成功!");
 
-
-
+                }
+                return data;
+            }).error(function (data) {
+                toastr.error(data.message);
+                var errorSampleArray = JSON.parse(data.params[0]);
+                vm.htInstance.api.errorData(errorSampleArray);
+                return data;
+            });
         }
         //作废
         function _invalid() {
@@ -433,13 +470,12 @@
                 }
                 return frozenBoxCode;
             }
-            var rowBoxCode;
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull) {
                 $('td:first', nRow).html(iDisplayIndex+1);
                 $('td', nRow).unbind('click');
                 $(nRow).bind('click', function() {
                     var tr = this;
-                    if(rowBoxCode && rowBoxCode != oData.frozenBoxCode){
+                    if(_rowBoxCode && _rowBoxCode != oData.frozenBoxCode){
                         _switchRowClick(tr,oData);
                     }else{
                         _changeRowStyle(tr,oData);
@@ -477,29 +513,30 @@
                     _modalInstance.result.then(function (flag) {
                         if(flag){
                             //保存
-                            _saveBox(function () {
+                            _onSaveBoxHandler(function () {
                                 _queryBoxDetail(oData.id);
-                            });
+                            },tr,oData);
                         }else{
                             //不保存
                             _queryBoxDetail(oData.id);
                             vm.flagStatus = false;
                             vm.changeStatus();
+                            _changeRowStyle(tr,oData);
                         }
-                        _changeRowStyle(tr,oData);
+
                     }, function () {
                     // 取消
                     });
                 }
             }
-            //改变行的选中样式
-            function _changeRowStyle(tr,oData) {
-                $(tr).closest('table').find('.rowLight').removeClass("rowLight");
-                $(tr).addClass('rowLight');
-                rowBoxCode = oData.frozenBoxCode;
-            }
-        }
 
+        }
+        //改变行的选中样式
+        function _changeRowStyle(tr,oData) {
+            $(tr).closest('table').find('.rowLight').removeClass("rowLight");
+            $(tr).addClass('rowLight');
+            _rowBoxCode = oData.frozenBoxCode;
+        }
         //初始化盒子上暂存位置
         function _initBoxTempPos() {
             vm.equipmentConfig = {
@@ -579,6 +616,7 @@
                 vm.sampleCount = vm.htInstance.api.sampleCount();
 
                 vm.box.transhipTubeDTOS =  _.sortBy(vm.box.transhipTubeDTOS, ["tubeRows", function(o){return +o.tubeColumns}]);
+                _startTubes = vm.box.transhipTubeDTOS;
                 _startBoxStr = JSON.stringify(vm.box);
             });
         }

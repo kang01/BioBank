@@ -73,8 +73,17 @@
             if (that.getInputElement().value){
                 // setTimeout(function(){$(that.getInputElement()).select()},0);
             }
+            var settings = that.instance.getSettings();
+            if (!settings.isCellValueEditable || !settings.editor){
+                // that.state = "STATE_FINISHED";
+                that.close();
+                // that.destroy();
+                // that.discardEditor(false);
+                return;
+            }
             if (that.originalValue && that.originalValue.flag == 2){
                 that.close();
+                return;
             }
         },
 

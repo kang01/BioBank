@@ -69,6 +69,7 @@
                 setMemoOfTubeCell: _setMemoOfTubeCell,
                 getMemoOfTubeCell: _getMemoOfTubeCell,
                 setMemoOfSelectedTubes: _setMemoOfSelectedTubes,
+                validTubeDataSampleCountOrSampleCode: _validTubeDataSampleCountOrSampleCode
             };
             $scope.htInstance = $scope.htInstance || {};
             $scope.htInstance.api = vm.api;
@@ -88,7 +89,7 @@
                 colWidths: 60,
                 columnHeaderHeight:25,
                 editor: 'tubeCellInput',
-                outsideClickDeselects:false,
+                outsideClickDeselects:true,
                 multiSelect: true,
                 comments: true,
                 afterInit: _onInit,
@@ -278,6 +279,25 @@
                 }
 
                 return errorPos.length == 0;
+            }
+
+            function _validTubeDataSampleCountOrSampleCode(oldTubeData) {
+                var newTubeData = _getTubesData();
+                var errorPos = [];
+                if(oldTubeData.length != newTubeData.length){
+                    // toastr.error("冻存样本中的数量有变，是否进行保存？");
+                    errorPos.push(["冻存样本中的数量有变，是否进行保存？"]);
+                }
+                _.each(oldTubeData, function(oldTube, colIndex){
+                    var len = _.filter(newTubeData,{sampleCode:oldTube.sampleCode}).length;
+                    if(!len){
+                        // toastr.error("冻存样本中的样本编码有变，是否进行保存？");
+                        errorPos.push(["冻存样本中的样本编码有变，是否进行保存？"]);
+                    }
+                });
+                _deselectAll();
+                return errorPos.length == 0;
+
             }
 
             // 获取空位编码所在的坐标位置
@@ -673,7 +693,7 @@
 
             // 当撤销单元格选中后，触发这个响应
             function _onTubeCellDeselected(){
-                _clearSelectedStatus();
+                // _clearSelectedStatus();
                 return;
             }
 
@@ -878,7 +898,6 @@
             }
             //错误的样本，闪烁
             function _errorData(errorSampleArray) {
-                console.log(errorSampleArray);
                 _errorSampleArray = errorSampleArray;
                 var tableCtrl = _getTableCtrl();
                 tableCtrl.render();
@@ -1114,6 +1133,7 @@
             // 撤销选中
             function _deselectAll() {
                 _getTableCtrl().deselectCell();
+                _clearSelectedStatus();
             }
 
             // 根据孔位进行位置交换

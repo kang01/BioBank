@@ -25,7 +25,8 @@
             LEFT JOIN area a ON shelf.area_id = a.id
             LEFT JOIN equipment e ON a.equipment_id = e.id
             LEFT JOIN equipment_modle emodle ON e.equipment_modle_id = emodle.id
-            LEFT JOIN frozen_box box ON box.equipment_id = e.id and  box.area_id = a.id and  box.support_rack_id = shelf.id and box.status in ('2004','2006')
+            LEFT JOIN frozen_box box ON box.equipment_id = e.id and  box.area_id = a.id
+            and  box.support_rack_id = shelf.id and box.status in ('2004','2006')
         </createView>
 
     </changeSet>

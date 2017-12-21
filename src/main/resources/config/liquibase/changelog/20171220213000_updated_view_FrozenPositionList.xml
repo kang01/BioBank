@@ -6,8 +6,9 @@
     <!--
         Added the view for entity FrozenPositionListDataTableEntity.
     -->
-    <changeSet id="20170518000000-2" author="jhipster">
 
+    <changeSet id="20171220213000-1" author="jhipster">
+        <dropView viewName="view_frozen_position_list"></dropView>
         <createView viewName="view_frozen_position_list">
             SELECT
             shelf.id,
@@ -16,11 +17,11 @@
             shelf.support_rack_code as shelves_code,shelf.id as shelves_id,shelfType.support_rack_type_code as shelves_type ,shelfType.id as shelves_type_id,
             p.project_code ,p.project_name,shelf.status,
             e.equipment_code||'.'|| a.area_code||'.'||shelf.support_rack_code as position,shelf.memo,
-            (select count(b.id) from frozen_box b where b.equipment_id = temp.equipment_id and  b.area_id = temp.area_id and  b.support_rack_id = temp.support_rack_id and b.status = '2004') as count_of_used,
-            (shelfType.support_rack_rows*shelfType.support_rack_columns-(select count(b.id) from frozen_box b where b.equipment_id = temp.equipment_id and  b.area_id = temp.area_id and  b.support_rack_id = temp.support_rack_id and b.status = '2004')) as count_of_rest
+            temp.count_of_used,
+            (shelfType.support_rack_rows*shelfType.support_rack_columns-temp.count_of_used) as count_of_rest
 
             FROM (
-            select box.project_id,box.equipment_id,box.area_id,box.support_rack_id from frozen_box box
+            select box.project_id,box.equipment_id,box.area_id,box.support_rack_id,count(1) as count_of_used  from frozen_box box
             where box.status = '2004' group by  box.project_id,box.equipment_id,box.area_id,box.support_rack_id
             )temp
 
@@ -35,5 +36,4 @@
         </createView>
 
     </changeSet>
-
 </databaseChangeLog>

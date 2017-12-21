@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <!--
-        Added the view for entity ShelvesListAllDataTableEntity.
+        Added the view for entity AreasListAllDataTableEntity.
     -->
     <changeSet id="20170524000000-1" author="jhipster">
 

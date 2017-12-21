@@ -6,19 +6,24 @@
     <!--
         Added the view for entity AreasListByProjectDataTableEntity.
     -->
-    <changeSet id="20170526000000-1" author="jhipster">
-
+    <changeSet id="20171220214182-1" author="jhipster">
+        <dropView viewName="view_areas_list_by_project"></dropView>
         <createView viewName="view_areas_list_by_project">
-            select a.id,m.id as equipment_type_id,m.equipment_type,e.equipment_code ||'.'||a.area_code as position,a.freeze_frame_number,
-            (select  count( DISTINCT s.id) from support_rack s left join frozen_box box on box.support_rack_id = s.id where s.area_id = a.id and s.status!='0000' and box.status in ('2004','2006')) as count_of_used,
+            select a.id,m.id as equipment_type_id,m.equipment_type,e.equipment_code ||'.'||a.area_code as position,
+            a.freeze_frame_number,
+            temp.count_of_used,temp.project_id,temp.project_name,temp.project_code,
             (select count(s.id) from support_rack s where s.area_id = a.id and s.status!='0000')  as count_of_shelves,
-            ((select count(s.id) from support_rack s where s.area_id = a.id and s.status!='0000')-(select  count( DISTINCT s.id) from support_rack s left join frozen_box box on box.support_rack_id = s.id where s.area_id = a.id and s.status!='0000' and box.status in ('2004','2006')) )as count_of_rest,
+            ((select count(s.id) from support_rack s where s.area_id = a.id and s.status!='0000')-
+            temp.count_of_used)as count_of_rest,
             a.status,
             a.equipment_id,e.equipment_code,a.area_code
             from area a
             left join equipment e on a.equipment_id = e.id
             left join equipment_modle m on e.equipment_modle_id = m.id
-            left join frozen_box box on box.area_id = a.id
+            left join  (
+            select  box.project_id,box.project_name,box.project_code,box.area_id,count(1) as count_of_used  from frozen_box box
+            where box.status in ('2004','2006') group by box.project_id,box.project_name,box.project_code,box.area_id
+            )temp on temp.area_id = a.id
             where a.status !='0000'
         </createView>
 

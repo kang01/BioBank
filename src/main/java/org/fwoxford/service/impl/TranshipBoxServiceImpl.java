@@ -1157,9 +1157,15 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             //获取出库冻存盒ID串
             List<Long> stockOutFrozenBoxIds = stockOutFrozenBoxes.stream().map(s->s.getId()).collect(Collectors.toList());
             //根据出库冻存盒ID查询出库样本---此方法已经限制只查询样本状态为已交接的
-            List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxIdInForReturnBack(stockOutFrozenBoxIds);
+            List<StockOutReqFrozenTube> stockOutReqFrozenTubes = new ArrayList<>();
+            if(stockOutFrozenBoxIds!=null && stockOutFrozenBoxIds.size()>0){
+                stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxIdInForReturnBack(stockOutFrozenBoxIds);
+            }
            //验证样本是否都归还了，如果已经归还了，需要从出库样本中排除已经归还的
-            List<Long> frozenTubeIdsForReturnBack = stockOutReqFrozenTubes.stream().map(s->s.getFrozenTube().getId()).collect(Collectors.toList());
+            List<Long> frozenTubeIdsForReturnBack = new ArrayList<>();
+            if(stockOutReqFrozenTubes!=null && stockOutReqFrozenTubes.size()>0) {
+                frozenTubeIdsForReturnBack = stockOutReqFrozenTubes.stream().map(s -> s.getFrozenTube().getId()).collect(Collectors.toList());
+            }
             //查询归还样本中是否有重复的
             List<List<Long>> frozenTubeIdsForReturnBackEach1000 = Lists.partition(frozenTubeIdsForReturnBack,1000);
             List<FrozenTube> frozenTubeListForReturnBacking = new ArrayList<>();

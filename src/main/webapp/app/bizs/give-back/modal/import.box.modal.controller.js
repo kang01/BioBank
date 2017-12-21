@@ -240,6 +240,7 @@
                     setTimeout(function () {
                         vm.progressFlag = false;
                         // blockUIConfig.autoBlock = true;
+                        $scope.$apply();
                     },500)
                 }
                 if (typeof callback === "function"){

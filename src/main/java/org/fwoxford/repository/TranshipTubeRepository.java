@@ -52,4 +52,8 @@ public interface TranshipTubeRepository extends JpaRepository<TranshipTube,Long>
     List<TranshipTube> findByFrozenTubeIdInAndFrozenTubeStateInAndStatusNot(List<Long> ids, List<String> frozenTubeState,String status);
 
     List<TranshipTube> findBySampleCodeInAndFrozenTubeStateInAndStatusNot(List<String> sampleCodeStr, ArrayList<String> frozenTubeState,String status);
+
+    @Modifying
+    @Query("update TranshipTube t set t.frozenTubeState = ?1  where t.transhipBox.id = ?2 and t.status != '0000'")
+    void updateFrozenTubeStateByTranshipBoxId(String status, Long id);
 }

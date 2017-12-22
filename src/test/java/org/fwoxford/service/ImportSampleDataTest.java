@@ -1636,14 +1636,11 @@ public class ImportSampleDataTest {
             frozenBoxRepository.save(frozenBox);
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(frozenBox.getId());
             for (FrozenTube f : frozenTubeList) {
-                f.setStatus(Constants.FROZEN_TUBE_DESTROY);
                 f.setFrozenTubeState(Constants.FROZEN_BOX_DESTROY);
                 frozenTubeRepository.save(f);
             }
             saveDestroyDetail(positionDestroy, Constants.MOVE_TYPE_FOR_BOX, frozenTubeList);
         } else {
-
-            frozenTube.setStatus(Constants.FROZEN_TUBE_DESTROY);
             frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_DESTROY);
             frozenTubeRepository.save(frozenTube);
             FrozenTube finalFrozenTube = frozenTube;

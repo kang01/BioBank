@@ -317,15 +317,20 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
         tube.setProject(box.getProject());
         tube.setProjectCode(box.getProjectCode());
+        tube.setProjectName(box.getProjectName());
         tube.setProjectSite(box.getProjectSite());
         tube.setProjectSiteCode(box.getProjectSiteCode());
         if (tube.getSampleClassification() == null){
             tube.setSampleClassification(box.getSampleClassification());
+            tube.setSampleClassificationName(box.getSampleClassification().getSampleClassificationName());
+            tube.setSampleClassificationCode(box.getSampleClassification().getSampleClassificationCode());
         } else {
             int sampleClassificationsIndex = sampleClassifications.indexOf(tube.getSampleClassification());
             if (sampleClassificationsIndex >= 0) {
                 SampleClassification sampleClass = sampleClassifications.get(sampleClassificationsIndex);
                 tube.setSampleClassification(sampleClass);
+                tube.setSampleClassificationName(sampleClass.getSampleClassificationName());
+                tube.setSampleClassificationCode(sampleClass.getSampleClassificationCode());
                 //验证项目与样本类型与样本分类是否配置
                 ProjectSampleClass projectSampleClass = projectSampleClasses.stream().filter(
                     s->s.getSampleType().equals(tube.getSampleType())&& s.getProjectCode().equals(tube.getProjectCode())
@@ -1422,7 +1427,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             throw new BankServiceException("归还冻存盒不存在！");
         }
         FrozenBox frozenBox = transhipBox.getFrozenBox();
-        if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_NEW)){
+        if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_RETURN_BACK)){
             frozenBox.setStatus(Constants.INVALID);
             frozenBoxRepository.save(frozenBox);
             frozenTubeRepository.updateStatusByFrozenBoxId(Constants.INVALID,frozenBox.getId());

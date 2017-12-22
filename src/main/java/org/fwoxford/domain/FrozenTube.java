@@ -814,4 +814,54 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     public void setParentSampleCode(String parentSampleCode) {
         this.parentSampleCode = parentSampleCode;
     }
+
+    /**
+     * 样本分类编码
+     */
+    @Size(max = 100)
+    @Column(name = "sample_classification_code", length = 100)
+    private String sampleClassificationCode;
+    /**
+     * 样本分类名称
+     */
+    @Size(max = 255)
+    @Column(name = "sample_classification_name", length = 255)
+    private String sampleClassificationName;
+
+    @Size(max = 255)
+    @Column(name = "project_name", length = 255)
+    private String projectName;
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+    public FrozenTube sampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+        return this;
+    }
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+    }
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+    public FrozenTube sampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+        return this;
+    }
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+    public FrozenTube projectName(String projectName) {
+        this.projectName = projectName;
+        return this;
+    }
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
 }

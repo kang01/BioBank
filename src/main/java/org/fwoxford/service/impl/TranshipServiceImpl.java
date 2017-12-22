@@ -378,12 +378,12 @@ public class TranshipServiceImpl implements TranshipService{
         for(TranshipBox tBox:transhipBoxes){
             tBox.setStatus(Constants.FROZEN_BOX_INVALID);
             FrozenBox frozenBox = tBox.getFrozenBox();
-            if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_NEW)){
+            if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_RETURN_BACK)){
                 frozenBox.setStatus(Constants.FROZEN_BOX_INVALID);
                 frozenBoxList.add(frozenBox);
             }
-            frozenTubeRepository.updateStatusByFrozenBoxId(Constants.FROZEN_BOX_INVALID,frozenBox.getId());
-            transhipTubeRepository.updateStatusByTranshipBoxId(Constants.FROZEN_BOX_INVALID,tBox.getId());
+            frozenTubeRepository.updateFrozenTubeStateByFrozenBoxId(Constants.FROZEN_BOX_INVALID,frozenBox.getId());
+            transhipTubeRepository.updateFrozenTubeStateByTranshipBoxId(Constants.FROZEN_BOX_INVALID,tBox.getId());
         }
         transhipBoxRepository.save(transhipBoxes);
         frozenBoxRepository.save(frozenBoxList);

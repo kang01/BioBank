@@ -168,6 +168,7 @@ public interface TranshipTubeMapper {
         frozenTube.setSampleType(stockOutTube.getSampleType() );
         frozenTube.setSampleClassification( stockOutTube.getSampleClassification());
         frozenTube.setProjectCode( stockOutTube.getProjectCode() );
+        frozenTube.setProjectName(stockOutTube.getProject()!=null?stockOutTube.getProject().getProjectName():null);
         frozenTube.setProjectSiteCode( stockOutTube.getProjectSiteCode() );
         frozenTube.setFrozenTubeCode( stockOutTube.getFrozenTubeCode() );
         frozenTube.setSampleTempCode( stockOutTube.getSampleTempCode() );
@@ -188,6 +189,8 @@ public interface TranshipTubeMapper {
         frozenTube.setFrozenTubeState( stockOutTube.getFrozenTubeState() );
         frozenTube.setStatus( stockOutTube.getStatus() );
         frozenTube.setFrozenBoxCode( stockOutTube.getFrozenBoxCode() );
+        frozenTube.setSampleClassificationCode(stockOutTube.getSampleClassificationCode());
+        frozenTube.setSampleClassificationName(stockOutTube.getSampleClassificationName());
         return frozenTube;
     }
 

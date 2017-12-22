@@ -188,15 +188,34 @@
             vm.fnQueryProjectSampleClass = _fnQueryProjectSampleClass;
             //作废
             vm.invalid = function () {
-                BioBankBlockUi.blockUiStart();
-                TranshipInvalidService.invalid(vm.transportRecord.transhipCode).success(function () {
-                    toastr.success("已作废！");
-                    BioBankBlockUi.blockUiStop();
-                    $state.go('transport-record');
-                }).error(function () {
-                    BioBankBlockUi.blockUiStop();
-                    toastr.error("作废功能报错！");
+                modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/common/prompt-content-modal.html',
+                    size: 'md',
+                    controller: 'PromptContentModalController',
+                    controllerAs: 'vm',
+                    backdrop:'static',
+                    resolve: {
+                        items: function () {
+                            return {
+                                status:'2'
+                            };
+                        }
+                    }
                 });
+                modalInstance.result.then(function (invalidReason) {
+                    var obj = {
+                        invalidReason:invalidReason
+                    };
+                    TranshipInvalidService.invalid(vm.transportRecord.transhipCode,obj).success(function () {
+                        toastr.success("已作废！");
+                        $state.go('transport-record');
+                    }).error(function (data) {
+                        toastr.error(data.message);
+                    });
+                }, function () {
+                });
+
             };
             //为提示框的判断
             vm.saveStockInFlag = false;

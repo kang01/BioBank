@@ -56,7 +56,7 @@
         vm.saveBox = _onSaveBoxHandler;
         vm.saveGiveBackRecord = _saveGiveBackRecord;
         vm.completeGiveBack = _completeGiveBack;
-        vm.invalid = _invalid;
+        vm.invalid = _onInvalidHandler;
         vm.uploadFile = _uploadFile;
         vm.delUploadFile = _delUploadFile;
 
@@ -72,6 +72,7 @@
                 size: 'sm',
                 controller: 'WarningModalCtrl',
                 controllerAs: 'vm',
+                backdrop:'static',
                 resolve: {
                     items: function () {
                         return {
@@ -281,6 +282,7 @@
                         size: 'sm',
                         controller: 'PromptModalController',
                         controllerAs: 'vm',
+                        backdrop:'static',
                         resolve: {
                             items: function () {
                                 return {
@@ -325,13 +327,14 @@
             });
         }
         //作废
-        function _invalid() {
+        function _onInvalidHandler() {
             _modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'warningModal.html',
-                size: 'sm',
-                controller: 'WarningModalCtrl',
+                templateUrl: 'app/bizs/common/prompt-content-modal.html',
+                size: 'md',
+                controller: 'PromptContentModalController',
                 controllerAs: 'vm',
+                backdrop:'static',
                 resolve: {
                     items: function () {
                         return {
@@ -340,8 +343,8 @@
                     }
                 }
             });
-            _modalInstance.result.then(function () {
-                _invalidGiveBack();
+            _modalInstance.result.then(function (invalidReason) {
+                _invalidGiveBack(invalidReason);
             }, function () {
             });
         }
@@ -429,12 +432,15 @@
             });
         }
         //作废
-        function _invalidGiveBack() {
-            GiveBackService.invalidGiveBack(vm.giveBackRecord.transhipCode).success(function(data){
+        function _invalidGiveBack(invalidReason) {
+            var obj = {
+                invalidReason:invalidReason
+            };
+            GiveBackService.invalidGiveBack(vm.giveBackRecord.transhipCode,obj).success(function(data){
                 $state.go('give-back-table');
                 toastr.success("作废成功!");
             }).error(function (data) {
-
+                toastr.error(data.message);
             });
         }
         //归还盒子信息
@@ -502,6 +508,7 @@
                         size: 'sm',
                         controller: 'PromptModalController',
                         controllerAs: 'vm',
+                        backdrop:'static',
                         resolve:{
                             items:function () {
                                 return{

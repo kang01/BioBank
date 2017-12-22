@@ -24,7 +24,7 @@
             'update': { method:'PUT' },
             'delete':{ method:'DELETE'}
         });
-        service.invalid = function(transhipCode){
+        service.invalid = function(transhipCode,invalidReason){
             var ajaxUrl = 'api/tranships/invalid/'+transhipCode;
 
             var req = {
@@ -32,7 +32,8 @@
                 url: ajaxUrl,
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                data:invalidReason
             };
 
             return $http(req);

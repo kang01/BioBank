@@ -367,7 +367,7 @@ public class TranshipServiceImpl implements TranshipService{
         if(!tranship.getTranshipState().equals(Constants.TRANSHIPE_IN_PENDING)){
             throw new BankServiceException("接收已不在进行中的状态，不能作废！",transhipCode);
         }
-        if(StringUtils.isEmpty(tranship.getInvalidReason())){
+        if(StringUtils.isEmpty(transhipDTO.getInvalidReason())){
             throw new BankServiceException("作废原因不能为空！",transhipCode);
         }
         tranship.setTranshipState(Constants.TRANSHIPE_IN_INVALID);

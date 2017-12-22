@@ -1,0 +1,12 @@
+<div class="modal-header">
+    <h3 class="modal-title">
+        <span>作废原因</span>
+    </h3>
+</div>
+<div class="modal-body">
+    <textarea rows="6" style="width: 100%" ng-model="vm.text" focus-me class="resize-none" maxlength="1000"></textarea>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-disabled="!vm.text" ng-click="vm.ok()">确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+</div>

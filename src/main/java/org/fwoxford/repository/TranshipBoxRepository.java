@@ -7,6 +7,7 @@ import org.fwoxford.domain.TranshipBox;
 
 import org.springframework.data.jpa.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,4 +45,8 @@ public interface TranshipBoxRepository extends JpaRepository<TranshipBox,Long> {
 
     @Query("select t from TranshipBox t where t.status = ?2 and ( t.frozenBoxCode in ?1 or t.frozenBoxCode1D in ?1 )")
     List<TranshipBox> findByFrozenBoxCodeInAndStatus(List<String> frozenBoxCodeStr, String status);
+
+    TranshipBox findByIdAndStatusNot(Long boxId, String status);
+
+    Long countByTranshipIdAndStatusNotIn(Long id, ArrayList<String> status);
 }

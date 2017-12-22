@@ -1,7 +1,9 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.fwoxford.domain.TranshipBox;
 import org.fwoxford.service.TranshipTubeService;
+import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.TranshipTubeDTO;
@@ -128,4 +130,31 @@ public class TranshipTubeResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 销毁转运冻存管
+     * @param transhipTubeDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/tranship-tubes/destroy/{boxId}")
+    @Timed
+    public ResponseEntity<TranshipBoxDTO> destroyTranshipTube(@Valid @RequestBody TranshipTubeDTO transhipTubeDTO , @PathVariable Long boxId) throws URISyntaxException {
+        log.debug("REST request to destroy TranshipTubes : {}", transhipTubeDTO);
+        TranshipBoxDTO transhipBoxDTO = transhipTubeService.destroyTranshipTube(transhipTubeDTO,boxId);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipTubeDTO.getId().toString())).body(transhipBoxDTO);
+    }
+
+    /**
+     * 销毁归还冻存管
+     * @param transhipTubeDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/return-tubes/destroy/{boxId}")
+    @Timed
+    public ResponseEntity<TranshipBoxDTO> destroyTranshipTubeForReturnBack(@Valid @RequestBody TranshipTubeDTO transhipTubeDTO, @PathVariable Long boxId) throws URISyntaxException {
+        log.debug("REST request to destroy TranshipTubes : {}", transhipTubeDTO);
+        TranshipBoxDTO transhipBoxDTO =   transhipTubeService.destroyTranshipTube(transhipTubeDTO,boxId);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipTubeDTO.getId().toString())).body(transhipBoxDTO);
+    }
 }

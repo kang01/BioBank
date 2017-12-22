@@ -56,4 +56,5 @@ public interface TranshipTubeRepository extends JpaRepository<TranshipTube,Long>
     @Modifying
     @Query("update TranshipTube t set t.frozenTubeState = ?1  where t.transhipBox.id = ?2 and t.status != '0000'")
     void updateFrozenTubeStateByTranshipBoxId(String status, Long id);
+
 }

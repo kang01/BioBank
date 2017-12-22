@@ -3,6 +3,7 @@ package org.fwoxford.service;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.TranshipBox;
 import org.fwoxford.domain.TranshipTube;
+import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.service.dto.TranshipTubeDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,4 +46,11 @@ public interface TranshipTubeService {
     void delete(Long id);
 
     List<TranshipTube> saveTranshipTube(TranshipBox transhipBox, List<FrozenTube> frozenTubeList);
+
+    /**
+     * 转运冻存管/归还冻存管销毁
+     * @param transhipTubeDTO
+     * @param boxId
+     */
+    TranshipBoxDTO destroyTranshipTube(TranshipTubeDTO transhipTubeDTO, Long boxId);
 }

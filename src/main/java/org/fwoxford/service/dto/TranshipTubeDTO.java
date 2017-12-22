@@ -4,6 +4,7 @@ package org.fwoxford.service.dto;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -530,4 +531,23 @@ public class TranshipTubeDTO implements Serializable {
         this.parentSampleCode = parentSampleCode;
     }
 
+    private List<Long> frozenTubeIds;
+
+    private String destroyReason;
+
+    public List<Long> getFrozenTubeIds() {
+        return frozenTubeIds;
+    }
+
+    public void setFrozenTubeIds(List<Long> frozenTubeIds) {
+        this.frozenTubeIds = frozenTubeIds;
+    }
+
+    public String getDestroyReason() {
+        return destroyReason;
+    }
+
+    public void setDestroyReason(String destroyReason) {
+        this.destroyReason = destroyReason;
+    }
 }

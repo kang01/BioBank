@@ -59,12 +59,13 @@ public final class Constants {
     public static final String FROZEN_BOX_DESTROY = "2012";
     public static final String FROZEN_BOX_RETURN_BACK = "2013" ;
     /**
-     * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常
+     * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常; 3005:销毁
      */
     public static final  String FROZEN_TUBE_NORMAL = "3001" ;
     public static final  String FROZEN_TUBE_EMPTY = "3002" ;
     public static final  String FROZEN_TUBE_HOLE_EMPTY = "3003" ;
     public static final  String FROZEN_TUBE_ABNORMAL = "3004" ;
+    public static final  String FROZEN_TUBE_DESTROY = "3005" ;
     /**
      * 是：1，否：0
      */

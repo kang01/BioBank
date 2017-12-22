@@ -227,4 +227,21 @@ public class StockOutTaskResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, id.toString()))
             .body(result);
     }
+
+    /**
+     * 任务作废
+     * @param taskId
+     * @param stockOutTaskDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-tasks/invalid/{taskId}")
+    @Timed
+    public ResponseEntity<StockOutTaskDTO> invalidStockOutTask(@PathVariable Long taskId,@RequestBody StockOutTaskDTO stockOutTaskDTO) throws URISyntaxException {
+        log.debug("REST request to invalid StockOutTask : {}", taskId);
+        StockOutTaskDTO result = stockOutTaskService.invalidStockOutTask(taskId,stockOutTaskDTO);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, taskId.toString()))
+                .body(result);
+    }
 }

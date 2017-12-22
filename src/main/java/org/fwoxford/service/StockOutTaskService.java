@@ -55,4 +55,12 @@ public interface StockOutTaskService {
     DataTablesOutput<StockOutTaskForPlanDataTableEntity> getPageStockOutTaskByPlan(Long id, DataTablesInput input);
 
     DataTablesOutput<StockOutTaskForDataTableEntity> getPageStockOutTask(DataTablesInput input);
+
+    /**
+     * 作废任务
+     * @param taskId
+     * @param stockOutTaskDTO
+     * @return
+     */
+    StockOutTaskDTO invalidStockOutTask(Long taskId, StockOutTaskDTO stockOutTaskDTO);
 }

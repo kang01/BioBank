@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * A DTO for the Tranship entity.
  */
-public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
+public class TranshipDTO implements Serializable {
 
     private Long id;
     /**
@@ -420,6 +420,8 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
 
     private String delegateName;
 
+    private String invalidReason;
+
     public String getReceiveType() {
         return receiveType;
     }
@@ -474,5 +476,13 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setDelegateName(String delegateName) {
         this.delegateName = delegateName;
+    }
+
+    public String getInvalidReason() {
+        return invalidReason;
+    }
+
+    public void setInvalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
     }
 }

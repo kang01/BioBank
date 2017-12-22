@@ -218,4 +218,17 @@ public class StockOutTaskDTO extends AbstractAuditingDTO implements Serializable
     public void setCountOfHandOverSample(Integer countOfHandOverSample) {
         this.countOfHandOverSample = countOfHandOverSample;
     }
+
+    /**
+     * 作废原因
+     */
+    private String invalidReason;
+
+    public String getInvalidReason() {
+        return invalidReason;
+    }
+
+    public void setInvalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
+    }
 }

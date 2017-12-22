@@ -585,6 +585,9 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @Column(name="apply_person_name",length = 20)
     private String applyPersonName;
 
+    @Column(name="invalid_reason",length = 1024)
+    private String invalidReason;
+
     public String getReceiveType() {
         return receiveType;
     }
@@ -638,5 +641,16 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     }
     public void setApplyPersonName(String applyPersonName) {
         this.applyPersonName = applyPersonName;
+    }
+
+    public String getInvalidReason() {
+        return invalidReason;
+    }
+    public Tranship invalidReason(String invalidReason){
+        this.invalidReason = invalidReason;
+        return this;
+    }
+    public void setInvalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
     }
 }

@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.domain.StockOutFrozenBox;
+import org.fwoxford.domain.StockOutTask;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
 import org.fwoxford.service.dto.StockOutTaskDTO;
 import org.fwoxford.service.dto.response.*;
@@ -70,4 +71,18 @@ public interface StockOutFrozenBoxService {
     DataTablesOutput<FrozenBoxForStockOutDataTableEntity> getPageByRequirementIds(List<Long> ids, DataTablesInput input);
 
     DataTablesOutput<StockOutFrozenBoxForTaskDetailDataTableEntity> getPageByTask(Long id, DataTablesInput input);
+
+    /**
+     * 原盒撤销出库（盒内未装盒的样本都撤销）
+     * @param stockOutFrozenBoxDTO
+     * @param taskId
+     * @return
+     */
+    StockOutFrozenBoxForTaskDataTableEntity repealStockOutFrozenBox(StockOutFrozenBoxDTO stockOutFrozenBoxDTO, Long taskId);
+
+    /**
+     * 根据当前任务出库的样本量更改出库任务，出库计划，出库申请的出库样本量和状态
+     * @param stockOutTask
+     */
+    void updateStatusAndCountOfStockOutSampleForStockOutTaskAndPlanAndApply(StockOutTask stockOutTask);
 }

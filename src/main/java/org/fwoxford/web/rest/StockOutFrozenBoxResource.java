@@ -368,4 +368,21 @@ public class StockOutFrozenBoxResource {
         DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = stockOutFrozenBoxService.getPageWaitingHandOverStockOutFrozenBoxes(id,input);
         return result;
     }
+
+    /**
+     * 原盒撤销出库（盒内未装盒的样本都撤销）
+     * @param stockOutFrozenBoxDTO
+     * @param taskId
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-frozen-boxes/repealStockOutBoxs/task/{taskId}")
+    @Timed
+    public ResponseEntity<StockOutFrozenBoxForTaskDataTableEntity> repealStockOutFrozenBox(@Valid @RequestBody StockOutFrozenBoxDTO stockOutFrozenBoxDTO,@PathVariable Long taskId) throws URISyntaxException {
+        log.debug("REST request to repealStockOutFrozenBox : {}", stockOutFrozenBoxDTO);
+        StockOutFrozenBoxForTaskDataTableEntity result = stockOutFrozenBoxService.repealStockOutFrozenBox(stockOutFrozenBoxDTO,taskId);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.toString()))
+                .body(result);
+    }
 }

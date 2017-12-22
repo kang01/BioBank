@@ -22,6 +22,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -83,6 +84,9 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
 
     @Autowired
     private StockOutRequirementRepository stockOutRequirementRepository;
+
+    @Autowired
+    StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
 
     public StockOutTaskServiceImpl(StockOutTaskRepository stockOutTaskRepository, StockOutPlanRepository stockOutPlanRepository, FrozenBoxRepository frozenBoxRepository, StockOutTaskMapper stockOutTaskMapper) {
         this.stockOutTaskRepository = stockOutTaskRepository;
@@ -408,5 +412,35 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     public DataTablesOutput<StockOutTaskForDataTableEntity> getPageStockOutTask(DataTablesInput input) {
         DataTablesOutput<StockOutTaskForDataTableEntity> output =stockOutTaskRepositories.findAll(input);
         return output;
+    }
+
+    /**
+     * 作废出库任务
+     * @param taskId
+     * @param stockOutTaskDTO
+     * @return
+     */
+    @Override
+    public StockOutTaskDTO invalidStockOutTask(Long taskId, StockOutTaskDTO stockOutTaskDTO) {
+        if(StringUtils.isEmpty(stockOutTaskDTO.getInvalidReason())){
+            throw new BankServiceException("作废原因不能为空！");
+        }
+        StockOutTask stockOutTask = stockOutTaskRepository.findOne(taskId);
+        if(stockOutTask == null ||
+                (stockOutTask!=null && !stockOutTask.getStatus().equals(Constants.STOCK_OUT_TASK_PENDING)
+                &&!stockOutTask.getStatus().equals(Constants.STOCK_OUT_TASK_NEW))){
+            throw new BankServiceException("出库任务不存在或出库任务状态不在进行中，不能作废！");
+        }
+        Long countOfStockOutTaskBox = stockOutFrozenBoxRepository.countByStockOutTaskId(taskId);
+        if(countOfStockOutTaskBox.intValue()>0){
+            throw new BankServiceException("此次任务已经有待出库或已出库的冻存盒，不能作废！");
+        }
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndStatus(taskId,Constants.STOCK_OUT_SAMPLE_IN_USE);
+        for(StockOutReqFrozenTube s :stockOutReqFrozenTubes){
+            s.stockOutTask(null);
+        }
+        stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+        stockOutTask.status(Constants.STOCK_OUT_TASK_INVALID).invalidReason(stockOutTaskDTO.getInvalidReason());
+        return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
 }

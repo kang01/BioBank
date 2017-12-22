@@ -183,9 +183,9 @@ public class TranshipResource {
      */
     @PutMapping("/tranships/invalid/{transhipCode}")
     @Timed
-    public ResponseEntity<TranshipDTO> invalidTranship(@PathVariable String transhipCode) throws URISyntaxException {
+    public ResponseEntity<TranshipDTO> invalidTranship(@PathVariable String transhipCode, @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
         log.debug("REST request to save StockIn : {}", transhipCode);
-        TranshipDTO result = transhipService.invalidTranship(transhipCode);
+        TranshipDTO result = transhipService.invalidTranship(transhipCode,transhipDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -334,9 +334,9 @@ public class TranshipResource {
      */
     @PutMapping("/return-back/invalid/{returnBackCode}")
     @Timed
-    public ResponseEntity<TranshipDTO> invalidTranshipForReturnBack(@PathVariable String returnBackCode) throws URISyntaxException {
+    public ResponseEntity<TranshipDTO> invalidTranshipForReturnBack(@PathVariable String returnBackCode, @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
         log.debug("REST request to invalidTranshipForReturnBack : {}", returnBackCode);
-        TranshipDTO result = transhipService.invalidTranship(returnBackCode);
+        TranshipDTO result = transhipService.invalidTranship(returnBackCode, transhipDTO);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);

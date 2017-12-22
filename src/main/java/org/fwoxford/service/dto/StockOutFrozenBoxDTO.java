@@ -5,6 +5,7 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -536,5 +537,27 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
     public StockOutFrozenBoxDTO setCountOfSample(Integer countOfSample) {
         this.countOfSample = countOfSample;
         return this;
+    }
+
+    private List<Long> frozenBoxIds;
+    /**
+     * 撤销原因
+     */
+    private String repealReason;
+
+    public List<Long> getFrozenBoxIds() {
+        return frozenBoxIds;
+    }
+
+    public void setFrozenBoxIds(List<Long> frozenBoxIds) {
+        this.frozenBoxIds = frozenBoxIds;
+    }
+
+    public String getRepealReason() {
+        return repealReason;
+    }
+
+    public void setRepealReason(String repealReason) {
+        this.repealReason = repealReason;
     }
 }

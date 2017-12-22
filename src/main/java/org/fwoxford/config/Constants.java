@@ -97,7 +97,7 @@ public final class Constants {
         put("1","M");
     }};
     /**
-     * 需求样本，已被使用：1301，释放样本：1302，待出库：1303，已出库：1304
+     * 需求样本，1301：已被使用，1302：释放样本，1303：待出库，1304：已出库
      */
     public static final String STOCK_OUT_SAMPLE_IN_USE = "1301";
     public static final String STOCK_OUT_SAMPLE_IN_USE_NOT = "1302";

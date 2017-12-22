@@ -271,4 +271,21 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
     public void setCountOfHandOverSample(Integer countOfHandOverSample) {
         this.countOfHandOverSample = countOfHandOverSample;
     }
+
+    /**
+     * 作废原因
+     */
+    @Column(name = "invalid_reason")
+    private String invalidReason;
+
+    public String getInvalidReason() {
+        return invalidReason;
+    }
+    public StockOutTask invalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
+        return this;
+    }
+    public void setInvalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
+    }
 }

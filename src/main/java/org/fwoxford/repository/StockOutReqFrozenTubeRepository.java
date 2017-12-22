@@ -75,7 +75,7 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     List<StockOutReqFrozenTube> findByStockOutFrozenBoxId(List<Long> boxIds, String status);
 
     @Query("select t.frozenBox from StockOutReqFrozenTube t where t.stockOutTask.id = ?1 and t.status = ?2")
-    List<FrozenBox> findByStockOutTaskIdAndStatus(Long taskId, String status);
+    List<FrozenBox> findFrozenBoxByStockOutTaskIdAndStatus(Long taskId, String status);
 
     List<StockOutReqFrozenTube> findByStockOutTaskId(Long taskId);
 
@@ -101,4 +101,6 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
 
     @Query("SELECT s FROM StockOutReqFrozenTube s WHERE s.stockOutRequirement.stockOutApply.id = ?1 AND s.sampleTypeId = ?2 AND s.sampleCode in ?3 AND s.status = '"+Constants.STOCK_OUT_SAMPLE_COMPLETED+"'")
     List<StockOutReqFrozenTube> findByStockOutApplyIdAndSampleTypeAndSampleCodeIn(Long id, Long sampleTypeId, List<String> sampleCodeStr);
+
+    List<StockOutReqFrozenTube> findByStockOutTaskIdAndStatus(Long taskId, String status);
 }

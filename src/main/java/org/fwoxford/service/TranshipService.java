@@ -72,9 +72,10 @@ public interface TranshipService {
     /**
      * 作废转运记录
      * @param transhipCode
+     * @param transhipDTO
      * @return
      */
-    TranshipDTO invalidTranship(String transhipCode);
+    TranshipDTO invalidTranship(String transhipCode, TranshipDTO transhipDTO);
 
     Boolean isRepeatTrackNumber(String transhipCode, String trackNumber);
 

@@ -198,6 +198,9 @@
     <include file="classpath:config/liquibase/changelog/20171220213000_updated_view_FrozenPositionList.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171220160800_updated_view_AreasList.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171220214100_updated_view_AreasListByProject.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20171221134300_added_column_Tranship.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20171221154900_added_column_StockOutTask.xml" relativeToChangelogFile="false"/>
+
     <!--<include file="classpath:config/liquibase/changelog/20171220214800_updated_view_ShelvesListByProject.xml" relativeToChangelogFile="false"/>-->
     <!--<include file="classpath:config/liquibase/changelog/20171220215100_updated_view_ShelvesList.xml" relativeToChangelogFile="false"/>-->
 

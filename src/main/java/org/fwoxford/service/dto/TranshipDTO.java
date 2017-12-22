@@ -485,4 +485,23 @@ public class TranshipDTO implements Serializable {
     public void setInvalidReason(String invalidReason) {
         this.invalidReason = invalidReason;
     }
+
+    private Long checkTypeId;
+    private String checkTypeName;
+
+    public Long getCheckTypeId() {
+        return checkTypeId;
+    }
+
+    public void setCheckTypeId(Long checkTypeId) {
+        this.checkTypeId = checkTypeId;
+    }
+
+    public String getCheckTypeName() {
+        return checkTypeName;
+    }
+
+    public void setCheckTypeName(String checkTypeName) {
+        this.checkTypeName = checkTypeName;
+    }
 }

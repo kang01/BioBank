@@ -653,4 +653,21 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     public void setInvalidReason(String invalidReason) {
         this.invalidReason = invalidReason;
     }
+
+    /**
+     * 出库检测类型
+     */
+    @Column(name = "check_type_id")
+    private Long checkTypeId;
+
+    public Long getCheckTypeId() {
+        return checkTypeId;
+    }
+    public Tranship checkTypeId(Long checkTypeId){
+        this.checkTypeId = checkTypeId;
+        return this;
+    }
+    public void setCheckTypeId(Long checkTypeId) {
+        this.checkTypeId = checkTypeId;
+    }
 }

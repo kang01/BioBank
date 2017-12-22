@@ -13,6 +13,7 @@ import org.fwoxford.service.mapper.AttachmentMapper;
 import org.fwoxford.service.mapper.TranshipBoxMapper;
 import org.fwoxford.service.mapper.TranshipMapper;
 import org.fwoxford.service.mapper.TranshipTubeMapper;
+import org.fwoxford.web.rest.CheckTypeResource;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
@@ -87,6 +88,8 @@ public class TranshipServiceImpl implements TranshipService{
     TranshipBoxMapper transhipBoxMapper;
     @Autowired
     TranshipTubeMapper transhipTubeMapper;
+    @Autowired
+    CheckTypeRepository checkTypeRepository;
 
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
@@ -201,6 +204,12 @@ public class TranshipServiceImpl implements TranshipService{
         transhipDTO.setDelegateName(tranship.getDelegate()!=null?tranship.getDelegate().getDelegateName():null);
         transhipDTO.setApplyCode(tranship.getStockOutApply()!=null?tranship.getStockOutApply().getApplyCode():null);
         transhipDTO.setSampleCountByTypeForms(sampleCountByTypeForms);
+        if(tranship.getCheckTypeId()!=null){
+            CheckType checkType = checkTypeRepository.findByIdAndStatus(tranship.getCheckTypeId(),Constants.VALID);
+            if(checkType!=null){
+                transhipDTO.setCheckTypeName(checkType.getCheckTypeName());
+            }
+        }
         List<User> userList = userRepository.findAll();
         for(User u :userList){
             if(transhipDTO.getReceiverId()!=null&&transhipDTO.getReceiverId().equals(u.getId())){
@@ -312,6 +321,7 @@ public class TranshipServiceImpl implements TranshipService{
             if(stockOutApplyProject == null){
                 throw new BankServiceException("该申请未关联"+project.getProjectCode()+"项目！");
             }
+            tranship.setCheckTypeId(stockOutApply.getCheckTypeId());
             tranship.setDelegate(stockOutApply.getDelegate());
             tranship.setStockOutApply(stockOutApply);
             tranship.setApplyPersonName(stockOutApply.getApplyPersonName());
@@ -493,6 +503,12 @@ public class TranshipServiceImpl implements TranshipService{
         StockOutApply stockOutApply = stockOutApplyRepository.findOne(transhipDTO.getStockOutApplyId());
         if(stockOutApply == null ||(stockOutApply!=null&&!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVED))){
             throw new BankServiceException("申请无效！");
+        }
+        if(transhipDTO.getCheckTypeId()!=null){
+            CheckType checkType = checkTypeRepository.findByIdAndStatus(transhipDTO.getCheckTypeId(),Constants.VALID);
+            if(checkType == null){
+                throw new BankServiceException("检测类型不存在！");
+            }
         }
         transhipDTO.setTranshipState(oldTranship.getTranshipState());
         transhipDTO.setStatus(oldTranship.getStatus());

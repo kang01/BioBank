@@ -31,6 +31,11 @@
             sampleCount:null,
             sampleOutCount:null,
             startPos:null,
+            projectId:null,
+            projectCode:null,
+            sampleTypeId:"7",
+            sampleTypeCode:"98",
+            sampleTypeName:"98",
             frozenTubeDTOS:[]
         };
         vm.pos = "";
@@ -102,9 +107,19 @@
                     vm.box.frozenBoxCode = vm.frozenBoxCode;
                     boxList.push(angular.copy(vm.box));
                     vm.tempBoxOptions.withOption('data', boxList);
-                    // vm.tempBoxInstance.rerender();
                     vm.frozenBoxCode = "";
                     vm.box.frozenBoxCode1D = "";
+                    //添加完选中该行
+                    var index = boxList.length-1;
+                    setTimeout(function () {
+                        var selectRow = vm.tempBoxInstance.DataTable.rows(".row"+index);
+                        var row = selectRow.nodes().to$();
+                        row.click();
+                    },500);
+
+
+
+
                 }else{
                     toastr.error("冻存盒编码已存在!");
                 }
@@ -204,18 +219,20 @@
         vm.tempBoxColumns = [
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').notSortable(),
             DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').notSortable(),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').notSortable(),
             DTColumnBuilder.newColumn('sampleCount').withTitle('盒内样本数').notSortable(),
-            DTColumnBuilder.newColumn('frozenBoxTypeName').withTitle('盒类型').notSortable()
+            DTColumnBuilder.newColumn('frozenBoxTypeName').withTitle('盒类型').notSortable().withOption("width", "100")
         ];
         var sampleTotalCount;
         function createdRow(row, data, dataIndex) {
             sampleTotalCount =  data.frozenBoxTypeRows * data.frozenBoxTypeColumns;
             var sampleOutCount = data.frozenTubeDTOS.length - (_.filter(data.frozenTubeDTOS,{sampleTempCode:""}).length);
             var str = sampleOutCount+"/"+sampleTotalCount;
-            $('td:eq(2)', row).html(str);
+            $('td:eq(3)', row).html(str);
             $compile(angular.element(row).contents())($scope);
         }
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
+            $(nRow).addClass('row'+iDisplayIndex);
             if (vm.selectBox && vm.selectBox.frozenBoxCode === oData.frozenBoxCode){
                 $(nRow).closest('table').find('.rowLight').removeClass("rowLight");
                 $(nRow).addClass('rowLight');

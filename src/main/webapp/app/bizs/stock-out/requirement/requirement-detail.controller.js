@@ -104,6 +104,7 @@
         function _updateRequirementTable() {
             setTimeout(function () {
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
+                vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
                 //判断是否都是核对完的列表
                 vm.isApproval();
             },100);

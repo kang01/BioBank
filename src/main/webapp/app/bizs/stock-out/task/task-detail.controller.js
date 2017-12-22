@@ -54,7 +54,7 @@
         vm.prePos = _fnPrePos;
         //出库
         vm.taskStockOutModal = _fnTaskStockOutModal;
-        //临时盒
+        //添加临时盒
         vm.selectTempBox = _fnSelectTempBox;
         //查看扫码的样本
         vm.viewSampleDesc = _fnViewSampleDesc;
@@ -285,6 +285,9 @@
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
             vm.box = angular.copy(data);
+            if(vm.tempBoxObj.projectCode && vm.tempBoxObj.projectCode != vm.box.projectCode){
+                toastr.error("此盒项目编码与待装临时盒的项目编码不一致！");
+            }
             var boxCode = data.frozenBoxCode;
             _fnLoadTubes(boxCode);
         }
@@ -433,8 +436,8 @@
             vm.aRemarkArray = [];
             vm.sampleDetailsTableSettings = {
                 // 点击表格外部时，表格内选项仍然能够选中
-                outsideClickDeselectsCache: false,
-                outsideClickDeselects: false,
+                outsideClickDeselectsCache: true,
+                outsideClickDeselects: true,
 
                 // 表格内单元格只能单选
                 multiSelect: true,
@@ -663,7 +666,10 @@
                 },100);
                 return;
             }
-
+            if(vm.tempBoxObj.projectCode && vm.tempBoxObj.projectCode != frozenBox.projectCode){
+                toastr.error("项目编码不一致，请重新扫码!");
+                return;
+            }
             var boxInTubes = angular.copy(vm.boxInTubes);
             //装盒样本
             var len = _.filter(boxInTubes,{id: scanCodeTubes.id}).length;
@@ -681,6 +687,9 @@
             var col = scanCodeTubes.colNO;
             vm.tubes[row][col-1].orderIndex = boxInTubes.length + 1;
             boxInTubes.push(scanCodeTubes);
+
+            vm.tempBoxObj.projectCode = frozenBox.projectCode;
+
             //判断是否都全部扫码
             vm.allInFlag = boxInTubes.length == stockOutTubes.length;
             //扫码标识
@@ -721,7 +730,8 @@
                 templateUrl: 'app/bizs/stock-out/task/modal/abnormal-recall-modal.html',
                 controller: 'AbnormalRecallModalController',
                 controllerAs: 'vm',
-                size: 'lg',
+                size: 'md',
+                backdrop:'static',
                 resolve: {
                     items: function () {
                         return {
@@ -794,14 +804,6 @@
             }, function () {
             });
         }
-        function initFrozenTube(row,col) {
-            for(var i = 0; i < row; i++){
-                vm.frozenTubeArray[i] = [];
-                for(var j = 0;j < col; j++){
-                    vm.frozenTubeArray[i][j] = "";
-                }
-            }
-        }
         //批注 1：未出库样本、2：已出库样本
         function _fnCommentModal(status,boxId,memo) {
             if(status == 1){
@@ -819,7 +821,8 @@
                 templateUrl: 'app/bizs/stock-out/task/modal/comment-modal.html',
                 controller: 'TaskCommentModalController',
                 controllerAs: 'vm',
-                size: 'lg',
+                size: 'md',
+                backdrop:'static',
                 resolve: {
                     items: function () {
                         return {
@@ -885,7 +888,8 @@
                 templateUrl: 'app/bizs/stock-out/task/modal/abnormal-recall-modal.html',
                 controller: 'AbnormalRecallModalController',
                 controllerAs: 'vm',
-                size: 'lg',
+                size: 'md',
+                backdrop:'static',
                 resolve: {
                     items: function () {
                         return {
@@ -922,6 +926,7 @@
                 templateUrl: 'affirmModal.html',
                 controller: 'AffirmModalController',
                 controllerAs: 'vm',
+                size: 'md',
                 backdrop:'static',
                 resolve: {
                     items: function () {
@@ -937,9 +942,10 @@
                     var tempBoxList = [];
                     vm.tempBoxObj.frozenTubeDTOS = vm.boxInTubes;
                     vm.tempBoxObj.countOfSample = vm.boxInTubes.length;
-                    vm.tempBoxObj.sampleTypeName = "";
-                    vm.tempBoxObj.position = "";
-                    vm.tempBoxObj.stockOutHandoverTime = "";
+                    vm.tempBoxObj.sampleTypeCode = "98";
+                    vm.tempBoxObj.sampleTypeName = "98";
+                    vm.tempBoxObj.position = null;
+                    vm.tempBoxObj.stockOutHandoverTime = null;
                     vm.tempBoxObj.memo = "";
                     vm.tempBoxObj.status = "1701";
 
@@ -951,20 +957,21 @@
                         //更新左侧任务冻存盒列表
                         _fnReloadWaitingTaskBox();
 
-
+                        vm.boxInTubes.length = 0;
+                        vm.tempBoxObj = {
+                            projectId : null,
+                            projectCode:null,
+                            frozenTubeDTOS :[]
+                        };
+                        //样本总量
+                        vm.totalLen = undefined;
                         //更新右边管子信息
                         var selectRow = vm.boxInstance.DataTable.rows(".rowLight");
                         var row = selectRow.nodes().to$();
                         row.click();
 
 
-                        vm.boxInTubes.length = 0;
 
-                        vm.tempBoxObj = {
-                            frozenTubeDTOS :[]
-                        };
-                        //样本总量
-                        vm.totalLen = undefined;
 
 
 
@@ -1132,7 +1139,8 @@
 
         //选择临时盒
         vm.tempBoxObj = {
-            sampleTypeName:"",
+            sampleTypeCode:"98",
+            sampleTypeName:"98",
             frozenTubeDTOS :[]
         };
         function _fnSelectTempBox() {

@@ -50,6 +50,8 @@
         _initBoxDataTable();
         //初始化盒子上暂存位置
         _initBoxTempPos();
+        //获取检测类型
+        _fnQueryCheckType();
 
 
 
@@ -605,6 +607,19 @@
             _queryEquipment();
 
 
+        }
+        //获取检测类型
+        function _fnQueryCheckType() {
+            vm.checkTypeConfig = {
+                valueField:'id',
+                labelField:'checkTypeName',
+                maxItems: 1,
+                onChange:function (value) {
+                }
+            };
+            RequirementService.queryCheckTypes().success(function (data) {
+                vm.checkTypeOptions = data;
+            });
         }
         //获取冻存盒信息详情（盒子信息和管子信息）
         function _queryBoxDetail(boxId) {

@@ -94,10 +94,15 @@
                 </div>
             </div>
             <div class="form-group col-md-2">
-                <label>状态</label>
-                <selectize options='vm.statusOptions' config="vm.statusConfig"
-                           ng-model="vm.status" ng-disabled = "true"></selectize>
+                <label >检测类型</label>
+                <selectize options='vm.checkTypeOptions' config="vm.checkTypeConfig"
+                           ng-model="vm.requirement.checkTypeId "></selectize>
             </div>
+            <!--<div class="form-group col-md-2">-->
+                <!--<label>状态</label>-->
+                <!--<selectize options='vm.statusOptions' config="vm.statusConfig"-->
+                           <!--ng-model="vm.status" ng-disabled = "true"></selectize>-->
+            <!--</div>-->
             <div class="form-group col-md-6">
                 <label class="control-label">用途</label>
                 <textarea type="text" class="form-control resize-none" ng-model="vm.requirement.purposeOfSample" rows="5" ng-disabled="vm.applyFlag"></textarea>

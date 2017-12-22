@@ -7,9 +7,9 @@
     angular
         .module('bioBankApp')
         .controller('ImportBoxModalController', ImportBoxModalController);
-    ImportBoxModalController.$inject = ['$scope','$q','$compile','toastr','$timeout','BioBankDataTable','BioBankSelectize','$uibModalInstance','items','blockUI','blockUIConfig','AreasByEquipmentIdService','GiveBackService'];
+    ImportBoxModalController.$inject = ['$scope','$q','$compile','toastr','$timeout','BioBankDataTable','BioBankSelectize','$uibModalInstance','items','blockUI','blockUIConfig','AreasByEquipmentIdService','GiveBackService','RequirementService'];
 
-    function ImportBoxModalController($scope,$q,$compile,toastr,$timeout,BioBankDataTable,BioBankSelectize,$uibModalInstance,items,blockUI,blockUIConfig,AreasByEquipmentIdService,GiveBackService) {
+    function ImportBoxModalController($scope,$q,$compile,toastr,$timeout,BioBankDataTable,BioBankSelectize,$uibModalInstance,items,blockUI,blockUIConfig,AreasByEquipmentIdService,GiveBackService,RequirementService) {
 
         var vm = this;
         //设备
@@ -202,7 +202,6 @@
             _.forEach(_boxList,function (box) {
                 if(box.isRealData == 1){
                     arrayBoxCode = _.pull(arrayBoxCode, box.frozenBoxCode);
-                    arrayBoxCode = _.pull(arrayBoxCode, box.frozenBoxCode1D);
                 }
             });
             boxCodeArray = _.chunk(arrayBoxCode, 10);
@@ -217,7 +216,6 @@
                     importData.success(function (res) {
                         _updateBoxData(res);
                     }).error(function (res) {
-                        console.log(code)
                         for(var i = 0; i < code.length; i++){
                             for(var j = 0; j < _boxList.length; j++){
                                 if(code[i] == _boxList[j].frozenBoxCode){
@@ -226,11 +224,6 @@
                             }
                         }
                         vm.errorLen = _.filter(_boxList,{isRealData:0}).length;
-                        // _.forEach(_boxList,function (box) {
-                        //     if(box.frozenBoxCode == code){
-                        //         box.status = status;
-                        //     }
-                        // });
                         _updateTableDataOption(_boxList);
                         setTimeout(function () {
                             vm.progressFlag = false;
@@ -356,7 +349,7 @@
         function _updateBoxData(boxDatas) {
             for(var i = 0,len = boxDatas.length; i < len; i++){
                 for(var j = 0,len1 = _boxList.length; j < len1; j++){
-                    if(boxDatas[i].frozenBoxCode == _boxList[j].frozenBoxCode || boxDatas[i].frozenBoxCode1D == _boxList[j].frozenBoxCode){
+                    if(boxDatas[i].frozenBoxCode == _boxList[j].frozenBoxCode){
                         _boxList[j] = boxDatas[i];
                     }
                 }

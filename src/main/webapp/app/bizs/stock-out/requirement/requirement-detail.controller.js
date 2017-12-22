@@ -59,6 +59,7 @@
             _requirementInfo();
             _fuQueryDelegates();
             _fnQueryUser();
+            _fnQueryCheckType();
 
         }
         function _fnQueryUser() {
@@ -136,18 +137,32 @@
             maxItems: 1
 
         };
-        //状态
-        vm.statusOptions = MasterData.requirementStatus;
-        vm.statusConfig = {
+        //获取检测类型
+        function _fnQueryCheckType() {
+            RequirementService.queryCheckTypes().success(function (data) {
+                vm.checkTypeOptions = data;
+            });
+        }
+        vm.checkTypeConfig = {
             valueField:'id',
-            labelField:'name',
+            labelField:'checkTypeName',
             maxItems: 1,
             onChange:function (value) {
             }
         };
-        if(!vm.status){
-            vm.status = vm.statusOptions[0].id;
-        }
+
+        //状态
+        // vm.statusOptions = MasterData.requirementStatus;
+        // vm.statusConfig = {
+        //     valueField:'id',
+        //     labelField:'name',
+        //     maxItems: 1,
+        //     onChange:function (value) {
+        //     }
+        // };
+        // if(!vm.status){
+        //     vm.status = vm.statusOptions[0].id;
+        // }
         //获取项目
         ProjectService.query({},onProjectSuccess, onError);
         function onProjectSuccess(data) {

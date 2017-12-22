@@ -175,7 +175,15 @@
             </div>
         </div>
         <div class="row">
-
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="col-md-4 control-label text-left">检测类型</label>
+                    <div class="col-md-8">
+                        <selectize options='vm.checkTypeOptions' config="vm.checkTypeConfig"
+                                   ng-model="vm.giveBackRecord.checkTypeId "></selectize>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="col-md-2 control-label text-left">备注</label>

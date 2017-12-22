@@ -216,6 +216,8 @@
             modalInstance.result.then(function (giveBackInfo) {
                 GiveBackService.saveGiveBackEmpty(giveBackInfo).success(function (data) {
                     $state.go("give-back-detail",{giveBackId:data.id,applyCode:giveBackInfo.applyCode});
+                }).error(function (data) {
+                    toastr.error(data.message);
                 });
 
             });

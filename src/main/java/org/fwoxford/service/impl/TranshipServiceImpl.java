@@ -370,23 +370,14 @@ public class TranshipServiceImpl implements TranshipService{
         if(StringUtils.isEmpty(transhipDTO.getInvalidReason())){
             throw new BankServiceException("作废原因不能为空！",transhipCode);
         }
+        //如果转运下有新接受的冻存盒不能作废
+        Long countOfTranshipBox = transhipBoxRepository.countByTranshipIdAndStatusNotIn(tranship.getId()
+                ,new ArrayList<String>(){{add(Constants.INVALID);add(Constants.FROZEN_BOX_DESTROY);}});
+        if(countOfTranshipBox.intValue()>0){
+            throw new BankServiceException("该接收记录内已经有接收的冻存盒，不能作废！",transhipCode);
+        }
         tranship.setTranshipState(Constants.TRANSHIPE_IN_INVALID);
         transhipRepository.save(tranship);
-        //更改转运盒
-        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipId(tranship.getId());
-        List<FrozenBox> frozenBoxList = new ArrayList<>();
-        for(TranshipBox tBox:transhipBoxes){
-            tBox.setStatus(Constants.FROZEN_BOX_INVALID);
-            FrozenBox frozenBox = tBox.getFrozenBox();
-            if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_RETURN_BACK)){
-                frozenBox.setStatus(Constants.FROZEN_BOX_INVALID);
-                frozenBoxList.add(frozenBox);
-            }
-            frozenTubeRepository.updateFrozenTubeStateByFrozenBoxId(Constants.FROZEN_BOX_INVALID,frozenBox.getId());
-            transhipTubeRepository.updateFrozenTubeStateByTranshipBoxId(Constants.FROZEN_BOX_INVALID,tBox.getId());
-        }
-        transhipBoxRepository.save(transhipBoxes);
-        frozenBoxRepository.save(frozenBoxList);
         return transhipMapper.transhipToTranshipDTO(tranship);
     }
 

@@ -244,7 +244,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             if(box.getFrozenBoxCode() == null){
                 throw new BankServiceException("冻存盒编码不能为空！");
             }
-            if(box.getSampleTypeId()==null){
+            if(StringUtils.isEmpty(box.getSampleTypeCode())){
                 throw new BankServiceException("样本类型不能为空！");
             }
             if(StringUtils.isEmpty(box.getProjectCode())){
@@ -283,7 +283,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 throw new BankServiceException("项目"+box.getProjectCode()+"不存在！");
             }
             frozenBox.project(project).projectCode(project.getProjectCode()).projectName(project.getProjectName());
-            SampleType sampleType = sampleTypeRepository.findOne(box.getSampleTypeId());
+            SampleType sampleType = sampleTypeRepository.findBySampleTypeCode(box.getSampleTypeCode());
             if(sampleType == null){
                 throw new BankServiceException("样本类型不能为空！",box.getSampleTypeId().toString());
             }

@@ -13,22 +13,22 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
-    @Query("select t from FrozenTube t where t.frozenBox.id = ?1 and t.status not in ('"+Constants.INVALID+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
+    @Query("select t from FrozenTube t where t.frozenBox.id = ?1 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
     List<FrozenTube> findFrozenTubeListByBoxId(Long frozenBoxId);
 
-    @Query("select t from FrozenTube t where t.frozenBox.id in ?1 and t.status not in ('"+Constants.INVALID+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
+    @Query("select t from FrozenTube t where t.frozenBox.id in ?1 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
     List<FrozenTube> findFrozenTubeListByBoxIdIn(List<Long> frozenBoxId);
 
-    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and t.status not in ('"+Constants.INVALID+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
+    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
     List<FrozenTube> findFrozenTubeListByBoxCode(String frozenBoxCode);
 
-    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status not in ('"+Constants.INVALID+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
+    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
     Long countFrozenTubeListByBoxCode(String frozenBoxCode);
 
     List<FrozenTube> findFrozenTubeListByFrozenBoxCodeAndStatus(String frozenBoxCode, String status);
 
     @Query(value = "select t.frozen_box_code as frozenBoxCode,count(t.frozen_box_code) as sampleNumber \n" +
-        "from frozen_tube t where t.frozen_box_code in ?1 and t.status not in ('"+Constants.INVALID+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"' group by t.frozen_box_code \n" +
+        "from frozen_tube t where t.frozen_box_code in ?1 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"' group by t.frozen_box_code \n" +
         " order by sampleNumber asc,t.frozen_box_code desc " ,nativeQuery = true)
     List<Object[]> countSampleNumberByfrozenBoxList(List<String> frozenBoxList);
 
@@ -88,23 +88,23 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query("select t from FrozenTube t where (t.sampleCode in ?1 or t.sampleTempCode in ?1) and t.project.projectCode = ?2 and t.sampleType.id = ?3 and t.status != ?4")
     List<FrozenTube> findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(List<String> sampleCode, String projectCode, Long sampleTypeId,String status);
 
-    @Query("select t from FrozenTube t where t.sampleCode =?1  and t.projectCode = ?2 and t.sampleTypeCode =?3 and t.sampleClassification.sampleClassificationCode = ?4 and t.status not in ('"+Constants.INVALID+"')")
+    @Query("select t from FrozenTube t where t.sampleCode =?1  and t.projectCode = ?2 and t.sampleTypeCode =?3 and t.sampleClassification.sampleClassificationCode = ?4 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"')")
     FrozenTube findBySampleCodeAndProjectCodeAndSampleTypeCodeAndSampleClassificationCode(String sampleCode, String projectCode, String sampleTypeCode, String sampleClassTypeCode);
 
 
-    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.sampleType.id =?3 and t.sampleClassification.id = ?4 and t.status not in ('"+Constants.INVALID+"')")
+    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.sampleType.id =?3 and t.sampleClassification.id = ?4 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"')")
     List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(String sampleCode, String projectCode, Long sampleTypeId, Long sampleClassificationId);
 
     FrozenTube findByFrozenBoxCodeAndTubeRowsAndTubeColumnsAndStatusNot(String frozenBoxCode, String tubeRows, String tubeColumns, String status);
 
     @Query("select t from FrozenTube t where t.frozenBox.equipmentCode =?1  and t.frozenBox.areaCode = ?2" +
-        " and t.frozenBox.supportRackCode =?3 and  t.frozenBox.status = '"+Constants.FROZEN_BOX_STOCKED+"' and t.status not in ('"+Constants.INVALID+"')")
+        " and t.frozenBox.supportRackCode =?3 and  t.frozenBox.status = '"+Constants.FROZEN_BOX_STOCKED+"' and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"')")
     List<FrozenTube> findByEquipmentCodeAndAreaCodeAndSupportRackCode(String equipmentCode, String areaCode, String supportRackCode);
 
-    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4 and t.sampleClassification.id = ?5 and t.status not in ('"+Constants.INVALID+"')")
+    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4 and t.sampleClassification.id = ?5 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"')")
     List<FrozenTube> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId, Long sampleClassificationId);
 
-    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4  and t.status not in ('"+Constants.INVALID+"')")
+    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4  and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"')")
     List<FrozenTube> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleType(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId);
 
     @Modifying
@@ -115,7 +115,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         "where s.tranship_code in ?1 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_BOX_INVALID+"')" ,nativeQuery = true)
     Long countByTranshipCodes(List<String> transhipCodeList);
 
-    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status not in ('"+Constants.INVALID+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"' and t.frozenTubeState=?2")
+    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"') and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"' and t.frozenTubeState=?2")
     Long countByFrozenBoxCodeAndFrozenTubeState(String frozenBoxCode,String frozenTubeState);
 
     FrozenTube findBySampleCodeAndSampleTypeCode(String sampleCode, String sampleTypeCode);
@@ -173,13 +173,13 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         "    where f.id is not null group by s.tranship_code,t.frozen_box_code" , nativeQuery = true)
     List<Object[]> countTubeByProjectCodeGroupByTranshipCode(String projectCode , String sampleTypeCode);
 
-    @Query(value = "SELECT T.FROZEN_BOX_ID,COUNT(T.ID) AS NOO FROM FROZEN_TUBE T WHERE T.FROZEN_BOX_ID IN ?1 AND STATUS not in ('"+Constants.INVALID+"') GROUP BY T.FROZEN_BOX_ID ",nativeQuery = true)
+    @Query(value = "SELECT T.FROZEN_BOX_ID,COUNT(T.ID) AS NOO FROM FROZEN_TUBE T WHERE T.FROZEN_BOX_ID IN ?1 AND STATUS not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"') GROUP BY T.FROZEN_BOX_ID ",nativeQuery = true)
     List<Object[]> countGroupByFrozenBoxId(List<Long> boxIds);
 
-    @Query("select t from FrozenTube t where (t.sampleCode in ?1 or t.sampleTempCode in ?1) and t.projectCode=?2 and t.status not in ('"+Constants.INVALID+"')")
+    @Query("select t from FrozenTube t where (t.sampleCode in ?1 or t.sampleTempCode in ?1) and t.projectCode=?2 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"')")
     List<FrozenTube> findBySampleCodeInAndProjectCode(List<String> sampleCodeStr,String projectCode );
 
-    @Query("select t from FrozenTube t where t.frozenBoxCode in ?1 and  t.status not in (?2)")
+    @Query("select t from FrozenTube t where t.frozenBoxCode in ?1 and  t.status not in (?2,"+Constants.FROZEN_TUBE_DESTROY+")")
     List<FrozenTube> findByFrozenBoxCodeInAndStatusNot(List<String> boxCodeStr, String status);
 
     @Query(value = "select t.sample_temp_code,count(t.sample_temp_code) as noo from frozen_tube t " +
@@ -222,10 +222,6 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     List<FrozenTube> findBySampleCodeInAndStatusNot(List<String> sampleCodeStr, String invalid);
 
     @Modifying
-    @Query("update FrozenTube t set t.status = ?1  where t.frozenBox.id = ?2 and t.frozenTubeState = '"+Constants.FROZEN_BOX_RETURN_BACK+"'")
+    @Query("update FrozenTube t set t.status = ?1  where t.frozenBox.id = ?2 and t.frozenTubeState = '"+Constants.FROZEN_BOX_NEW+"'")
     void updateStatusByFrozenBoxId(String status, Long id);
-
-    @Modifying
-    @Query("update FrozenTube t set t.frozenTubeState = ?1  where t.frozenBox.id = ?2 and t.frozenTubeState = '"+Constants.FROZEN_BOX_RETURN_BACK+"'")
-    void updateFrozenTubeStateByFrozenBoxId(String frozenBoxInvalid, Long id);
 }

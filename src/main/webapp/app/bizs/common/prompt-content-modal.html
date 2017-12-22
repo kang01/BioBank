@@ -1,6 +1,11 @@
+<!--
+1:出库任务盒子撤销
+2:转运、归还 作废
+-->
 <div class="modal-header">
     <h3 class="modal-title">
-        <span>作废原因</span>
+        <span ng-if="vm.status == 2">作废原因</span>
+        <span ng-if="vm.status == 1">撤销原因</span>
     </h3>
 </div>
 <div class="modal-body">

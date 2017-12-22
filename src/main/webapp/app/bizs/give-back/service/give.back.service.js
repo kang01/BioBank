@@ -80,8 +80,8 @@
         function _queryBoxDesc(boxId) {
             return $http.get('api/return-boxes/'+boxId);
         }
-        function _invalidGiveBack(returnBackCode) {
-            return $http.put('api/return-back/invalid/'+returnBackCode);
+        function _invalidGiveBack(returnBackCode,invalidReason) {
+            return $http.put('api/return-back/invalid/'+returnBackCode,invalidReason);
         }
         function _completeGiveBack(returnBackCode,data) {
             return $http.put('api/return-back/'+returnBackCode+'/completed',data);

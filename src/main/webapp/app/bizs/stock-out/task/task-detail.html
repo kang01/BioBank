@@ -13,7 +13,7 @@
                 <span>累计用时: {{vm.usedTime}}</span>&nbsp;
                 <button class="btn btn-primary" ng-click="vm.takeOver()" ng-disabled="!vm.stockOutLen">样本交接</button>
                 <button class="btn btn-default" ng-click="vm.saveTask()">保存任务</button>
-                <button class="btn btn-default" ng-click="">作废</button>
+                <button class="btn btn-default" ng-click="vm.invalidTask()" ng-disabled="vm.stockOutBoxList.length">作废</button>
                 <button class="btn btn-default" ng-click="vm.close()">关闭</button>
             </div>
         </div>
@@ -93,11 +93,11 @@
         </div>
         <div class="col-md-8">
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    <div class="col-md-2 pl-0">
-                        <h4>待出库样本</h4>
+                <div class="panel-heading" style="padding: 3px 10px;">
+                    <div class="col-md-1 pl-0 pr-0">
+                        <h4>详情</h4>
                     </div>
-                    <div class="col-md-10 pr-0 pl-0 text-right">
+                    <div class="col-md-11 pr-0 pl-0 text-right">
                         <div  class="stock-out-task-scan">
                             <div class="input-group">
                                 <input type="text" class="form-control" ng-model="vm.sampleCode" >
@@ -113,19 +113,25 @@
 
                             </div>
                         </div>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.selectTempBox()"    ng-disabled="!vm.frozenTubeDTOS.length">选择临时盒</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.selectTempBox()"    >选择临时盒</button>
                         <!--<button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(2)" ng-disabled="!vm.boxInTubes.length" ng-if="vm.boxInFullFlag"  >原盒出库</button>-->
                         <!--<button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(1)" ng-disabled="!vm.boxInTubes.length || !vm.tempBoxObj.frozenBoxCode">装盒出库</button>-->
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(2)"  ng-if="vm.boxInFullFlag"  >原盒出库</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.nextBox()"   >下一盒</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(1)" ng-disabled="!vm.boxInTubes.length || !vm.tempBoxObj.frozenBoxCode" >装盒出库</button>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealModal()">撤销申请</button>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="">整盒撤销</button>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()">异常</button>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.commentModal(1)">批注</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealModal()" ng-disabled="!vm.frozenTubeDTOS.length">撤销申请</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealBox()" ng-disabled="!vm.frozenTubeDTOS.length">整盒撤销</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()" ng-disabled="!vm.frozenTubeDTOS.length">异常</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.commentModal(1)" ng-disabled="!vm.frozenTubeDTOS.length">批注</button>
 
                     </div>
                     <div class="clear-both"></div>
+
+
+
+
+
+
                 </div>
                 <div class="panel-body tube p-0">
                     <div class="row">

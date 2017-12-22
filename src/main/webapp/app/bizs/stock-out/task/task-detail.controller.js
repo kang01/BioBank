@@ -32,6 +32,8 @@
 
         //保存任务
         vm.saveTask = _fnSaveTask;
+        //作废任务
+        vm.invalidTask = _invalidTask;
         //样本交接
         vm.takeOver = _fnTakeOver;
         //打印取盒单
@@ -40,6 +42,8 @@
         vm.scanCode = _fnScanCode;
         //撤销
         vm.repealModal = _fnRepealModal;
+        //撤销盒子
+        vm.repealBox = _repealBox;
         //异常
         vm.abnormal = _fnAbnormal;
         //1未出库样本、2已出库样本批注
@@ -121,9 +125,16 @@
         }
         //下一盒
         function _fnNextBox() {
+
             var selectRow = vm.boxInstance.DataTable.rows(".rowLight");
             var row = selectRow.nodes().to$();
-            row= row.next();
+            if(!row.length || row[0].rowIndex == vm.stockOutbox.length){
+                selectRow = vm.boxInstance.DataTable.rows(".row0");
+                row = selectRow.nodes().to$();
+            }else{
+                row = row.next();
+            }
+
             row.click();
         }
         //开始任务计时器
@@ -172,6 +183,33 @@
             }).error(function (data) {
                 toastr.error(data.message);
                 BioBankBlockUi.blockUiStop();
+            });
+        }
+        //作废任务
+        function _invalidTask() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/common/prompt-content-modal.html',
+                size: 'md',
+                controller: 'PromptContentModalController',
+                controllerAs: 'vm',
+                backdrop:'static',
+                resolve: {
+                    items: function () {
+                        return {
+                            status:'2'
+                        };
+                    }
+                }
+            });
+            modalInstance.result.then(function (invalidReason) {
+                TaskService.invalidTask(vm.taskId,invalidReason).success(function (data) {
+                    toastr.success("作废成功！");
+                    $state.go('task-list');
+                }).error(function (data) {
+                    toastr.error(data.message);
+                })
+            }, function () {
             });
         }
         function _fnPrintBox() {
@@ -233,6 +271,7 @@
         ];
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
             $('td', nRow).unbind('click');
+            $(nRow).addClass('row'+iDisplayIndex);
             $(nRow).bind('click', function() {
                 var tr = this;
                 rowClickHandler(tr,oData);
@@ -711,7 +750,58 @@
                 tableCtrl.loadData(vm.tubes);
             });
         }
+        //整盒撤销
+        function _repealBox() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/common/prompt-content-modal.html',
+                size: 'md',
+                controller: 'PromptContentModalController',
+                controllerAs: 'vm',
+                backdrop:'static',
+                resolve: {
+                    items: function () {
+                        return {
+                            status: 1
+                        };
+                    }
+                }
+            });
+            modalInstance.result.then(function (repealReason) {
+                var obj = {
+                    frozenBoxIds:[],
+                    repealReason:repealReason
+                };
+                obj.frozenBoxIds.push(vm.box.id);
 
+                TaskService.repealBox(vm.taskId,obj).success(function (data) {
+                    toastr.success("撤销成功!");
+
+                    _.remove(vm.stockOutbox,{id:vm.box.id});
+                    setTimeout(function () {
+                        var box = {
+                            frozenBoxType:{
+                                frozenBoxTypeRows:10,
+                                frozenBoxTypeColumns:10
+                            }
+                        };
+                        _reloadTubesForTable(box);
+                        vm.boxOptions.withOption('data', vm.stockOutbox);
+
+
+                    },500);
+                });
+            }, function () {
+            });
+        }
+        function initFrozenTube(row,col) {
+            for(var i = 0; i < row; i++){
+                vm.frozenTubeArray[i] = [];
+                for(var j = 0;j < col; j++){
+                    vm.frozenTubeArray[i][j] = "";
+                }
+            }
+        }
         //批注 1：未出库样本、2：已出库样本
         function _fnCommentModal(status,boxId,memo) {
             if(status == 1){

@@ -12,7 +12,7 @@
 
     function PromptContentModalController($scope,$uibModalInstance,$uibModal,items) {
         var vm = this;
-
+        vm.status = items.status;
 
         vm.ok = function () {
             $uibModalInstance.close(vm.text);

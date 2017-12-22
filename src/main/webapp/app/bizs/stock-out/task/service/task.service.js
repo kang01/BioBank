@@ -19,6 +19,8 @@
             queryTaskBox:_queryTaskBox,
             //保存计划
             saveTaskBox:_saveTask,
+            //作废任务
+            invalidTask:_invalidTask,
             //获取管子
             queryTubes:_queryTubes,
             //获取临时盒子
@@ -29,6 +31,8 @@
             abnormal:_fnAbnormal,
             //撤销申请
             repeal:_fnRepeal,
+            //盒子撤销
+            repealBox:_repealBox,
             //批注
             fnNote:_fnNote,
             //已出库批注
@@ -56,6 +60,12 @@
         function _saveTask(param) {
             return $http.put('api/stock-out-tasks/',param);
         }
+        function _invalidTask(taskId,invalidReason) {
+            var obj = {
+                invalidReason:invalidReason
+            };
+            return $http.put('api/stock-out-tasks/invalid/'+taskId,obj);
+        }
         function _queryTubes(frozenBoxCode,taskId) {
             return $http.get('api/frozen-tubes/frozenBox/'+frozenBoxCode+'/task/'+taskId);
         }
@@ -70,6 +80,9 @@
         }
         function _fnRepeal(taskId,param) {
             return $http.put('api/stock-out-task-frozen-tubes/repeal/task/'+taskId,param);
+        }
+        function _repealBox(taskId,param) {
+            return $http.put('api/stock-out-frozen-boxes/repealStockOutBoxs/task/'+taskId,param);
         }
         function _fnNote(param) {
             return $http.put('api/stock-out-task-frozen-tubes/note',param);

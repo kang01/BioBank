@@ -1533,6 +1533,9 @@ ul.rating {
 .disBlock {
     display: block;
 }
+.dis-inline-block {
+    display: inline-block;
+}
 /*设备管理*/
 /*.equipment-box{*/
     /*width: 200px;*/

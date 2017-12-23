@@ -17,7 +17,7 @@
                         ng-show="vm.transportRecord.transhipState == '1001'">保存转运记录
                 </button>
                 <button type="button" class="btn btn-default" ng-click="vm.invalid()"
-                        ng-show="vm.transportRecord.transhipState == '1001'">作废
+                        ng-show="vm.transportRecord.transhipState == '1001'" ng-disabled="vm.boxLength">作废
                 </button>
                 <button type="button" class="btn btn-default" ui-sref="transport-record">关闭</button>
             </div>

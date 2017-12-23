@@ -67,13 +67,13 @@
                 vm.application = _.find(vm.applicationOptions, {id:value});
                 StockOutService.getPlans(value).then(function (res){
                     vm.planOptions = res.data;
-                    var stockOutPlanId = vm.dto.stockOutPlanId;
-                    if(vm.planOptions.length){
-                        if (!_.some(res.data, {id: stockOutPlanId})){
-                            stockOutPlanId = vm.planOptions[0].id;
-                        }
-                        vm.dto.stockOutPlanId = stockOutPlanId;
-                    }
+                    // var stockOutPlanId = vm.dto.stockOutPlanId;
+                    // if(vm.planOptions.length){
+                    //     if (!_.some(res.data, {id: stockOutPlanId})){
+                    //         stockOutPlanId = vm.planOptions[0].id;
+                    //     }
+                    //     vm.dto.stockOutPlanId = stockOutPlanId;
+                    // }
                     // vm.taskOptions.length = 0;
                     if(vm.dto.stockOutPlanId){
                         _fnGetTasks(vm.dto.stockOutPlanId);
@@ -97,13 +97,13 @@
             if (value){
                 StockOutService.getTasks(value).then(function (res){
                         vm.taskOptions = res.data;
-                        var stockOutTaskId = vm.dto.stockOutTaskId;
-                        if(vm.taskOptions.length){
-                            if (!_.some(res.data, {id:stockOutTaskId})){
-                                stockOutTaskId = vm.taskOptions[0].id;
-                            }
-                        }
-                        vm.dto.stockOutTaskId = stockOutTaskId;
+                        // var stockOutTaskId = vm.dto.stockOutTaskId;
+                        // if(vm.taskOptions.length){
+                        //     if (!_.some(res.data, {id:stockOutTaskId})){
+                        //         stockOutTaskId = vm.taskOptions[0].id;
+                        //     }
+                        // }
+                        // vm.dto.stockOutTaskId = stockOutTaskId;
 
                     // $scope.$apply();
                     }, onError
@@ -140,9 +140,9 @@
             vm.applicationOptions = [];
             StockOutService.getApplications().then(function(res){
                 vm.applicationOptions = res.data;
-                if(!vm.dto.stockOutApplyId){
-                    vm.dto.stockOutApplyId = vm.applicationOptions[0].id;
-                }
+                // if(!vm.dto.stockOutApplyId){
+                //     vm.dto.stockOutApplyId = vm.applicationOptions[0].id;
+                // }
                 if(applyId){
                     vm.dto.stockOutApplyId = applyId;
 

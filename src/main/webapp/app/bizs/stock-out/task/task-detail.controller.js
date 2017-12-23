@@ -62,6 +62,11 @@
         vm.delSelectedTube = _fnDelSelectedTube;
         //下一盒
         vm.nextBox = _fnNextBox;
+        vm.closeSidebar = _closeSiderBar;
+        //关闭侧边栏
+        function _closeSiderBar() {
+            vm.checked = false;
+        }
 
         _fnInitTask();
         function _fnInitTask() {
@@ -260,7 +265,8 @@
 
 
         //冻存盒列表
-        vm.boxOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING", 420,5)
+        var dom = "<'row mt-10'<'col-xs-12 text-left pl-25' f> <'col-xs-1 text-right mb-5' > r> t <'row mt-0'<'col-xs-6'i> <'col-xs-6'p>>";
+        vm.boxOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING", 410,5,dom)
             .withOption('order', [[0,'asc']])
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
@@ -1154,13 +1160,17 @@
                     items: function () {
                         return {
                             taskId:vm.taskId,
-                            tempBox:vm.tempBoxObj
+                            tempBox:vm.tempBoxObj,
+                            projectCode:vm.tempBoxObj.projectCode
                         };
                     }
                 }
             });
 
             modalInstance.result.then(function (tempBox) {
+                if(vm.tempBoxObj.projectCode && !tempBox.projectCode){
+                    tempBox.projectCode = vm.tempBoxObj.projectCode;
+                }
                 vm.tempBoxObj = tempBox;
                 vm.totalLen = vm.tempBoxObj.frozenTubeDTOS.length;
                 var remainLen = _.filter(vm.tempBoxObj.frozenTubeDTOS,{sampleCode:"",sampleTempCode:""}).length;

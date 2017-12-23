@@ -2,7 +2,9 @@
     <div class="row m-0">
         <div class="col-md-12">
             <div class="pull-left ">
-                <h2 class="m-0">查看出库交接</h2>
+                <h4 class="m-0">查看出库交接
+                    <small>&nbsp;{{vm.stockOutTakeOver.handoverCode}}</small>
+                </h4>
             </div>
             <div class="pull-right">
                 <button class="btn btn-primary" ng-click="vm.takeOverPrint()">打印交接单</button>
@@ -13,7 +15,8 @@
     <div class="row m-0">
         <div class="row m-0">
             <div class="col-md-12">
-                <p class="">接收方 {{vm.stockOutTakeOver.receiverOrganization}}, 接收人 {{vm.stockOutTakeOver.receiverName}},电话是 {{vm.stockOutTakeOver.receiverPhone}}, 在 {{vm.stockOutTakeOver.handoverTime}} 取走样本 {{vm.stockOutTakeOver.countOfSample}} 支。  交付人 {{vm.stockOutTakeOver.handoverPersonName}}。</p>
+                <p class="">接收方:{{vm.stockOutTakeOver.receiverOrganization}}, 接收人:{{vm.stockOutTakeOver.receiverName}},电话是:{{vm.stockOutTakeOver.receiverPhone}}, 在 {{vm.stockOutTakeOver.handoverTime}} 取走样本 {{vm.stockOutTakeOver.countOfSample}} 支。  交付人: {{vm.stockOutTakeOver.handoverPersonName}}。
+                出库申请编码: {{vm.stockOutTakeOver.stockOutApplyCode}}  出库计划编码: {{vm.stockOutTakeOver.stockOutPlanCode}}  出库计划编码: {{vm.stockOutTakeOver.stockOutTaskCode}}</p>
                 <p></p>
             </div>
         </div>

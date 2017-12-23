@@ -15,6 +15,7 @@
         var vm = this;
         var taskId = items.taskId;
         var tempBox = items.tempBox;
+        var projectCode = items.projectCode;
         //临时盒list
         var boxList = [];
         //临时管子
@@ -304,6 +305,11 @@
 
         vm.ok = function () {
             vm.selectBox.startPos = vm.pos;
+            if( vm.selectBox.projectCode && projectCode && projectCode != vm.selectBox.projectCode){
+                toastr.error("选择的临时盒的项目编码与待装盒的样本的项目编码不一致！");
+                return;
+            }
+
             $uibModalInstance.close(vm.selectBox);
         };
         vm.cancel = function () {

@@ -391,10 +391,11 @@
         vm.putInShelfAreas = {};
         function _fnLoadRack(rack){
             var racks = rack.supportRackDTOS;
+            var supportRack =  _.chunk(racks, 10);
             // 架子上的行数
-            var countOfRows = 1;
+            var countOfRows = supportRack.length;
             // 架子上的列数
-            var countOfCols = racks.length || 13;
+            var countOfCols = 10;
             //vm.moveOperateFlag为true的时候是列表移入
             if(vm.moveOperateFlag){
                 // 创建架子定位列表的定位数据
@@ -402,9 +403,9 @@
                 var emptyPos = null;
                 for(var i = 0; i < countOfRows; i++){
                     arrayRack[i] = [];
-                    for(var j = 0; j < countOfCols;j++){
-                        arrayRack[i][j] = racks[j];
-                        if(!racks[j].flag){
+                    for(var j = 0,len = supportRack[i].length; j < len;j++){
+                        arrayRack[i][j] = supportRack[i][j];
+                        if(!supportRack[i][j].flag){
                             if (!emptyPos) {
                                 emptyPos = {row: i, col: j};
                             }
@@ -425,9 +426,9 @@
                 var emptyPos = null;
                 for(var i = 0; i < countOfRows; i++){
                     arrayRack[i] = [];
-                    for(var j = 0; j < countOfCols;j++){
-                        arrayRack[i][j] = racks[j];
-                        if(!racks[j].flag){
+                    for(var j = 0,len = supportRack[i].length; j < len;j++){
+                        arrayRack[i][j] = supportRack[i][j];
+                        if(!supportRack[i][j].flag){
                             if (!emptyPos) {
                                 emptyPos = {row: i, col: j};
                             }
@@ -464,11 +465,13 @@
         }
         //移入
         function _fnPutIn(emptyPos) {
+            var racks = vm.rack.supportRackDTOS;
+            var supportRack =  _.chunk(racks, 10);
             singleRecoverDataArray = [];
             var cellRow;
             var cellCol;
-            var countOfCols = vm.rack.supportRackDTOS.length;
-            var countOfRows = 1;
+            // var countOfCols = supportRack.length;
+            var countOfRows = supportRack.length;
             //为true时，列表移入
             if(vm.moveOperateFlag){
                 cellRow = emptyPos.row;
@@ -498,7 +501,7 @@
                         }
                         // 从选中的位置，开始上架，先列后行
                         for (; cellRow < countOfRows && !equipment.isPutInShelf; ++cellRow) {
-                            for (; cellCol < countOfCols && !equipment.isPutInShelf; ++cellCol) {
+                            for (cellCol = 0; cellCol < supportRack[cellRow].length && !equipment.isPutInShelf; ++cellCol) {
                                 if(vm.moveOperateFlag){
                                     var cellData = vm.handsonTableArray[cellRow][cellCol];
                                 }else{
@@ -569,7 +572,7 @@
             initHandsonTable(1,13);
 
             vm.settings = {
-                rowHeaders : ['R'],
+                rowHeaders : ['R','R','R','R'],
                 outsideClickDeselectsCache: false,
                 outsideClickDeselects: false,
                 data:vm.handsonTableArray,

@@ -347,6 +347,7 @@
                         _.forEach(vm.obox.frozenBoxDTOList,function (box) {
                             if(box.frozenBoxCode == code){
                                 box.status = status;
+                                box.frozenBoxCode1D = code;
                             }
                         });
 

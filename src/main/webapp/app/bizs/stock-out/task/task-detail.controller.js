@@ -505,7 +505,13 @@
                     }
                 },
                 // 单元格的渲染函数
-                renderer: _customRenderer
+                renderer: _customRenderer,
+                beforeKeyDown:function (event) {
+                    if(event.keyCode == 46){
+                        event.stopImmediatePropagation();
+                    }
+
+                }
             };
             // 渲染单元格
             function _customRenderer(hotInstance, td, row, col, prop, value, cellProperties) {

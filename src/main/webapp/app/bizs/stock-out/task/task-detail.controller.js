@@ -559,7 +559,7 @@
                 //申请撤销的样本标识
                 if(tube.stockOutFlag && tube.stockOutFlag == 2){
                     $(".fa-question",td).remove();
-                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;color:rgba(216,0,0,0.3);padding-left: 33%;font-size:42px"><i class="fa fa-close"></i></div>';
+                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;border:2px solid green;color:rgba(216,0,0,0.3);padding-left: 33%;font-size:42px"><i class="fa fa-close"></i></div>';
                     $(txt).appendTo(td);
                 }
                 //已扫码样本

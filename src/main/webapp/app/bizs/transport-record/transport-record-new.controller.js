@@ -1378,19 +1378,41 @@
             };
             vm.saveBox = saveBox;//保存盒子
             function saveBox(callback){
-                BioBankBlockUi.blockUiStart();
-                var obox = {
-                    transhipId:vm.transportRecord.id,
-                    frozenBoxDTOList:[]
-                };
+                if(vm.box.frozenBoxCode == vm.box.frozenBoxCode1D){
+                    modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: 'app/bizs/common/prompt-modal.html',
+                        size: 'sm',
+                        controller: 'PromptModalController',
+                        controllerAs: 'vm',
+                        backdrop:'static',
+                        resolve: {
+                            items: function () {
+                                return {
+                                    status:'7'
+                                };
+                            }
+                        }
+                    });
+                    modalInstance.result.then(function () {
+                        BioBankBlockUi.blockUiStart();
+                        var obox = {
+                            transhipId:vm.transportRecord.id,
+                            frozenBoxDTOList:[]
+                        };
 
-                if(vm.box) {
-                    obox.frozenBoxDTOList = [];
-                    obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
+                        if(vm.box) {
+                            obox.frozenBoxDTOList = [];
+                            obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
+                        }
+                        if(obox.frozenBoxDTOList.length){
+                            TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
+                        }
+                    }, function () {
+
+                    });
                 }
-                if(obox.frozenBoxDTOList.length){
-                    TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
-                }
+
                 function onSaveBoxSuccess(res) {
                     if(!vm.saveStockInFlag && !vm.saveRecordFlag){
                         toastr.success("保存盒子成功！");

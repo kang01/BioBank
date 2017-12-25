@@ -354,7 +354,7 @@ public class TranshipBoxResource {
      * @param frozenBoxCode
      * @return
      */
-    @GetMapping("/return-boxes/tranship/{transhipCode}/frozenBox/{frozenBoxCode}")
+    @GetMapping("/return-boxes/return-back/{returnBackCode}/frozenBox/{frozenBoxCode}")
     @Timed
     public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByTranshipCodeAndForzenBoxCodeForReturnBack(@PathVariable String transhipCode, @PathVariable String frozenBoxCode) {
         log.debug("REST request to get FrozenTube : {}", frozenBoxCode);

@@ -8,8 +8,8 @@
         .module('bioBankApp')
         .controller('TransportRecordViewController', TransportRecordViewController);
 
-    TransportRecordViewController.$inject = ['$q','MasterData','entity','TranshipBoxByCodeService','frozenBoxByCodeService'];
-    function TransportRecordViewController($q,MasterData,entity,TranshipBoxByCodeService,frozenBoxByCodeService) {
+    TransportRecordViewController.$inject = ['$q','MasterData','entity','TranshipBoxByCodeService','TransportRecordService'];
+    function TransportRecordViewController($q,MasterData,entity,TranshipBoxByCodeService,TransportRecordService) {
 
         var vm = this;
         vm.transportRecord = entity; //转运记录
@@ -30,7 +30,8 @@
             function _fnQueryBoxes(boxes) {
                 var querys = [];
                 for(var i = 0 , len = boxes.length; i < len; i++){
-                    var queryBox = frozenBoxByCodeService.get({code:boxes[i].frozenBoxCode}).$promise;
+                    // var queryBox = frozenBoxByCodeService.get({code:boxes[i].frozenBoxCode}).$promise;
+                    var queryBox = TransportRecordService.queryViewBoxTubeDes(vm.transportRecord.transhipCode,boxes[i].frozenBoxCode);
                     querys.push(queryBox);
                     if (querys.length >= 10 || len == i + 1){
                         $q.all(querys).then(function(datas){

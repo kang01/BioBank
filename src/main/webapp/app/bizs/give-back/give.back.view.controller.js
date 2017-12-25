@@ -43,7 +43,8 @@
             function _fnQueryBoxes(boxes) {
                 var querys = [];
                 for(var i = 0 , len = boxes.length; i < len; i++){
-                    var queryBox = frozenBoxByCodeService.get({code:boxes[i].frozenBoxCode}).$promise;
+                    // var queryBox = frozenBoxByCodeService.get({code:boxes[i].frozenBoxCode}).$promise;
+                    var queryBox = GiveBackService.queryViewBoxTubes(vm.transportRecord.transhipCode,boxes[i].frozenBoxCode);
                     querys.push(queryBox);
                     if (querys.length >= 10 || len == i + 1){
                         $q.all(querys).then(function(datas){

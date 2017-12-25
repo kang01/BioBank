@@ -644,6 +644,13 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     border-radius:5px;
     -moz-border-radius:5px;
 }
+.split-tube{
+    /*width: 132px;*/
+    height: 40px;
+    border: 1px solid red;
+    line-height: 40px;
+    float: left;
+}
 .transport-code{
     width: 330px;
 }

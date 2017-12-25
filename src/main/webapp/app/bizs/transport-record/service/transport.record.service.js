@@ -87,6 +87,9 @@
             };
             return $http(req);
         };
+        service.queryViewBoxTubeDes = function (transhipCode,frozenBoxCode) {
+            return $http.get('api/tranship-boxes/tranship/'+transhipCode+'/frozenBox/'+frozenBoxCode);
+        };
         return service;
     }
 })();

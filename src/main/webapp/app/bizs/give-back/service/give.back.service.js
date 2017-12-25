@@ -41,7 +41,9 @@
             //获取附件
             queryAttachment :_queryAttachment,
             //删除附件
-            deleteAttachment :_deleteAttachment
+            deleteAttachment :_deleteAttachment,
+            //查看页面获取盒子及管子
+            queryViewBoxTubes :_queryViewBoxTubes
         };
         function _queryGiveBackTable(data,oSettings) {
             return $http.post('api/res/return-back',JSON.stringify(data));
@@ -91,6 +93,9 @@
         }
         function _deleteAttachment(imgId) {
             return $http.delete('api/attachments/'+imgId);
+        }
+        function _queryViewBoxTubes(returnBackCode,frozenBoxCode) {
+            return $http.get('api/return-boxes/return-back/'+returnBackCode+'/frozenBox/'+frozenBoxCode);
         }
         return service;
     }

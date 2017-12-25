@@ -58,7 +58,6 @@
         _fnIsUseAge();
         _fnQuerySampleType();
         _fuQueryFrozenTubeType();
-        _fnQueryCheckType();
 
         // vm.sampleRequirement.age = "30;70";
 

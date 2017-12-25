@@ -520,6 +520,9 @@ public class TranshipServiceImpl implements TranshipService{
         if(transhipDTO == null ||(transhipDTO!=null&&transhipDTO.getId()==null)){
             return null;
         }
+        if(transhipDTO.getTranshipDate() == null){
+            transhipDTO.setTranshipDate(LocalDate.now());
+        }
         Long receiverId = transhipDTO.getReceiverId();
         if(receiverId!=null){
             User user = userRepository.findOne(receiverId);

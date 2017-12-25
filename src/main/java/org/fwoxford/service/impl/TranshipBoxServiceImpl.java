@@ -950,6 +950,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     frozenTube.setFrozenBox(transhipBox.getFrozenBox());
                     frozenTube.setParentSampleId(tubeDTO.getParentSampleId() );
                     frozenTube.setParentSampleCode(tubeDTO.getParentSampleCode());
+                    frozenTube.setProjectName(tranship.getProjectName());
                     frozenTubeRepository.save(frozenTube);
                     transhipTube.setFrozenTube(frozenTube);
                 }

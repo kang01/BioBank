@@ -653,6 +653,7 @@ public class StockInServiceImpl implements StockInService {
         }
         List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipCodesAndStatus(transhipCodeList);
         List<FrozenBox> frozenBoxes = new ArrayList<>();
+        List<StockInBox> stockInBoxes = new ArrayList<StockInBox>();
         for(TranshipBox transhipBox : transhipBoxes){
             FrozenBox frozenBox = transhipBox.getFrozenBox();
             //冻存盒状态变为待入库
@@ -660,7 +661,7 @@ public class StockInServiceImpl implements StockInService {
             frozenBoxes.add(frozenBox);
             //保存入库冻存盒
             StockInBox stockInBox = new StockInBox();
-            Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
+//            Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
             stockInBox.sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
                 .sampleClassification(frozenBox.getSampleClassification())
                 .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)
@@ -669,7 +670,7 @@ public class StockInServiceImpl implements StockInService {
                 .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
                 .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
                 .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
-                .projectSiteName(frozenBox.getProjectSiteName()).countOfSample(countOfSample.intValue()).status(frozenBox.getStatus()).stockIn(stockIn).stockInCode(stockIn.getStockInCode())
+                .projectSiteName(frozenBox.getProjectSiteName()).countOfSample(0).status(frozenBox.getStatus()).stockIn(stockIn).stockInCode(stockIn.getStockInCode())
                 .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).frozenBox(frozenBox);
             stockInBoxRepository.save(stockInBox);
             //保存入库管子
@@ -700,8 +701,11 @@ public class StockInServiceImpl implements StockInService {
             }
             frozenTubeRepository.save(frozenTubes);
             stockInTubeRepository.save(stockInTubes);
+            stockInBox.countOfSample(stockInTubes.size());
+            stockInBoxes.add(stockInBox);
         }
         frozenBoxRepository.save(frozenBoxes);
+        stockInBoxRepository.save(stockInBoxes);
         return stockInMapper.stockInToStockInDTO(stockIn);
     }
 

@@ -1321,6 +1321,22 @@ ul.rating {
     margin-bottom: 10px;
     transition: all .1s ease;
 }
+/*.create-icon{*/
+    /*position: relative;*/
+/*}*/
+.input-icon {
+    /*display: none;*/
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    outline: none;
+    right: 6px;
+    bottom: 9px;
+}
+/*.create-icon .input:focus + .clear{*/
+    /*display: inline;*/
+    /*opacity: 1;*/
+/*}*/
 
 /*.transport-box:first-child{*/
 /*margin-left: 0;*/

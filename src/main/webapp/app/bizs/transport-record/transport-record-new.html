@@ -306,15 +306,24 @@
                             <div class="row">
                                 <div class="form-group col-md-6 pr-0">
                                     <label>一维编码</label>
-                                    <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode1D"   ng-disabled="!vm.box.frozenBoxCode" required
-                                    >
+                                    <input type="text" class="form-control" input-btn ng-model="vm.box.frozenBoxCode1D"   ng-disabled="!vm.box.frozenBoxCode" required>
+                                </a>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6 create-icon">
                                     <label>冻存盒号<span class="required-field"></span></label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode"   ng-disabled="!vm.box.frozenBoxCode" required>
-                                        <div class="input-group-addon" ng-click="vm.makeNewBoxCode()" >生成</div>
-                                    </div>
+                                    <!--<input-btn-->
+                                        <!--box="vm.box"-->
+                                        <!--operate="vm.makeNewBoxCode()"-->
+                                        <!--icon ="vm.icon"-->
+                                    <!--&gt;</input-btn>-->
+                                    <!--<div class="input-group">-->
+                                        <input type="text" input-btn input-btn-option="vm.btnSettings" class="input form-control" ng-model="vm.box.frozenBoxCode"
+                                               ng-disabled="!vm.box.frozenBoxCode"
+                                               required>
+                                        <!--<a  ng-click="vm.makeNewBoxCode()"  class="clear">-->
+                                            <!--<i class="fa fa-plus-circle"></i></a>-->
+                                        <!--<div class="input-group-addon" ng-click="vm.makeNewBoxCode()" >生成</div>-->
+                                    <!--</div>-->
                                 </div>
                             </div>
                             <div class="row">

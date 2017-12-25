@@ -22,6 +22,11 @@
         var vm = this;
         vm.transportRecord = entity; //转运记录
         vm.box = {};
+        //生成的icon配置
+        vm.btnSettings = {
+            icon:"fa-plus-circle",
+            makeNewBoxCode:_fnMakeNewBoxCode
+        };
         //生成新的冻存盒号
         vm.makeNewBoxCode = _fnMakeNewBoxCode;
         //

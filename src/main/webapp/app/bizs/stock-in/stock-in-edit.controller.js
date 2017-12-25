@@ -1895,6 +1895,7 @@
                 }
                 vm.boxList = [];
                 vm.frozenBoxCode = "";
+                vm.boxDetailFlag = false;
                 $(".box-selected").removeClass("box-selected");
             }).error(function (data) {
                 vm.recover();

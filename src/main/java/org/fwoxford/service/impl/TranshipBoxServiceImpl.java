@@ -933,6 +933,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 transhipTubeDTOFormStockOut.setFrozenBoxId(transhipBox.getFrozenBox().getId());
                 transhipTubeDTOFormStockOut.setFrozenTubeState(Constants.FROZEN_BOX_RETURN_BACK);
                 transhipTubeDTOFormStockOut.setMemo(tubeDTO.getMemo());
+                transhipTubeDTOFormStockOut.setFrozenTubeId(tubeDTO.getFrozenTubeId());
                 TranshipTube transhipTube = transhipTubeMapper.transhipTubeDTOToTranshipTube(transhipTubeDTOFormStockOut);
                 //样本ID为空表示为新增的样本
                 FrozenTube tube = null;

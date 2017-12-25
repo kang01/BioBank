@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockInBoxForDataTableEntity.
+    -->
+    <changeSet id="20171224092000-1" author="jhipster">
+        <dropView viewName="view_stock_in_box_list"/>
+        <createView viewName="view_stock_in_box_list">
+            SELECT '' as order_no,a.ID,a.FROZEN_BOX_CODE,a.FROZEN_BOX_CODE_1D,a.EQUIPMENT_CODE,a.AREA_CODE,a.SUPPORT_RACK_CODE,a.COLUMNS_IN_SHELF,a.ROWS_IN_SHELF,
+            (a.EQUIPMENT_CODE||'.'||a.AREA_CODE||'.'||a.SUPPORT_RACK_CODE ||'.'||a.COLUMNS_IN_SHELF || lpad(a.ROWS_IN_SHELF,2,0)) as position,
+            a.SAMPLE_TYPE_CODE,a.SAMPLE_CLASSIFICATION_CODE,
+            a.SAMPLE_TYPE_NAME,a.SAMPLE_CLASSIFICATION_NAME ,a.IS_SPLIT ,
+            a.STATUS,a.COUNT_OF_SAMPLE,a.STOCK_IN_CODE,
+            s.TRANSHIP_CODE,
+            a.project_site_code,
+            a.frozen_box_id AS FROZEN_BOX_ID
+            FROM STOCK_IN_BOX a
+            left join tranship_stock_in s on  s.stock_in_id = a.stock_in_id and a.status!='0000'
+        </createView>
+
+    </changeSet>
+
+</databaseChangeLog>

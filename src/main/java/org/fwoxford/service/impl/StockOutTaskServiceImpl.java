@@ -440,7 +440,12 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             s.stockOutTask(null);
         }
         stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+        List<String> statusList = new ArrayList<>();
+        statusList.add(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(stockOutTask.getId(),statusList);
+        stockOutTask.countOfStockOutSample(countOfStockOutSample.intValue());
         stockOutTask.status(Constants.STOCK_OUT_TASK_INVALID).invalidReason(stockOutTaskDTO.getInvalidReason());
+        stockOutTaskRepository.save(stockOutTask);
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
 }

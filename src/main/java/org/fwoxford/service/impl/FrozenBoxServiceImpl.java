@@ -175,12 +175,14 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
         //查询冻存盒信息
         FrozenBox frozenBox = frozenBoxRepository.findOne(frozenBoxId);
-
+        if(frozenBox == null || (frozenBox!=null && frozenBox.getStatus().equals(Constants.INVALID))){
+            throw new BankServiceException("冻存盒不存在！");
+        }
         //查询冻存管列表信息
         List<FrozenTube> frozenTube = frozenTubeService.findFrozenTubeListByBoxId(frozenBoxId);
-        List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
-
+        List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapping.frozenTubesToFrozenTubeDTOs(frozenTube);
         res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox);
+        res.setFrozenTubeDTOS(frozenTubeDTOS);
         return res;
     }
 

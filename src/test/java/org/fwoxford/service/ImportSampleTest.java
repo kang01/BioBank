@@ -4222,5 +4222,13 @@ public class ImportSampleTest {
         }
     }
 
+    @Test
+    private void importCheckType(){
+        CheckType checkType1 = new CheckType().checkTypeCode("SH").checkTypeName("生化").status(Constants.VALID);
+        CheckType checkType2 = new CheckType().checkTypeCode("TH").checkTypeName("糖化血红蛋白").status(Constants.VALID);
+        CheckType checkType3 = new CheckType().checkTypeCode("MY").checkTypeName("免疫").status(Constants.VALID);
+        CheckType checkType4 = new CheckType().checkTypeCode("DNA").checkTypeName("DNA提取").status(Constants.VALID);
+        CheckType checkType5 = new CheckType().checkTypeCode("XP").checkTypeName("芯片检测").status(Constants.VALID);
+    }
 }
 

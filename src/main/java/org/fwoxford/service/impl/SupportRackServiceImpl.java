@@ -230,6 +230,8 @@ public class SupportRackServiceImpl implements SupportRackService{
             supportRackDTO.setSupportRackColumns(s.getSupportRackType().getSupportRackColumns());
             supportRackDTO.setSupportRackRows(s.getSupportRackType().getSupportRackRows());
             List<FrozenBox> frozenBoxs = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(s.getArea().getEquipmentCode(),s.getArea().getAreaCode(),s.getSupportRackCode());
+//            List<FrozenBox> frozenBoxs = frozenBoxRepository.findBySupportRackId(s.getId());
+
             supportRackDTO.setFlag(Constants.NO);
             List<FrozenBoxDTO> frozenBoxDTOList = new ArrayList<FrozenBoxDTO>();
             for (FrozenBox frozenBox : frozenBoxs) {

@@ -333,4 +333,32 @@ public class TranshipBoxResource {
         transhipBoxService.deleteReturnBackBox(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    /**
+     * 根据转运单编码和冻存盒编码查询转运单的详情
+     * @param transhipCode
+     * @param frozenBoxCode
+     * @return
+     */
+    @GetMapping("/tranship-boxes/tranship/{transhipCode}/frozenBox/{frozenBoxCode}")
+    @Timed
+    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByTranshipCodeAndForzenBoxCode(@PathVariable String transhipCode, @PathVariable String frozenBoxCode) {
+        log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
+        FrozenBoxAndFrozenTubeResponse res = transhipBoxService.findTranshipBoxAndSampleByTranshipCodeAndFrozenBoxCode(transhipCode,frozenBoxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * 根据转运单编码和冻存盒编码查询转运单的详情---归还
+     * @param transhipCode
+     * @param frozenBoxCode
+     * @return
+     */
+    @GetMapping("/return-boxes/tranship/{transhipCode}/frozenBox/{frozenBoxCode}")
+    @Timed
+    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByTranshipCodeAndForzenBoxCodeForReturnBack(@PathVariable String transhipCode, @PathVariable String frozenBoxCode) {
+        log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
+        FrozenBoxAndFrozenTubeResponse res = transhipBoxService.findTranshipBoxAndSampleByTranshipCodeAndFrozenBoxCode(transhipCode,frozenBoxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
 }

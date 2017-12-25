@@ -1441,4 +1441,49 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         this.updateTranshipSampleNumber(tranship);
      }
 
+    /**
+     * 根据转运单编码和冻存盒编码查询转运单的详情
+     * @param transhipCode
+     * @param frozenBoxCode
+     * @return
+     */
+    @Override
+    public FrozenBoxAndFrozenTubeResponse findTranshipBoxAndSampleByTranshipCodeAndFrozenBoxCode(String transhipCode, String frozenBoxCode) {
+        FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
+
+        //查询冻存盒的转运记录
+        TranshipBox transhipBox = transhipBoxRepository.findByTranshipCodeAndFrozenBoxCode(transhipCode,frozenBoxCode);
+        if(transhipBox == null){
+            throw new BankServiceException("未查询到该冻存盒的转运记录！",frozenBoxCode);
+        }
+        //查询转运冻存管
+        List<TranshipTube> transhipTubeList = transhipTubeRepository.findByTranshipBoxIdAndStatusNotIn(transhipBox.getId()
+                ,new ArrayList<String>(){{add(Constants.FROZEN_BOX_INVALID);add(Constants.INVALID);}});
+        List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
+        for(TranshipTube f: transhipTubeList){
+            FrozenTube frozenTube = f.getFrozenTube();
+            FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(frozenTube);
+            frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
+            frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
+            frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
+            frozenTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
+            frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
+            frozenTubeDTO.setSampleClassificationCode(f.getSampleClassificationCode());
+            frozenTubeDTO.setSampleClassificationName(f.getSampleClassificationName());
+            frozenTubeDTO.setSampleTypeId(f.getId());
+            frozenTubeDTO.setSampleTypeCode(f.getSampleTypeCode());
+            frozenTubeDTO.setSampleTypeName(f.getSampleTypeName());
+            frozenTubeDTO.setSampleClassificationId(f.getSampleClassification()!=null?f.getSampleClassification().getId():null);
+            frozenTubeDTO.setSampleClassificationCode(f.getSampleClassificationCode());
+            frozenTubeDTO.setSampleClassificationName(f.getSampleClassificationName());
+            frozenTubeDTO.setFrozenBoxCode(f.getFrozenBoxCode());
+            frozenTubeDTO.setTubeColumns(f.getColumnsInTube());
+            frozenTubeDTO.setTubeRows(f.getRowsInTube());
+            frozenTubeDTOS.add(frozenTubeDTO);
+        }
+        res = transhipBoxMapper.transhipBoxToResponse(transhipBox);
+        res.setFrozenTubeDTOS(frozenTubeDTOS);
+        return res;
+    }
+
 }

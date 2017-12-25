@@ -103,4 +103,9 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     List<StockOutReqFrozenTube> findByStockOutApplyIdAndSampleTypeAndSampleCodeIn(Long id, Long sampleTypeId, List<String> sampleCodeStr);
 
     List<StockOutReqFrozenTube> findByStockOutTaskIdAndStatus(Long taskId, String status);
+
+    @Query(value = " select  a.frozen_box_id from stock_out_req_frozen_tube a" +
+            "        where a.status = '"+Constants.STOCK_OUT_SAMPLE_IN_USE+"'" +
+            "        group by a.frozen_box_id" ,nativeQuery = true)
+    List<Long> findStockOurFrozenBoxGroupByFrozenBoxId();
 }

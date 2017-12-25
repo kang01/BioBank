@@ -307,4 +307,56 @@ public interface TranshipBoxMapper {
         }
         return transhipBoxDTO;
     }
+
+    default FrozenBoxAndFrozenTubeResponse transhipBoxToResponse(TranshipBox transhipBox){
+        if(transhipBox == null){
+            return null;
+        }
+        FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
+
+        res.setId(transhipBox.getFrozenBox().getId());
+        res.setStatus(transhipBox.getStatus());
+        res.setFrozenBoxCode(transhipBox.getFrozenBoxCode());
+        res.setFrozenBoxCode1D(transhipBox.getFrozenBoxCode1D());
+        res.setFrozenBoxType(transhipBox.getFrozenBoxType());
+        res.setIsSplit(transhipBox.getIsSplit());
+        res.setMemo(transhipBox.getMemo());
+        res.setSampleType(transhipBox.getSampleType());
+        res.setSampleClassification(transhipBox.getSampleClassification());
+        res.setEquipmentId(transhipBox.getEquipment()!=null?transhipBox.getEquipment().getId():null);
+        res.setAreaId(transhipBox.getArea()!=null?transhipBox.getArea().getId():null);
+        res.setSupportRackId(transhipBox.getSupportRack()!=null?transhipBox.getSupportRack().getId():null);
+        res.setColumnsInShelf(transhipBox.getColumnsInShelf());
+        res.setRowsInShelf(transhipBox.getRowsInShelf());
+        res.setProjectId(transhipBox.getProject()!=null?transhipBox.getProject().getId():null);
+        res.setProjectCode(transhipBox.getProjectCode());
+        res.setProjectName(transhipBox.getProjectName());
+        res.setCountOfSample(transhipBox.getCountOfSample());
+        SampleType sampleType = transhipBox.getSampleType();
+        if(sampleType!=null){
+            res.setSampleTypeId(sampleType.getId());
+            res.setSampleTypeCode(sampleType.getSampleTypeCode());
+            res.setSampleTypeName(sampleType.getSampleTypeName());
+            res.setIsMixed(sampleType.getIsMixed());
+            res.setFrontColor(sampleType.getFrontColor());
+            res.setBackColor(sampleType.getBackColor());
+        }
+        FrozenBoxType frozenBoxType = transhipBox.getFrozenBoxType();
+        if(frozenBoxType!=null){
+            res.setFrozenBoxTypeId(frozenBoxType.getId());
+            res.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());
+            res.setFrozenBoxTypeName(frozenBoxType.getFrozenBoxTypeName());
+            res.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
+            res.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
+        }
+        SampleClassification sampleClassification = transhipBox.getSampleClassification();
+        if(sampleClassification != null){
+            res.setSampleClassificationId(sampleClassification.getId());
+            res.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+            res.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+            res.setFrontColorForClass(sampleClassification.getFrontColor());
+            res.setBackColorForClass(sampleClassification.getBackColor());
+        }
+        return res;
+    }
 }

@@ -47,7 +47,18 @@ public interface StockOutReqFrozenTubeService {
 
     String checkStockOutSampleByAppointedSample(List<StockOutRequiredSampleDTO> stockOutRequiredSamples, StockOutRequirement stockOutRequirement);
 
+    /**
+     * 核对录入部分的申请出库的样本
+     * @param stockOutRequirement
+     * @return
+     */
     String checkStockOutSampleByRequirement(StockOutRequirement stockOutRequirement);
 
+    /**
+     * 核对指定的需求样本
+     * @param jsonArray
+     * @param stockOutRequirement
+     * @return
+     */
     String checkStockOutSampleByAppointedSampleOrAppointedBox(List<JSONObject> jsonArray, StockOutRequirement stockOutRequirement);
 }

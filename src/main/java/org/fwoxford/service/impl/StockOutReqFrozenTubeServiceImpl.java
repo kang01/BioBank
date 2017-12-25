@@ -249,22 +249,34 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             return Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
 //            throw new BankServiceException("库存不足！满足需求的样本量有"+countOfStockInTube+"支,请修改需求！");
         }
+        List<Long> stockOutBoxIdsGroupByFrozenBox = stockOutReqFrozenTubeRepository.findStockOurFrozenBoxGroupByFrozenBoxId();
         List<FrozenTube> checkedFrozenTubeList = new ArrayList<FrozenTube>();
         for(int i=0;;i+=1000){
             //查询全部的样本--先取1000条
             int length = 1000;
-            if(countOfSample<1000){
-                length=countOfSample;
-            }
+//            if(countOfSample<1000){
+//                length=countOfSample;
+//            }
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findByRequirements(sampleTypeId,samplyClassificationId,
                     frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis,ageMin,ageMax,projectIds,i,length);
-           if(frozenTubeList.size()<countOfSample){
-               checkedFrozenTubeList.addAll(frozenTubeList);
-               countOfSample=countOfSample-frozenTubeList.size();
-               continue;
-           }
-           checkedFrozenTubeList.addAll(frozenTubeList.subList(0,countOfSample));
-           break;
+            Map<Long,List<FrozenTube>> frozenTubeMapGroupByFrozenBoxCode = frozenTubeList.stream().collect(Collectors.groupingBy(s->s.getFrozenBox().getId()));
+            for(Long frozenBoxId : frozenTubeMapGroupByFrozenBoxCode.keySet()){
+               if(stockOutBoxIdsGroupByFrozenBox.contains(frozenBoxId)){
+                   continue;
+               }
+                List<FrozenTube> frozenTubes = frozenTubeMapGroupByFrozenBoxCode.get(frozenBoxId);
+                if(frozenTubes.size()<countOfSample){
+                    checkedFrozenTubeList.addAll(frozenTubes);
+                    countOfSample=countOfSample-frozenTubes.size();
+                    continue;
+                }
+                checkedFrozenTubeList.addAll(frozenTubes.subList(0,countOfSample));
+                break;
+            }
+            if(checkedFrozenTubeList.size()<countOfSample){
+                continue;
+            }
+            break;
         }
         List<StockOutReqFrozenTube> stockOutReqFrozenTubes =  new ArrayList<StockOutReqFrozenTube>();
         int i=0;

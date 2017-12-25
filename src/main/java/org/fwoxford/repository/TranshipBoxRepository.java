@@ -49,4 +49,7 @@ public interface TranshipBoxRepository extends JpaRepository<TranshipBox,Long> {
     TranshipBox findByIdAndStatusNot(Long boxId, String status);
 
     Long countByTranshipIdAndStatusNotIn(Long id, ArrayList<String> status);
+
+    @Query("select t from TranshipBox t where t.tranship.transhipCode = ?1 and t.frozenBoxCode =?2")
+    TranshipBox findByTranshipCodeAndFrozenBoxCode(String transhipCode, String frozenBoxCode);
 }

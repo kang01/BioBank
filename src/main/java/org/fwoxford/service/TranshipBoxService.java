@@ -117,4 +117,12 @@ public interface TranshipBoxService {
      * @param id
      */
     void deleteReturnBackBox(Long id);
+
+    /**
+     * 根据转运单编码和冻存盒编码查询转运单的详情
+     * @param transhipCode
+     * @param frozenBoxCode
+     * @return
+     */
+    FrozenBoxAndFrozenTubeResponse findTranshipBoxAndSampleByTranshipCodeAndFrozenBoxCode(String transhipCode, String frozenBoxCode);
 }

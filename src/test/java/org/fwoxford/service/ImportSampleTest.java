@@ -4221,14 +4221,17 @@ public class ImportSampleTest {
             }
         }
     }
-
+    @Autowired
+    CheckTypeRepository checkTypeRepository;
     @Test
     private void importCheckType(){
-        CheckType checkType1 = new CheckType().checkTypeCode("SH").checkTypeName("生化").status(Constants.VALID);
-        CheckType checkType2 = new CheckType().checkTypeCode("TH").checkTypeName("糖化血红蛋白").status(Constants.VALID);
-        CheckType checkType3 = new CheckType().checkTypeCode("MY").checkTypeName("免疫").status(Constants.VALID);
-        CheckType checkType4 = new CheckType().checkTypeCode("DNA").checkTypeName("DNA提取").status(Constants.VALID);
-        CheckType checkType5 = new CheckType().checkTypeCode("XP").checkTypeName("芯片检测").status(Constants.VALID);
+        List<CheckType> list = new ArrayList<>();
+        CheckType checkType1 = new CheckType().checkTypeCode("SH").checkTypeName("生化").status(Constants.VALID);list.add(checkType1);
+        CheckType checkType2 = new CheckType().checkTypeCode("TH").checkTypeName("糖化血红蛋白").status(Constants.VALID);list.add(checkType2);
+        CheckType checkType3 = new CheckType().checkTypeCode("MY").checkTypeName("免疫").status(Constants.VALID);list.add(checkType3);
+        CheckType checkType4 = new CheckType().checkTypeCode("DNA").checkTypeName("DNA提取").status(Constants.VALID);list.add(checkType4);
+        CheckType checkType5 = new CheckType().checkTypeCode("XP").checkTypeName("芯片检测").status(Constants.VALID);list.add(checkType5);
+        checkTypeRepository.save(list);
     }
 }
 

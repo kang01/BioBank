@@ -6,7 +6,7 @@
     <!--
         Added the view for entity AreasListByProjectDataTableEntity.
     -->
-    <changeSet id="20171220214182-1" author="jhipster">
+    <changeSet id="20171220214110-1" author="jhipster">
         <dropView viewName="view_areas_list_by_project"></dropView>
         <createView viewName="view_areas_list_by_project">
             select a.id,m.id as equipment_type_id,m.equipment_type,e.equipment_code ||'.'||a.area_code as position,
@@ -21,7 +21,7 @@
             left join equipment e on a.equipment_id = e.id
             left join equipment_modle m on e.equipment_modle_id = m.id
             left join  (
-            select  box.project_id,box.project_name,box.project_code,box.area_id,count(1) as count_of_used  from frozen_box box
+            select  box.project_id,box.project_name,box.project_code,box.area_id,count(distinct support_rack_id) as count_of_used  from frozen_box box
             where box.status in ('2004','2006') group by box.project_id,box.project_name,box.project_code,box.area_id
             )temp on temp.area_id = a.id
             where a.status !='0000'

@@ -350,15 +350,15 @@ public class TranshipBoxResource {
 
     /**
      * 根据转运单编码和冻存盒编码查询转运单的详情---归还
-     * @param transhipCode
+     * @param returnBackCode
      * @param frozenBoxCode
      * @return
      */
     @GetMapping("/return-boxes/return-back/{returnBackCode}/frozenBox/{frozenBoxCode}")
     @Timed
-    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByTranshipCodeAndForzenBoxCodeForReturnBack(@PathVariable String transhipCode, @PathVariable String frozenBoxCode) {
+    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByTranshipCodeAndForzenBoxCodeForReturnBack(@PathVariable String returnBackCode, @PathVariable String frozenBoxCode) {
         log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
-        FrozenBoxAndFrozenTubeResponse res = transhipBoxService.findTranshipBoxAndSampleByTranshipCodeAndFrozenBoxCode(transhipCode,frozenBoxCode);
+        FrozenBoxAndFrozenTubeResponse res = transhipBoxService.findTranshipBoxAndSampleByTranshipCodeAndFrozenBoxCode(returnBackCode,frozenBoxCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

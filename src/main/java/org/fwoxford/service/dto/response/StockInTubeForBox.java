@@ -51,4 +51,133 @@ public class StockInTubeForBox {
     public void setSampleCode(String sampleCode) {
         this.sampleCode = sampleCode;
     }
+
+    private Long sampleClassificationId;
+    private String sampleClassificationName;
+    private String sampleClassificationCode;
+    private String frontColorForClass;
+    private String backColorForClass;
+
+    private Long sampleTypeId;
+    private String sampleTypeCode;
+    private String sampleTypeName;
+    private Integer isMixed;
+    private String frontColor;
+    private String backColor;
+
+    private Long frozenTubeTypeId;
+    private String frozenTubeTypeCode;
+    private String frozenTubeTypeName;
+
+    public Long getSampleClassificationId() {
+        return sampleClassificationId;
+    }
+
+    public void setSampleClassificationId(Long sampleClassificationId) {
+        this.sampleClassificationId = sampleClassificationId;
+    }
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+    }
+
+    public String getFrontColorForClass() {
+        return frontColorForClass;
+    }
+
+    public void setFrontColorForClass(String frontColorForClass) {
+        this.frontColorForClass = frontColorForClass;
+    }
+
+    public String getBackColorForClass() {
+        return backColorForClass;
+    }
+
+    public void setBackColorForClass(String backColorForClass) {
+        this.backColorForClass = backColorForClass;
+    }
+
+    public Long getSampleTypeId() {
+        return sampleTypeId;
+    }
+
+    public void setSampleTypeId(Long sampleTypeId) {
+        this.sampleTypeId = sampleTypeId;
+    }
+
+    public String getSampleTypeCode() {
+        return sampleTypeCode;
+    }
+
+    public void setSampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
+    }
+
+    public String getSampleTypeName() {
+        return sampleTypeName;
+    }
+
+    public void setSampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
+    }
+
+    public Integer getIsMixed() {
+        return isMixed;
+    }
+
+    public void setIsMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+    }
+
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public void setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+    }
+
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public void setBackColor(String backColor) {
+        this.backColor = backColor;
+    }
+
+    public Long getFrozenTubeTypeId() {
+        return frozenTubeTypeId;
+    }
+
+    public void setFrozenTubeTypeId(Long frozenTubeTypeId) {
+        this.frozenTubeTypeId = frozenTubeTypeId;
+    }
+
+    public String getFrozenTubeTypeCode() {
+        return frozenTubeTypeCode;
+    }
+
+    public void setFrozenTubeTypeCode(String frozenTubeTypeCode) {
+        this.frozenTubeTypeCode = frozenTubeTypeCode;
+    }
+
+    public String getFrozenTubeTypeName() {
+        return frozenTubeTypeName;
+    }
+
+    public void setFrozenTubeTypeName(String frozenTubeTypeName) {
+        this.frozenTubeTypeName = frozenTubeTypeName;
+    }
 }

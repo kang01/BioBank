@@ -1416,6 +1416,20 @@
                     }, function () {
 
                     });
+                }else{
+                    BioBankBlockUi.blockUiStart();
+                    var obox = {
+                        transhipId:vm.transportRecord.id,
+                        frozenBoxDTOList:[]
+                    };
+
+                    if(vm.box) {
+                        obox.frozenBoxDTOList = [];
+                        obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
+                    }
+                    if(obox.frozenBoxDTOList.length){
+                        TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
+                    }
                 }
 
                 function onSaveBoxSuccess(res) {

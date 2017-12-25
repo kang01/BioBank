@@ -1,6 +1,7 @@
 package org.fwoxford.service.impl;
 
 import io.swagger.models.auth.In;
+import javassist.tools.reflect.Sample;
 import net.sf.json.JSONArray;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
@@ -725,9 +726,38 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             stockInBoxForIncomplete.setFrozenBoxId(f.getId());
             stockInBoxForIncomplete.setFrozenBoxCode(f.getFrozenBoxCode());
             stockInBoxForIncomplete.setFrozenBoxCode1D(f.getFrozenBoxCode1D());
-            stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(f.getFrozenBoxType()));
-            stockInBoxForIncomplete.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(f.getSampleType()));
+            FrozenBoxType boxType = f.getFrozenBoxType();
+            if(boxType!=null){
+                stockInBoxForIncomplete.setFrozenBoxTypeId(boxType.getId());
+                stockInBoxForIncomplete.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
+                stockInBoxForIncomplete.setFrozenBoxTypeName(boxType.getFrozenBoxTypeName());
+                stockInBoxForIncomplete.setFrozenBoxTypeRows(boxType.getFrozenBoxTypeRows());
+                stockInBoxForIncomplete.setFrozenBoxTypeColumns(boxType.getFrozenBoxTypeColumns());
+            }
+
+            stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(boxType));
+
+            SampleType _sampleType = f.getSampleType();
+            if(_sampleType!=null){
+                stockInBoxForIncomplete.setSampleTypeCode(_sampleType.getSampleTypeCode());
+                stockInBoxForIncomplete.setSampleTypeName(_sampleType.getSampleTypeName());
+                stockInBoxForIncomplete.setFrontColor(_sampleType.getFrontColor());
+                stockInBoxForIncomplete.setBackColor(_sampleType.getBackColor());
+                stockInBoxForIncomplete.setIsMixed(_sampleType.getIsMixed());
+                stockInBoxForIncomplete.setSampleTypeId(_sampleType.getId());
+            }
+
+            stockInBoxForIncomplete.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(_sampleType));
+            SampleClassification sampleClassification = f.getSampleClassification();
+            if(sampleClassification!=null){
+                stockInBoxForIncomplete.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+                stockInBoxForIncomplete.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+                stockInBoxForIncomplete.setFrontColorForClass(sampleClassification.getFrontColor());
+                stockInBoxForIncomplete.setBackColorForClass(sampleClassification.getBackColor());
+                stockInBoxForIncomplete.setSampleClassificationId(sampleClassification.getId());
+            }
             stockInBoxForIncomplete.setSampleClassification(sampleClassificationMapper.sampleClassificationToSampleClassificationDTO(f.getSampleClassification()));
+
             List<StockInTube> stockInTubes = stockInTubeMapGroupByFrozenBoxCode.get(f.getFrozenBoxCode()) != null ? stockInTubeMapGroupByFrozenBoxCode.get(f.getFrozenBoxCode()) : new ArrayList<>();
             List<FrozenTube> frozenTubes = frozenTubeMapGroupByFrozenBoxCode.get(f.getFrozenBoxCode()) != null ? frozenTubeMapGroupByFrozenBoxCode.get(f.getFrozenBoxCode()) : new ArrayList<>();
             List<StockInTubeForBox> stockInTubeForBoxes = new ArrayList<StockInTubeForBox>();
@@ -738,6 +768,29 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 inTubeForBox.setTubeColumns(t.getTubeColumns());
                 inTubeForBox.setTubeRows(t.getTubeRows());
                 inTubeForBox.setSampleCode(t.getSampleCode()!=null?t.getSampleCode():t.getSampleTempCode());
+                SampleClassification _sampleClassification = t.getSampleClassification();
+                if(_sampleClassification != null){
+                    inTubeForBox.setSampleClassificationId(_sampleClassification.getId());
+                    inTubeForBox.setSampleClassificationName(_sampleClassification.getSampleClassificationName());
+                    inTubeForBox.setSampleClassificationCode(_sampleClassification.getSampleClassificationCode());
+                    inTubeForBox.setFrontColorForClass(_sampleClassification.getFrontColor());
+                    inTubeForBox.setBackColorForClass(_sampleClassification.getBackColor());
+                }
+                SampleType sampleTypeForTube = t.getSampleType();
+                if(sampleTypeForTube!=null){
+                    inTubeForBox.setSampleTypeId(sampleType.getId());
+                    inTubeForBox.setSampleTypeCode(sampleType.getSampleTypeCode());
+                    inTubeForBox.setSampleTypeName(sampleType.getSampleTypeName());
+                    inTubeForBox.setIsMixed(sampleType.getIsMixed());
+                    inTubeForBox.setFrontColor(sampleType.getFrontColor());
+                    inTubeForBox.setBackColor(sampleType.getBackColor());
+                }
+                FrozenTubeType frozenTubeType = t.getFrozenTubeType();
+                if(frozenTubeType!=null){
+                    inTubeForBox.setFrozenTubeTypeCode(frozenTubeType.getFrozenTubeTypeCode());
+                    inTubeForBox.setFrozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName());
+                    inTubeForBox.setFrozenTubeTypeId(frozenTubeType.getId());
+                }
                 stockInTubeForBoxes.add(inTubeForBox);
             }
             for (StockInTube stockInTube : stockInTubes) {
@@ -757,9 +810,32 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 inTubeForBox.setTubeColumns(stockInTube.getTubeColumns());
                 inTubeForBox.setTubeRows(stockInTube.getTubeRows());
                 inTubeForBox.setSampleCode(stockInTube.getSampleCode()!=null?stockInTube.getSampleCode():stockInTube.getSampleTempCode());
+                SampleClassification _sampleClassification = stockInTube.getSampleClassification();
+                if(_sampleClassification != null){
+                    inTubeForBox.setSampleClassificationId(_sampleClassification.getId());
+                    inTubeForBox.setSampleClassificationName(_sampleClassification.getSampleClassificationName());
+                    inTubeForBox.setSampleClassificationCode(_sampleClassification.getSampleClassificationCode());
+                    inTubeForBox.setFrontColorForClass(_sampleClassification.getFrontColor());
+                    inTubeForBox.setBackColorForClass(_sampleClassification.getBackColor());
+                }
+                SampleType sampleTypeForTube = stockInTube.getSampleType();
+                if(sampleTypeForTube!=null){
+                    inTubeForBox.setSampleTypeId(sampleType.getId());
+                    inTubeForBox.setSampleTypeCode(sampleType.getSampleTypeCode());
+                    inTubeForBox.setSampleTypeName(sampleType.getSampleTypeName());
+                    inTubeForBox.setIsMixed(sampleType.getIsMixed());
+                    inTubeForBox.setFrontColor(sampleType.getFrontColor());
+                    inTubeForBox.setBackColor(sampleType.getBackColor());
+                }
+                FrozenTubeType frozenTubeType = stockInTube.getFrozenTubeType();
+                if(frozenTubeType!=null){
+                    inTubeForBox.setFrozenTubeTypeCode(frozenTubeType.getFrozenTubeTypeCode());
+                    inTubeForBox.setFrozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName());
+                    inTubeForBox.setFrozenTubeTypeId(frozenTubeType.getId());
+                }
                 stockInTubeForBoxes.add(inTubeForBox);
             }
-            FrozenBoxType boxType = f.getFrozenBoxType();
+
             String columns = boxType.getFrozenBoxTypeColumns() != null ? boxType.getFrozenBoxTypeColumns() : new String("0");
             String rows = boxType.getFrozenBoxTypeRows() != null ? boxType.getFrozenBoxTypeRows() : new String("0");
             int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
@@ -1009,6 +1085,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(frozenBox.getFrozenBoxType()));
         stockInBoxForIncomplete.setSampleClassification(sampleClassificationMapper.sampleClassificationToSampleClassificationDTO(frozenBox.getSampleClassification()));
         stockInBoxForIncomplete.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
+
         return stockInBoxForIncomplete;
     }
 }

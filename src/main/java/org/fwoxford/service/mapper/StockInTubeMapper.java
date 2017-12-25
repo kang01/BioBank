@@ -243,6 +243,29 @@ public interface StockInTubeMapper {
         stockInTubeForBox.setTubeColumns(stockInTube.getTubeColumns());
         stockInTubeForBox.setFrozenBoxCode(stockInTube.getFrozenBoxCode());
         stockInTubeForBox.setSampleCode(stockInTube.getSampleCode()!=null?stockInTube.getSampleCode():stockInTube.getSampleTempCode());
+        SampleClassification sampleClassification = stockInTube.getSampleClassification();
+        if(sampleClassification != null){
+            stockInTubeForBox.setSampleClassificationId(sampleClassification.getId());
+            stockInTubeForBox.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+            stockInTubeForBox.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+            stockInTubeForBox.setFrontColorForClass(sampleClassification.getFrontColor());
+            stockInTubeForBox.setBackColorForClass(sampleClassification.getBackColor());
+        }
+        SampleType sampleType = stockInTube.getSampleType();
+        if(sampleType!=null){
+            stockInTubeForBox.setSampleTypeId(sampleType.getId());
+            stockInTubeForBox.setSampleTypeCode(sampleType.getSampleTypeCode());
+            stockInTubeForBox.setSampleTypeName(sampleType.getSampleTypeName());
+            stockInTubeForBox.setIsMixed(sampleType.getIsMixed());
+            stockInTubeForBox.setFrontColor(sampleType.getFrontColor());
+            stockInTubeForBox.setBackColor(sampleType.getBackColor());
+        }
+        FrozenTubeType frozenTubeType = stockInTube.getFrozenTubeType();
+        if(frozenTubeType!=null){
+            stockInTubeForBox.setFrozenTubeTypeCode(frozenTubeType.getFrozenTubeTypeCode());
+            stockInTubeForBox.setFrozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName());
+            stockInTubeForBox.setFrozenTubeTypeId(frozenTubeType.getId());
+        }
         return stockInTubeForBox;
     }
 

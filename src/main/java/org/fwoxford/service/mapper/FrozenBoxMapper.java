@@ -197,6 +197,7 @@ public interface FrozenBoxMapper {
             return null;
         }
         StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
+        stockInBoxForIncomplete.setFrozenBoxId(frozenBox.getId());
         stockInBoxForIncomplete.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
         stockInBoxForIncomplete.setStockInFrozenTubeList(stockInFrozenTubeList);
         stockInBoxForIncomplete.setCountOfSample(stockInFrozenTubeList.size());
@@ -225,6 +226,12 @@ public interface FrozenBoxMapper {
             stockInBoxForIncomplete.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
             stockInBoxForIncomplete.setFrontColorForClass(sampleClassification.getFrontColor());
             stockInBoxForIncomplete.setBackColorForClass(sampleClassification.getBackColor());
+        }
+        Project project = frozenBox.getProject();
+        if(project!=null){
+            stockInBoxForIncomplete.setProjectId(project.getId());
+            stockInBoxForIncomplete.setProjectName(project.getProjectName());
+            stockInBoxForIncomplete.setProjectCode(project.getProjectCode());
         }
         return stockInBoxForIncomplete;
     }

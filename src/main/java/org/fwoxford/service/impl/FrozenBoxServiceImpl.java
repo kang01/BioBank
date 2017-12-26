@@ -725,10 +725,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
             StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
             FrozenBoxType boxType = f.getFrozenBoxType();
-            stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(f.getFrozenBoxType()));
-            stockInBoxForIncomplete.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(f.getSampleType()));
-            stockInBoxForIncomplete.setSampleClassification(sampleClassificationMapper.sampleClassificationToSampleClassificationDTO(f.getSampleClassification()));
-
             List<StockInTube> stockInTubes = stockInTubeMapGroupByFrozenBoxCode.get(f.getFrozenBoxCode()) != null ? stockInTubeMapGroupByFrozenBoxCode.get(f.getFrozenBoxCode()) : new ArrayList<>();
             List<FrozenTube> frozenTubes = frozenTubeMapGroupByFrozenBoxCode.get(f.getFrozenBoxCode()) != null ? frozenTubeMapGroupByFrozenBoxCode.get(f.getFrozenBoxCode()) : new ArrayList<>();
             List<StockInTubeForBox> stockInTubeForBoxes = new ArrayList<StockInTubeForBox>();
@@ -814,6 +810,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 continue;
             }
             stockInBoxForIncomplete = frozenBoxMapper.frozenBoxDTOToStockInBoxForIncomplete(frozenBox,stockInTubeForBoxes);
+            stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(f.getFrozenBoxType()));
+            stockInBoxForIncomplete.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(f.getSampleType()));
+            stockInBoxForIncomplete.setSampleClassification(sampleClassificationMapper.sampleClassificationToSampleClassificationDTO(f.getSampleClassification()));
             stockInBoxForIncompleteList.add(stockInBoxForIncomplete);
         }
 

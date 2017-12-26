@@ -809,7 +809,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             if (stockInTubeForBoxes.size() >= allCounts) {
                 continue;
             }
-            stockInBoxForIncomplete = frozenBoxMapper.frozenBoxDTOToStockInBoxForIncomplete(frozenBox,stockInTubeForBoxes);
+            stockInBoxForIncomplete = frozenBoxMapper.frozenBoxDTOToStockInBoxForIncomplete(f,stockInTubeForBoxes);
             stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(f.getFrozenBoxType()));
             stockInBoxForIncomplete.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(f.getSampleType()));
             stockInBoxForIncomplete.setSampleClassification(sampleClassificationMapper.sampleClassificationToSampleClassificationDTO(f.getSampleClassification()));

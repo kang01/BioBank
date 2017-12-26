@@ -54,10 +54,22 @@
                 vm.account = account;
                 vm.movement.operatorId1 = vm.account.id;
             });
+
+            _queryTargetEquipment();
         }
         _init();
 
-
+        function _queryTargetEquipment() {
+            var data = {
+                draw:1,
+                length:-1
+            };
+            var searchForm = angular.toJson(vm.dto);
+            EquipmentInventoryService.queryAreaList(data,searchForm).success(function (res){
+                vm.equipmentData = res.data;
+                vm.dtOptions.withOption("data",vm.equipmentData);
+            })
+        }
         vm.searchArea = _fnSearchArea;
         vm.searchEquipment = _fnSearchEquipment;
         //撤销
@@ -73,7 +85,6 @@
         vm.close = _fnClose;
         vm.closeMovement = _fnCloseMovement;
 
-
         function _fnSearch() {
             if(projectIds.length){
                 for(var i = 0; i <projectIds.length; i++){
@@ -81,7 +92,8 @@
                     vm.dto.projectCodeStr.push(projectCode)
                 }
             }
-            vm.dtInstance.rerender();
+            _queryTargetEquipment();
+            // vm.dtInstance.rerender();
         }
         function _fnEmpty() {
             vm.dto = {};
@@ -89,10 +101,12 @@
             projectIds = [];
             vm.projectCodeStr = [];
             vm.arrayBoxCode = [];
+            //1:已用 2：剩余
             vm.dto.spaceType = "2";
-            vm.dto.compareType = "1";
+            //1:大于 2:大于等于 3:等于 4:小于
+            vm.dto.compareType = "2";
             vm.dto.number = 0;
-            vm.dtInstance.rerender();
+            _queryTargetEquipment();
         }
         function _fnSaveMovement() {
             if(vm.movement.operatorId1 == vm.movement.operatorId2){
@@ -123,6 +137,8 @@
         function _fnClose() {
             if(!vm.closeFlag){
                 var modalInstance = $uibModal.open({
+                    backdrop:"static",
+                    size:"sm",
                     templateUrl: 'myModalContent.html',
                     controller: 'ModalInstanceCtrl',
                     controllerAs: 'vm'
@@ -175,7 +191,7 @@
             }
             vm.selectAll = true;
         }
-        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 400, 10)
+        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 436, 10)
             .withOption('order', [[1,'asc']])
             .withOption('info', false)
             .withOption('paging', false)
@@ -200,10 +216,11 @@
                 maxItems: 1
 
             };
-            //剩余
+            //1:已用 2：剩余
             vm.dto.spaceType = "2";
-            //大于
-            vm.dto.compareType = "1";
+            //1:大于 2:大于等于 3:等于 4:小于
+            vm.dto.compareType = "2";
+
             vm.dto.number = 0;
             //获取项目
             ProjectService.query({},onProjectSuccess, onError);
@@ -278,44 +295,45 @@
         vm.dtOptions = BioBankDataTable.buildDTOption("ORDINARY", null, 10)
             .withOption('searching', false)
             .withOption('order', [[1,'asc']])
-            .withOption('serverSide',true)
-            .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
-                var data = {};
-                for(var i=0; aoData && i<aoData.length; ++i){
-                    var oData = aoData[i];
-                    data[oData.name] = oData.value;
-                }
-                var jqDt = this;
-                var searchForm = angular.toJson(vm.dto);
-                EquipmentInventoryService.queryAreaList(data,searchForm).then(function (res){
-                    var json = res.data;
-                    vm.equipmentData = res.data.data;
-                    var error = json.error || json.sError;
-                    if ( error ) {
-                        jqDt._fnLog( oSettings, 0, error );
-                    }
-                    oSettings.json = json;
-                    fnCallback( json );
-                }).catch(function(res){
-                    console.log(res);
-                    var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
-
-                    if ( $.inArray( true, ret ) === -1 ) {
-                        if ( error == "parsererror" ) {
-                            jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
-                        }
-                        else if ( res.readyState === 4 ) {
-                            jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
-                        }
-                    }
-
-                    jqDt._fnProcessingDisplay( oSettings, false );
-                });
-            })
             .withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {
                 $compile(angular.element(header).contents())($scope);
             });
+            // .withOption('serverSide',false)
+            // .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
+            //     var data = {};
+            //     for(var i=0; aoData && i<aoData.length; ++i){
+            //         var oData = aoData[i];
+            //         data[oData.name] = oData.value;
+            //     }
+            //     var jqDt = this;
+            //     var searchForm = angular.toJson(vm.dto);
+            //     EquipmentInventoryService.queryAreaList(data,searchForm).then(function (res){
+            //         var json = res.data;
+            //         vm.equipmentData = res.data.data;
+            //         var error = json.error || json.sError;
+            //         if ( error ) {
+            //             jqDt._fnLog( oSettings, 0, error );
+            //         }
+            //         oSettings.json = json;
+            //         fnCallback( json );
+            //     }).catch(function(res){
+            //         console.log(res);
+            //         var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+            //
+            //         if ( $.inArray( true, ret ) === -1 ) {
+            //             if ( error == "parsererror" ) {
+            //                 jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+            //             }
+            //             else if ( res.readyState === 4 ) {
+            //                 jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+            //             }
+            //         }
+            //
+            //         jqDt._fnProcessingDisplay( oSettings, false );
+            //     });
+            // })
+
         vm.dtColumns = [
             DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('position').withTitle('区域位置').withOption("width", "100").renderWith(_fnRowPositionRender),

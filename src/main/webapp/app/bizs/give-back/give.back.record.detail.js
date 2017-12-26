@@ -120,6 +120,35 @@
             });
 
         };
+        //撤销
+        vm.repealTubes = function () {
+            var selectedData = vm.htInstance.api.getSelectedData();
+            if(selectedData.length){
+                _modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/common/prompt-modal.html',
+                    size: 'sm',
+                    controller: 'PromptModalController',
+                    controllerAs: 'vm',
+                    resolve: {
+                        items: function () {
+                            return {
+                                status:'8'
+                            };
+                        }
+                    }
+                });
+                _modalInstance.result.then(function () {
+                    vm.flagStatus = false;
+                    vm.changeStatus();
+                    _queryBoxDetail(vm.box.id);
+                }, function () {
+                });
+            }else{
+                toastr.error("请选择要撤销的冻存管!");
+            }
+
+        };
         //导入冻存盒
         vm.importBox = function () {
             _modalInstance = $uibModal.open({

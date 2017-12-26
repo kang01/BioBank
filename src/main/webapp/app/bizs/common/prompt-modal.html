@@ -3,6 +3,7 @@
 5:删除附件时的提示
 6:保存冻存盒时，提示样本数量及code不一致
 7:转运2D编码与1D编码是否相同
+8:归还撤销样本
 -->
 <div class="modal-header">
     <h3 class="modal-title">
@@ -15,16 +16,17 @@
     <p ng-if="vm.status == '5'">是否删除附件？</p>
     <p ng-if="vm.status == '6'">此样本与出库时的样本不一致，是否继续保存数据？</p>
     <p ng-if="vm.status == '7'">冻存盒一维编码与二维编码相同，是否继续保存数据？</p>
+    <p ng-if="vm.status == '8'">确定撤销样本？</p>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="vm.ok()"     >
         <span ng-if="vm.status == '4' || vm.status == '7'">保存</span>
-        <span ng-if="vm.status == '5'">确定</span>
+        <span ng-if="vm.status == '5' || vm.status == '8'">确定</span>
         <span ng-if="vm.status == '6'">是</span>
     </button>
     <button class="btn btn-primary" type="button" ng-click="vm.unSave()" ng-if="vm.status == '4'">不保存</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">
-        <span ng-if="vm.status != '6' || vm.status == '7'">取消</span>
+        <span ng-if="vm.status != '6' || vm.status == '7'|| vm.status == '8'">取消</span>
         <span ng-if="vm.status == '6'">否</span>
     </button>
 </div>

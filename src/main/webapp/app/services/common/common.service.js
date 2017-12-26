@@ -72,7 +72,7 @@
                 if (dom != null){
                     options.withDOM(dom);
                 }else{
-                    dom = "<'row mt-0'<'col-xs-6 text-left pl-25' f> <'col-xs-6 text-right mb-5' TB> r> t <'row mt-0'<'col-xs-6'i> <'col-xs-6'p>>";
+                    dom = "<'row mt-0'<'col-xs-6 text-left pl-25' f> <'col-xs-6 text-right mb-5' TB> r> t <'row mt-0'<'col-xs-4'i> <'col-xs-8'p>>";
                     options.withButtons([]).withDOM(dom);
                 }
 

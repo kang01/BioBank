@@ -186,6 +186,8 @@ public interface FrozenTubeMapper {
         stockInTubeForBox.setTubeColumns(frozenTube.getTubeColumns());
         stockInTubeForBox.setFrozenBoxCode(frozenTube.getFrozenBoxCode());
         stockInTubeForBox.setSampleCode(frozenTube.getSampleCode()!=null?frozenTube.getSampleCode():frozenTube.getSampleTempCode());
+        stockInTubeForBox.setStatus(frozenTube.getStatus());
+        stockInTubeForBox.setMemo(frozenTube.getMemo());
         SampleClassification sampleClassification = frozenTube.getSampleClassification();
         if(sampleClassification != null){
             stockInTubeForBox.setSampleClassificationId(sampleClassification.getId());

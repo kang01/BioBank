@@ -69,6 +69,9 @@ public class StockInTubeForBox {
     private String frozenTubeTypeCode;
     private String frozenTubeTypeName;
 
+    private String memo;
+    private String status;
+
     public Long getSampleClassificationId() {
         return sampleClassificationId;
     }
@@ -179,5 +182,21 @@ public class StockInTubeForBox {
 
     public void setFrozenTubeTypeName(String frozenTubeTypeName) {
         this.frozenTubeTypeName = frozenTubeTypeName;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -243,6 +243,8 @@ public interface StockInTubeMapper {
         stockInTubeForBox.setTubeColumns(stockInTube.getTubeColumns());
         stockInTubeForBox.setFrozenBoxCode(stockInTube.getFrozenBoxCode());
         stockInTubeForBox.setSampleCode(stockInTube.getSampleCode()!=null?stockInTube.getSampleCode():stockInTube.getSampleTempCode());
+        stockInTubeForBox.setStatus(stockInTube.getStatus());
+        stockInTubeForBox.setMemo(stockInTube.getMemo());
         SampleClassification sampleClassification = stockInTube.getSampleClassification();
         if(sampleClassification != null){
             stockInTubeForBox.setSampleClassificationId(sampleClassification.getId());

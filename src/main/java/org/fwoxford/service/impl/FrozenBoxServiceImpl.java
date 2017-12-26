@@ -735,6 +735,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 inTubeForBox.setTubeColumns(t.getTubeColumns());
                 inTubeForBox.setTubeRows(t.getTubeRows());
                 inTubeForBox.setSampleCode(t.getSampleCode()!=null?t.getSampleCode():t.getSampleTempCode());
+                inTubeForBox.setStatus(t.getStatus());
+                inTubeForBox.setMemo(t.getMemo());
                 SampleClassification _sampleClassification = t.getSampleClassification();
                 if(_sampleClassification != null){
                     inTubeForBox.setSampleClassificationId(_sampleClassification.getId());
@@ -777,6 +779,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 inTubeForBox.setTubeColumns(stockInTube.getTubeColumns());
                 inTubeForBox.setTubeRows(stockInTube.getTubeRows());
                 inTubeForBox.setSampleCode(stockInTube.getSampleCode()!=null?stockInTube.getSampleCode():stockInTube.getSampleTempCode());
+                inTubeForBox.setStatus(stockInTube.getStatus());
+                inTubeForBox.setMemo(stockInTube.getMemo());
                 SampleClassification _sampleClassification = stockInTube.getSampleClassification();
                 if(_sampleClassification != null){
                     inTubeForBox.setSampleClassificationId(_sampleClassification.getId());

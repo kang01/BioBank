@@ -1052,13 +1052,28 @@
             // 修改样本的备注信息
             function _setMemoOfSelectedTubes(memo){
                 var tubes = _getSelectedData();
-                _.each(tubes, function(t){
-                    if (t.data && t.data.flag == 2){
-                        return;
-                    }
-                    _setMemoOfTubeCell(t.row, t.col, memo);
+                var gridData = _.flattenDeep(_getGridData());
+
+                _.each(gridData,function (tube1) {
+                    _.each(tubes,function (tube2) {
+                        if(tube1.sampleCode == tube2.data.sampleCode){
+                            tube1.memo = memo;
+                        }
+                    })
                 });
-                _deselectAll();
+                var tableCtrl = _getTableCtrl();
+                gridData = _.chunk(gridData, 10);
+                tableCtrl.loadData(gridData);
+
+                // _.each(tubes, function(t){
+                //     if (t.data && t.data.flag == 2){
+                //         return;
+                //     }
+                //     t.data.memo = memo;
+                //     // _setMemoOfTubeCell(t.row, t.col, memo);
+                // });
+
+                // _deselectAll();
             }
             function _setMemoOfTubeCell(row, col, memo){
                 var tableCtrl = _getTableCtrl();

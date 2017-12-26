@@ -81,7 +81,9 @@
                 var modalInstance = $uibModal.open({
                     templateUrl: 'startStockIn.html',
                     controller: 'StartStockInModalController',
-                    controllerAs: 'vm'
+                    controllerAs: 'vm',
+                    size:"sm",
+                    backdrop:"static"
                 });
                 modalInstance.result.then(function () {
                     TranshipStockInService.saveStockIn(transhipCodes).success(function (data) {

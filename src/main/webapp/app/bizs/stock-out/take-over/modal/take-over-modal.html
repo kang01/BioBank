@@ -21,6 +21,18 @@
     <div class="row  mt-20">
         <div class="col-md-3">
             <div class="form-group">
+                <label >交付日期</label>
+                <div class="input-group">
+                    <input  type="text" class="form-control" name="startDate"  uib-datepicker-popup="{{dateformat}}" ng-model="vm.takeOver.handoverTime" is-open="vm.datePickerOpenStatus.handoverTime"
+                            required/>
+                    <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('handoverTime')"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
                 <label>交付人</label>
                 <selectize options='vm.loginOptions' config="vm.loginConfig"
                            ng-model="vm.takeOver.handoverPersonId"></selectize>
@@ -32,18 +44,7 @@
                 <input type="password" class="form-control" ng-model="vm.takeOver.password">
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label >交付日期</label>
-                <div class="input-group">
-                    <input  type="text" class="form-control" name="startDate"  uib-datepicker-popup="{{dateformat}}" ng-model="vm.takeOver.handoverTime" is-open="vm.datePickerOpenStatus.handoverTime"
-                            required/>
-                    <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('handoverTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-                            </span>
-                </div>
-            </div>
-        </div>
+
     </div>
     </form>
 </div>

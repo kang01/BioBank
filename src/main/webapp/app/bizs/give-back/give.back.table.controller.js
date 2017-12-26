@@ -28,11 +28,13 @@
             },
             {
                 name:"transhipCode",
-                title:"归还记录单"
+                title:"归还记录单",
+                width:"120"
             },
             {
                 name:"applyCode",
-                title:"出库申请单"
+                title:"出库申请单",
+                width:"120"
             },
             {
                 name:"projectCode",
@@ -42,23 +44,27 @@
             {
                 name:"delegateName",
                 title:"归还单位",
-                width:"240"
+                width:"auto"
             },
             {
                 name:"applyPersonName",
-                title:"归还人"
+                title:"归还人",
+                width:"100"
             },
             {
                 name:"receiveDate",
-                title:"归还日期"
+                title:"归还日期",
+                width:"100"
             },
             {
                 name:"receiver",
-                title:"接收人"
+                title:"接收人",
+                width:"100"
             },
             {
                 name:"transhipState",
-                title:"状态"
+                title:"状态",
+                width:"100"
             },{
                 name:"",
                 title:"操作",
@@ -235,7 +241,9 @@
                 var modalInstance = $uibModal.open({
                     templateUrl: 'startStockIn.html',
                     controller: 'StartStockInModalController',
-                    controllerAs: 'vm'
+                    controllerAs: 'vm',
+                    size:"sm",
+                    backdrop:"static"
                 });
                 modalInstance.result.then(function () {
                     TranshipStockInService.saveStockIn(transhipCodes).success(function (data) {

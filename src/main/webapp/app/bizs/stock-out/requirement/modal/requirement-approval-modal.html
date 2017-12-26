@@ -20,16 +20,6 @@
         </div>
         <div class="row  mt-20">
             <div class="col-md-3">
-                <label>审核人<span class="required-field"></span></label>
-                <selectize options='vm.approverOptions' config="vm.approverConfig"
-                           ng-model="vm.approve.approverId"></selectize>
-                <input type="hidden" ng-model="vm.approve.approverId" required>
-            </div>
-            <div class="col-md-3">
-                <label >密码 <span class="required-field"></span></label>
-                <input type="password" class="form-control" ng-model="vm.approve.password" required>
-            </div>
-            <div class="col-md-3">
                 <label>审核日期<span class="required-field"></span></label>
                 <div class="input-group">
                     <input  type="text" class="form-control" name="approveTime"  uib-datepicker-popup="{{dateformat}}" ng-model="vm.approve.recordTime" is-open="vm.datePickerOpenStatus.approveTime"
@@ -39,6 +29,17 @@
                             </span>
                 </div>
             </div>
+            <div class="col-md-3">
+                <label>审核人<span class="required-field"></span></label>
+                <selectize options='vm.approverOptions' config="vm.approverConfig"
+                           ng-model="vm.approve.approverId"></selectize>
+                <input type="hidden" ng-model="vm.approve.approverId" required>
+            </div>
+            <div class="col-md-3">
+                <label >密码 <span class="required-field"></span></label>
+                <input type="password" class="form-control" ng-model="vm.approve.password" required>
+            </div>
+
         </div>
     </div>
     <div class="modal-footer">

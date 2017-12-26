@@ -294,7 +294,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                     throw new BankServiceException(project.getProjectCode()+"项目下，"+sampleType.getSampleTypeName()+"类型，已经配置了样本分类，样本分类不能为空！");
                 }
                 ProjectSampleClass projectSampleClass = projectSampleClasses.stream().filter(s->
-                        s.getProject().getId().equals(project.getId())&& s.getSampleClassification().equals(box.getSampleClassificationId())).findFirst().orElse(null);
+                        s.getProject().getId().equals(project.getId())&& s.getSampleClassification().getId().equals(box.getSampleClassificationId())).findFirst().orElse(null);
                 if(projectSampleClass == null){
                     throw new BankServiceException("样本分类不存在！");
                 }

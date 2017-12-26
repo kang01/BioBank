@@ -66,8 +66,10 @@
         function _fnQueryUser() {
             Principal.identity().then(function(account) {
                 vm.account = account;
-                if(vm.account.login != "admin" || vm.account.login != "user"){
+                if(vm.account.login != "admin" && vm.account.login != "user"){
                     vm.transportRecord.receiverId = vm.account.id;
+                }else{
+                    vm.transportRecord.receiverId = null;
                 }
             });
         }

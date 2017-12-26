@@ -80,6 +80,8 @@
         vm.applyFlag = false;
         function _fnAdditionApply() {
             modalInstance = $uibModal.open({
+                size:"sm",
+                backdrop:"static",
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-confirm-modal.html',
                 controller: 'ConfirmModalController',
@@ -91,6 +93,8 @@
                     vm.status = data.status;
                     vm.requirement.id = data.id;
                     $state.go("requirement-additionApply",{applyId:data.id,viewFlag:3});
+                }).error(function (data) {
+                    toastr.error(data.message);
                 });
             });
             // RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
@@ -106,6 +110,7 @@
         //作废
         function _fnCancellation() {
             modalInstance = $uibModal.open({
+                backdrop:"static",
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-cancellation-modal.html',
                 controller: 'RequirementCancellationModalController',
@@ -138,6 +143,7 @@
                 controller: 'RequirementSampleEditModalController',
                 controllerAs:'vm',
                 size:'90',
+                backdrop:"static",
                 resolve: {
                     items: function () {
                         return {
@@ -293,6 +299,8 @@
         //删除
         function _fnSampleRequirementDel(sampleRequirementId) {
             modalInstance = $uibModal.open({
+                size:"sm",
+                backdrop:"static",
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-sample-delete-modal.html',
                 controller: 'RequirementSampleDelModalController',
@@ -317,6 +325,7 @@
                 controller: 'RequirementSampleDescModalController',
                 controllerAs:'vm',
                 size:'lg',
+                backdrop:"static",
                 resolve: {
                     items: function () {
                         return {
@@ -356,6 +365,7 @@
                 controller: 'RequirementApprovalModalController',
                 controllerAs:'vm',
                 size:'lg',
+                backdrop:"static",
                 resolve: {
                     items: function () {
                         return {
@@ -388,6 +398,7 @@
                 controller: 'RequirementSampleDescModalController',
                 controllerAs:'vm',
                 size:'lg',
+                backdrop:"static",
                 resolve: {
                     items: function () {
                         return {
@@ -404,6 +415,8 @@
         //改变项目是，任务列表是否复原
         function _fnIsChangeProjectModal() {
             modalInstance = $uibModal.open({
+                size:"sm",
+                backdrop:"static",
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-apply-project-modal.html',
                 controller: 'RequirementApplyProjectModalController',

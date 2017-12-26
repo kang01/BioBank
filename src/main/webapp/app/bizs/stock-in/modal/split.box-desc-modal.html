@@ -1,13 +1,18 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
-    <h3 class="modal-title" id="modal-title">冻存盒详情</h3>
+    <h3 class="modal-title" id="modal-title">{{vm.box.frozenBoxCode}} {{vm.box.sampleClassificationName?vm.box.sampleClassificationName:vm.box.sampleTypeName}}</h3>
 </div>
-<div class="modal-body batch-box-modal-body" id="modal-body">
-
+<div class="modal-body split-box-desc-modal-body" id="modal-body">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div tube-box-table ht-instance="vm.htInstance" ht-settings="vm.htSettings"
+                 data-box="vm.box" data-tubes="vm.tubes"></div>
+        </div>
+    </div>
 </div>
-<div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
-    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
-</div>
+<!--<div class="modal-footer">-->
+    <!--<button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>-->
+    <!--<button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>-->
+<!--</div>-->
 
 

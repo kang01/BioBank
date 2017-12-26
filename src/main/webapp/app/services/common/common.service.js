@@ -193,7 +193,7 @@
                 {value:"2008",label:"待出库"},
                 {value:"2009",label:"已出库"},
                 {value:"2010",label:"已交接"},
-                {value:"2011",label:"转运完成"},
+                {value:"2011",label:"接收完成"},
                 {value:"2012",label:"已销毁"},
                 {value:"2013",label:"归还中"},
                 {value:"2090",label:"已作废"},

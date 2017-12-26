@@ -309,7 +309,7 @@
                     coord.row = _.indexOf(settings.rowHeaders, rowCode);
                 }
                 if (colCode){
-                    coord.col = _.indexOf(settings.colHeaders, colCode);
+                    coord.col = _.indexOf(settings.colHeaders, colCode+"");
                 }
 
                 return coord;

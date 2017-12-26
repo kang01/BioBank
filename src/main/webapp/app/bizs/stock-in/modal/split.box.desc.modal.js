@@ -8,12 +8,24 @@
         .module('bioBankApp')
         .controller('SplitBoxDescModalController', SplitBoxDescModalController);
 
-    SplitBoxDescModalController.$inject = ['$scope','$uibModalInstance'];
+    SplitBoxDescModalController.$inject = ['$scope','$uibModalInstance','items','StockInInputService'];
 
-    function SplitBoxDescModalController($scope,$uibModalInstance) {
+    function SplitBoxDescModalController($scope,$uibModalInstance,items,StockInInputService) {
         var vm = this;
+        vm.box = angular.copy(items.box);
+        vm.tubes = vm.box.stockInFrozenTubeList;
+        _.forEach(vm.tubes,function (tube) {
+           tube.flag = null;
+        });
+        vm.htInstance = {};
 
-
+        setTimeout(function () {
+            vm.htInstance.api.loadData(vm.box, vm.tubes);
+            vm.htInstance.api.updateSettings({
+                isCellValueEditable: false,
+                multiSelect:false
+            });
+        },500);
 
         vm.ok = function () {
             $uibModalInstance.close();

@@ -240,7 +240,8 @@
                             return{
                                 box:vm.box || {},
                                 receiverId:vm.transportRecord.receiverId,
-                                receiveDate: vm.transportRecord.receiveDate
+                                receiveDate: vm.transportRecord.receiveDate,
+                                receiverOptions:vm.receiverOptions
                             };
                         }
                     }
@@ -1294,8 +1295,6 @@
 
                         vm.frozenBoxShelfOptions = [];
                         vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
-
-
                         $scope.$apply();
                     }
                 }

@@ -585,6 +585,12 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     line-height: 41px;
 }
 
+/*.split-box-desc-modal-body .tube .handsontable th,*/
+/*split-box-desc-modal-body .tube .handsontable td {*/
+    /*height: 30px;*/
+    /*line-height: 31px;*/
+/*}*/
+
 .transport-record-new h3 {
     margin: 2px;
 }
@@ -696,7 +702,16 @@ table.dataTable tfoot th, table.dataTable tfoot td {
 .split-box .box-name {
     width: 80px;
 }
-
+/*入库分装已分装的盒子详情*/
+.split-box-desc-modal-body{
+    padding: 0;
+}
+.split-box-desc-modal-body .panel{
+    margin-bottom: 0;
+}
+.split-box-desc-modal-body .panel-body{
+    padding: 4px;
+}
 .second-box {
     margin-top: 40px;
     margin-left: -6px;

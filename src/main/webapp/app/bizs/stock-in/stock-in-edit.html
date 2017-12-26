@@ -196,7 +196,7 @@
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-md-6">
-                            <h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>
+                            <h4 style="font-size: 14px;">待分装样本盒{{vm.box.frozenBoxCode}}</h4>
                         </div>
                         <div class="col-md-6  text-right mt-10">
                             <!--<button type="button" class="btn btn-default" ng-click="vm.selectSampleAll()">全选</button>-->
@@ -225,16 +225,19 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
-                        <div class="col-md-10 pr-0">
-                            <h4>
+                        <div class="col-md-8 pr-0">
+                            <h4 style="font-size: 14px;">
                                 <span ng-if="!vm.boxDetailFlag">分装后样本盒</span>
-                                <span ng-if="vm.boxDetailFlag">{{vm.frozenBox.frozenBoxCode}}&nbsp;{{vm.frozenBox.sampleClassificationName?vm.frozenBox.sampleClassificationName:vm.frozenBox.sampleTypeName}}</span></h4>
+                                <span ng-if="vm.boxDetailFlag">{{vm.frozenBox.frozenBoxCode}}&nbsp;</span>
+                                <span ng-if="vm.boxDetailFlag">
+                                    {{vm.frozenBox.sampleClassificationName?vm.frozenBox.sampleClassificationName:vm.frozenBox.sampleTypeName}}
+                                </span>
+                            </h4>
 
                         </div>
-                        <div class="col-md-2  text-right mt-10">
-                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.closeBoxDesc()" ng-if="vm.boxDetailFlag">
-                                关闭
-                            </button>
+                        <div class="col-md-4  text-right pl-0 pr-5 " style="margin-top: 9px">
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.viewSplitBoxDesc()" ng-if="vm.boxDetailFlag">详情</button>
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.closeBoxDesc()" ng-if="vm.boxDetailFlag">关闭</button>
                         </div>
                     </div>
                 </div>
@@ -246,7 +249,7 @@
                                     <div ng-repeat="item1 in item.boxList track by $index">
                                         <div class="box-feature current" ng-style="{backgroundColor:item1.backColor}"
                                              ng-click="vm.sampleBoxSelect(item1,$event)" ng-dblclick="vm.selectAndOpenTargetBox(item1,$event)">
-                                            {{item1.countOfSample}}/{{item1.frozenBoxType.frozenBoxTypeColumns*item1.frozenBoxType.frozenBoxTypeRows}}
+                                            {{item1.countOfSample}}/{{item1.frozenBoxTypeColumns*item1.frozenBoxTypeRows}}
                                             <span ng-if="item1.addTubeCount">+{{item1.addTubeCount}}</span>
                                         </div>
                                         <div class="box-name text-ellipsis" ng-if="$index == 0"

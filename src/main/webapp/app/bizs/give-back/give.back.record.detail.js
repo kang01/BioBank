@@ -268,8 +268,9 @@
                         items:function () {
                             return{
                                 receiverId:vm.giveBackRecord.receiverId,
-                                receiveDate: vm.giveBackRecord.receiveDate
-                            };
+                                receiveDate: vm.giveBackRecord.receiveDate,
+                                receiverOptions:vm.receiverOptions
+                            }
                         }
                     }
                 });

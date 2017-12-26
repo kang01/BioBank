@@ -13,6 +13,8 @@
     function CompleteGiveBackModalController($uibModalInstance,items,SampleUserService,toastr,GiveBackService) {
 
         var vm = this;
+        vm.receiverOptions = items.receiverOptions;
+
         vm.giveBackRecord = {
             receiveDate:items.receiveDate,
             receiverId:items.receiverId,
@@ -31,13 +33,13 @@
 
         };
         //接收人
-        SampleUserService.query({},onReceiverSuccess, onError);
-        function onReceiverSuccess(data) {
-            vm.receiverOptions = data;
-        }
-        function onError(data) {
-            toastr.error(data.message);
-        }
+        // SampleUserService.query({},onReceiverSuccess, onError);
+        // function onReceiverSuccess(data) {
+        //     vm.receiverOptions = data;
+        // }
+        // function onError(data) {
+        //     toastr.error(data.message);
+        // }
 
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

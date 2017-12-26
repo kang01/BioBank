@@ -32,6 +32,8 @@
         vm.selectedDataFlag = false;
         vm.search = _fnSearch;
         vm.empty = _fnEmpty;
+        var _scrollTop;
+
         vm.initStockInBoxesTable = _initStockInBoxesTable;
         //编辑转到分装
         vm.editToSpiltTube = _fnEditToSpiltTube;
@@ -691,7 +693,8 @@
         //分装、编辑时，body滚动条要滚到底部
         function _changeBodyScrollTop() {
             setTimeout(function () {
-                document.documentElement.scrollTop = document.body.scrollHeight  - window.innerHeight - 30;
+                _scrollTop = document.body.scrollHeight  - window.innerHeight - 30;
+                document.documentElement.scrollTop = _scrollTop;
             },500);
         }
         //分装
@@ -1278,7 +1281,7 @@
                     _.forEach(data[i].stockInFrozenTubeList, function (tube) {
                         tube.frozenTubeId = tube.id;
                         tube.id = "";
-                        tube.flag = "1";
+                        tube.flag = "2";
                     });
                     var boxList = [];
                     //盒子编码太长时，用星号代替
@@ -1426,7 +1429,7 @@
                         sampleCode:null,
                         id:"",
                         selectTubeCode:vm.obox.frozenBoxCode,
-                        flag:"3"
+                        flag:"1"
                     };
                     vm.obox.stockInFrozenTubeList.push(tempTubeArray[i][j]);
 
@@ -1533,7 +1536,7 @@
                             vm.obox.stockInFrozenTubeList[i].sampleClassificationCode = selectTubeList[0].sampleClassificationCode;
                             vm.obox.stockInFrozenTubeList[i].backColor = selectTubeList[0].backColor;
                             vm.obox.stockInFrozenTubeList[i].backColorForClass = selectTubeList[0].backColorForClass;
-                            vm.obox.stockInFrozenTubeList[i].flag = "2";
+                            vm.obox.stockInFrozenTubeList[i].flag = "3";
                             delete vm.obox.stockInFrozenTubeList[i].selectTubeCode;
                             selectTubeList.splice(0,1);
                         }else{
@@ -1544,7 +1547,7 @@
                 }
             }
             //删除空管子
-            _.remove(vm.obox.stockInFrozenTubeList,{"flag":"3"});
+            _.remove(vm.obox.stockInFrozenTubeList,{"flag":"1"});
 
             tubeList = angular.copy(vm.obox.stockInFrozenTubeList);
 
@@ -1913,6 +1916,7 @@
         };
         //查看已分装的冻存盒详情
         vm.viewSplitBoxDesc = function () {
+            document.documentElement.scrollTop = 0;
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-in/modal/split.box-desc-modal.html',
@@ -1932,7 +1936,7 @@
             modalInstance.result.then(function (data) {
 
             },function (data) {
-
+                document.documentElement.scrollTop = _scrollTop;
             });
         } ;
         function _fnRecoverInit(){

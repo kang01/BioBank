@@ -274,15 +274,15 @@
                                 <tr ng-repeat="tubes in vm.frozenBox.stockInFrozenTubeList1 | orderBy: 'tubeRows' | groupBy: 'tubeRows'">
                                     <td style="padding:1px" ng-repeat="tube in tubes | orderBy: 'tubeColumns'">
                                         <!--构建的样本-->
-                                        <div ng-if="tube.flag == '3'" class="split-tube-style" style="background-color: #fff">
+                                        <div ng-if="tube.flag == '1'" class="split-tube-style" style="background-color: #fff">
 
                                         </div>
                                         <!--已有样本-->
-                                        <div ng-if="tube.flag == '1'" class="split-tube-style" style="background-color: #777">
+                                        <div ng-if="tube.flag == '2'" class="split-tube-style" style="background-color: #777">
                                             {{tube.tubeRows + tube.tubeColumns}}
                                         </div>
                                         <!--分装的样本-->
-                                        <div ng-if="tube.flag == '2'" class="split-tube-style" style="background-color: {{vm.obox.backColor}}">
+                                        <div ng-if="tube.flag == '3'" class="split-tube-style" style="background-color: {{vm.obox.backColor}}">
                                             {{tube.tubeRows + tube.tubeColumns}}
                                         </div>
                                     </td>

@@ -14,9 +14,6 @@
         var vm = this;
         vm.box = angular.copy(items.box);
         vm.tubes = vm.box.stockInFrozenTubeList;
-        _.forEach(vm.tubes,function (tube) {
-           tube.flag = null;
-        });
         vm.htInstance = {};
 
         setTimeout(function () {

@@ -9,15 +9,19 @@
         .module('bioBankApp')
         .controller('ApplicationNumberModalController', ApplicationNumberModalController);
 
-    ApplicationNumberModalController.$inject = ['$uibModalInstance','toastr','GiveBackService'];
+    ApplicationNumberModalController.$inject = ['$uibModalInstance','toastr','GiveBackService','items'];
 
-    function ApplicationNumberModalController($uibModalInstance,toastr,GiveBackService) {
+    function ApplicationNumberModalController($uibModalInstance,toastr,GiveBackService,items) {
         var vm = this;
         vm.entity = {
             applyCode:null,
             projectId:null,
             id:null
         };
+        vm.entity.applyCode = items.applyCode;
+        if(vm.entity.applyCode){
+            _queryProject();
+        }
         var _giveBackInfo = {
             projectId:null,
             applyId:null,
@@ -30,7 +34,8 @@
             searchField:'projectName',
             onChange:function(value){}
         };
-        vm.queryGiveBackInfo = function () {
+        vm.queryGiveBackInfo = _queryProject;
+        function _queryProject() {
             if(vm.entity.applyCode){
                 GiveBackService.queryApplyInfo(vm.entity.applyCode).success(function (data) {
                     _giveBackInfo.applyId = data.id;
@@ -39,9 +44,7 @@
                     toastr.error(data.message);
                 });
             }
-
-        };
-
+        }
 
 
 

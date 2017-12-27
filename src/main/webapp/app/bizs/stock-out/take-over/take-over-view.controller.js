@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TakeOverViewController', TakeOverViewController);
 
-    TakeOverViewController.$inject = ['$scope','$compile','$uibModal','entity','TakeOverService','DTOptionsBuilder','DTColumnBuilder','BioBankDataTable'];
+    TakeOverViewController.$inject = ['$scope','$compile','$uibModal','$state','toastr','entity','TakeOverService','DTOptionsBuilder','DTColumnBuilder','BioBankDataTable','GiveBackService'];
 
-    function TakeOverViewController($scope,$compile,$uibModal,entity,TakeOverService,DTOptionsBuilder,DTColumnBuilder,BioBankDataTable) {
+    function TakeOverViewController($scope,$compile,$uibModal,$state,toastr,entity,TakeOverService,DTOptionsBuilder,DTColumnBuilder,BioBankDataTable,GiveBackService) {
         var vm = this;
 
         vm.stockOutTakeOver = entity;
@@ -89,6 +89,27 @@
         vm.takeOverPrint = function () {
             window.open ('/api/stock-out-handovers/print/' + vm.stockOutTakeOver.id);
         };
+        vm.addGiveBack = function () {
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/give-back/modal/give-back-application-number-modal.html',
+                controller: 'ApplicationNumberModalController',
+                controllerAs:'vm',
+                backdrop:'static',
+                resolve: {
+                    items:{
+                        applyCode:vm.stockOutTakeOver.stockOutApplyCode
+                    }
+                }
+            });
+            modalInstance.result.then(function (giveBackInfo) {
+                GiveBackService.saveGiveBackEmpty(giveBackInfo).success(function (data) {
+                    $state.go("give-back-detail",{giveBackId:data.id,applyCode:giveBackInfo.applyCode});
+                }).error(function (data) {
+                    toastr.error(data.message);
+                });
+            });
+        }
 
 
     }

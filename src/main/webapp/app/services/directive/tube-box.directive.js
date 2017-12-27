@@ -77,7 +77,8 @@
             vm.defaultSettings = {
                 isCellValueEditable: true,
                 isCellStatusEditable: false,
-
+                // width: 853,
+                height: 468,
                 colHeaders: ['1','2','3','4','5','6','7','8','9','10'],
                 rowHeaders: ['A','B','C','D','E','F','G','H','J','K'],
                 minRows: 10,

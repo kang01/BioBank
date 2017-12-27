@@ -120,7 +120,7 @@
                 {name:"isSplit",title:"是否分装",width:"80",notSortable:true,renderWith:_isSplitHtml},
                 {name:"",title:"操作",notSortable:true,width:"80",renderWith:_actionsHtml}
             ];
-            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC,SEARCHING","260",null,null,$scope)
+            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC,SEARCHING","240",null,null,$scope)
                 .withOption('createdRow', function (row, data, dataIndex) {
                     $compile(angular.element(row).contents())($scope);
                 });

@@ -86,8 +86,6 @@
             $compile(angular.element(row).contents())($scope);
         }
 
-
-
         vm.takeOverPrint = function () {
             window.open ('/api/stock-out-handovers/print/' + vm.stockOutTakeOver.id);
         };

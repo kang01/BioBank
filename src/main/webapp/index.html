@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="bower_components/angular-block-ui/dist/angular-block-ui.css">
     <link rel="stylesheet" href="bower_components/angular-toastr/dist/angular-toastr.css">
     <link rel="stylesheet" href="bower_components/angular-bootstrap-colorpicker/css/colorpicker.css">
+    <link rel="stylesheet" href="bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css">
     <!-- endinject -->
     <!-- endbuild -->
     <!--<link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />-->
@@ -38,14 +39,14 @@
     <link rel="stylesheet" href="content/js/viewerjs/dist/viewer.css">
     <!-- endbuild -->
 </head>
-<body ng-app="bioBankApp" ng-strict-di>
+<body ng-app="bioBankApp" ng-strict-di >
     <!--[if lt IE 9]>
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
     <!--<page-ribbon></page-ribbon>-->
     <div ui-view="topbar" ng-cloak></div>
-    <div class="">
-        <div class="p-5 container-fluid ml-10 mr-10" ui-view="content">
+    <div>
+        <div class="p-5 container-fluid ml-10 mr-10 body-content" ui-view="content" >
             <!-- Angular views -->
         </div>
 
@@ -88,6 +89,7 @@
     <script src="bower_components/ion.rangeSlider/js/ion.rangeSlider.js"></script>
     <script src="bower_components/copycss/jquery.copycss.js"></script>
     <script src="bower_components/konva/konva.min.js"></script>
+    <script src="bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-aria/angular-aria.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
@@ -133,6 +135,7 @@
     <script src="bower_components/angular-audio/app/angular.audio.js"></script>
     <script src="bower_components/angular-ui-mask/dist/mask.js"></script>
     <script src="bower_components/angular-filter/dist/angular-filter.js"></script>
+    <script src="bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js"></script>
     <script src="bower_components/ngHandsontable/dist/ngHandsontable.js"></script>
     <script src="bower_components/angular-selectize2/dist/angular-selectize.js"></script>
     <!-- endinject -->

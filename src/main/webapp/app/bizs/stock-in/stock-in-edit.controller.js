@@ -1003,6 +1003,7 @@
         vm.settings ={
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             rowHeaders : ['A','B','C','D','E','F','G','H','J','K'],
+            height:490,
             minRows: 10,
             minCols: 10,
             fillHandle:false,

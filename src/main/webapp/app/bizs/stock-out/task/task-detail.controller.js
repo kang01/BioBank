@@ -328,7 +328,10 @@
         function _reloadTubesForTable(box){
             vm.tubeList = [];
             var tableCtrl = _getSampleDetailsTableCtrl();
-            var settings = {};
+            var settings = {
+                minCols: +box.frozenBoxType.frozenBoxTypeColumns,
+                minRows: +box.frozenBoxType.frozenBoxTypeRows
+            };
             var tubesInTable = [];
             var colHeaders = [];
             var rowHeaders = [];
@@ -461,7 +464,7 @@
                 // 默认行列Title
                 rowHeaders: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K'],
                 colHeaders: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-
+                height:470,
                 // 默认显示的行和列的数量
                 minRows: 10,
                 minCols: 10,

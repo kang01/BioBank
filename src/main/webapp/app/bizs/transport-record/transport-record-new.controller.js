@@ -604,6 +604,7 @@
             vm.settings = {
                 colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
                 rowHeaders : ['A','B','C','D','E','F','G','H','J','K'],
+                height: 468,
                 data:vm.frozenTubeArray,
                 renderer: myCustomRenderer,
                 minRows: 10,

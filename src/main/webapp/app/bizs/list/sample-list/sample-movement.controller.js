@@ -613,6 +613,7 @@
                 outsideClickDeselectsCache: false,
                 outsideClickDeselects: false,
                 data:vm.frozenTubeArray,
+                height:490,
                 minRows: 10,
                 minCols: 10,
                 fillHandle:false,

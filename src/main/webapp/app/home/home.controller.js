@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$scope', 'Principal', 'LoginService', '$state','$uibModal','TranshipNewEmptyService','toastr','RequirementService'];
+    HomeController.$inject = ['$scope', 'Principal', 'LoginService', '$state','$uibModal','TranshipNewEmptyService','toastr','RequirementService','GiveBackService'];
 
-    function HomeController ($scope, Principal, LoginService, $state,$uibModal,TranshipNewEmptyService,toastr,RequirementService) {
+    function HomeController ($scope, Principal, LoginService, $state,$uibModal,TranshipNewEmptyService,toastr,RequirementService,GiveBackService) {
         var vm = this;
 
         vm.account = null;
@@ -18,7 +18,10 @@
         vm.addTransport = _fnAddTransport;
         //创建入库单
         vm.addStockIn = _fnAddStockIn;
+        //创建申请
         vm.addRequirement = _fnAddRequirement;
+        //创建归还盒
+        vm.addGiveBack = _addGiveBack;
         var modalInstance;
 
         $scope.$on('authenticationSuccess', function() {
@@ -72,6 +75,25 @@
             });
             modalInstance.result.then(function (data) {
                 $state.go("stock-in-add-box-edit", {id: data});
+            });
+        }
+        function _addGiveBack() {
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/give-back/modal/give-back-application-number-modal.html',
+                controller: 'ApplicationNumberModalController',
+                controllerAs:'vm',
+                backdrop:'static',
+                resolve: {
+                    items:{}
+                }
+            });
+            modalInstance.result.then(function (giveBackInfo) {
+                GiveBackService.saveGiveBackEmpty(giveBackInfo).success(function (data) {
+                    $state.go("give-back-detail",{giveBackId:data.id,applyCode:giveBackInfo.applyCode});
+                }).error(function (data) {
+                    toastr.error(data.message);
+                });
             });
         }
 

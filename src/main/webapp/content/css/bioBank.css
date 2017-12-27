@@ -749,7 +749,7 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     height: 288px;
 }
 .import-box-modal-body .import-box-select .selectize-input {
-    height: 336px;
+    height: 320px;
 }
 .batch-box-modal-body .import-box-input .selectize-input {
     height: 304px;
@@ -854,8 +854,9 @@ tr.shown td .details-control {
     padding: 3px 15px;
 }
 
-html {
-    overflow-x: hidden;
+html,body {
+    overflow: hidden;
+    height: 100%;
 }
 
 .ng-pageslide {

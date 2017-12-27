@@ -170,6 +170,7 @@
                         vm.entity.sampleTypeName = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeName;
                         vm.entity.sampleTypeCode = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeCode;
                         vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+value}).backColor;
+                        vm.entity.frontColor = _.find(vm.sampleTypeOptions,{id:+value}).frontColor;
                         $('table').find('.rowLight').removeClass("rowLight");
                         tube = "";
                         _.forEach(sampleSelectedArray, function(sample) {
@@ -177,6 +178,7 @@
                             sample.sampleTypeName = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeName;
                             sample.sampleTypeCode = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeCode;
                             sample.backColor = _.find(vm.sampleTypeOptions,{id:+value}).backColor;
+                            sample.frontColor = _.find(vm.sampleTypeOptions,{id:+value}).frontColor;
                         });
                     }
 
@@ -187,6 +189,12 @@
             function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
                 SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                     vm.projectSampleTypeOptions = data;
+                    vm.projectSampleTypeOptions.push({sampleClassificationId:"",sampleClassificationName:""});
+                    vm.entity.sampleClassificationId = "";
+                    vm.entity.sampleClassificationName = "";
+                    vm.entity.sampleClassificationCode = "";
+                    vm.entity.backColorForClass = "";
+                    vm.entity.frontColor = "";
                     // if(vm.entity.isMixed){
                     //     //混合类型
                     //     if(vm.projectSampleTypeOptions.length && vm.entity.sampleTypeCode != "99"){
@@ -221,10 +229,25 @@
                         // zhuyu for fixed null project sample
                         var obj = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+vm.entity.sampleClassificationId})||{};
                         vm.entity.backColorForClass = obj.backColor;
+                        vm.entity.frontColor = obj.frontColor;
                         //多选
                         _.forEach(sampleSelectedArray, function(sample) {
                             var obj = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+vm.entity.sampleClassificationId})||{};
                             sample.backColorForClass = obj.backColor;
+                            sample.frontColor = obj.frontColor;
+                        });
+                    }else{
+                        vm.entity.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                        vm.entity.sampleClassificationName = vm.projectSampleTypeOptions[0].sampleClassificationName;
+                        vm.entity.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
+                        vm.entity.backColorForClass = vm.projectSampleTypeOptions[0].backColor;
+                        vm.entity.frontColor = vm.projectSampleTypeOptions[0].frontColor;
+                        _.forEach(sampleSelectedArray, function(sample) {
+                            sample.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                            sample.sampleClassificationName = vm.projectSampleTypeOptions[0].sampleClassificationName;
+                            sample.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
+                            sample.backColorForClass = vm.projectSampleTypeOptions[0].backColor;
+                            sample.frontColor = vm.projectSampleTypeOptions[0].frontColor;
                         });
                     }
 
@@ -244,12 +267,14 @@
                         vm.entity.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationName;
                         vm.entity.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationCode;
                         vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).backColor;
+                        vm.entity.frontColor = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).frontColor;
                         _queryTube();
                         _.forEach(sampleSelectedArray, function(sample) {
                             sample.sampleClassificationId = value;
                             sample.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationName;
                             sample.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationCode;
                             sample.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).backColor;
+                            sample.frontColor = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).frontColor;
                         });
                     }else{
                         _queryTube();

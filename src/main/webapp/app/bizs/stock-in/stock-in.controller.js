@@ -155,7 +155,7 @@
             return html;
         }
         function _fnSiteRowRender(data, type, full, meta) {
-            var projectSiteCode = full.projectSiteCode ? full.projectSiteCode : "";
+            var projectSiteCode = full.projectSiteCode && full.projectSiteCode != "null" ? full.projectSiteCode : "";
             var html = "<div class='text-ellipsis' style='width: 100px' title='"+projectSiteCode+"'>"+projectSiteCode+"</div>";
             return html;
         }

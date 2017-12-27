@@ -165,7 +165,7 @@
                         key: '2',
                         action: _fnActionAddBoxButton
                     },{
-                        text: '<i class="fa fa-plus"></i> 批量添加冻存盒',
+                        text: '<i class="fa fa-plus"></i> 导入冻存盒',
                         className: 'btn btn-default btn-primary',
                         key: '3',
                         action: _fnAddBatchBox
@@ -490,8 +490,8 @@
         function _fnAddBatchBox() {
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/modal/add-batch-box-modal.html',
-                controller: 'AddBatchBoxModalController',
+                templateUrl: 'app/bizs/give-back/modal/import-box-modal.html',
+                controller: 'ImportBoxModalController',
                 controllerAs:'vm',
                 size:'lg w-1200',
                 backdrop:'static',

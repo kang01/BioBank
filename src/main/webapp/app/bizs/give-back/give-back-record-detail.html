@@ -1,3 +1,6 @@
+<div style="position: fixed;top:-30px;">
+    <textarea  type="text" rows="1"  ng-model="vm.sampleCode" id="focusTextarea" ng-blur="vm.onScanCodeBlur()"></textarea>
+</div>
 <form class="form-horizontal" name="myForm" novalidate>
     <div class="pull-left">
         <h3 style="margin: 2px;">归还记录详情
@@ -224,10 +227,10 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <h4>归还盒详情</h4>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <ul class="list-inline" style="margin-top: 9px">
                             <li><span>正常</span>
                                 <span>{{vm.sampleCount.normalCount}}</span></li>
@@ -242,26 +245,41 @@
                             <li></li>
                         </ul>
                     </div>
-                    <div class="col-md-5 text-right mt-10 ">
-                        <button type="button" class="btn btn-default btn-xs btn-primary" ng-click="vm.saveBox()"
+                    <!--vm.scanCheckTube()-->
+                    <div class="col-md-7 text-right" style="height: 42px;line-height: 35px">
+                        <div  class="stock-out-task-scan" ng-if="vm.checkedFlag" style="width: 150px;margin-top: 3px">
+                            <div class="input-group">
+                                <input type="text" class="form-control" ng-model="vm.sampleCode" ng-blur="vm.onScanCodeBlur()">
+                                <div class="input-group-addon btn-sm" ng-click="vm.onScanHandler()"
+                                     ng-class="{true:'btn-primary',false:''}[vm.scanFlag]" ng-model="vm.scanFlag" uib-btn-checkbox >
+                                    <i class="fa fa-qrcode"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-default btn-xs btn-primary mt-8" ng-click="vm.saveBox()"
                                 ng-disabled="!vm.box.frozenBoxCode">
                             保　　存
                         </button>
-                        <button type="button" class="btn btn-default btn-xs btn-danger" ng-click="vm.delBox()"
+                        <button type="button" class="btn btn-default btn-xs btn-danger mt-8" ng-click="vm.delBox()"
                                 ng-disabled="!vm.box.frozenBoxCode">
                             删除盒子
                         </button>
-                        <button type="button" class="btn btn-default btn-xs"
+                        <button type="button" class="btn btn-default btn-xs mt-8" ng-click="vm.scanCheckTube()"
+                                ng-class="{true:'btn-primary',false:''}[vm.checkedFlag]"
+                                ng-disabled="!vm.box.frozenBoxCode" ng-model="vm.checkedFlag" uib-btn-checkbox>
+                            扫码核对
+                        </button>
+                        <button type="button" class="btn btn-default btn-xs mt-8"
                                 ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus"
                                 uib-btn-checkbox ng-click="vm.changeStatus()" ng-disabled="!vm.box.frozenBoxCode">状态编辑
                         </button>
-                        <button type="button" class="btn btn-default btn-xs" ng-click="vm.exchange()"
+                        <button type="button" class="btn btn-default btn-xs mt-8" ng-click="vm.exchange()"
                                 ng-disabled="!vm.box.frozenBoxCode || vm.flagStatus">样本换位
                         </button>
-                        <button type="button" class="btn btn-default btn-xs" ng-click="vm.tubeRemark()"
+                        <button type="button" class="btn btn-default btn-xs mt-8" ng-click="vm.tubeRemark()"
                                 ng-disabled="!vm.box.frozenBoxCode || vm.flagStatus">样本批注
                         </button>
-                        <button type="button" class="btn btn-default btn-xs" ng-click="vm.reloadBoxData()"
+                        <button type="button" class="btn btn-default btn-xs mt-8" ng-click="vm.reloadBoxData()"
                                 ng-disabled="!vm.box.frozenBoxCode">重新导入
                         </button>
                         <!--<button type="button" class="btn btn-default btn-xs" ng-click="vm.repealTubes()"-->

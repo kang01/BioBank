@@ -31,8 +31,14 @@
     margin-top: 0px !important;
 }
 
+.mt-3 {
+    margin-top: 3px !important;
+}
 .mt-5 {
     margin-top: 5px !important;
+}
+.mt-8 {
+    margin-top: 8px !important;
 }
 
 .mt-10 {
@@ -826,6 +832,15 @@ tr.shown td .details-control {
 }
 .stock-out-task-scan .input-group-addon{
     padding: 6px 10px;
+}
+.stock-out-flag{
+    position:absolute;
+    top:0;bottom:0;left:0;right:0;
+    border:2px solid green;
+    font-size:40px;
+    color:rgba(0,128,0,0.3);
+    background-color: rgba(0,128,0,0.15);
+    text-align: center;
 }
 .modal-90 {
     width: 90%;

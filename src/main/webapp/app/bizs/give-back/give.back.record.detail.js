@@ -27,6 +27,10 @@
         vm.htInstance = {};
         //冻存管状态编辑的开关
         vm.flagStatus = false;
+        //核对
+        vm.checkedFlag = false;
+        //扫码
+        vm.scanFlag = false;
         vm.boxInstance = {};
         //模态框
         var _modalInstance;
@@ -35,6 +39,8 @@
         var _startTubes = [];
         //切换冻存盒时，上一次的盒子编码
         var _rowBoxCode;
+        //扫码timer
+        var _scanCodeTimer;
 
         //归还单信息数据
         _queryGiveBackInfo();
@@ -267,7 +273,56 @@
                 vm.box.rowsInShelf = "";
             }
         };
+        //扫码核对
+        vm.scanCheckTube = function () {
+            // vm.checkedFlag = true;
+            var tubes = vm.htInstance.api.getTubesData();
+            tubes[0].stockOutStatus = 1;
+            tubes[tubes.length-1].stockOutStatus = 1;
+            vm.htInstance.api.loadData(vm.box, tubes);
+        };
+        //扫码验证
+        vm.onScanHandler = function () {
+            $("#focusTextarea").focus();
+            //定时器
+            window.clearInterval(_scanCodeTimer);
 
+            _scanCodeTimer = setInterval(function(){
+                _scanCode();
+            },500);
+        };
+        //取消扫码
+        vm.onScanCodeBlur = function () {
+            vm.scanFlag = false;
+            window.clearInterval(_scanCodeTimer);
+        };
+        function _scanCode() {
+            if (!vm.sampleCode) {
+                return;
+            }
+            var tubes = vm.htInstance.api.getTubesData();
+            //获取待核对样本
+            var checkedTubes = _.filter(tubes, {stockOutStatus: 1});
+            var sampleCode = vm.sampleCode.toUpperCase();
+            vm.sampleCode = "";
+            //获取扫码取得样本
+            var scanCodeTubes = _.find(checkedTubes, {"sampleCode": sampleCode});
+
+            if (!scanCodeTubes) {
+                setTimeout(function(){
+                    toastr.error("编码错误，请重新扫码!");
+                },100);
+                return;
+            }
+            _.forEach(tubes,function (tube) {
+                if(sampleCode == tube.sampleCode){
+                    tube.scanCodeFlag = true;
+                }
+
+            });
+            vm.sampleCode = "";
+            vm.htInstance.api.loadData(vm.box, tubes);
+        }
         //保存归还记录基本信息
         function _saveGiveBackRecord(callback) {
             _onSaveBoxHandler(function () {

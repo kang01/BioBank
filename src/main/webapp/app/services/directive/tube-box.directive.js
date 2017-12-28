@@ -625,6 +625,16 @@
                 // 添加样本状态标识
                 $("<div  class='tube-status'>"+value.status+"</div>")
                     .appendTo(td);
+                //待出库样本
+                if(value.stockOutStatus){
+                    var txt = '<div class="stock-out-flag"></div>';
+                    $(txt).appendTo(td);
+                }
+                if(value.scanCodeFlag){
+                    var txt = '<div class="stock-out-flag"><i class="fa fa-check"></i></div>';
+                    $(txt).appendTo(td);
+                }
+                //保存时错误的样本飘红
                 if(_errorSampleArray.length){
                     var len;
                     if(value.sampleCode){

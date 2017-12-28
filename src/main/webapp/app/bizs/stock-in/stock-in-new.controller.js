@@ -408,6 +408,7 @@
                 templateUrl: 'app/bizs/stock-in/modal/box-putaway-modal.html',
                 controller: 'BoxPutAwayModalController',
                 controllerAs:'vm',
+                backdrop:"static",
                 // size:'lg',
                 size:'90',
                 resolve: {
@@ -432,7 +433,8 @@
                 animation: true,
                 templateUrl: 'app/bizs/stock-in/modal/rescind-putaway-modal.html',
                 controller: 'RescindPutAwayModalController',
-                controllerAs:'vm'
+                controllerAs:'vm',
+                backdrop:"static"
             });
             modalInstance.result.then(function (data) {
                 RescindPutAwayService.rescindPutAway(vm.entity.stockInCode,boxCode).then(function (data) {

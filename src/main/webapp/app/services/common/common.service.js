@@ -233,6 +233,7 @@
             function _getSex(sex) {
                 return (_.find(_sexDict,{type:sex+""})|| {}).name;
             }
+
             var masterData = {
                 sexDict :_sexDict,
                 diseaseType :_diseaseType,
@@ -291,6 +292,34 @@
                     selectizeInstance.settings.splitOn = new RegExp('\\s*' + delimiterEscaped + '+\\s*');
                 };
                 return options;
+            };
+            return service
+        })
+        .factory('MasterMethod',function () {
+            //RNA：大橘盒 DNA：96孔板
+            function _getBoxTypeCode(sampleTypeCode){
+                var boxTypeCode = null;
+                switch (sampleTypeCode){
+                    case "RNA":
+                        boxTypeCode = "DJH";
+                        break;
+                    case "DNA":
+                        boxTypeCode = "96KB";
+                        break;
+                    default:
+                        boxTypeCode = "DCH";
+                        break;
+                }
+
+                return boxTypeCode;
+            }
+            function _changeBoxType(boxTypeOptions,sampleTypeCode) {
+               var boxType = _.filter(boxTypeOptions, {frozenBoxTypeCode:_getBoxTypeCode(sampleTypeCode)})[0];
+                return boxType;
+            }
+
+            var service = {
+                changeBoxType :_changeBoxType
             };
             return service
         });

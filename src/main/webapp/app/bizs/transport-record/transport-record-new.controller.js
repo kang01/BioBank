@@ -10,11 +10,11 @@
         .controller('TransportRecordNewController', TransportRecordNewController)
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
-    TransportRecordNewController.$inject = ['$scope','blockUI','MasterData','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TransportRecordService','TranshipSaveService','TranshipBoxService',
+    TransportRecordNewController.$inject = ['$scope','blockUI','MasterData','MasterMethod','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TransportRecordService','TranshipSaveService','TranshipBoxService',
         'SampleTypeService','FrozenBoxTypesService','StockInInputService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService',
     'BioBankBlockUi','Principal'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
-    function TransportRecordNewController($scope,blockUI,MasterData,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TransportRecordService,TranshipSaveService,TranshipBoxService,
+    function TransportRecordNewController($scope,blockUI,MasterData,MasterMethod,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TransportRecordService,TranshipSaveService,TranshipBoxService,
                                           SampleTypeService,FrozenBoxTypesService,StockInInputService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
                                           BioBankBlockUi,Principal) {
 
@@ -1242,16 +1242,8 @@
                     if (sampleTypeCode == "RNA"){
                         vm.box.isSplit = 1;
                     }
-
-                    // Added by Zhuyu 2017/10/09 For: 选中RNA时自动切换冻存盒为大橘盒，选中99时切换为10x10
-                    var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
-                    var boxType = _.filter(vm.frozenBoxTypeOptions, {frozenBoxTypeCode: SampleTypeService.getBoxTypeCode(sampleTypeCode)})[0];
-                    if (boxType) {
-                        setTimeout(function(){
-                            vm.boxTypeInstance.setValue(boxType.id);
-                        }, 100);
-                    }
-                    // end added
+                    //RNA：大橘盒 DNA：96孔板
+                    _changeBoxType(sampleTypeCode,vm.frozenBoxTypeOptions,vm.boxTypeInstance);
                 }
             };
             vm.projectSampleTypeConfig = {
@@ -1259,21 +1251,30 @@
                 labelField:'sampleClassificationName',
                 maxItems: 1,
                 onChange:function (value) {
-                    vm.box.sampleClassificationId = value;
-                    vm.box.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{"sampleClassificationId":+value}).sampleClassificationCode;
-                    vm.box.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{"sampleClassificationId":+value}).sampleClassificationName;
-                    for (var i = 0; i < vm.frozenTubeArray.length; i++) {
-                        for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                            vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+                    if(value){
+                        vm.box.sampleClassificationId = value;
+                        vm.box.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{"sampleClassificationId":+value}).sampleClassificationCode;
+                        vm.box.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{"sampleClassificationId":+value}).sampleClassificationName;
+                        for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                            for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                                vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+                            }
                         }
+                        for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
+                            vm.box.frozenTubeDTOS[m].sampleClassificationId = vm.box.sampleClassificationId;
+                        }
+                        hotRegisterer.getInstance('my-handsontable').render();
                     }
-                    for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
-                        vm.box.frozenTubeDTOS[m].sampleClassificationId = vm.box.sampleClassificationId;
-                    }
-                    hotRegisterer.getInstance('my-handsontable').render();
+
                 }
             };
-
+            //改变盒类型 RNA：大橘盒 DNA：96孔板
+            function _changeBoxType(sampleTypeCode,frozenBoxTypeOptions,boxTypeInstance) {
+                var boxType = MasterMethod.changeBoxType(frozenBoxTypeOptions,sampleTypeCode);
+                if (boxType) {
+                    boxTypeInstance.setValue(boxType.id);
+                }
+            }
             //设备
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = _.orderBy(data,['equipmentCode'],['asc']);

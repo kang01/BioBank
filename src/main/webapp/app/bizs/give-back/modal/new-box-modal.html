@@ -1,0 +1,83 @@
+<form name="boxForm" novalidate>
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.cancel()"
+            style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span>&times;</span></button>
+    <h3 class="modal-title" id="modal-title">新增冻存盒</h3>
+</div>
+
+<div class="modal-body" id="modal-body">
+
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label>冻存盒号<span class="required-field"></span></label>
+                <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode" input-btn input-btn-option="vm.btnSettings" required>
+            </div>
+            <div class="form-group col-md-4">
+                <label>一维编码</label>
+                <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode1D" input-btn >
+            </div>
+
+        </div>
+        <div class="row">
+
+            <div class="form-group col-md-4">
+                <label>样本类型<span class="required-field"></span></label>
+                <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                           ng-model="vm.box.sampleTypeId"></selectize>
+                <input type="hidden" ng-model="vm.box.sampleTypeId" required>
+                <label class="checkbox-inline pb-10">
+                    <input type="checkbox" ng-model="vm.box.isSplit"
+                           ng-true-value="1" ng-false-value="0">是否分装
+                </label>
+            </div>
+            <div class="form-group col-md-4">
+                <label>样本分类</label>
+                <selectize options='vm.sampleClassOptions' config="vm.sampleClassConfig"
+                           ng-model="vm.box.sampleClassificationId"></selectize>
+            </div>
+            <div class="form-group col-md-4">
+                <label>盒类型<span class="required-field"></span></label>
+                <selectize options='vm.boxTypeOptions' config="vm.boxTypeConfig"
+                           ng-model="vm.box.frozenBoxTypeId"></selectize>
+                <input type="hidden" ng-model="vm.box.frozenBoxTypeId" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label class="control-label">
+                    存储位置
+                </label>
+                <div class="">
+                    <div class="col-md-3 p-0">
+                        <selectize options='vm.equipmentOptions' config="vm.equipmentConfig"
+                                   ng-model="vm.box.equipmentId"></selectize>
+                    </div>
+                    <div class="col-md-3 p-0 pl-10">
+                        <selectize options='vm.areaOptions' config="vm.areaConfig" ng-model="vm.box.areaId"></selectize>
+                    </div>
+                    <div class="col-md-3 p-0 pl-10">
+                        <selectize options='vm.shelfOptions' config="vm.shelfConfig" ng-model="vm.box.supportRackId"></selectize>
+                    </div>
+                    <div class="col-md-3 p-0 pl-10">
+                        <input type="text" class="form-control" maxlength="3" ng-model="vm.boxRowCol" ng-blur="vm.splitPlace()" ng-disabled="!vm.box.supportRackId">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>备注</label>
+                <textarea name="memo" class="form-control resize-none" rows="7" ng-model="vm.box.memo" ></textarea>
+            </div>
+        </div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="boxForm.$invalid">保存</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+</div>
+</form>
+
+
+
+

@@ -176,6 +176,32 @@
 
             })
         };
+        //新增冻存盒
+        vm.addNewBox = function () {
+            _modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/give-back/modal/new-box-modal.html',
+                controller: 'NewBoxModalController',
+                controllerAs:'vm',
+                size:'md',
+                backdrop:'static',
+                resolve: {
+                    items: function () {
+                        return {
+                            equipmentOptions:vm.equipmentOptions,
+                            projectId:vm.giveBackRecord.projectId
+                        };
+                    }
+                }
+
+            });
+            _modalInstance.result.then(function (data) {
+                _fnQueryBoxByGiveBackId();
+                _queryGiveBackInfo();
+            },function () {
+
+            })
+        };
         //换位
         vm.exchange = function(){
             vm.htInstance.api.exchangeSelectedTubePosition();

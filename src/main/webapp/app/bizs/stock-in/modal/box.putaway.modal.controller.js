@@ -120,7 +120,7 @@
                 .withOption('paging', false)
                 .withOption('sorting', false)
                 .withOption('searching', false)
-                .withScroller().withOption('scrollY', 338);
+                .withScroller().withOption('scrollY', 330);
 
             // 选中一个冻存架
             function _selectShelf($event, shelf){
@@ -218,8 +218,8 @@
                     }
 
                     // 修改架子定位列表的配置信息
-                    settings.width = tableWidth;
-                    settings.height = 380;
+                    // settings.width = tableWidth;
+                    settings.height = 330;
                     settings.minRows = countOfRows;
                     settings.minCols = countOfCols;
                     settings.colWidths = colWidth;
@@ -276,7 +276,7 @@
                 .withOption('paging', false)
                 .withOption('sorting', false)
                 .withOption('searching', false)
-                .withScroller().withOption('scrollY', 338);
+                .withScroller().withOption('scrollY', 330);
 
 
                 // DTOptionsBuilder.newOptions()
@@ -321,7 +321,7 @@
 
                 // 默认表格占用的宽高，超过范围显示滚动条
                 // width: 584,
-                height: 380,
+                height: 330,
                 // 是否自动拉伸单元格
                 stretchH: 'all',
 

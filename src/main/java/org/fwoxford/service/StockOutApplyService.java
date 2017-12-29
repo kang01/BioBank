@@ -49,7 +49,12 @@ public interface StockOutApplyService {
 
     DataTablesOutput<StockOutApplyForDataTableEntity> findStockOutApply(DataTablesInput input);
 
-    StockOutApplyForSave initStockOutApply();
+    /**
+     * 初始化新增保存
+     * @param stockOutApplyForSave
+     * @return
+     */
+    StockOutApplyForSave initStockOutApply(StockOutApplyForSave stockOutApplyForSave);
 
     StockOutApplyForSave saveStockOutApply(StockOutApplyForSave stockOutApplyForSave);
 

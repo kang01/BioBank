@@ -73,15 +73,15 @@
             });
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('handoverCode').withTitle('交接单编码'),
-            DTColumnBuilder.newColumn('applyCode').withTitle('申请单编号'),
-            DTColumnBuilder.newColumn('usage').withTitle('出库用途'),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('交接样本'),
-            DTColumnBuilder.newColumn('receiveDate').withTitle('交接时间'),
-            DTColumnBuilder.newColumn('receiver').withTitle('接收方'),
-            DTColumnBuilder.newColumn('deliverName').withTitle('交付人'),
-            DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn('handoverCode').withTitle('交接单编码').withOption('width',"100"),
+            DTColumnBuilder.newColumn('applyCode').withTitle('申请单编号').withOption('width',"100"),
+            DTColumnBuilder.newColumn('usage').withTitle('出库用途').withOption('width',"auto"),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('交接样本').withOption('width',"80"),
+            DTColumnBuilder.newColumn('receiveDate').withTitle('交接时间').withOption('width',"80"),
+            DTColumnBuilder.newColumn('receiver').withTitle('接收方').withOption('width',"80"),
+            DTColumnBuilder.newColumn('deliverName').withTitle('交付人').withOption('width',"80"),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption('width',"80"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).withOption('width',"80").notSortable().renderWith(actionsHtml)
         ];
         function _fnStockOutSeach(sSource, aoData, fnCallback, oSettings) {
             var data = {};

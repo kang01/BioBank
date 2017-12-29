@@ -19,9 +19,24 @@
         vm.dtInstance = {};
         vm.add = _fnAdd;
         function _fnAdd() {
-            RequirementService.saveRequirementEmpty().success(function (data) {
-                $state.go('requirement-edit', {applyId: data.id, applyCode: data.applyCode});
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-add-modal.html',
+                controller: 'RequirementAddModalController',
+                controllerAs:'vm',
+                backdrop:'static',
+                resolve: {
+                    items:{}
+                }
             });
+            modalInstance.result.then(function (requirementInfo) {
+                RequirementService.saveRequirementEmpty(requirementInfo).success(function (data) {
+                    $state.go('requirement-edit', {applyId: data.id, applyCode: data.applyCode});
+                }).error(function (data) {
+                    toastr.error(data.message);
+                });
+            });
+
 
         }
         function _fnStockOutSeach(sSource, aoData, fnCallback, oSettings) {

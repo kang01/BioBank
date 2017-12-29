@@ -206,7 +206,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         StockOutApply stockOutApply = new StockOutApply();
         //委托方，委托人，检测类型，项目编码
         if(stockOutApplyForSave.getCheckTypeId()!=null){
-            CheckType checkType = checkTypeRepository.findByIdAndStatus(stockOutApplyForSave.getId(),Constants.VALID);
+            CheckType checkType = checkTypeRepository.findByIdAndStatus(stockOutApplyForSave.getCheckTypeId(),Constants.VALID);
             if(checkType == null){
                 throw new BankServiceException("出库检测类型不存在！");
             }
@@ -220,6 +220,12 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             stockOutApply.setDelegate(delegate);
             stockOutApplyForSave.setDelegateName(delegate.getDelegateName());
         }
+        stockOutApply.setApplyPersonName(stockOutApplyForSave.getApplyPersonName());
+        stockOutApply.setStatus(Constants.STOCK_OUT_PENDING);
+        stockOutApply.setApplyCode(bankUtil.getUniqueID("C"));
+        stockOutApply.setCountOfStockSample(0);
+        stockOutApply.setCountOfHandOverSample(0);
+        stockOutApplyRepository.save(stockOutApply);
         List<Long> projectIds = stockOutApplyForSave.getProjectIds();
 
         List<StockOutApplyProject> stockOutApplyProjects = new ArrayList<StockOutApplyProject>();
@@ -239,12 +245,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             }
             stockOutApplyProjectRepository.save(stockOutApplyProjects);
         }
-        stockOutApply.setApplyPersonName(stockOutApplyForSave.getApplyPersonName());
-        stockOutApply.setStatus(Constants.STOCK_OUT_PENDING);
-        stockOutApply.setApplyCode(bankUtil.getUniqueID("C"));
-        stockOutApply.setCountOfStockSample(0);
-        stockOutApply.setCountOfHandOverSample(0);
-        stockOutApplyRepository.save(stockOutApply);
+
         stockOutApplyForSave.setId(stockOutApply.getId());
         stockOutApplyForSave.setStatus(stockOutApply.getStatus());
         stockOutApplyForSave.setApplyCode(stockOutApply.getApplyCode());

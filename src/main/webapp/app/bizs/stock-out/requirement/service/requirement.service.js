@@ -97,8 +97,8 @@
         function _queryRequirementSampleClasses(projectIds,sampleTypeId) {
             return $http.get('api/project-sample-classes/projectIds/'+projectIds+'/sampleTypeId/'+sampleTypeId);
         }
-        function _saveRequirementEmpty() {
-            return $http.post('api/stock-out-applies/new-empty');
+        function _saveRequirementEmpty(requirementInfo) {
+            return $http.post('api/stock-out-applies/new-empty',requirementInfo);
         }
         function _saveRequirementInfo(param) {
             return $http.put('api/stock-out-applies/update-object',param);

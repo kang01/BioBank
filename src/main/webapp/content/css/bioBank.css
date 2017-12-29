@@ -464,7 +464,9 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-
+.requirement.over-ellipsis .selectize-input > *{
+    width: 240px;
+}
 .text-ellipsis {
     overflow: hidden;
     white-space: nowrap;

@@ -295,7 +295,8 @@
             };
             return service
         })
-        .factory('MasterMethod',['SampleTypeService',function (SampleTypeService) {
+        .factory('MasterMethod',['SampleTypeService','ProjectService','toastr','RequirementService',
+            function (SampleTypeService,ProjectService,toastr,RequirementService) {
             //RNA：大橘盒 DNA：96孔板
             function _getBoxTypeCode(sampleTypeCode){
                 var boxTypeCode = null;
@@ -333,10 +334,34 @@
                     return data;
                 })
             }
+            //获取所有的项目
+            function _queryProject() {
+                return ProjectService.query({},function (data) {
+                    return data
+                }, onError).$promise;
+            }
+            //获取检测类型
+            function _queryCheckType() {
+                return RequirementService.queryCheckTypes().success(function (data) {
+                    return data;
+                });
+            }
+            //获取委托方
+            function _queryDelegates() {
+                return RequirementService.queryDelegates().success(function (data) {
+                    return data;
+                });
+            }
+            function onError(res) {
+                toastr.error(res.data.message);
+            }
             var service = {
                 changeBoxType :_changeBoxType,
                 querySampleType:_querySampleType,
-                querySampleClass:_querySampleClass
+                querySampleClass:_querySampleClass,
+                queryProject:_queryProject,
+                queryCheckType:_queryCheckType,
+                queryDelegates:_queryDelegates
             };
             return service
         }]);

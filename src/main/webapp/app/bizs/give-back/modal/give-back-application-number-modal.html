@@ -1,18 +1,18 @@
 <div class="modal-header">
     <h3 class="modal-title">
-        申请单号
+        添加归还记录
     </h3>
 </div>
 <div class="modal-body">
     <div class="row">
-        <div class="col-md-6">
-            <div class="form-group ">
-                <div class="form-group">
-                    <label>申请单号<span class="required-field"></span></label>
-                    <input type="text" class="form-control" ng-model="vm.entity.applyCode" ng-blur="vm.queryGiveBackInfo()">
-                </div>
-            </div>
-        </div>
+        <!--<div class="col-md-6">-->
+            <!--<div class="form-group ">-->
+                <!--<div class="form-group">-->
+                    <!--<label>申请单号<span class="required-field"></span></label>-->
+                    <!--<input type="text" class="form-control" ng-model="vm.entity.applyCode" ng-blur="vm.queryGiveBackInfo()">-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
         <div class="col-md-6">
             <div class="form-group ">
                 <div class="form-group">
@@ -22,10 +22,40 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="form-group ">
+                <div class="form-group">
+                    <label>检测类型</label>
+                    <selectize options='vm.checkTypeOptions' config="vm.checkTypeConfig"
+                               ng-model="vm.entity.checkTypeId "></selectize>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group ">
+                <div class="form-group">
+                    <label>归还单位<span class="required-field"></span></label>
+                    <selectize options='vm.delegatesOptions' config="vm.delegatesConfig"
+                               ng-model="vm.entity.delegateId"></selectize>
+                    <input type="hidden" class="form-control"
+                           ng-model="vm.entity.delegateId" required>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group ">
+                <div class="form-group">
+                    <label>归还人<span class="required-field"></span></label>
+                    <input type="text" class="form-control" ng-model="vm.entity.applyPersonName" required>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button"  ng-click="vm.ok()" ng-disabled="!vm.entity.applyCode || !vm.entity.projectId">确定</button>
+    <button class="btn btn-primary" type="button"  ng-click="vm.ok()" ng-disabled="!vm.entity.applyPersonName || !vm.entity.projectId || !vm.entity.delegateId">确定</button>
     <button class="btn btn-warning" type="button"  ng-click="vm.cancel()">取消</button>
 </div>
 

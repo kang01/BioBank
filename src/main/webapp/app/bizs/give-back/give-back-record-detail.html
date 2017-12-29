@@ -246,11 +246,11 @@
                         </ul>
                     </div>
                     <!--vm.scanCheckTube()-->
-                    <div class="col-md-7 text-right" style="height: 42px;line-height: 35px">
+                    <div class="col-md-7 text-right" style="height: 38px;line-height: 35px">
                         <div  class="stock-out-task-scan" ng-if="vm.checkedFlag" style="width: 150px;margin-top: 3px">
                             <div class="input-group">
                                 <input type="text" class="form-control" ng-model="vm.sampleCode" ng-blur="vm.onScanCodeBlur()">
-                                <div class="input-group-addon btn-sm" ng-click="vm.onScanHandler()"
+                                <div class="input-group-addon btn-xs" ng-click="vm.onScanHandler()"
                                      ng-class="{true:'btn-primary',false:''}[vm.scanFlag]" ng-model="vm.scanFlag" uib-btn-checkbox >
                                     <i class="fa fa-qrcode"></i>
                                 </div>
@@ -274,10 +274,13 @@
                                 uib-btn-checkbox ng-click="vm.changeStatus()" ng-disabled="!vm.box.frozenBoxCode">状态编辑
                         </button>
                         <button type="button" class="btn btn-default btn-xs mt-8" ng-click="vm.exchange()"
-                                ng-disabled="!vm.box.frozenBoxCode || vm.flagStatus">样本换位
+                                ng-disabled="!vm.box.frozenBoxCode || vm.flagStatus">修改
+                        </button>
+                        <button type="button" class="btn btn-default btn-xs mt-8" ng-click="vm.exchange()"
+                                ng-disabled="!vm.box.frozenBoxCode || vm.flagStatus">换位
                         </button>
                         <button type="button" class="btn btn-default btn-xs mt-8" ng-click="vm.tubeRemark()"
-                                ng-disabled="!vm.box.frozenBoxCode || vm.flagStatus">样本批注
+                                ng-disabled="!vm.box.frozenBoxCode || vm.flagStatus">批注
                         </button>
                         <button type="button" class="btn btn-default btn-xs mt-8" ng-click="vm.reloadBoxData()"
                                 ng-disabled="!vm.box.frozenBoxCode">重新导入

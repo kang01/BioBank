@@ -277,8 +277,14 @@
         vm.scanCheckTube = function () {
             // vm.checkedFlag = true;
             var tubes = vm.htInstance.api.getTubesData();
-            tubes[0].stockOutStatus = 1;
-            tubes[tubes.length-1].stockOutStatus = 1;
+            if(vm.checkedFlag){
+                tubes[0].stockOutStatus = 1;
+                tubes[tubes.length-1].stockOutStatus = 1;
+            }else{
+                tubes[0].stockOutStatus = null;
+                tubes[tubes.length-1].stockOutStatus = null;
+            }
+
             vm.htInstance.api.loadData(vm.box, tubes);
         };
         //扫码验证
@@ -286,7 +292,6 @@
             $("#focusTextarea").focus();
             //定时器
             window.clearInterval(_scanCodeTimer);
-
             _scanCodeTimer = setInterval(function(){
                 _scanCode();
             },500);

@@ -145,13 +145,14 @@ public class StockOutApplyResource {
      */
     @PostMapping("/stock-out-applies/new-empty")
     @Timed
-    public ResponseEntity<StockOutApplyForSave> initStockOutApply() throws URISyntaxException {
+    public ResponseEntity<StockOutApplyForSave> initStockOutApply( @RequestBody StockOutApplyForSave stockOutApplyForSave) throws URISyntaxException {
         log.debug("REST request to create StockOutApply first");
-        StockOutApplyForSave result = stockOutApplyService.initStockOutApply();
+        StockOutApplyForSave result = stockOutApplyService.initStockOutApply(stockOutApplyForSave);
         return ResponseEntity.created(new URI("/api/stock-out-applies/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+
 
     /**
      * 修改保存出库申请单

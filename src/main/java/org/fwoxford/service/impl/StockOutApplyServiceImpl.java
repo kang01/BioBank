@@ -199,14 +199,52 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     }
 
     @Override
-    public StockOutApplyForSave initStockOutApply() {
+    public StockOutApplyForSave initStockOutApply(StockOutApplyForSave stockOutApplyForSave) {
+        if(stockOutApplyForSave == null){
+            stockOutApplyForSave = new StockOutApplyDetail();
+        }
         StockOutApply stockOutApply = new StockOutApply();
+        //委托方，委托人，检测类型，项目编码
+        if(stockOutApplyForSave.getCheckTypeId()!=null){
+            CheckType checkType = checkTypeRepository.findByIdAndStatus(stockOutApplyForSave.getId(),Constants.VALID);
+            if(checkType == null){
+                throw new BankServiceException("出库检测类型不存在！");
+            }
+            stockOutApply.setCheckTypeId(stockOutApplyForSave.getCheckTypeId());
+        }
+        if(stockOutApplyForSave.getDelegateId()!=null){
+            Delegate delegate = delegateRepository.findOne(stockOutApplyForSave.getDelegateId());
+            if(delegate == null){
+                throw new BankServiceException("委托方不存在！");
+            }
+            stockOutApply.setDelegate(delegate);
+            stockOutApplyForSave.setDelegateName(delegate.getDelegateName());
+        }
+        List<Long> projectIds = stockOutApplyForSave.getProjectIds();
+
+        List<StockOutApplyProject> stockOutApplyProjects = new ArrayList<StockOutApplyProject>();
+        if(projectIds!=null){
+            for(Long projectId :projectIds){
+                if( projectId !=null){
+                    StockOutApplyProject stockOutApplyProject = new StockOutApplyProject();
+                    stockOutApplyProject.setStatus(Constants.VALID);
+                    Project project = projectRepository.findOne(projectId);
+                    if(project == null){
+                        throw new BankServiceException("项目不存在！",projectId.toString());
+                    }
+                    stockOutApplyProject.setProject(project);
+                    stockOutApplyProject.setStockOutApply(stockOutApply);
+                    stockOutApplyProjects.add(stockOutApplyProject);
+                }
+            }
+            stockOutApplyProjectRepository.save(stockOutApplyProjects);
+        }
+        stockOutApply.setApplyPersonName(stockOutApplyForSave.getApplyPersonName());
         stockOutApply.setStatus(Constants.STOCK_OUT_PENDING);
         stockOutApply.setApplyCode(bankUtil.getUniqueID("C"));
         stockOutApply.setCountOfStockSample(0);
         stockOutApply.setCountOfHandOverSample(0);
         stockOutApplyRepository.save(stockOutApply);
-        StockOutApplyForSave stockOutApplyForSave = new StockOutApplyDetail();
         stockOutApplyForSave.setId(stockOutApply.getId());
         stockOutApplyForSave.setStatus(stockOutApply.getStatus());
         stockOutApplyForSave.setApplyCode(stockOutApply.getApplyCode());

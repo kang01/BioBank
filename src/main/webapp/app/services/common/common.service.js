@@ -295,7 +295,7 @@
             };
             return service
         })
-        .factory('MasterMethod',function () {
+        .factory('MasterMethod',['SampleTypeService',function (SampleTypeService) {
             //RNA：大橘盒 DNA：96孔板
             function _getBoxTypeCode(sampleTypeCode){
                 var boxTypeCode = null;
@@ -317,10 +317,27 @@
                var boxType = _.filter(boxTypeOptions, {frozenBoxTypeCode:_getBoxTypeCode(sampleTypeCode)})[0];
                 return boxType;
             }
-
+            //样本类型
+            function _querySampleType() {
+                return SampleTypeService.querySampleType().success(function (data) {
+                    return data
+                });
+            }
+            //样本分类
+            function _querySampleClass(projectId,sampleTypeId) {
+                if(!sampleTypeId || !projectId){
+                    return
+                }
+                return SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
+                    data.push({sampleClassificationId:null,sampleClassificationName:null});
+                    return data;
+                })
+            }
             var service = {
-                changeBoxType :_changeBoxType
+                changeBoxType :_changeBoxType,
+                querySampleType:_querySampleType,
+                querySampleClass:_querySampleClass
             };
             return service
-        });
+        }]);
 })();

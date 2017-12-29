@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * A DTO for the FrozenTube entity.
  */
-public class FrozenTubeDTO implements Serializable {
+public class FrozenTubeDTO extends FrozenTubeLabelDTO  implements Serializable {
 
     private Long id;
     /**

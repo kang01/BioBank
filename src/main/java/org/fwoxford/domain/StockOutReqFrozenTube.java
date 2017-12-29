@@ -14,7 +14,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "stock_out_req_frozen_tube")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Serializable {
+public class StockOutReqFrozenTube  extends FrozenTubeLabel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

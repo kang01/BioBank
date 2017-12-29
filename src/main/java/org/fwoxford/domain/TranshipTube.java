@@ -14,7 +14,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "tranship_tube")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class TranshipTube extends AbstractAuditingEntity implements Serializable {
+public class TranshipTube  extends FrozenTubeLabel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

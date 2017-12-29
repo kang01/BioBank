@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * A DTO for the StockInTube entity.
  */
-public class StockInTubeDTO extends AbstractAuditingDTO implements Serializable {
+public class StockInTubeDTO extends FrozenTubeLabelDTO implements Serializable {
 
     private Long id;
 

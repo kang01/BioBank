@@ -181,10 +181,6 @@ public interface StockInTubeMapper {
         stockInTubeDTO.setProjectSiteId( stockInTube.getProjectSite()!=null?stockInTube.getProjectSite().getId():null );
         stockInTubeDTO.setProjectId( stockInTube.getProject()!=null?stockInTube.getProject().getId():null );
         stockInTubeDTO.setFrozenTubeTypeId( stockInTube.getFrozenTubeType()!=null?stockInTube.getFrozenTubeType().getId():null );
-        stockInTubeDTO.setCreatedBy( stockInTube.getCreatedBy() );
-        stockInTubeDTO.setCreatedDate( stockInTube.getCreatedDate() );
-        stockInTubeDTO.setLastModifiedBy( stockInTube.getLastModifiedBy() );
-        stockInTubeDTO.setLastModifiedDate( stockInTube.getLastModifiedDate() );
         stockInTubeDTO.setId( stockInTube.getId() );
         stockInTubeDTO.setTubeRows( stockInTube.getTubeRows() );
         stockInTubeDTO.setTubeColumns( stockInTube.getTubeColumns() );

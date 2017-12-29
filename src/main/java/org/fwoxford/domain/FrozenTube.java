@@ -16,7 +16,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "frozen_tube")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class FrozenTube extends AbstractAuditingEntity implements Serializable {
+public class FrozenTube  extends FrozenTubeLabel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

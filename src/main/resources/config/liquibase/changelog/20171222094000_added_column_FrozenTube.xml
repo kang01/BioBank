@@ -15,4 +15,40 @@
             <column name="project_name" type="nvarchar(255)" remarks="项目名称"></column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="20171222094000-2" author="jhipster">
+        <addColumn tableName="frozen_tube">
+            <column name="tag1" type="nvarchar(255)" remarks="标签一"></column>
+            <column name="tag2" type="nvarchar(255)" remarks="标签二"></column>
+            <column name="tag3" type="nvarchar(255)" remarks="标签三"></column>
+            <column name="tag4" type="nvarchar(1024)" remarks="标签四"></column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20171222094000-3" author="jhipster">
+        <addColumn tableName="tranship_tube">
+            <column name="tag1" type="nvarchar(255)" remarks="标签一"></column>
+            <column name="tag2" type="nvarchar(255)" remarks="标签二"></column>
+            <column name="tag3" type="nvarchar(255)" remarks="标签三"></column>
+            <column name="tag4" type="nvarchar(1024)" remarks="标签四"></column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20171222094000-4" author="jhipster">
+        <addColumn tableName="stock_in_tube">
+            <column name="tag1" type="nvarchar(255)" remarks="标签一"></column>
+            <column name="tag2" type="nvarchar(255)" remarks="标签二"></column>
+            <column name="tag3" type="nvarchar(255)" remarks="标签三"></column>
+            <column name="tag4" type="nvarchar(1024)" remarks="标签四"></column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20171222094000-5" author="jhipster">
+        <addColumn tableName="stock_out_req_frozen_tube">
+            <column name="tag1" type="nvarchar(255)" remarks="标签一"></column>
+            <column name="tag2" type="nvarchar(255)" remarks="标签二"></column>
+            <column name="tag3" type="nvarchar(255)" remarks="标签三"></column>
+            <column name="tag4" type="nvarchar(1024)" remarks="标签四"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

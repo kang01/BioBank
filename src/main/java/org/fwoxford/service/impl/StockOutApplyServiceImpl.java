@@ -201,7 +201,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     @Override
     public StockOutApplyForSave initStockOutApply(StockOutApplyForSave stockOutApplyForSave) {
         if(stockOutApplyForSave == null){
-            stockOutApplyForSave = new StockOutApplyDetail();
+            stockOutApplyForSave = new StockOutApplyForSave();
         }
         StockOutApply stockOutApply = new StockOutApply();
         //委托方，委托人，检测类型，项目编码
@@ -655,7 +655,13 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
                 stockOutAppliesNotHandover.add(s);
             }
         }
-        return stockOutApplyMapper.stockOutAppliesToStockOutApplyDTOs(stockOutAppliesNotHandover);
+        List<StockOutApplyDTO> applyDTOS = new ArrayList<>();
+        for(StockOutApply s :stockOutAppliesNotHandover){
+            StockOutApplyDTO stockOutApplyDTO = stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(s);
+            stockOutApplyDTO.setDelegateName(s.getDelegate()!=null?s.getDelegate().getDelegateName():null);
+            applyDTOS.add(stockOutApplyDTO);
+        }
+        return applyDTOS;
     }
 
     /**

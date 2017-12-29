@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * A DTO for the TranshipTube entity.
  */
-public class TranshipTubeDTO implements Serializable {
+public class TranshipTubeDTO extends FrozenTubeLabelDTO implements Serializable {
 
     private Long id;
 

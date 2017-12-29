@@ -273,7 +273,7 @@
                                 ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus"
                                 uib-btn-checkbox ng-click="vm.changeStatus()" ng-disabled="!vm.box.frozenBoxCode">状态编辑
                         </button>
-                        <button type="button" class="btn btn-default btn-xs mt-8" ng-click="vm.exchange()"
+                        <button type="button" class="btn btn-default btn-xs mt-8" ng-click="vm.editSample()"
                                 ng-disabled="!vm.box.frozenBoxCode || vm.flagStatus">修改
                         </button>
                         <button type="button" class="btn btn-default btn-xs mt-8" ng-click="vm.exchange()"

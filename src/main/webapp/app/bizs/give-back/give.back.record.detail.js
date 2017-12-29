@@ -303,13 +303,6 @@
         };
         //样本修改
         vm.editSample = function () {
-            var selectedData = vm.htInstance.api.selectedTubes;
-
-            if(!selectedData.length){
-                toastr.error("请选择样本进行修改！");
-                return;
-            }
-
             var obj = {
                 projectId:vm.giveBackRecord.projectId,
                 projectName:vm.giveBackRecord.projectName,
@@ -318,53 +311,8 @@
                 sampleTypeId:vm.box.sampleTypeId,
                 sampleClassificationId:vm.box.sampleClassificationId
             };
-            if(selectedData.length == 1){
-                obj.singleMultipleFlag = "single"
-            }
-            _modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/give-back/modal/edit-sample-modal.html',
-                controller: 'EditSampleModal',
-                backdrop:'static',
-                size:"lg",
-                controllerAs: 'vm',
-                resolve: {
-                    items: function () {
-                        return {
-                            selectedSample:selectedData,
-                            obj:obj
-                        };
-                    }
-                }
-
-            });
-            _modalInstance.result.then(function (tube) {
-                console.log(JSON.stringify(tube));
-                _updateTubesData(selectedData,tube);
-            },function () {
-            });
+            vm.htInstance.api.editTube(obj);
         };
-        //更新tubes
-        function _updateTubesData(selectedData,tube) {
-            var gridTubes = vm.htInstance.api.getTubesData();
-            _.each(gridTubes,function (tube1) {
-                _.each(selectedData,function (tube2) {
-                    if(tube1.sampleCode == tube2.sampleCode){
-                        if(tube.status){
-                            tube1.status = tube.status;
-                        }
-                        if(selectedData.length == 1){
-                            tube1.sampleCode = tube.sampleCode;
-                        }
-                        tube1.sampleVolumns = tube.sampleVolumns;
-                        tube1.sampleTypeId = tube.sampleTypeId;
-                        tube1.sampleClassificationId = tube.sampleClassificationId;
-                        tube1.memo = tube.memo;
-                    }
-                })
-            });
-            vm.htInstance.api.loadData(vm.box, gridTubes);
-        }
         function _scanCode() {
             if (!vm.sampleCode) {
                 return;

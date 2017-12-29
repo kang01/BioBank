@@ -21,14 +21,14 @@
 
             },
             template: '<hot-table hot-id="tubeBoxTable" settings="vm.settings" class="tube" style="width: 100%; padding: 0;margin: 0;"></hot-table>',
-            controller: ["$scope","toastr","SampleTypeService", ctrlFunc],
+            controller: ["$scope","toastr","SampleTypeService","$uibModal", ctrlFunc],
             controllerAs: 'vm',
             link:  linkFunc
         };
 
         return  directive;
 
-        function ctrlFunc($scope,toastr, SampleTypeService){
+        function ctrlFunc($scope,toastr, SampleTypeService,$uibModal){
             var vm = this;
 
             // 盒子中可以使用的样本分类
@@ -51,6 +51,7 @@
                 getGridData: _getGridData,
                 getTubesData: _getTubesData,
                 sampleCount: _sampleCount,
+                editTube: _editTube,
                 updateSettings: _updateSettings,
                 getSettings: _getSettings,
                 getSelectedData: _getSelectedData,
@@ -1161,7 +1162,60 @@
                 _getTableCtrl().deselectCell();
                 _clearSelectedStatus();
             }
+            function _editTube(obj) {
+                var selectedData = vm.api.selectedTubes;
 
+                if(!selectedData.length){
+                    toastr.error("请选择样本进行修改！");
+                    return;
+                }
+                if(selectedData.length == 1){
+                    obj.singleMultipleFlag = "single"
+                }
+                var modalInstance;
+                modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/common/edit-sample-modal.html',
+                    controller: 'EditSampleModal',
+                    backdrop:'static',
+                    size:"lg",
+                    controllerAs: 'vm',
+                    resolve: {
+                        items: function () {
+                            return {
+                                selectedSample:selectedData,
+                                obj:obj
+                            };
+                        }
+                    }
+
+                });
+                modalInstance.result.then(function (tube) {
+                    _updateTubesData(selectedData,tube);
+                },function () {
+                });
+            }
+            //更新tubes
+            function _updateTubesData(selectedData,tube) {
+                var gridTubes = _getTubesData();
+                _.each(gridTubes,function (tube1) {
+                    _.each(selectedData,function (tube2) {
+                        if(tube1.sampleCode == tube2.sampleCode){
+                            if(tube.status){
+                                tube1.status = tube.status;
+                            }
+                            if(selectedData.length == 1){
+                                tube1.sampleCode = tube.sampleCode;
+                            }
+                            tube1.sampleVolumns = tube.sampleVolumns;
+                            tube1.sampleTypeId = tube.sampleTypeId;
+                            tube1.sampleClassificationId = tube.sampleClassificationId;
+                            tube1.memo = tube.memo;
+                        }
+                    })
+                });
+                _loadData(vm.box, gridTubes);
+            }
             // 根据孔位进行位置交换
             function _exchangePos(srcRow, srcCol, desRow, desCol){
                 var srcPos = _convertTubePositionToCoordinate(srcRow, srcCol);

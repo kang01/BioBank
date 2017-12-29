@@ -153,6 +153,7 @@
                 }
                 if (vm.dto.stockOutApplyId){
                     vm.application = _.find(vm.applicationOptions, {id:vm.dto.stockOutApplyId});
+                    vm.dto.receiverOrganization = _.find(vm.applicationOptions,{id:+value}).delegateName;
                 }
             }, onError);
             vm.applicationOptionsConfig = {
@@ -162,6 +163,10 @@
                 onChange:function (value) {
                     vm.dto.stockOutPlanId = null;
                     vm.dto.stockOutTaskId = null;
+                    if(value){
+                        vm.dto.receiverOrganization = _.find(vm.applicationOptions,{id:+value}).delegateName;
+                    }
+
                     _fnGetPlans(value);
 
                 }

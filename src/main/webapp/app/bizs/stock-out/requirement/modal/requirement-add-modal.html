@@ -27,7 +27,7 @@
             <div class="form-group">
                 <label>项目编码<span class="required-field"></span></label>
                 <selectize options='vm.projectOptions' config="vm.projectConfig"
-                           ng-model="vm.entity.projectId"></selectize>
+                           ng-model="vm.entity.projectIds"></selectize>
             </div>
         </div>
         <div class="col-md-6">
@@ -40,6 +40,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button"  ng-click="vm.ok()" ng-disabled="!vm.entity.applyPersonName || !vm.entity.projectId || !vm.entity.delegateId">确定</button>
+    <button class="btn btn-primary" type="button"  ng-click="vm.ok()" ng-disabled="!vm.entity.applyPersonName || !vm.entity.projectIds|| !vm.entity.delegateId">确定</button>
     <button class="btn btn-warning" type="button"  ng-click="vm.cancel()">取消</button>
 </div>

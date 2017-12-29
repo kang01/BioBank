@@ -40,4 +40,10 @@ public interface EquipmentModleService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * 获取所有的冻存架类型
+     * @return
+     */
+    List<EquipmentModleDTO> findAllEquipmentType();
 }

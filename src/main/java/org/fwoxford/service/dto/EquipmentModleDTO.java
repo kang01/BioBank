@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * A DTO for the EquipmentModle entity.
  */
-public class EquipmentModleDTO extends AbstractAuditingDTO implements Serializable {
+public class EquipmentModleDTO implements Serializable {
 
     private Long id;
     /**

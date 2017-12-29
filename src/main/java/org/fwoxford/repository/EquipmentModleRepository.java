@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.EquipmentModle;
 
 import org.springframework.data.jpa.repository.*;
@@ -13,4 +14,6 @@ import java.util.List;
 public interface EquipmentModleRepository extends JpaRepository<EquipmentModle,Long> {
 
     EquipmentModle findByEquipmentModelCode(String equipmentModelCode);
+
+    List<EquipmentModle> findByStatus(String valid);
 }

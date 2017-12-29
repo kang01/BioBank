@@ -932,8 +932,8 @@ public class StockListServiceImpl implements StockListService {
                 }
                 predicate.add(in);
             }
-            if (searchForm.getEquipmentTypeId() != null) {
-                Predicate p1 = cb.equal(root.get("equipmentTypeId").as(Long.class), searchForm.getEquipmentTypeId());
+            if (searchForm.getEquipmentType() != null) {
+                Predicate p1 = cb.equal(root.get("equipmentType").as(String.class), searchForm.getEquipmentType());
                 predicate.add(p1);
             }
             if (searchForm.getShelvesTypeId() != null) {
@@ -1021,8 +1021,8 @@ public class StockListServiceImpl implements StockListService {
                 }
                 predicate.add(in);
             }
-            if (searchForm.getEquipmentTypeId() != null) {
-                Predicate p1 = cb.equal(root.get("equipmentTypeId").as(Long.class), searchForm.getEquipmentTypeId());
+            if (searchForm.getEquipmentType() != null) {
+                Predicate p1 = cb.equal(root.get("equipmentType").as(String.class), searchForm.getEquipmentType());
                 predicate.add(p1);
             }
             if (searchForm.getShelvesTypeId() != null) {

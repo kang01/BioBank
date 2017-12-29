@@ -128,4 +128,16 @@ public class EquipmentModleResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 获取所有的冻存架类型
+     * @return
+     */
+
+    @GetMapping("/equipment-modles/equipment-type-list")
+    @Timed
+    public ResponseEntity<List<EquipmentModleDTO>> getAllEquipmentType() {
+        log.debug("REST request to get all EquipmentType : {}");
+        List<EquipmentModleDTO> sampleReportForShelvesLists = equipmentModleService.findAllEquipmentType();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(sampleReportForShelvesLists));
+    }
 }

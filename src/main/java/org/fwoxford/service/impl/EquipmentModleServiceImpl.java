@@ -1,5 +1,7 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
+import org.fwoxford.domain.Equipment;
 import org.fwoxford.service.EquipmentModleService;
 import org.fwoxford.domain.EquipmentModle;
 import org.fwoxford.repository.EquipmentModleRepository;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,5 +90,22 @@ public class EquipmentModleServiceImpl implements EquipmentModleService{
     public void delete(Long id) {
         log.debug("Request to delete EquipmentModle : {}", id);
         equipmentModleRepository.delete(id);
+    }
+
+    /**
+     * 获取所有的冻存架类型
+     * @return
+     */
+    @Override
+    public List<EquipmentModleDTO> findAllEquipmentType() {
+        List<EquipmentModle> equipmentModles = equipmentModleRepository.findByStatus(Constants.VALID);
+        for (int i = 0; i < equipmentModles.size() - 1; i++) {
+            for (int j = equipmentModles.size() - 1; j > i; j--) {
+                if (equipmentModles.get(j).getEquipmentType().equals(equipmentModles.get(i).getEquipmentType())) {
+                    equipmentModles.remove(j);
+                }
+            }
+        }
+        return equipmentModleMapper.equipmentModlesToEquipmentModleDTOs(equipmentModles);
     }
 }

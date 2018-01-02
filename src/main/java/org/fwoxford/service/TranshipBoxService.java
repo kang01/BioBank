@@ -83,12 +83,12 @@ public interface TranshipBoxService {
      */
     DataTablesOutput<FrozenBoxCodeForTranshipDTO> getPageFrozenBoxCodeByTranshipCode(String transhipCode, DataTablesInput input);
     /**
-     * 根据出库申请编码和冻存盒编码串获取出库冻存盒和样本信息
-     * @param applyCode
+     * 根据冻存盒编码串获取出库冻存盒和样本信息
+     * @param projectCode
      * @param frozenBoxCodeStr
      * @return
      */
-    List<TranshipBoxDTO> getStockOutFrozenBoxAndSample(String applyCode, String frozenBoxCodeStr);
+    List<TranshipBoxDTO> getStockOutFrozenBoxAndSample(String projectCode, String frozenBoxCodeStr);
 
     /**
      * 归还冻存盒的保存
@@ -97,14 +97,6 @@ public interface TranshipBoxService {
      * @return
      */
     List<TranshipBoxDTO> saveBatchTranshipBoxForReturn(Long id, List<TranshipBoxDTO> transhipBoxDTOS);
-    /**
-     * 根据出库申请编码和冻存盒编码串获取出库冻存盒
-     * @param applyCode
-     * @param boxCodeStr
-     * @return
-     */
-    List<TranshipBoxDTO> getStockOutFrozenBox(String applyCode, String boxCodeStr);
-
     /**
      * 根据冻存盒获取归还冻存盒和归还样本的信息
      * @param id

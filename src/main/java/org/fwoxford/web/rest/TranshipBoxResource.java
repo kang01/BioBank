@@ -276,15 +276,16 @@ public class TranshipBoxResource {
 
     /**
      * 根据出库申请编码和冻存盒编码串获取出库冻存盒和样本信息
-     * @param applyCode
+     * @param projectCode
      * @param frozenBoxCodeStr
      * @return
      */
-    @GetMapping("/return-boxes/stockOutApply/{applyCode}/frozenBoxCode/{frozenBoxCodeStr}")
+
+    @GetMapping("/return-boxes/projectCode/{projectCode}frozenBoxCode/{frozenBoxCodeStr}")
     @Timed
-    public ResponseEntity<List<TranshipBoxDTO>> getStockOutFrozenBoxAndSample(@PathVariable String applyCode, @PathVariable String frozenBoxCodeStr) {
+    public ResponseEntity<List<TranshipBoxDTO>> getStockOutFrozenBoxAndSample( @PathVariable String projectCode,@PathVariable String frozenBoxCodeStr) {
         log.debug("REST request to import FrozenBox And FrozenTubeDTOs From StockOutBox: {}", frozenBoxCodeStr);
-        List<TranshipBoxDTO> res = transhipBoxService.getStockOutFrozenBoxAndSample(applyCode, frozenBoxCodeStr);
+        List<TranshipBoxDTO> res = transhipBoxService.getStockOutFrozenBoxAndSample(projectCode,frozenBoxCodeStr);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 

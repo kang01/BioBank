@@ -360,6 +360,10 @@ public final class Constants {
      */
     public static final String RECEIVE_TYPE_PROJECT_SITE = "01";
     public static final String RECEIVE_TYPE_RETURN_BACK = "02";
+    public static final  Map<String,String>  SAMPLE_TYPE_CODE_FROM_LIMS_MAP= new HashMap(){{
+        put("2","DNA");
+        put("3","W");
+    }};
 
     private Constants() {
     }

@@ -390,7 +390,7 @@ public class TranshipDTO implements Serializable {
             ", tempEquipmentId='" + tempEquipmentId + "'" +
             ", tempAreaId='" + tempAreaId + "'" +
             ", receiveType='" + receiveType + "'" +
-            ", returnBackPeople='" + returnBackPeople + "'" +
+//            ", returnBackPeople='" + returnBackPeople + "'" +
             ", stockOutApplyId='" + stockOutApplyId + "'" +
             ", delegateId='" + delegateId + "'" +
             '}';
@@ -408,7 +408,7 @@ public class TranshipDTO implements Serializable {
 
     private String receiveType;
 
-    private String returnBackPeople;
+//    private String returnBackPeople;
 
     private Long stockOutApplyId;
 
@@ -430,13 +430,13 @@ public class TranshipDTO implements Serializable {
         this.receiveType = receiveType;
     }
 
-    public String getReturnBackPeople() {
-        return returnBackPeople;
-    }
-
-    public void setReturnBackPeople(String returnBackPeople) {
-        this.returnBackPeople = returnBackPeople;
-    }
+//    public String getReturnBackPeople() {
+//        return returnBackPeople;
+//    }
+//
+//    public void setReturnBackPeople(String returnBackPeople) {
+//        this.returnBackPeople = returnBackPeople;
+//    }
 
     public Long getStockOutApplyId() {
         return stockOutApplyId;

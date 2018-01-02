@@ -90,6 +90,8 @@ public class TranshipServiceImpl implements TranshipService{
     TranshipTubeMapper transhipTubeMapper;
     @Autowired
     CheckTypeRepository checkTypeRepository;
+    @Autowired
+    DelegateRepository delegateRepository;
 
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
@@ -611,6 +613,62 @@ public class TranshipServiceImpl implements TranshipService{
     @Override
     public StockInForDataDetail completedReturnBack(String returnBackCode, TranshipToStockInDTO transhipToStockInDTO) {
         return completedReceiveBox(returnBackCode,transhipToStockInDTO,Constants.RECEIVE_TYPE_RETURN_BACK );
+    }
+
+    /**
+     * 归还记录的初始化保存
+     * @param transhipDTO
+     * @return
+     */
+    @Override
+    public TranshipDTO createReturnBack(TranshipDTO transhipDTO) {
+        //项目
+        if(transhipDTO.getProjectId()==null){
+            throw new BankServiceException("项目不能为空！");
+        }
+
+        //归还单位
+        if(transhipDTO.getDelegateId()==null){
+            throw new BankServiceException("归还单位不能为空！");
+        }
+        //归还人
+        if(transhipDTO.getApplyPersonName()==null){
+            throw new BankServiceException("归还人不能为空！");
+        }
+        Project project = projectRepository.findByIdAndStatus(transhipDTO.getProjectId(),Constants.VALID);
+        if(project == null){
+            throw new BankServiceException("项目不存在！");
+        }
+        transhipDTO.setProjectCode(project.getProjectCode());
+        transhipDTO.setProjectName(project.getProjectName());
+        Delegate delegate = delegateRepository.findByIdAndStatus(transhipDTO.getDelegateId(),Constants.VALID);
+        if(delegate == null){
+            throw new BankServiceException("归还单位不存在！");
+        }
+        //检测类型（不必填）
+        if(transhipDTO.getCheckTypeId()!=null){
+            CheckType checkType = checkTypeRepository.findByIdAndStatus(transhipDTO.getCheckTypeId(),Constants.VALID);
+            if(checkType == null){
+                throw new BankServiceException("检测类型不存在！");
+            }
+        }
+        String transhipCode = bankUtil.getUniqueID("AA");
+        transhipDTO.setTranshipDate(transhipDTO.getTranshipDate()==null?LocalDate.now():transhipDTO.getTranshipDate());
+        transhipDTO.setTranshipCode(transhipCode);
+        transhipDTO.setDelegateName(delegate.getDelegateName());
+
+        transhipDTO.setTranshipState(Constants.TRANSHIPE_IN_PENDING);
+        transhipDTO.setFrozenBoxNumber(0);
+        transhipDTO.setEmptyHoleNumber(0);
+        transhipDTO.setEmptyTubeNumber(0);
+        transhipDTO.setSampleNumber(0);
+        transhipDTO.setEffectiveSampleNumber(0);
+        transhipDTO.setReceiveType(Constants.RECEIVE_TYPE_RETURN_BACK);
+        transhipDTO.setStatus(Constants.VALID);
+        Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
+        transhipRepository.save(tranship);
+        transhipDTO.setId(tranship.getId());
+        return transhipDTO;
     }
 
     /**

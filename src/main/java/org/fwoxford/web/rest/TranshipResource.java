@@ -341,4 +341,19 @@ public class TranshipResource {
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
+    /**
+     * 初始化归还记录
+     * @param transhipDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/return-back/new-empty")
+    @Timed
+    public ResponseEntity<TranshipDTO> createReturnBack(@Valid @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
+        log.debug("REST request to create Tranship For ReturnBack");
+        TranshipDTO result = transhipService.createReturnBack(transhipDTO);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
 }

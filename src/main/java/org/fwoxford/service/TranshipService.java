@@ -120,4 +120,11 @@ public interface TranshipService {
      * @return
      */
     StockInForDataDetail completedReturnBack(String returnBackCode, TranshipToStockInDTO transhipToStockInDTO);
+
+    /**
+     * 归还记录的初始化保存
+     * @param transhipDTO
+     * @return
+     */
+    TranshipDTO createReturnBack(TranshipDTO transhipDTO);
 }

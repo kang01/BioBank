@@ -17,4 +17,6 @@ public interface DelegateRepository extends JpaRepository<Delegate,Long> {
     Delegate findByDelegateCode(String delegateCode);
 
     Delegate findByDelegateName(String delegateName);
+
+    Delegate findByIdAndStatus(Long delegateId, String valid);
 }

@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('EquipmentInventoryController', EquipmentInventoryController);
 
-    EquipmentInventoryController.$inject = ['$scope','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    EquipmentInventoryController.$inject = ['$scope','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable','MasterMethod'];
 
-    function EquipmentInventoryController($scope,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
+    function EquipmentInventoryController($scope,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable,MasterMethod) {
         var vm = this;
         vm.checked = false;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
@@ -110,8 +110,8 @@
             };
             //设备类型
             vm.equipmentConfig = {
-                valueField:'value',
-                labelField:'label',
+                valueField:'equipmentType',
+                labelField:'equipmentType',
                 maxItems: 1,
                 onChange:function(value){
                 }
@@ -156,10 +156,13 @@
                 // vm.frozenBoxPlaceOptions = data;
                 vm.frozenBoxPlaceOptions = _.orderBy(data,['equipmentCode'],['asc']);
             }
-            vm.equipmentOptions = [
-                {value:"1",label:"冰箱"},
-                {value:"2",label:"液氮罐"}
-            ];
+            MasterMethod.queryEquipmentType().success(function (data) {
+                vm.equipmentOptions = data;
+            });
+            // vm.equipmentOptions = [
+            //     {value:"1",label:"冰箱"},
+            //     {value:"2",label:"液氮罐"}
+            // ];
             EquipmentInventoryService.querySupportRackTypes().success(function (data) {
                 vm.shelvesOptions = data;
             });
@@ -189,6 +192,7 @@
 
         }
         _init();
+
         function _fnSearchShow(status) {
             vm.status = status;
             vm.checked = true;

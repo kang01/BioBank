@@ -295,8 +295,8 @@
             };
             return service
         })
-        .factory('MasterMethod',['$q','SampleTypeService','ProjectService','toastr','RequirementService','$uibModal',
-            function ($q,SampleTypeService,ProjectService,toastr,RequirementService,$uibModal) {
+        .factory('MasterMethod',['$q','$uibModal','SampleTypeService','ProjectService','toastr','RequirementService','EquipmentInventoryService',
+            function ($q,$uibModal,SampleTypeService,ProjectService,toastr,RequirementService,EquipmentInventoryService) {
             var _modalInstance;
             //RNA：大橘盒 DNA：96孔板
             function _getBoxTypeCode(sampleTypeCode){
@@ -350,6 +350,12 @@
             //获取委托方
             function _queryDelegates() {
                 return RequirementService.queryDelegates().success(function (data) {
+                    return data;
+                });
+            }
+            //获取设备类型
+            function _queryEquipmentType() {
+                return EquipmentInventoryService.queryEquipmentType().success(function (data) {
                     return data;
                 });
             }
@@ -419,6 +425,7 @@
                 queryProject:_queryProject,
                 queryCheckType:_queryCheckType,
                 queryDelegates:_queryDelegates,
+                queryEquipmentType:_queryEquipmentType,
                 editTubes:_editTubes,
                 updateTubesData:_updateTubesData
             };

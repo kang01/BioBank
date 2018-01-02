@@ -12,6 +12,8 @@
     function EquipmentInventoryService($http) {
         var service = {
             queryEquipmentList:_queryEquipmentList,
+            //获取设备类型
+            queryEquipmentType:_queryEquipmentType,
             //获取区域列表
             queryAreaList:_queryAreaList,
             //获取架子类型
@@ -24,6 +26,9 @@
         };
         function _queryEquipmentList(data,searchForm) {
             return $http.post('api/res/stock-list/frozen-position?searchForm='+searchForm,angular.toJson(data));
+        }
+        function _queryEquipmentType() {
+            return $http.get('api/equipment-modles/equipment-type-list');
         }
         function _queryAreaList(data,searchForm) {
             return $http.post('api/res/areas-list?searchForm='+searchForm,angular.toJson(data));

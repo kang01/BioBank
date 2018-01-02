@@ -34,7 +34,7 @@
         vm.isMixed = items.obj.isMixed;
         vm.projectName = _projectCode+","+_projectName;
         if(_selectedSample.length == 1){
-            vm.entity.sampleCode = _selectedSample[0].sampleCode;
+            vm.entity.sampleCode = _selectedSample[0].sampleCode ? _selectedSample[0].sampleCode : _selectedSample[0].sampleTempCode;
             vm.entity.memo = _selectedSample[0].memo;
             vm.entity.status = _selectedSample[0].status;
             vm.entity.sampleVolumns = _selectedSample[0].sampleVolumns;
@@ -110,13 +110,23 @@
             vm.sampleInstance = {};
             vm.sampleColumns = [
                 DTColumnBuilder.newColumn('sampleCode').withOption("width", "50").notSortable().withOption('searchable',false).withTitle('序号'),
-                DTColumnBuilder.newColumn('sampleCode').withTitle('冻存管编码').notSortable()
+                DTColumnBuilder.newColumn('sampleCode').withTitle('冻存管编码').notSortable().renderWith(_rowRender)
             ];
             vm.sampleOptions = BioBankDataTable.buildDTOption("BASIC", 316, 10)
                 .withOption('rowCallback', rowCallback);
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
                 $('td:first', nRow).html(iDisplayIndex+1);
+
                 return nRow;
+            }
+            function _rowRender(data, type, full, meta) {
+                var sampleCode = '';
+                if(full.sampleCode){
+                    sampleCode = full.sampleCode;
+                }else{
+                    sampleCode = full.sampleTempCode;
+                }
+                return sampleCode;
             }
             vm.sampleOptions.withOption("data",_selectedSample);
         }

@@ -17,35 +17,56 @@
     function TransportRecordNewController($scope,blockUI,MasterData,MasterMethod,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TransportRecordService,TranshipSaveService,TranshipBoxService,
                                           SampleTypeService,FrozenBoxTypesService,StockInInputService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
                                           BioBankBlockUi,Principal) {
-
-        var modalInstance;
         var vm = this;
-        vm.transportRecord = entity; //转运记录
+        var modalInstance;
         vm.box = {};
+        vm.transportRecord = entity; //转运记录
         //生成的icon配置
         vm.btnSettings = {
             icon:"fa-plus-circle",
             makeNewBoxCode:_fnMakeNewBoxCode
         };
+        //滿意程度
+        vm.rating = 0;
+        vm.ratings = [{
+            current: vm.transportRecord.sampleSatisfaction,
+            max: 10
+        }];
+        //左侧冻存盒
+        vm.dtInstance = {};
+        var _selectedTubes = [];
+
+
         //生成新的冻存盒号
         vm.makeNewBoxCode = _fnMakeNewBoxCode;
-        //
-        vm.makeNewBoxCodeFlag = false;
-        function _fnMakeNewBoxCode() {
-            if(!vm.box.sampleTypeId || !vm.box.sampleClassificationId){
-                return;
-            }
-            StockInInputService.makeNewBoxCode(vm.transportRecord.projectId,vm.box.sampleTypeId,vm.box.sampleClassificationId).success(function (data) {
-                vm.box.frozenBoxCode = data.code;
-                vm.makeNewBoxCodeFlag = true;
-            }).error(function (data) {
-                toastr.error(data.message);
-            })
-        }
+        //单个编辑、批量编辑
+        vm.editTube = _editTube;
+        //查询转运记录
+        vm.queryTransportRecord = _fuQueryTransportRecord;
+        //满意度
+        vm.getSelectedRating = _getSelectedRating;
+        vm.createBoxDataFromTubesTable = _createBoxDataFromTubesTable;
+        //保存盒子
+        vm.saveBox = saveBox;
+        //重新导入
+        vm.reImportFrozenBoxData = _fnReImportFrozenBoxData;
+        //删除盒子
+        vm.delBox = _fnDelBox;
+        //上传附件
+        vm.uploadFile = _fnUploadFile;
+        //删除附件
+        vm.delUploadInfo = _fnDelUploadInfo;
 
         _initTransportRecordPage();
         _initFrozenBoxesTable();
         _initFrozenBoxPanel();
+        _fnQueryTransportRecordFile();
+
+
+        //查询转运记录
+        function _fuQueryTransportRecord() {
+            TransportRecordService.get({id : vm.transportRecord.id},onRecordSuccess,onError);
+        }
         //样本数统计
         function _sampleCount(tubeList) {
             //正常
@@ -63,6 +84,7 @@
                 $scope.$apply();
             }
         }
+        //获取当前用户
         function _fnQueryUser() {
             Principal.identity().then(function(account) {
                 vm.account = account;
@@ -73,6 +95,7 @@
                 }
             });
         }
+        //初始化转运记录的基本数据
         function _initTransportRecordPage(){
             if($stateParams.transhipId){
                 vm.transportRecord.id = $stateParams.transhipId;
@@ -470,8 +493,7 @@
                 vm.receiverOptions = data;
             }
         }
-        //左侧冻存盒
-        vm.dtInstance = {};
+        //左侧冻存盒列表
         function _initFrozenBoxesTable(){
             // vm.loadBox = loadBox;
 
@@ -626,7 +648,7 @@
                     remarkArray = this.getData(row,col,row2,col2);
                     var selectTubeArrayIndex = this.getSelected();
                     var array = _.flatten(remarkArray);
-
+                    _selectedTubes = _.flatten(remarkArray);
                     if(window.event && window.event.ctrlKey){
                         //换位
                         vm.exchangeFlag = true;
@@ -918,6 +940,7 @@
                         && (!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)){
                         toastr.error("两个空冻存盒不能被交换!");
                         aRemarkArray = [];
+                        _selectedTubes = [];
                         return;
                     }
                     var row = getTubeRowIndex(domArray[0].tubeRows);
@@ -953,6 +976,7 @@
                     toastr.error("只能选择两个进行交换！",{},'center');
                     domArray = [];
                     aRemarkArray = [];
+                    _selectedTubes = [];
                 }
                 hotRegisterer.getInstance('my-handsontable').render();
             };
@@ -982,6 +1006,7 @@
                             }
                         }
                         aRemarkArray = [];
+                        _selectedTubes = [];
                         hotRegisterer.getInstance('my-handsontable').render();
                     });
                 }else{
@@ -1114,35 +1139,8 @@
                 _sampleCount(tubeList);
 
             }
-            vm.createBoxDataFromTubesTable = _createBoxDataFromTubesTable;
-            function _createBoxDataFromTubesTable(){
-                if (!vm.box){
-                    return null;
-                }
-                var box = angular.copy(vm.box)||{};
-                delete box.frozenBoxType;
-                delete box.sampleClassification;
-                delete box.sampleType;
-                var tubes = hotRegisterer.getInstance('my-handsontable').getData();
-                box.frozenTubeDTOS = [];
 
-                for(var i=0; i<tubes.length; ++i){
-                    var rowTubes = tubes[i];
-                    for (var j=0; j<rowTubes.length; ++j){
-                        var tube = angular.copy(rowTubes[j]);
-                        delete tube.rowNO;
-                        delete tube.colNO;
 
-                        if (tube.id
-                            || (tube.sampleCode && tube.sampleCode.length > 1)
-                            || (tube.sampleTempCode && tube.sampleTempCode.length > 1)){
-                            box.frozenTubeDTOS.push(tube);
-                        }
-                    }
-                }
-
-                return box;
-            }
 
 
             //盒子类型 17:10*10 18:8*8
@@ -1384,123 +1382,7 @@
                     vm.box.rowsInShelf = "";
                 }
             };
-            vm.saveBox = saveBox;//保存盒子
-            function saveBox(callback){
-                if(vm.box.frozenBoxCode == vm.box.frozenBoxCode1D){
-                    modalInstance = $uibModal.open({
-                        animation: true,
-                        templateUrl: 'app/bizs/common/prompt-modal.html',
-                        size: 'sm',
-                        controller: 'PromptModalController',
-                        controllerAs: 'vm',
-                        backdrop:'static',
-                        resolve: {
-                            items: function () {
-                                return {
-                                    status:'7'
-                                };
-                            }
-                        }
-                    });
-                    modalInstance.result.then(function () {
-                        BioBankBlockUi.blockUiStart();
-                        var obox = {
-                            transhipId:vm.transportRecord.id,
-                            frozenBoxDTOList:[]
-                        };
 
-                        if(vm.box) {
-                            obox.frozenBoxDTOList = [];
-                            obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
-                        }
-                        if(obox.frozenBoxDTOList.length){
-                            TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
-                        }
-                    }, function () {
-
-                    });
-                }else{
-                    BioBankBlockUi.blockUiStart();
-                    var obox = {
-                        transhipId:vm.transportRecord.id,
-                        frozenBoxDTOList:[]
-                    };
-
-                    if(vm.box) {
-                        obox.frozenBoxDTOList = [];
-                        obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
-                    }
-                    if(obox.frozenBoxDTOList.length){
-                        TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
-                    }
-                }
-
-                function onSaveBoxSuccess(res) {
-                    if(!vm.saveStockInFlag && !vm.saveRecordFlag){
-                        toastr.success("保存盒子成功！");
-                        vm.dtInstance.rerender();
-                        if(vm.makeNewBoxCodeFlag){
-                            vm.rowBoxCode = vm.box.frozenBoxCode;
-                        }
-                        if(vm.rowBoxCode){
-                            frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
-                        }
-                        vm.queryTransportRecord();
-
-
-                    }
-                    BioBankBlockUi.blockUiStop();
-                    if (typeof callback === "function"){
-                        callback.call(this, res);
-                    }
-
-                }
-            }
-
-
-            vm.reImportFrozenBoxData = _fnReImportFrozenBoxData;//重新导入
-            //重新导入
-            function _fnReImportFrozenBoxData(){
-                modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'reImportDataModal.html',
-                    size: 'sm',
-                    controller: 'BoxInstanceCtrl',
-                    controllerAs: 'ctrl'
-                });
-                modalInstance.result.then(function (flag) {
-                    if(flag){
-                        frozenBoxByCodeService.get({code:vm.box.frozenBoxCode},vm.onFrozenSuccess,onError);
-                    }
-                }, function () {
-                });
-            }
-
-            vm.delBox = _fnDelBox;
-            //删除盒子
-            function _fnDelBox() {
-                modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'app/bizs/transport-record/modal/frozen-box-delete-modal.html',
-                    controller: 'FrozenBoxDeleteController',
-                    backdrop:'static',
-                    controllerAs: 'vm'
-
-                });
-                modalInstance.result.then(function (flag) {
-                    if (flag){
-                        FrozenBoxDelService.delete({code:vm.box.frozenBoxCode},onDelBoxSuccess,onError);
-                    }
-                    function onDelBoxSuccess() {
-                        toastr.success("删除成功!");
-                        vm.dtInstance.rerender();
-                        vm.box = null;
-                        vm.boxStr = null;
-                        initFrozenTube(10,10);
-                        hotRegisterer.getInstance('my-handsontable').render();
-                    }
-                });
-            }
             var isMixed;
             vm.onFrozenSuccess = onFrozenSuccess;
             function onFrozenSuccess(data) {
@@ -1549,49 +1431,183 @@
                 _sampleCount(vm.box.frozenTubeDTOS);
             }
         }
-        //查询转运记录
-        vm.queryTransportRecord = _fuQueryTransportRecord;
-        //区域
-        function onAreaSuccess(data) {
-            vm.frozenBoxAreaOptions = data;
-            vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
-        }
-        function onTransportRecordAreaSuccess(data) {
-            vm.transportRecordAreaOptions = data;
-            vm.transportRecordAreaOptions.push({id:"",areaCode:""});
-        }
-        function _fuQueryTransportRecord() {
-            TransportRecordService.get({id : vm.transportRecord.id},onRecordSuccess,onError);
-        }
-        function onRecordSuccess(data) {
-            BioBankBlockUi.blockUiStop();
-            //样本人份
-            vm.transportRecord.sampleNumber = data.sampleNumber;
-            //有效样本数
-            vm.transportRecord.effectiveSampleNumber = data.effectiveSampleNumber;
-            //盒数
-            vm.transportRecord.frozenBoxNumber = data.frozenBoxNumber;
-            //空管数
-            vm.transportRecord.emptyTubeNumber = data.emptyTubeNumber;
-            //空孔数
-            vm.transportRecord.emptyHoleNumber = data.emptyHoleNumber;
-        }
-        function onError(error) {
-            toastr.error(error.data.message);
-            BioBankBlockUi.blockUiStop();
-            vm.repeatSampleArray = JSON.parse(error.data.params[0]);
-            hotRegisterer.getInstance('my-handsontable').render();
-        }
-        //滿意程度
-        vm.rating = 0;
-        vm.ratings = [{
-            current: vm.transportRecord.sampleSatisfaction,
-            max: 10
-        }];
-        vm.getSelectedRating = function (rating) {
-            vm.transportRecord.sampleSatisfaction = rating;
-        };
+        function _createBoxDataFromTubesTable(){
+            if (!vm.box){
+                return null;
+            }
+            var box = angular.copy(vm.box)||{};
+            delete box.frozenBoxType;
+            delete box.sampleClassification;
+            delete box.sampleType;
+            var tubes = hotRegisterer.getInstance('my-handsontable').getData();
+            box.frozenTubeDTOS = [];
 
+            for(var i=0; i<tubes.length; ++i){
+                var rowTubes = tubes[i];
+                for (var j=0; j<rowTubes.length; ++j){
+                    var tube = angular.copy(rowTubes[j]);
+                    delete tube.rowNO;
+                    delete tube.colNO;
+
+                    if (tube.id
+                        || (tube.sampleCode && tube.sampleCode.length > 1)
+                        || (tube.sampleTempCode && tube.sampleTempCode.length > 1)){
+                        box.frozenTubeDTOS.push(tube);
+                    }
+                }
+            }
+
+            return box;
+        }
+        function saveBox(callback){
+            if(vm.box.frozenBoxCode == vm.box.frozenBoxCode1D){
+                modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/common/prompt-modal.html',
+                    size: 'sm',
+                    controller: 'PromptModalController',
+                    controllerAs: 'vm',
+                    backdrop:'static',
+                    resolve: {
+                        items: function () {
+                            return {
+                                status:'7'
+                            };
+                        }
+                    }
+                });
+                modalInstance.result.then(function () {
+                    BioBankBlockUi.blockUiStart();
+                    var obox = {
+                        transhipId:vm.transportRecord.id,
+                        frozenBoxDTOList:[]
+                    };
+
+                    if(vm.box) {
+                        obox.frozenBoxDTOList = [];
+                        obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
+                    }
+                    if(obox.frozenBoxDTOList.length){
+                        TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
+                    }
+                }, function () {
+
+                });
+            }else{
+                blockUI.start();
+                // BioBankBlockUi.blockUiStart();
+                var obox = {
+                    transhipId:vm.transportRecord.id,
+                    frozenBoxDTOList:[]
+                };
+
+                if(vm.box) {
+                    obox.frozenBoxDTOList = [];
+                    obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
+                }
+                if(obox.frozenBoxDTOList.length){
+                    TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
+                }
+            }
+
+            function onSaveBoxSuccess(res) {
+                if(!vm.saveStockInFlag && !vm.saveRecordFlag){
+                    toastr.success("保存盒子成功！");
+                    vm.dtInstance.rerender();
+                    if(vm.makeNewBoxCodeFlag){
+                        vm.rowBoxCode = vm.box.frozenBoxCode;
+                    }
+                    if(vm.rowBoxCode){
+                        frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
+                    }
+                    vm.queryTransportRecord();
+
+
+                }
+                BioBankBlockUi.blockUiStop();
+                if (typeof callback === "function"){
+                    callback.call(this, res);
+                }
+
+            }
+        }
+        //重新导入
+        function _fnReImportFrozenBoxData(){
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'reImportDataModal.html',
+                size: 'sm',
+                controller: 'BoxInstanceCtrl',
+                controllerAs: 'ctrl'
+            });
+            modalInstance.result.then(function (flag) {
+                if(flag){
+                    frozenBoxByCodeService.get({code:vm.box.frozenBoxCode},vm.onFrozenSuccess,onError);
+                }
+            }, function () {
+            });
+        }
+        //删除盒子
+        function _fnDelBox() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/transport-record/modal/frozen-box-delete-modal.html',
+                controller: 'FrozenBoxDeleteController',
+                backdrop:'static',
+                controllerAs: 'vm'
+
+            });
+            modalInstance.result.then(function (flag) {
+                if (flag){
+                    FrozenBoxDelService.delete({code:vm.box.frozenBoxCode},onDelBoxSuccess,onError);
+                }
+                function onDelBoxSuccess() {
+                    toastr.success("删除成功!");
+                    vm.dtInstance.rerender();
+                    vm.box = null;
+                    vm.boxStr = null;
+                    initFrozenTube(10,10);
+                    hotRegisterer.getInstance('my-handsontable').render();
+                }
+            });
+        }
+        vm.makeNewBoxCodeFlag = false;
+        //生成二维编码
+        function _fnMakeNewBoxCode() {
+            if(!vm.box.sampleTypeId || !vm.box.sampleClassificationId){
+                return;
+            }
+            StockInInputService.makeNewBoxCode(vm.transportRecord.projectId,vm.box.sampleTypeId,vm.box.sampleClassificationId).success(function (data) {
+                vm.box.frozenBoxCode = data.code;
+                vm.makeNewBoxCodeFlag = true;
+            }).error(function (data) {
+                toastr.error(data.message);
+            })
+        }
+        //单个编辑、批量编辑
+        function _editTube() {
+            if(!_selectedTubes.length){
+                toastr.error("请选择样本进行修改！");
+                return
+            }
+            var obj = {
+                projectId:vm.transportRecord.projectId,
+                projectName:vm.transportRecord.projectName,
+                projectCode:vm.transportRecord.projectCode,
+                isMixed:vm.box.isMixed,
+                sampleTypeId:vm.box.sampleTypeId,
+                sampleClassificationId:vm.box.sampleClassificationId
+            };
+            MasterMethod.editTubes(_selectedTubes,obj).then(function (data) {
+                var tableCtrl = hotRegisterer.getInstance('my-handsontable');
+                MasterMethod.updateTubesData(vm.frozenTubeArray,_selectedTubes,data,tableCtrl);
+                _selectedTubes = [];
+            });
+        }
+        //满意度
+        function _getSelectedRating(rating) {
+            vm.transportRecord.sampleSatisfaction = rating;
+        }
         //附件
         function _fnQueryTransportRecordFile() {
             TransportRecordService.queryTransportRecordFile(vm.transportRecord.transhipCode).success(function (data) {
@@ -1600,11 +1616,6 @@
                 toastr.error(data.message);
             })
         }
-        _fnQueryTransportRecordFile();
-
-        vm.uploadFile = _fnUploadFile;
-        //删除附件
-        vm.delUploadInfo = _fnDelUploadInfo;
         //上传
         function _fnUploadFile(status,imgData) {
             modalInstance = $uibModal.open({
@@ -1650,6 +1661,36 @@
             },function (data) {
                 _fnQueryTransportRecordFile();
             });
+        }
+
+
+        //区域
+        function onAreaSuccess(data) {
+            vm.frozenBoxAreaOptions = data;
+            vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
+        }
+        function onTransportRecordAreaSuccess(data) {
+            vm.transportRecordAreaOptions = data;
+            vm.transportRecordAreaOptions.push({id:"",areaCode:""});
+        }
+        function onRecordSuccess(data) {
+            BioBankBlockUi.blockUiStop();
+            //样本人份
+            vm.transportRecord.sampleNumber = data.sampleNumber;
+            //有效样本数
+            vm.transportRecord.effectiveSampleNumber = data.effectiveSampleNumber;
+            //盒数
+            vm.transportRecord.frozenBoxNumber = data.frozenBoxNumber;
+            //空管数
+            vm.transportRecord.emptyTubeNumber = data.emptyTubeNumber;
+            //空孔数
+            vm.transportRecord.emptyHoleNumber = data.emptyHoleNumber;
+        }
+        function onError(error) {
+            toastr.error(error.data.message);
+            BioBankBlockUi.blockUiStop();
+            vm.repeatSampleArray = JSON.parse(error.data.params[0]);
+            hotRegisterer.getInstance('my-handsontable').render();
         }
     }
     function BoxInstanceCtrl($uibModalInstance) {

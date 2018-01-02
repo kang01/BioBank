@@ -295,8 +295,9 @@
             };
             return service
         })
-        .factory('MasterMethod',['SampleTypeService','ProjectService','toastr','RequirementService',
-            function (SampleTypeService,ProjectService,toastr,RequirementService) {
+        .factory('MasterMethod',['$q','SampleTypeService','ProjectService','toastr','RequirementService','$uibModal',
+            function ($q,SampleTypeService,ProjectService,toastr,RequirementService,$uibModal) {
+            var _modalInstance;
             //RNA：大橘盒 DNA：96孔板
             function _getBoxTypeCode(sampleTypeCode){
                 var boxTypeCode = null;
@@ -352,6 +353,62 @@
                     return data;
                 });
             }
+            //编辑管子
+            function _editTubes(selectedTubes,obj) {
+                var defered = $q.defer();
+                if(selectedTubes.length == 1){
+                    obj.singleMultipleFlag = "single"
+                }
+                _modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/common/edit-sample-modal.html',
+                    controller: 'EditSampleModal',
+                    backdrop:'static',
+                    size:"lg",
+                    controllerAs: 'vm',
+                    resolve: {
+                        items: function () {
+                            return {
+                                selectedSample:selectedTubes,
+                                obj:obj
+                            };
+                        }
+                    }
+
+                });
+                _modalInstance.result.then(function (tube) {
+                     defered.resolve(tube);
+                },function (err) {
+                     defered.reject(err);
+                });
+                return defered.promise;
+            }
+            //更新冻存管数据
+            function _updateTubesData(tubeArray,selectedData,data,tableCtrl) {
+                // var tableCtrl = hotRegisterer.getInstance('my-handsontable');
+                _.each(tubeArray,function (tubes) {
+                    _.each(tubes,function (tube1) {
+                        _.each(selectedData,function (tube2) {
+                            if((tube1.sampleCode && tube1.sampleCode == tube2.sampleCode) || (tube1.sampleTempCode && tube1.sampleTempCode == tube2.sampleTempCode)){
+                                if(data.status){
+                                    tube1.status = data.status;
+                                }
+                                if(selectedData.length == 1){
+                                    tube1.sampleCode = data.sampleCode;
+                                    tube1.sampleTempCode = data.sampleTempCode;
+                                }
+                                tube1.sampleVolumns = data.sampleVolumns;
+                                tube1.sampleTypeId = data.sampleTypeId;
+                                tube1.sampleClassificationId = data.sampleClassificationId;
+                                tube1.memo = data.memo;
+                            }
+                        })
+                    });
+
+                });
+
+                tableCtrl.loadData(tubeArray);
+            }
             function onError(res) {
                 toastr.error(res.data.message);
             }
@@ -361,7 +418,9 @@
                 querySampleClass:_querySampleClass,
                 queryProject:_queryProject,
                 queryCheckType:_queryCheckType,
-                queryDelegates:_queryDelegates
+                queryDelegates:_queryDelegates,
+                editTubes:_editTubes,
+                updateTubesData:_updateTubesData
             };
             return service
         }]);

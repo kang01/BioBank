@@ -819,6 +819,8 @@
 
             //================输出接口==================//
             // 给Table加载数据
+            //================输出接口==================//
+            // 给Table加载数据
             function _loadData(box, tubes){
                 $scope.dataBox = box;
                 $scope.dataTubes = tubes;
@@ -1063,12 +1065,12 @@
 
             // 修改样本的备注信息
             function _setMemoOfSelectedTubes(memo){
-                var tubes = _getSelectedData();
+                var tubes = vm.api.selectedTubes;
                 var gridData = _.flattenDeep(_getGridData());
 
                 _.each(gridData,function (tube1) {
                     _.each(tubes,function (tube2) {
-                        if(tube1.sampleCode == tube2.data.sampleCode){
+                        if((tube1.sampleCode && tube1.sampleCode == tube2.sampleCode) || tube1.sampleTempCode == tube2.sampleTempCode){
                             tube1.memo = memo;
                         }
                     })
@@ -1164,7 +1166,6 @@
             }
             function _editTube(obj) {
                 var selectedData = vm.api.selectedTubes;
-
                 if(!selectedData.length){
                     toastr.error("请选择样本进行修改！");
                     return;

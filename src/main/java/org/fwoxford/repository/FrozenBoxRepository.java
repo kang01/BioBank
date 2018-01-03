@@ -48,7 +48,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     @Query(value = "select f.* from frozen_box f where f.equipment_code = ?1 and f.area_code =?2" +
         " and f.support_rack_code = ?3" +
-        " and f.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_BOX_SPLITED+"','"+Constants.FROZEN_BOX_INVALID+"','"+Constants.FROZEN_BOX_STOCK_OUT_COMPLETED+"','"+Constants.FROZEN_BOX_STOCK_OUT_HANDOVER+"')" ,nativeQuery = true)
+        " and f.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_BOX_SPLITED+"','"+Constants.FROZEN_BOX_INVALID+"','"+Constants.FROZEN_BOX_STOCK_OUT_COMPLETED+"','"+Constants.FROZEN_BOX_STOCK_OUT_HANDOVER+"','"+Constants.FROZEN_BOX_DESTROY+"')" ,nativeQuery = true)
     List<FrozenBox> findByEquipmentCodeAndAreaCodeAndSupportRackCode(String equipmentCode, String areaCode, String shelfCode);
 
     @Query(value = "select count(f.id) from frozen_box f where f.equipment_code = ?1 and f.area_code =?2" +

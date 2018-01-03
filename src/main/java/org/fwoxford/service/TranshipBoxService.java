@@ -1,6 +1,5 @@
 package org.fwoxford.service;
 
-import org.fwoxford.domain.TranshipBox;
 import org.fwoxford.service.dto.FrozenBoxCodeForTranshipDTO;
 import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.service.dto.TranshipBoxListDTO;
@@ -117,4 +116,13 @@ public interface TranshipBoxService {
      * @return
      */
     FrozenBoxAndFrozenTubeResponse findTranshipBoxAndSampleByTranshipCodeAndFrozenBoxCode(String transhipCode, String frozenBoxCode);
+
+    /**
+     * 根据冻存盒编码查询冻存盒信息（可以新增，可以是已交接）---新增归还冻存盒的查询
+     *
+     * @param projectCode
+     * @param frozenBoxCode
+     * @return
+     */
+    TranshipBoxDTO findForzenBoxForReturnBack(String projectCode, String frozenBoxCode);
 }

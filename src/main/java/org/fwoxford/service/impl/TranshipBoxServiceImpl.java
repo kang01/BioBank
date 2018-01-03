@@ -1,6 +1,5 @@
 package org.fwoxford.service.impl;
 
-import com.google.common.collect.Lists;
 import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
@@ -1414,6 +1413,35 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         res = transhipBoxMapper.transhipBoxToResponse(transhipBox);
         res.setFrozenTubeDTOS(frozenTubeDTOS);
         return res;
+    }
+
+    /**
+     * 根据冻存盒编码查询冻存盒信息（可以新增，可以是已交接）---新增归还冻存盒的查询
+     *
+     * @param projectCode
+     * @param frozenBoxCode
+     * @return
+     */
+    @Override
+    public TranshipBoxDTO findForzenBoxForReturnBack(String projectCode, String frozenBoxCode) {
+        TranshipBoxDTO transhipBoxDTO = new TranshipBoxDTO();
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByFrozenBoxCodeIn(new ArrayList<String>(){{add(frozenBoxCode);}});
+        if(frozenBoxList == null || frozenBoxList.size() == 0){
+            transhipBoxDTO.setFrozenBoxCode(frozenBoxCode);
+            return transhipBoxDTO;
+        }
+        FrozenBox frozenBox = frozenBoxList.get(0);
+        if(!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
+            throw new BankServiceException("冻存盒"+frozenBoxCode+"未交接，请勿提交重复冻存盒编码！");
+        }
+        if(!frozenBox.getProjectCode().equals(projectCode)){
+            throw new BankServiceException("冻存盒"+frozenBoxCode+"不属于"+projectCode+"项目！");
+        }
+        transhipBoxDTO = transhipBoxMapper.forzenBoxAndTubeToTranshipBoxDTO(frozenBox);
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findByFrozenBoxCodeAndFrozenTubeState(frozenBoxCode,Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
+        List<TranshipTubeDTO> transhipTubeDTOS = transhipTubeMapper.frozenTubesToTranshipTubeDTOs(frozenTubeList);
+        transhipBoxDTO.setTranshipTubeDTOS(transhipTubeDTOS);
+        return transhipBoxDTO;
     }
 
 }

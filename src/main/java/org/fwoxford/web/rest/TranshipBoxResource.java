@@ -362,4 +362,17 @@ public class TranshipBoxResource {
         FrozenBoxAndFrozenTubeResponse res = transhipBoxService.findTranshipBoxAndSampleByTranshipCodeAndFrozenBoxCode(returnBackCode,frozenBoxCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
+
+    /**
+     * 根据冻存盒编码查询冻存盒信息（可以新增，可以是已交接）---新增归还冻存盒的查询
+     * @param frozenBoxCode
+     * @return
+     */
+    @GetMapping("/return-boxes/project/{projectCode}/frozenBox/{frozenBoxCode}/forAdd")
+    @Timed
+    public ResponseEntity<TranshipBoxDTO> getForzenBoxForReturnBack( @PathVariable String projectCode,@PathVariable String frozenBoxCode) {
+        log.debug("REST request tog etForzenBoxForReturnBack : {}", frozenBoxCode);
+        TranshipBoxDTO res = transhipBoxService.findForzenBoxForReturnBack(projectCode,frozenBoxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
 }

@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import com.google.common.collect.Lists;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
@@ -97,36 +98,50 @@ public class FrozenTubeCheckService {
 
         //在库存中验证是否重复
         List<String> sampleCodeStr = transhipTubeDTOS.stream().map(s->s.getSampleCode()).collect(Collectors.toList());
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndProjectCode(sampleCodeStr,tranship.getProjectCode());
-        for(TranshipTubeDTO tubeDTO :transhipTubeDTOS){
-            for(FrozenTube tube : frozenTubeList){
-                if(tubeDTO.getSampleCode().equals(tube.getSampleCode())&& tubeDTO.getSampleTypeCode().equals(tube.getSampleTypeCode())){
-                    if((tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId() != null && tubeDTO.getFrozenTubeId() == tube.getId()))){
-                        if(!tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
-                            if(!repeatSampleList.contains(tubeDTO)){
-                                repeatSampleList.add(tubeDTO);
+
+        //根据样本编码查询出库样本信息
+        //因为不同类型的样本可能重复，所以在这里根据样本类型进行分组
+        Map<Long,List<TranshipTubeDTO>> stockOutTubeGroupByType = transhipTubeDTOS.stream().collect(Collectors.groupingBy(s->s.getSampleTypeId()));
+        for(Long sampleTypeId  : stockOutTubeGroupByType.keySet()){
+            //某一类型的所有样本，在上面的代码中已做过样本类型的验证
+            List<TranshipTubeDTO> frozenTubeListForStockOutSampleOrNewSample = stockOutTubeGroupByType.get(sampleTypeId);
+            List<String> sampleCodeForStockOutOrNewSample = frozenTubeListForStockOutSampleOrNewSample.stream().map(s->s.getSampleCode()).collect(Collectors.toList());
+            //每500个样本去取一次出库样本
+            List< List<String> > sampleCodeForStockOutOrNewSampleEach500 = Lists.partition(sampleCodeForStockOutOrNewSample,500);
+            for(List<String> sampleCodeStrEach500 :sampleCodeForStockOutOrNewSampleEach500){
+                //直接查询样本表，判断样本的状态是否为已交接
+                List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCodeStrEach500,tranship.getProjectCode(),sampleTypeId,Constants.INVALID);
+                for(TranshipTubeDTO tubeDTO :transhipTubeDTOS){
+                    for(FrozenTube tube : frozenTubeList){
+                        if(tubeDTO.getSampleCode().equals(tube.getSampleCode())&& tubeDTO.getSampleTypeCode().equals(tube.getSampleTypeCode())){
+                            if((tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId() != null && tubeDTO.getFrozenTubeId() == tube.getId()))){
+                                if(!tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
+                                    if(!repeatSampleList.contains(tubeDTO)){
+                                        repeatSampleList.add(tubeDTO);
+                                    }
+                                }
                             }
                         }
                     }
                 }
-            }
-        }
-        throwExceptionByTranshipTubeDTO(repeatSampleList);
-        //在转运中验证是否有归还中的
-        List<TranshipTube> transhipTubes = transhipTubeRepository.findBySampleCodeInAndFrozenTubeStateInAndStatusNot(sampleCodeStr
-                ,new ArrayList<String>(){{add(Constants.FROZEN_BOX_RETURN_BACK);}},Constants.INVALID);
-        for(TranshipTubeDTO tubeDTO :transhipTubeDTOS){
-            for(TranshipTube tube : transhipTubes){
-                if(tubeDTO.getSampleCode().equals(tube.getSampleCode())&& tubeDTO.getSampleTypeCode().equals(tube.getSampleTypeCode())){
-                    if (tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId()!=null && tubeDTO.getFrozenTubeId()== tube.getFrozenTube().getId())){
-                        if(!repeatSampleList.contains(tubeDTO)){
-                            repeatSampleList.add(tubeDTO);
+
+                throwExceptionByTranshipTubeDTO(repeatSampleList);
+                //在转运中验证是否有归还中的
+                List<TranshipTube> transhipTubes = transhipTubeRepository.findBySampleCodeInAndFrozenTubeStateInAndStatusNot(sampleCodeStr,new ArrayList<String>(){{add(Constants.FROZEN_BOX_RETURN_BACK);}},Constants.INVALID);
+                for(TranshipTubeDTO tubeDTO :transhipTubeDTOS){
+                    for(TranshipTube tube : transhipTubes){
+                        if(tubeDTO.getSampleCode().equals(tube.getSampleCode())&& tubeDTO.getSampleTypeCode().equals(tube.getSampleTypeCode())){
+                            if (tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId()!=null && tubeDTO.getFrozenTubeId()== tube.getFrozenTube().getId())){
+                                if(!repeatSampleList.contains(tubeDTO)){
+                                    repeatSampleList.add(tubeDTO);
+                                }
+                            }
                         }
                     }
                 }
+                throwExceptionByTranshipTubeDTO(repeatSampleList);
             }
         }
-        throwExceptionByTranshipTubeDTO(repeatSampleList);
     }
 
     public void throwExceptionByTranshipTubeDTO(List<TranshipTubeDTO> repeatSampleList) {

@@ -112,6 +112,8 @@ public class FrozenBoxCheckService {
                 new ArrayList<String>(){{add(Constants.FROZEN_BOX_NEW);
                     add(Constants.FROZEN_BOX_STOCKED);
                     add(Constants.FROZEN_BOX_STOCKING);
+                    add(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
+                    add(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
                     add(Constants.FROZEN_BOX_TRANSHIP_COMPLETE);
                     add(Constants.FROZEN_BOX_PUT_SHELVES);}});
         for(FrozenBox frozenBox :frozenBoxList){
@@ -127,7 +129,7 @@ public class FrozenBoxCheckService {
         if(repeatCode.size()>0){
             throw new BankServiceException("请勿提交重复的冻存盒编码！",String.join(",",repeatCode));
         }
-        List<TranshipBoxDTO> stockOutFrozenBoxAndSampleList = null;
+        List<TranshipBoxDTO> stockOutFrozenBoxAndSampleList = transhipBoxService.getStockOutFrozenBoxAndSample(tranship.getProjectCode(),boxCodeStr);
         for(TranshipBoxDTO stockOutFrozenBox :stockOutFrozenBoxAndSampleList){
             if(stockOutFrozenBox.getIsRealData().equals(Constants.NO)){
                 String boxCode = StringUtils.isEmpty(stockOutFrozenBox.getFrozenBoxCode())?stockOutFrozenBox.getFrozenBoxCode1D():stockOutFrozenBox.getFrozenBoxCode();

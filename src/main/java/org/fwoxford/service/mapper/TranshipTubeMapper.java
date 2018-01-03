@@ -151,6 +151,10 @@ public interface TranshipTubeMapper {
         transhipTubeDTO.setIsMixed(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getIsMixed():null);
         transhipTubeDTO.setFrontColor(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getFrontColor():null);
         transhipTubeDTO.setBackColor(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getBackColor():null);
+        transhipTubeDTO.setTag1(frozenTube.getTag1());
+        transhipTubeDTO.setTag2(frozenTube.getTag2());
+        transhipTubeDTO.setTag3(frozenTube.getTag3());
+        transhipTubeDTO.setTag4(frozenTube.getTag4());
         return transhipTubeDTO;
     }
 
@@ -191,6 +195,10 @@ public interface TranshipTubeMapper {
         frozenTube.setFrozenBoxCode( stockOutTube.getFrozenBoxCode() );
         frozenTube.setSampleClassificationCode(stockOutTube.getSampleClassificationCode());
         frozenTube.setSampleClassificationName(stockOutTube.getSampleClassificationName());
+        frozenTube.setTag1(stockOutTube.getTag1());
+        frozenTube.setTag2(stockOutTube.getTag2());
+        frozenTube.setTag3(stockOutTube.getTag3());
+        frozenTube.setTag4(stockOutTube.getTag4());
         return frozenTube;
     }
 

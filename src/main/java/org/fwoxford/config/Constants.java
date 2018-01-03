@@ -59,13 +59,14 @@ public final class Constants {
     public static final String FROZEN_BOX_DESTROY = "2012";
     public static final String FROZEN_BOX_RETURN_BACK = "2013" ;
     /**
-     * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常; 3005:销毁
+     * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常; 3005:销毁；3006:不确定
      */
     public static final  String FROZEN_TUBE_NORMAL = "3001" ;
     public static final  String FROZEN_TUBE_EMPTY = "3002" ;
     public static final  String FROZEN_TUBE_HOLE_EMPTY = "3003" ;
     public static final  String FROZEN_TUBE_ABNORMAL = "3004" ;
     public static final  String FROZEN_TUBE_DESTROY = "3005" ;
+    public static final  String FROZEN_TUBE_NOT_SURE = "3006" ;
     /**
      * 是：1，否：0
      */
@@ -319,8 +320,8 @@ public final class Constants {
      */
     public static final String HTTPURL = "http://10.24.10.16:8912/scm/tubes";
 
-    public static final String HTTPURL_LIMS = "http://10.24.209.11:8603/api/sample-flowing-lims/frozenBoxCode/";
-//    public static final String HTTPURL_LIMS = "http://localhost:8603/api/sample-flowing-lims/frozenBoxCode/";
+//    public static final String HTTPURL_LIMS = "http://10.24.209.11:8603/api/sample-flowing-lims/frozenBoxCode/";
+    public static final String HTTPURL_LIMS = "http://localhost:8603/api/sample-flowing-lims/frozenBoxCode/";
 //    http://10.24.10.16:8912/scm/tubes?projectId=007&boxCode=110130048
 //    高危一期projectId=001
 //    高危二期projectId=006

@@ -47,4 +47,7 @@ public interface StockInTubeRepository extends JpaRepository<StockInTube,Long> {
     @Modifying
     @Query("update StockInTube b set b.status='"+Constants.INVALID+"' where b.stockInBox.id = ?1 and id not in ?2")
     void updateStatusByStockInBoxIdAndIdNotIn(Long id, List<Long> tubeIds);
+
+    @Query("select count(t.id) from StockInTube t where t.stockInBox.id = ?1 and  t.status!='"+Constants.INVALID+"'")
+    Long countByStockInBoxId(Long id);
 }

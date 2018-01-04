@@ -1066,6 +1066,8 @@
                 //异常
                 sampleCount.abnormalCount =  _.filter(tubes,{'status':'3004'}).length;
 
+                sampleCount.suspiciousCount =  _.filter(tubes,{'status':'3006'}).length;
+
                 return sampleCount;
             }
             // 获取表格的配置信息

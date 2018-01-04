@@ -77,6 +77,8 @@
             vm.emptyHoleCount =  _.filter(tubeList,{'status':'3003'}).length;
             //异常
             vm.abnormalCount =  _.filter(tubeList,{'status':'3004'}).length;
+            //可疑
+            vm.suspiciousCount =  _.filter(tubeList,{'status':'3006'}).length;
 
             // vm.transportRecord.emptyTubeNumber = vm.emptyPipeCount;
             // vm.transportRecord.emptyHoleNumber = vm.emptyHoleCount;

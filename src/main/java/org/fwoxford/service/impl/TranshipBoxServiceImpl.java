@@ -229,19 +229,11 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             if (transhipBox == null){
                 transhipBox = new TranshipBox();
             }
-            transhipBox.equipmentCode(box.getEquipmentCode()).areaCode(box.getAreaCode()).supportRackCode(box.getSupportRackCode())
-                .columnsInShelf(box.getColumnsInShelf()).rowsInShelf(box.getRowsInShelf()).status(box.getStatus()).memo(box.getMemo())
-                .frozenBoxCode(box.getFrozenBoxCode()).frozenBoxCode1D(box.getFrozenBoxCode1D()).frozenBox(box).tranship(tranship)
-                .countOfSample(countOfSample).equipment( box.getEquipment() ).area( box.getArea()).supportRack( box.getSupportRack() )
-                .sampleTypeCode(box.getSampleTypeCode()).sampleType(box.getSampleType()).sampleTypeName(box.getSampleTypeName())
-                .sampleClassification(box.getSampleClassification())
-                .sampleClassificationCode(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationCode():null)
-                .sampleClassificationName(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationName():null)
-                .dislocationNumber(box.getDislocationNumber()).emptyHoleNumber(box.getEmptyHoleNumber()).emptyTubeNumber(box.getEmptyTubeNumber())
-                .frozenBoxType(box.getFrozenBoxType()).frozenBoxTypeCode(box.getFrozenBoxTypeCode()).frozenBoxTypeColumns(box.getFrozenBoxTypeColumns())
-                .frozenBoxTypeRows(box.getFrozenBoxTypeRows()).isRealData(box.getIsRealData()).isSplit(box.getIsSplit()).project(box.getProject())
-                .projectCode(box.getProjectCode()).projectName(box.getProjectName()).projectSite(box.getProjectSite()).projectSiteCode(box.getProjectSiteCode())
-                .projectSiteName(box.getProjectSiteName());
+            TranshipBoxDTO transhipBoxDTO = transhipBoxMapper.forzenBoxAndTubeToTranshipBoxDTO(box);
+            transhipBoxDTO.setId(transhipBox.getId());
+            transhipBoxDTO.setCountOfSample(countOfSample);
+            transhipBoxDTO.setTranshipId(transhipId);
+            transhipBox = transhipBoxMapper.transhipBoxDTOToTranshipBox(transhipBoxDTO);
             transhipBoxRepository.save(transhipBox);
             //转运盒位置
             TranshipBoxPosition transhipBoxPosition = transhipBoxPositionService.saveTranshipBoxPosition(transhipBox);

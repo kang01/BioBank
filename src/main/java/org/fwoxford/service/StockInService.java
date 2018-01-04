@@ -89,13 +89,6 @@ public interface StockInService {
     StockInDTO updateStockIns(StockInDTO stockInDTO);
 
     /**
-     * @param frozenBox
-     * @param stockIn
-     * @return
-     */
-    StockInBox createStockInBox(FrozenBox frozenBox, StockIn stockIn);
-
-    /**
      * 多个转运批量入库
      * @param transhipCode
      * @return

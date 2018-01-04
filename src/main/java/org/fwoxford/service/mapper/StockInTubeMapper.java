@@ -213,6 +213,10 @@ public interface StockInTubeMapper {
         stockInTubeDTO.setBackColor(stockInTube.getSampleType()!=null?stockInTube.getSampleType().getBackColor():null);
         stockInTubeDTO.setBackColorForClass(stockInTube.getSampleClassification()!=null?stockInTube.getSampleClassification().getBackColor():null);
         stockInTubeDTO.setIsMixed(stockInTube.getSampleType()!=null?stockInTube.getSampleType().getIsMixed():null);
+        stockInTubeDTO.setTag1(stockInTube.getTag1());
+        stockInTubeDTO.setTag2(stockInTube.getTag2());
+        stockInTubeDTO.setTag3(stockInTube.getTag3());
+        stockInTubeDTO.setTag4(stockInTube.getTag4());
         return stockInTubeDTO;
     }
     //根据入库管构造盒内入库冻存管
@@ -285,6 +289,10 @@ public interface StockInTubeMapper {
             .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
             .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
             .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
+        stockInTube.setTag1(tube.getTag1());
+        stockInTube.setTag2(tube.getTag2());
+        stockInTube.setTag3(tube.getTag3());
+        stockInTube.setTag4(tube.getTag4());
         return stockInTube;
     }
 }

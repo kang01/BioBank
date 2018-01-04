@@ -144,7 +144,7 @@ public interface StockInBoxMapper {
             .projectCode(stockIn.getProjectCode()).projectName(stockIn.getProject()!=null?stockIn.getProject().getProjectName():null)
             .projectSite(stockIn.getProjectSite()).projectSiteCode(stockIn.getProjectSiteCode())
             .projectSiteName(stockIn.getProjectSite()!=null?stockIn.getProjectSite().getProjectSiteName():null).frozenBox(frozenBox).status(frozenBox.getStatus()).memo(frozenBox.getMemo())
-            .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).stockInCode(stockIn.getStockInCode()).stockIn(stockIn);
+            .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).stockInCode(stockIn.getStockInCode()).stockIn(stockIn).countOfSample(frozenBox.getCountOfSample());
         return stockInBox;
     }
 

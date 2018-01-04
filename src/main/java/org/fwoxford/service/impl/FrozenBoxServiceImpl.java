@@ -587,7 +587,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         List<FrozenBox> wrongFrozenBoxList = new ArrayList<FrozenBox>();
         //取本次入库的所有冻存盒
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCodeAndStatus(stockInCode, Constants.FROZEN_BOX_STOCKING);
-        SampleType wrongSample = sampleTypeRepository.findBySampleTypeCode("97");
+//        SampleType wrongSample = sampleTypeRepository.findBySampleTypeCode("97");
         Map<Long, List<FrozenBox>> map = new HashMap<Long, List<FrozenBox>>();
         for (StockInBox inBox : stockInBoxes) {
             FrozenBox boxIn = inBox.getFrozenBox();

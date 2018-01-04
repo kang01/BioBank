@@ -1784,80 +1784,10 @@
 
             //保存完更新入库盒子列表
             function _updateBoxList(data){
-                //新增盒子到列表
-                function _fnNewStockInListOfBox() {
-
-                    _.forEach(saveBoxList,function (tube) {
-                        var len = _.filter(vm.stockInBox,{frozenBoxCode:tube.frozenBoxCode}).length;
-                        if(!len){
-                            var tube1 = {
-                                id:null,
-                                countOfSample:tube.addTubeCount,
-                                status:"2002",
-                                frozenBoxCode:tube.frozenBoxCode,
-                                frozenBoxCode1D:tube.frozenBoxCode1D,
-                                position:null,
-                                isSplit:0,
-                                projectSiteCode:null,
-                                orderNO:null,
-                                transhipCode:null,
-                                sampleClassificationCode:tube.sampleClassificationCode,
-                                sampleClassificationName:tube.sampleClassificationName,
-                                sampleTypeCode:tube.sampleTypeCode,
-                                sampleTypeName:tube.sampleTypeName
-                            };
-
-                            newBoxArray.push(tube1);
-                        }
-                    });
-                }
-                // 更改分装到冻存盒中的样本数
-                function _fnUpdateSampleCount() {
-                    for(var i = 0; i < saveBoxList.length;i++){
-                        for(var j = 0; j < vm.stockInBox.length; j++){
-                            if(saveBoxList[i].frozenBoxCode == vm.stockInBox[j].frozenBoxCode){
-                                var len = 0;
-                                var stockInFrozenTube = saveBoxList[i].stockInFrozenTubeList;
-                                // len = stockInFrozenTube.length -  (_.filter(stockInFrozenTube,{id:""}).length);
-                                len = _.filter(stockInFrozenTube,{flag:"2"}).length;
-
-                                vm.stockInBox[j].countOfSample += len;
-                            }
-                        }
-                    }
-                }
-                //更改被分装的盒子的样本数
-                function _fnSplitBoxSampleCount() {
-                    var tubes = _.flattenDeep(angular.copy(vm.frozenTubeArray));
-                    var notEmptyTubes = [];
-                    var notEmptyTubeLength;
-                    for(var k = 0; k < tubes.length; k++){
-                        if(tubes[k].sampleCode || tubes[k].sampleTempCode){
-                            notEmptyTubes.push(tubes[k]);
-                        }
-                    }
-                    notEmptyTubeLength = notEmptyTubes.length;
-
-                    _.forEach(vm.stockInBox,function (tube) {
-                        if(tube.frozenBoxCode == notEmptyTubes[0].frozenBoxCode){
-                            tube.countOfSample = notEmptyTubeLength;
-                        }
-                    });
-                }
-                // 更新新增盒子的入库盒子ID
-                function _fnUpdateBoxListId(data) {
-                    for(var m = 0; m < vm.stockInBox.length; m++){
-                        for(var n = 0; n < data.length; n++){
-                            if(vm.stockInBox[m].frozenBoxCode == data[n].frozenBoxCode){
-                                vm.stockInBox[m].id = data[n].id;
-                            }
-                        }
-                    }
-                }
 
                 //新增盒子到列表
                 var newBoxArray = [];
-                _fnNewStockInListOfBox();
+                newBoxArray = _fnNewStockInListOfBox();
 
                 //更改分装到冻存盒中的样本数
                 _fnUpdateSampleCount();
@@ -1875,7 +1805,78 @@
 
                 vm.dtOptions.withOption('data',vm.stockInBox);
             }
-            // _updateBoxList();
+
+            //新增盒子到列表
+            function _fnNewStockInListOfBox() {
+                var newBoxArray = [];
+                _.forEach(saveBoxList,function (tube) {
+                    var len = _.filter(vm.stockInBox,{frozenBoxCode:tube.frozenBoxCode}).length;
+                    if(!len){
+                        var tube1 = {
+                            id:null,
+                            countOfSample:tube.addTubeCount,
+                            status:"2002",
+                            frozenBoxCode:tube.frozenBoxCode,
+                            frozenBoxCode1D:tube.frozenBoxCode1D,
+                            position:null,
+                            isSplit:0,
+                            projectSiteCode:null,
+                            orderNO:null,
+                            transhipCode:null,
+                            sampleClassificationCode:tube.sampleClassificationCode,
+                            sampleClassificationName:tube.sampleClassificationName,
+                            sampleTypeCode:tube.sampleTypeCode,
+                            sampleTypeName:tube.sampleTypeName
+                        };
+
+                        newBoxArray.push(tube1);
+                    }
+                });
+                return newBoxArray
+            }
+            // 更改分装到冻存盒中的样本数
+            function _fnUpdateSampleCount() {
+                for(var i = 0; i < saveBoxList.length;i++){
+                    for(var j = 0; j < vm.stockInBox.length; j++){
+                        if(saveBoxList[i].frozenBoxCode == vm.stockInBox[j].frozenBoxCode){
+                            var len = 0;
+                            var stockInFrozenTube = saveBoxList[i].stockInFrozenTubeList;
+                            // len = stockInFrozenTube.length -  (_.filter(stockInFrozenTube,{id:""}).length);
+                            len = _.filter(stockInFrozenTube,{flag:"3"}).length;
+
+                            vm.stockInBox[j].countOfSample += len;
+                        }
+                    }
+                }
+            }
+            //更改被分装的盒子的样本数
+            function _fnSplitBoxSampleCount() {
+                var tubes = _.flattenDeep(angular.copy(vm.frozenTubeArray));
+                var notEmptyTubes = [];
+                var notEmptyTubeLength;
+                for(var k = 0; k < tubes.length; k++){
+                    if(tubes[k].sampleCode || tubes[k].sampleTempCode){
+                        notEmptyTubes.push(tubes[k]);
+                    }
+                }
+                notEmptyTubeLength = notEmptyTubes.length;
+
+                _.forEach(vm.stockInBox,function (tube) {
+                    if(tube.frozenBoxCode == notEmptyTubes[0].frozenBoxCode){
+                        tube.countOfSample = notEmptyTubeLength;
+                    }
+                });
+            }
+            // 更新新增盒子的入库盒子ID
+            function _fnUpdateBoxListId(data) {
+                for(var m = 0; m < vm.stockInBox.length; m++){
+                    for(var n = 0; n < data.length; n++){
+                        if(vm.stockInBox[m].frozenBoxCode == data[n].frozenBoxCode){
+                            vm.stockInBox[m].id = data[n].id;
+                        }
+                    }
+                }
+            }
             vm.box.frozenTubeDTOS = _.flattenDeep(angular.copy(vm.frozenTubeArray));
 
             BioBankBlockUi.blockUiStart();

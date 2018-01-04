@@ -242,4 +242,34 @@ public interface FrozenTubeMapper {
         }
         return frozenTubeDTOS;
     }
+
+    default FrozenTube stockInTubeToFrozenTube(StockInTube stockInTube ){
+        if(stockInTube == null){
+            return new FrozenTube();
+        }
+        FrozenTube frozenTube = stockInTube.getFrozenTube();
+        if(frozenTube == null){
+            frozenTube = new FrozenTube();
+        }
+        frozenTube.projectCode(stockInTube.getProjectCode()).projectSiteCode(stockInTube.getProjectSiteCode())
+            .sampleCode(stockInTube.getSampleCode())
+            .frozenTubeTypeCode(stockInTube.getFrozenTubeTypeCode())
+            .frozenTubeTypeName(stockInTube.getFrozenTubeTypeName())
+            .sampleTypeCode(stockInTube.getSampleTypeCode())
+            .sampleTypeName(stockInTube.getSampleTypeName())
+            .sampleUsedTimesMost(stockInTube.getSampleUsedTimesMost())
+            .sampleUsedTimes(0)
+            .frozenTubeVolumns(stockInTube.getFrozenTubeVolumns())
+            .frozenTubeVolumnsUnit(stockInTube.getFrozenTubeVolumnsUnit())
+            .tubeRows(stockInTube.getTubeRows())
+            .tubeColumns(stockInTube.getTubeColumns())
+            .status(stockInTube.getStatus()).memo(stockInTube.getMemo())
+            .frozenBoxCode(stockInTube.getFrozenBoxCode()).frozenTubeType(stockInTube.getFrozenTubeType())
+            .sampleType(stockInTube.getSampleType())
+            .sampleClassification(stockInTube.getSampleClassification())
+            .project(stockInTube.getProject())
+            .projectSite(stockInTube.getProjectSite()).frozenBox(stockInTube.getStockInBox().getFrozenBox())
+            .frozenTubeState(Constants.FROZEN_BOX_STOCKED);
+        return frozenTube;
+    }
 }

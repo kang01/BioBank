@@ -1070,7 +1070,7 @@
 
                 _.each(gridData,function (tube1) {
                     _.each(tubes,function (tube2) {
-                        if((tube1.sampleCode && tube1.sampleCode == tube2.sampleCode) || tube1.sampleTempCode == tube2.sampleTempCode){
+                        if((tube1.sampleCode && tube1.sampleCode == tube2.sampleCode) || (tube1.sampleTempCode && tube1.sampleTempCode == tube2.sampleTempCode)){
                             tube1.memo = memo;
                         }
                     })

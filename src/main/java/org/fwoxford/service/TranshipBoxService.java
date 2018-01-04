@@ -87,7 +87,7 @@ public interface TranshipBoxService {
      * @param frozenBoxCodeStr
      * @return
      */
-    List<TranshipBoxDTO> getStockOutFrozenBoxAndSample(String projectCode, String frozenBoxCodeStr);
+    List<TranshipBoxDTO> getStockOutFrozenBoxAndSample(String projectCode, String frozenBoxCodeStr,String boxType);
 
     /**
      * 归还冻存盒的保存
@@ -118,11 +118,28 @@ public interface TranshipBoxService {
     FrozenBoxAndFrozenTubeResponse findTranshipBoxAndSampleByTranshipCodeAndFrozenBoxCode(String transhipCode, String frozenBoxCode);
 
     /**
-     * 根据冻存盒编码查询冻存盒信息（可以新增，可以是已交接）---新增归还冻存盒的查询
+     * 根据冻存盒编码查询冻存盒信息（只能是新增）---新增归还冻存盒的查询
      *
      * @param projectCode
      * @param frozenBoxCode
      * @return
      */
     TranshipBoxDTO findForzenBoxForReturnBack(String projectCode, String frozenBoxCode);
+
+    /**
+     * 保存归还冻存盒---保存原始交接过和新增的冻存盒
+     * @param id
+     * @param transhipBoxDTOS
+     * @return
+     */
+
+    List<TranshipBoxDTO> saveBatchOriginalBoxesForReturnBack(Long id, List<TranshipBoxDTO> transhipBoxDTOS);
+
+    /**
+     * 仅取DNA类型的冻存盒和样本数据
+     * @param projectCode
+     * @param boxCodeStr
+     * @return
+     */
+    List<TranshipBoxDTO> findStockOutFrozenBoxAndSampleForDNA(String projectCode, String boxCodeStr);
 }

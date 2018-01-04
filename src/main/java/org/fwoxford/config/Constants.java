@@ -320,8 +320,8 @@ public final class Constants {
      */
     public static final String HTTPURL = "http://10.24.10.16:8912/scm/tubes";
 
-//    public static final String HTTPURL_LIMS = "http://10.24.209.11:8603/api/sample-flowing-lims/frozenBoxCode/";
-    public static final String HTTPURL_LIMS = "http://localhost:8603/api/sample-flowing-lims/frozenBoxCode/";
+    public static final String HTTPURL_LIMS = "http://10.24.209.11:8603/api/sample-flowing-lims/frozenBoxCode/";
+//    public static final String HTTPURL_LIMS = "http://localhost:8603/api/sample-flowing-lims/frozenBoxCode/";
 //    http://10.24.10.16:8912/scm/tubes?projectId=007&boxCode=110130048
 //    高危一期projectId=001
 //    高危二期projectId=006
@@ -361,6 +361,7 @@ public final class Constants {
      */
     public static final String RECEIVE_TYPE_PROJECT_SITE = "01";
     public static final String RECEIVE_TYPE_RETURN_BACK = "02";
+
     public static final  Map<String,String>  SAMPLE_TYPE_CODE_FROM_LIMS_MAP= new HashMap(){{
         put("2","DNA");
         put("3","W");

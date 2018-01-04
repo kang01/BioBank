@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.fwoxford.config.Constants;
 import org.fwoxford.service.FrozenBoxImportService;
 import org.fwoxford.service.TranshipBoxService;
 import org.fwoxford.service.dto.*;
@@ -281,11 +282,11 @@ public class TranshipBoxResource {
      * @return
      */
 
-    @GetMapping("/return-boxes/projectCode/{projectCode}frozenBoxCode/{frozenBoxCodeStr}")
+    @GetMapping("/return-boxes/project/{projectCode}frozenBoxCode/{frozenBoxCodeStr}")
     @Timed
     public ResponseEntity<List<TranshipBoxDTO>> getStockOutFrozenBoxAndSample( @PathVariable String projectCode,@PathVariable String frozenBoxCodeStr) {
         log.debug("REST request to import FrozenBox And FrozenTubeDTOs From StockOutBox: {}", frozenBoxCodeStr);
-        List<TranshipBoxDTO> res = transhipBoxService.getStockOutFrozenBoxAndSample(projectCode,frozenBoxCodeStr);
+        List<TranshipBoxDTO> res = transhipBoxService.getStockOutFrozenBoxAndSample(projectCode,frozenBoxCodeStr, Constants.FROZEN_FLAG_ORIGINAL);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 
@@ -364,15 +365,30 @@ public class TranshipBoxResource {
     }
 
     /**
-     * 根据冻存盒编码查询冻存盒信息（可以新增，可以是已交接）---新增归还冻存盒的查询
+     * 根据冻存盒编码查询冻存盒信息（只能是新增）---新增归还冻存盒的查询
      * @param frozenBoxCode
      * @return
      */
-    @GetMapping("/return-boxes/project/{projectCode}/frozenBox/{frozenBoxCode}/forAdd")
+    @GetMapping("/return-boxes/new-boxes/project/{projectCode}/frozenBox/{frozenBoxCode}")
     @Timed
     public ResponseEntity<TranshipBoxDTO> getForzenBoxForReturnBack( @PathVariable String projectCode,@PathVariable String frozenBoxCode) {
         log.debug("REST request tog etForzenBoxForReturnBack : {}", frozenBoxCode);
         TranshipBoxDTO res = transhipBoxService.findForzenBoxForReturnBack(projectCode,frozenBoxCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * 新增保存归还冻存盒---保存新增的冻存盒
+     * @param id
+     * @param transhipBoxDTOS
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/return-boxes/new-boxes/batch/return-back/{id}")
+    @Timed
+    public ResponseEntity<List<TranshipBoxDTO>> createOriginalBoxesForReturnBack(@PathVariable Long id ,@Valid @RequestBody List<TranshipBoxDTO> transhipBoxDTOS) throws URISyntaxException {
+        log.debug("REST request to createOriginalBoxesForReturnBack: {}", transhipBoxDTOS);
+        List<TranshipBoxDTO> result = transhipBoxService.saveBatchOriginalBoxesForReturnBack(id,transhipBoxDTOS);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 }

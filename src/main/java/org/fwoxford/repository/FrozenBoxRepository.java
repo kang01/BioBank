@@ -283,5 +283,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     @Query("select box from FrozenBox box where box.supportRack.id = ?1 " +
             " and box.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_BOX_SPLITED+"','"+Constants.FROZEN_BOX_INVALID+"','"+Constants.FROZEN_BOX_STOCK_OUT_COMPLETED+"','"+Constants.FROZEN_BOX_STOCK_OUT_HANDOVER+"')")
     List<FrozenBox> findBySupportRackId(Long id);
+
+    FrozenBox findByFrozenBoxCodeAndStatus(String boxCode, String status);
 }
 

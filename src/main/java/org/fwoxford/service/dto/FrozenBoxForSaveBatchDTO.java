@@ -15,7 +15,8 @@ public class FrozenBoxForSaveBatchDTO {
      */
     @NotNull
     @Size(max = 100)
-    private String frozenBoxCode;/**
+    private String frozenBoxCode;
+    /**
      * 冻存盒编码
      */
     @NotNull
@@ -93,7 +94,7 @@ public class FrozenBoxForSaveBatchDTO {
     /**
      * 冻存管列表
      */
-    private List<FrozenTubeForSaveBatchDTO> frozenTubeDTOS;
+    private List<FrozenTubeDTO> frozenTubeDTOS;
 
     public Long getId() {
         return id;
@@ -248,11 +249,11 @@ public class FrozenBoxForSaveBatchDTO {
         this.supportRackId = supportRackId;
     }
 
-    public List<FrozenTubeForSaveBatchDTO> getFrozenTubeDTOS() {
+    public List<FrozenTubeDTO> getFrozenTubeDTOS() {
         return frozenTubeDTOS;
     }
 
-    public void setFrozenTubeDTOS(List<FrozenTubeForSaveBatchDTO> frozenTubeDTOS) {
+    public void setFrozenTubeDTOS(List<FrozenTubeDTO> frozenTubeDTOS) {
         this.frozenTubeDTOS = frozenTubeDTOS;
     }
 }

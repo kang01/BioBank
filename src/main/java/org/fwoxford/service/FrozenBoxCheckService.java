@@ -83,7 +83,7 @@ public class FrozenBoxCheckService {
             throw new BankServiceException("请勿提交重复的冻存盒编码！",String.join(",",repeatCode));
         }
     }
-    public List<TranshipBoxDTO> checkFrozenBoxCodeForStockOutReturn(List<TranshipBoxDTO> transhipBoxDTOS, Tranship tranship) {
+    public List<TranshipBoxDTO> checkFrozenBoxCodeForStockOutReturn(List<TranshipBoxDTO> transhipBoxDTOS, Tranship tranship, String boxType) {
         if(tranship == null){
             return null;
         }
@@ -108,14 +108,19 @@ public class FrozenBoxCheckService {
             }
         }
         //（2） 从冻存盒的接收完成，待入库，已入库状态中判断冻存盒是否重复
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByFrozenBoxCodeInAndStatusIn(frozenBoxCodeStr,
-                new ArrayList<String>(){{add(Constants.FROZEN_BOX_NEW);
-                    add(Constants.FROZEN_BOX_STOCKED);
-                    add(Constants.FROZEN_BOX_STOCKING);
-                    add(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
-                    add(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
-                    add(Constants.FROZEN_BOX_TRANSHIP_COMPLETE);
-                    add(Constants.FROZEN_BOX_PUT_SHELVES);}});
+        List<String> statusList = new ArrayList<String>(){{add(Constants.FROZEN_BOX_NEW);
+            add(Constants.FROZEN_BOX_STOCKED);
+            add(Constants.FROZEN_BOX_STOCKING);
+            add(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
+            add(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
+            add(Constants.FROZEN_BOX_TRANSHIP_COMPLETE);
+            add(Constants.FROZEN_BOX_PUT_SHELVES);
+            if(boxType.equals(Constants.FROZEN_FLAG_NEW)){
+                add(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
+            }
+        }};
+
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByFrozenBoxCodeInAndStatusIn(frozenBoxCodeStr,statusList);
         for(FrozenBox frozenBox :frozenBoxList){
             for(TranshipBoxDTO transhipBoxDTO : transhipBoxDTOS){
                 if(frozenBox.getFrozenBoxCode()!=null && transhipBoxDTO.getFrozenBoxCode()!=null
@@ -129,13 +134,15 @@ public class FrozenBoxCheckService {
         if(repeatCode.size()>0){
             throw new BankServiceException("请勿提交重复的冻存盒编码！",String.join(",",repeatCode));
         }
-        List<TranshipBoxDTO> stockOutFrozenBoxAndSampleList = transhipBoxService.getStockOutFrozenBoxAndSample(tranship.getProjectCode(),boxCodeStr);
-        for(TranshipBoxDTO stockOutFrozenBox :stockOutFrozenBoxAndSampleList){
-            if(stockOutFrozenBox.getIsRealData().equals(Constants.NO)){
-                String boxCode = StringUtils.isEmpty(stockOutFrozenBox.getFrozenBoxCode())?stockOutFrozenBox.getFrozenBoxCode1D():stockOutFrozenBox.getFrozenBoxCode();
-                throw new BankServiceException("冻存盒"+boxCode+"导入失败！");
-            }
-        }
+        //如果是导入的冻存盒
+        List<TranshipBoxDTO> stockOutFrozenBoxAndSampleList = transhipBoxService.findStockOutFrozenBoxAndSampleForDNA(tranship.getProjectCode(),boxCodeStr);
+//        for(TranshipBoxDTO stockOutFrozenBox :stockOutFrozenBoxAndSampleList){
+//            if(stockOutFrozenBox.getIsRealData().equals(Constants.NO) && boxType.equals(Constants.FROZEN_FLAG_ORIGINAL)){
+//                String boxCode = StringUtils.isEmpty(stockOutFrozenBox.getFrozenBoxCode())?stockOutFrozenBox.getFrozenBoxCode1D():stockOutFrozenBox.getFrozenBoxCode();
+//                throw new BankServiceException("冻存盒"+boxCode+"导入失败！");
+//            }
+//        }
+
         return stockOutFrozenBoxAndSampleList;
     }
 }

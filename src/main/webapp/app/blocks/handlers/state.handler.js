@@ -36,8 +36,8 @@
                 JhiLanguageService.getCurrent().then(function (language) {
                     $translate.use(language);
                 });
-                //滚动条对象销毁
-                $("body").mCustomScrollbar('destroy');
+                // //滚动条对象销毁
+                // $("body").mCustomScrollbar('destroy');
             });
 
             var stateChangeSuccess = $rootScope.$on('$stateChangeSuccess',  function(event, toState, toParams, fromState, fromParams) {
@@ -48,17 +48,17 @@
                     titleKey = toState.data.pageTitle;
                 }
                 translationHandler.updateTitle(titleKey);
-                //初始化滚动条
-                $("body").mCustomScrollbar({
-                    scrollButtons: {
-                        scrollAmount: 'auto', // scroll amount when button pressed
-                        enable: true // enable scrolling buttons by default
-                    },
-                    scrollInertia: 400, // adjust however you want
-                    axis: 'y', // enable 2 axis scrollbars by default,
-                    theme: 'minimal-dark',
-                    autoHideScrollbar: true
-                });
+                // // 初始化滚动条
+                // $("body").mCustomScrollbar({
+                //     scrollButtons: {
+                //         scrollAmount: 'auto', // scroll amount when button pressed
+                //         enable: true // enable scrolling buttons by default
+                //     },
+                //     scrollInertia: 400, // adjust however you want
+                //     axis: 'y', // enable 2 axis scrollbars by default,
+                //     theme: 'minimal-dark',
+                //     autoHideScrollbar: true
+                // });
             });
 
             $rootScope.$on('$destroy', function () {

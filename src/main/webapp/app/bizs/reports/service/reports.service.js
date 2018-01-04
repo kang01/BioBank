@@ -28,7 +28,9 @@
             //根据疾病类型统计样本量
             queryDiseaseTypeSampleCount:_fnQueryDiseaseTypeSampleCount,
             //根据年龄统计不同年龄段的样本量
-            queryAgeSampleCount:_fnQueryAgeSampleCount
+            queryAgeSampleCount:_fnQueryAgeSampleCount,
+            //获取设备分布
+            queryEquipment:_queryEquipment
         };
         function _fnQueryCitySampleCount(params) {
             return $http.post(API_HOST+'/sample-flowing-report/project-site-location-samples/city?searchForm='+params);
@@ -53,6 +55,9 @@
         }
         function _fnQueryAgeSampleCount(params) {
             return $http.post(API_HOST+'/sample-flowing-report/age?searchForm='+params);
+        }
+        function _queryEquipment() {
+            return $http.get(API_HOST+'/sample-flowing-report/stock-shelves-list');
         }
         return service;
     }

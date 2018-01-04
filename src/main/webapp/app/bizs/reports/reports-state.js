@@ -17,12 +17,34 @@
                 url: '/reports',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
-                    pageTitle: '报表'
+                    pageTitle: '样本分布情况'
                 },
                 views: {
                     'content@': {
                         templateUrl: 'app/bizs/reports/reports.html',
                         controller: 'ReportsController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+
+                        return $translate.refresh();
+                    }]
+
+                }
+            })
+            .state('equipment-report', {
+                parent: 'bizs',
+                url: '/equipment-report',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
+                    pageTitle: '设备使用情况'
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/reports/equipment-report.html',
+                        controller: 'EquipmentReportController',
                         controllerAs: 'vm'
                     }
                 },

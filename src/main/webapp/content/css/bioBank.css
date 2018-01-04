@@ -872,8 +872,8 @@ tr.shown td .details-control {
 }
 
 html,body {
-    overflow: hidden;
-    height: 100%;
+    /*overflow: hidden;*/
+    /*height: 100%;*/
 }
 
 .ng-pageslide {
@@ -1669,8 +1669,33 @@ ul.rating {
 .child-color{
     color: #2CAF2D;
 }
+/*设备使用情况*/
+.equipment-usage-state .area{
+    /*display: flex; flex-direction: column; justify-content: center;*/
+}
+.equipment-usage-state .area-left{
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    background-color: #f3f3f3;
+    border: 1px solid #ccc;
+}
+.equipment-usage-state .area-left,
+.equipment-usage-state .area-right{
+    float: left;
 
-
+}
+.equipment-usage-state .shelf{
+    display: inline-block;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+    height: 60px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 9pt;
+    padding-top: 10px;
+}
 
 
 

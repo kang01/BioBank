@@ -208,7 +208,8 @@
                 {id:"3002",name:"空管"},
                 {id:"3003",name:"空孔"},
                 {id:"3004",name:"异常"},
-                {id:"3005",name:"销毁"}
+                {id:"3005",name:"销毁"},
+                {id:"3006",name:"不确定"}
             ];
             var allStatus = null;
             function _getStatus(statusCode){

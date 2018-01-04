@@ -793,6 +793,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                  if(StringUtils.isEmpty(tube.getSampleCode())){
                      throw new BankServiceException("冻存管编码不能为空！");
                  }
+                 if(tube.getTubeColumns() == null || tube.getTubeRows() == null){
+                     throw new BankServiceException("未指定样本"+tube.getSampleCode()+"在盒内的位置！");
+                 }
              });
              stockOutTubeDTO.addAll(transhipTubeDTOS);
         });

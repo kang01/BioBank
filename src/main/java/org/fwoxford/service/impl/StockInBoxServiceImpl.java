@@ -655,7 +655,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         FrozenBox oldFrozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipment.getEquipmentCode(),
             area.getAreaCode(),shelf.getSupportRackCode(),boxPositionDTO.getColumnsInShelf(),boxPositionDTO.getRowsInShelf());
 
-        if(oldFrozenBox!=null && oldFrozenBox.getId()!=frozenBox.getId() && !oldFrozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)){
+        if(oldFrozenBox!=null && oldFrozenBox.getId()!=frozenBox.getId() ){
             throw new BankServiceException("此位置已存放冻存盒，请更换其他位置！",boxPositionDTO.toString());
         }
 

@@ -401,10 +401,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         List<FrozenBox> frozenBoxs = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(equipmentCode, areaCode, shelfCode);
         List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();
         for (FrozenBox frozenBox : frozenBoxs) {
-            if (frozenBox.getStatus() != null &&
-                (frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKING))) {
-                continue;
-            }
             StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
             stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
             stockInBoxDetail.setFrozenBoxId(frozenBox.getId());

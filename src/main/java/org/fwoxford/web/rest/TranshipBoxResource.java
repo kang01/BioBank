@@ -282,7 +282,7 @@ public class TranshipBoxResource {
      * @return
      */
 
-    @GetMapping("/return-boxes/project/{projectCode}frozenBoxCode/{frozenBoxCodeStr}")
+    @GetMapping("/return-boxes/project/{projectCode}/frozenBoxCode/{frozenBoxCodeStr}")
     @Timed
     public ResponseEntity<List<TranshipBoxDTO>> getStockOutFrozenBoxAndSample( @PathVariable String projectCode,@PathVariable String frozenBoxCodeStr) {
         log.debug("REST request to import FrozenBox And FrozenTubeDTOs From StockOutBox: {}", frozenBoxCodeStr);
@@ -369,11 +369,11 @@ public class TranshipBoxResource {
      * @param frozenBoxCode
      * @return
      */
-    @GetMapping("/return-boxes/new-boxes/project/{projectCode}/frozenBox/{frozenBoxCode}")
+    @GetMapping("/return-boxes/new-boxes/frozenBox/{frozenBoxCode}")
     @Timed
-    public ResponseEntity<TranshipBoxDTO> getForzenBoxForReturnBack( @PathVariable String projectCode,@PathVariable String frozenBoxCode) {
+    public ResponseEntity<TranshipBoxDTO> getForzenBoxForReturnBack(@PathVariable String frozenBoxCode) {
         log.debug("REST request tog etForzenBoxForReturnBack : {}", frozenBoxCode);
-        TranshipBoxDTO res = transhipBoxService.findForzenBoxForReturnBack(projectCode,frozenBoxCode);
+        TranshipBoxDTO res = transhipBoxService.findForzenBoxForReturnBack(frozenBoxCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 

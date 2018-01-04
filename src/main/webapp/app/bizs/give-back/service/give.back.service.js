@@ -28,8 +28,12 @@
             queryBatchGiveBackBox:_queryBatchGiveBackBox,
             //获取归还冻存盒的详情
             queryBoxDesc:_queryBoxDesc,
+            //获取冻存盒是否重复
+            queryRepeatBoxCode:_queryRepeatBoxCode,
             //保存冻存盒
             saveBox:_saveBox,
+            //新增冻存盒保存
+            saveNewBox:_saveNewBox,
             //修改保存
             editSaveBox:_editSaveBox,
             //删除冻存盒
@@ -51,8 +55,9 @@
         function _queryApplyInfo(applyCode) {
             return $http.get('api/stock-out-applies/applyCode/'+applyCode);
         }
-        function _saveGiveBackEmpty(giveBackInfo) {
-            return $http.post('api/return-back/new-empty/stockOutApply/'+giveBackInfo.applyId+'/project/'+giveBackInfo.projectId,{});
+        function _saveGiveBackEmpty(data) {
+            // return $http.post('api/return-back/new-empty/stockOutApply/'+giveBackInfo.applyId+'/project/'+giveBackInfo.projectId,{});
+            return $http.post('api/return-back/new-empty',data);
         }
         function _queryGiveBackInfo(giveBackId) {
             return $http.get('api/return-back/id/'+giveBackId);
@@ -63,15 +68,18 @@
         function _queryGiveBackBox(giveBackCode) {
             return $http.get('api/tranship-boxes/transhipCode/'+giveBackCode);
         }
-        function _queryBatchGiveBackBox(applyCode,frozenBoxCodeStr,_deferred) {
+        function _queryBatchGiveBackBox(projectCode,frozenBoxCodeStr,_deferred) {
             var opt =null;
             if(_deferred){
                 opt = {timeout: _deferred.promise};
             }
-            return $http.get('api/return-boxes/stockOutApply/'+applyCode+'/frozenBoxCode/'+frozenBoxCodeStr,opt);
+            return $http.get('api/return-boxes/project/'+projectCode+'/frozenBoxCode/'+frozenBoxCodeStr,opt);
         }
         function _saveBox(giveBackId,data) {
             return $http.post('api/return-boxes/batch/return-back/'+giveBackId,data);
+        }
+        function _saveNewBox(giveBackId,data) {
+            return $http.post('api/return-boxes/new-boxes/batch/return-back/'+giveBackId,data);
         }
         function _editSaveBox(giveBackId,data) {
             return $http.put('api/return-boxes/batch/return-back/'+giveBackId,data);
@@ -81,6 +89,9 @@
         }
         function _queryBoxDesc(boxId) {
             return $http.get('api/return-boxes/'+boxId);
+        }
+        function _queryRepeatBoxCode(frozenBoxCode) {
+            return $http.get('api/return-boxes/new-boxes/frozenBox/'+frozenBoxCode);
         }
         function _invalidGiveBack(returnBackCode,invalidReason) {
             return $http.put('api/return-back/invalid/'+returnBackCode,invalidReason);

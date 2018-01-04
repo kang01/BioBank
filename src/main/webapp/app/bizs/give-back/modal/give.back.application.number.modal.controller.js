@@ -14,21 +14,22 @@
     function ApplicationNumberModalController($uibModalInstance,toastr,MasterMethod,GiveBackService,items) {
         var vm = this;
         vm.entity = {
-            applyCode:null,
-            projectId:null,
             id:null,
-            checkTypeId:null
+            projectId:null,
+            checkTypeId:null,
+            delegateId:null,
+            applyPersonName:null
         };
         //交接
-        vm.entity.applyCode = items.applyCode;
+        // vm.entity.applyCode = items.applyCode;
         // if(vm.entity.applyCode){
         //     _queryProject();
         // }
-        var _giveBackInfo = {
-            projectId:null,
-            applyId:null,
-            applyCode:null
-        };
+        // var _giveBackInfo = {
+            // projectId:null,
+            // applyId:null,
+            // applyCode:null
+        // };
         MasterMethod.queryProject().then(function (data) {
             vm.projectOptions = data;
         });
@@ -79,9 +80,9 @@
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
-            _giveBackInfo.projectId = vm.entity.projectId;
-            _giveBackInfo.applyCode = vm.entity.applyCode;
-            $uibModalInstance.close(_giveBackInfo);
+            // _giveBackInfo.projectId = vm.entity.projectId;
+            // _giveBackInfo.applyCode = vm.entity.applyCode;
+            $uibModalInstance.close(vm.entity);
         };
     }
 })();

@@ -7,20 +7,22 @@
     angular
         .module('bioBankApp')
         .controller('NewBoxModalController', NewBoxModalController);
-    NewBoxModalController.$inject = ['$scope','$uibModalInstance','$q','toastr','items','MasterMethod','EquipmentAllService','SupportRackType','FrozenBoxTypesService','SampleTypeService','StockInInputService','AreasByEquipmentIdService','SupportacksByAreaIdService'];
+    NewBoxModalController.$inject = ['$scope','$uibModalInstance','$q','toastr','items','MasterMethod','GiveBackService','SupportRackType','FrozenBoxTypesService','SampleTypeService','StockInInputService','AreasByEquipmentIdService','SupportacksByAreaIdService'];
 
-    function NewBoxModalController($scope,$uibModalInstance,$q,toastr,items,MasterMethod,EquipmentAllService,SupportRackType,FrozenBoxTypesService,SampleTypeService,StockInInputService,AreasByEquipmentIdService,SupportacksByAreaIdService) {
+    function NewBoxModalController($scope,$uibModalInstance,$q,toastr,items,MasterMethod,GiveBackService,SupportRackType,FrozenBoxTypesService,SampleTypeService,StockInInputService,AreasByEquipmentIdService,SupportacksByAreaIdService) {
 
         var vm = this;
         vm.box = {};
         vm.equipmentOptions = items.equipmentOptions;
         var _projectId = items.projectId;
+        var _giveBackId = items.giveBackId;
         //生成二维编码码
         vm.btnSettings={
             icon:"fa-plus-circle",
             makeNewBoxCode:_makeNewBoxCode
         };
-
+        //检测冻存盒编码是否重复
+        vm.isRepeatCode = _isRepeatCode;
 
         _loadInitializeDataFromServer();
         // 加载页面上的初始化数据
@@ -181,13 +183,32 @@
                 vm.box.rowsInShelf = null;
             }
         };
+        //检测冻存盒编码是否重复
+        function _isRepeatCode() {
+            if(vm.box.frozenBoxCode){
+                GiveBackService.queryRepeatBoxCode(vm.box.frozenBoxCode).success(function (data) {
+
+                }).error(function (data) {
+                    toastr.error(data.message);
+                    vm.box.frozenBoxCode = "";
+                })
+            }
+
+        }
 
         function onError(error) {
             toastr.error(error.data.message);
         }
 
         vm.ok = function () {
-
+            var boxList = [];
+            boxList.push(vm.box);
+            GiveBackService.saveNewBox(_giveBackId,boxList).success(function (data) {
+                toastr.success("保存成功！");
+                $uibModalInstance.close();
+            }).error(function (data) {
+                toastr.error(data.message);
+            });
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

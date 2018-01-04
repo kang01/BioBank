@@ -14,8 +14,7 @@
         var vm = this;
         //设备
         vm.equipmentOptions = items.equipmentOptions;
-        //归还申请单号
-        var _applyCode = items.applyCode;
+        var _projectCode = items.projectCode;
         //归还记录单的ID
         var _giveBackId = items.giveBackId;
         //导入数据遮罩层
@@ -211,7 +210,7 @@
             vm.boxLen = arrayBoxCode.length;
             _.forEach(boxCodeArray,function (code,i) {
                 var codeStr = _.join(code, ',');
-                var importData = GiveBackService.queryBatchGiveBackBox(_applyCode,codeStr,_deferred);
+                var importData = GiveBackService.queryBatchGiveBackBox(_projectCode,codeStr,_deferred);
                 arrayPromise.push(
                     importData.success(function (res) {
                         _updateBoxData(res);
@@ -288,7 +287,7 @@
         }
         //导入单个冻存盒数据
         function _importSingleBoxData(frozenBoxCode) {
-            GiveBackService.queryBatchGiveBackBox(_applyCode,frozenBoxCode).success(function (data) {
+            GiveBackService.queryBatchGiveBackBox(_projectCode,frozenBoxCode).success(function (data) {
                 for(var i = 0,len = _boxList.length; i < len; i++){
                     if(_boxList[i].frozenBoxCode == frozenBoxCode){
                         _boxList[i] = data[0];
@@ -296,6 +295,11 @@
                 }
                 _updateTableDataOption(_boxList);
             }).error(function (data) {
+                for(var i = 0,len = _boxList.length; i < len; i++){
+                    if(_boxList[i].frozenBoxCode == frozenBoxCode){
+                        _boxList[i].isRealData = 0;
+                    }
+                }
                 toastr.error(data.message);
             });
         }

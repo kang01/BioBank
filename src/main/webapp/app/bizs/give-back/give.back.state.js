@@ -34,13 +34,12 @@
             })
             .state('give-back-detail', {
                 parent: 'bizs',
-                url: '/give-back-detail/{giveBackId}/{applyCode}',
+                url: '/give-back-detail/{giveBackId}',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN']
                 },
                 params:{
-                    giveBackId:null,
-                    applyCode:null
+                    giveBackId:null
                 },
                 views: {
                     'content@': {

@@ -119,12 +119,10 @@ public interface TranshipBoxService {
 
     /**
      * 根据冻存盒编码查询冻存盒信息（只能是新增）---新增归还冻存盒的查询
-     *
-     * @param projectCode
      * @param frozenBoxCode
      * @return
      */
-    TranshipBoxDTO findForzenBoxForReturnBack(String projectCode, String frozenBoxCode);
+    TranshipBoxDTO findForzenBoxForReturnBack( String frozenBoxCode);
 
     /**
      * 保存归还冻存盒---保存原始交接过和新增的冻存盒

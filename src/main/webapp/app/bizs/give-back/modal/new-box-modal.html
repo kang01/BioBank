@@ -10,7 +10,8 @@
         <div class="row">
             <div class="form-group col-md-4">
                 <label>冻存盒号<span class="required-field"></span></label>
-                <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode" input-btn input-btn-option="vm.btnSettings" required>
+                <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode" input-btn input-btn-option="vm.btnSettings"
+                       ng-blur="vm.isRepeatCode()" required>
             </div>
             <div class="form-group col-md-4">
                 <label>一维编码</label>

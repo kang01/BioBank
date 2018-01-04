@@ -1292,13 +1292,14 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 transhipTubeDTO.setParentSampleCode(frozenTube.getSampleCode());
             }else{
                 if(frozenTube == null){
-                    throw new BankServiceException("样本"+parentSampleCode+"不存在！");
+                    throw new BankServiceException("LIMS DB 中获取冻存盒"+frozenBoxCode+"内样本"+parentSampleCode+"不存在于出库样本中！");
+//                    throw new BankServiceException("样本"+parentSampleCode+"不存在！");
                 }
                 transhipTubeDTO = transhipTubeMapper.frozenTubeToTranshipTube(frozenTube);
             }
 
             if(!frozenTube.getProjectCode().equals(project.getProjectCode())){
-                throw new BankServiceException("样本"+frozenTube.getSampleCode()+"不在"+project.getProjectCode()+"项目下");
+                throw new BankServiceException("样本"+frozenTube.getSampleCode()+"不在"+project.getProjectCode()+"项目下！");
             }
             int mod = sampleTypeCode.equals("DNA")?12:10;
             int tubeRowsInt = postison/mod+1;
@@ -1448,13 +1449,11 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
     /**
      * 根据冻存盒编码查询冻存盒信息（只能是新增）---新增归还冻存盒的查询
-     *
-     * @param projectCode
      * @param frozenBoxCode
      * @return
      */
     @Override
-    public TranshipBoxDTO findForzenBoxForReturnBack(String projectCode, String frozenBoxCode) {
+    public TranshipBoxDTO findForzenBoxForReturnBack(  String frozenBoxCode) {
         TranshipBoxDTO transhipBoxDTO = new TranshipBoxDTO();
         List<FrozenBox> frozenBoxList = frozenBoxRepository.findByFrozenBoxCodeIn(new ArrayList<String>(){{add(frozenBoxCode);}});
         if(frozenBoxList != null && frozenBoxList.size() > 0){

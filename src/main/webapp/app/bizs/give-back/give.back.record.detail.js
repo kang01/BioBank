@@ -10,10 +10,10 @@
         .controller('WarningModalCtrl', WarningModalCtrl);
 
     GiveBackDetailController.$inject = ['$scope', '$compile', '$state','BioBankDataTable','$uibModal', 'toastr', '$stateParams','Principal',
-        'GiveBackService','StockInInputService','EquipmentAllService','SampleUserService','AreasByEquipmentIdService','SupportacksByAreaIdService','RequirementService'];
+        'GiveBackService','MasterMethod','EquipmentAllService','SampleUserService','AreasByEquipmentIdService','SupportacksByAreaIdService','RequirementService'];
     WarningModalCtrl.$inject = ['$uibModalInstance','items'];
     function GiveBackDetailController($scope, $compile, $state,BioBankDataTable, $uibModal, toastr, $stateParams,Principal,
-                                      GiveBackService,StockInInputService,EquipmentAllService,SampleUserService,AreasByEquipmentIdService,SupportacksByAreaIdService,RequirementService) {
+                                      GiveBackService,MasterMethod,EquipmentAllService,SampleUserService,AreasByEquipmentIdService,SupportacksByAreaIdService,RequirementService) {
         var vm = this;
         //归还记录对象
         vm.giveBackRecord = {};
@@ -41,6 +41,9 @@
         var _rowBoxCode;
         //扫码timer
         var _scanCodeTimer;
+
+        // var _projectCode = $stateParams.projectCode;
+        var _giveBackId = $stateParams.giveBackId;
 
         //归还单信息数据
         _queryGiveBackInfo();
@@ -168,8 +171,8 @@
                     items: function () {
                         return {
                             equipmentOptions:vm.equipmentOptions,
-                            applyCode:vm.giveBackRecord.applyCode,
-                            giveBackId:$stateParams.giveBackId
+                            giveBackId:_giveBackId,
+                            projectCode:vm.giveBackRecord.projectCode
                         };
                     }
                 }
@@ -195,7 +198,8 @@
                     items: function () {
                         return {
                             equipmentOptions:vm.equipmentOptions,
-                            projectId:vm.giveBackRecord.projectId
+                            projectId:vm.giveBackRecord.projectId,
+                            giveBackId:_giveBackId
                         };
                     }
                 }
@@ -434,7 +438,7 @@
             }
         }
         function _editSaveBox(callback,boxList,tr,oData) {
-            return GiveBackService.editSaveBox($stateParams.giveBackId,boxList).success(function (data) {
+            return GiveBackService.editSaveBox(_giveBackId,boxList).success(function (data) {
                 if (typeof callback === "function"){
                     callback();
                     if(tr){
@@ -481,9 +485,8 @@
         //获取归还信息
         function _queryGiveBackInfo() {
             //归还单id
-            var giveBackId = $stateParams.giveBackId;
-            if(giveBackId){
-                GiveBackService.queryGiveBackInfo(giveBackId).success(function (data) {
+            if(_giveBackId){
+                GiveBackService.queryGiveBackInfo(_giveBackId).success(function (data) {
                     vm.giveBackRecord = data;
                     //当前用户
                     _fnQueryUser();
@@ -762,8 +765,11 @@
                 if(vm.box.columnsInShelf && vm.box.rowsInShelf){
                     vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
                 }
-                vm.htInstance.api.loadData(data, data.transhipTubeDTOS);
-                vm.sampleCount = vm.htInstance.api.sampleCount();
+                vm.htInstance.api.loadData(vm.box, vm.box.transhipTubeDTOS);
+                if(vm.box.transhipTubeDTOS.length){
+                    vm.sampleCount = vm.htInstance.api.sampleCount();
+                }
+
 
                 vm.box.transhipTubeDTOS =  _.sortBy(vm.box.transhipTubeDTOS, ["tubeRows", function(o){return +o.tubeColumns}]);
                 _startTubes = vm.box.transhipTubeDTOS;
@@ -772,12 +778,15 @@
         }
         //获取申请单中的项目编码
         function _queryApplyProject() {
-            var applyCode = $stateParams.applyCode;
-            GiveBackService.queryApplyInfo(applyCode).success(function (data) {
-                vm.projectOptions = data.projectDTOS;
-            }).error(function (data) {
-                toastr.error(data.message);
+            MasterMethod.queryProject().then(function (data) {
+                vm.projectOptions = data;
             });
+            // var applyCode = $stateParams.applyCode;
+            // GiveBackService.queryApplyInfo(applyCode).success(function (data) {
+            //     vm.projectOptions = data.projectDTOS;
+            // }).error(function (data) {
+            //     toastr.error(data.message);
+            // });
         }
         //委托方查询
         function _fuQueryDelegates() {

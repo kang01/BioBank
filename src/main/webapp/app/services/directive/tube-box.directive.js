@@ -233,8 +233,10 @@
                 var gridData = _getGridData();
                 var errorPos = [];
                 _.each(gridData, function(rowTubes, rowIndex){
+
                     _.each(rowTubes, function(tube, colIndex){
-                        if (tube.sampleCode == tubeData.sampleCode
+
+                        if (tube && tube.sampleCode == tubeData.sampleCode
                             && (row != rowIndex || col != colIndex)){
                             if (!box.isMixed){
                                 errorPos.push([rowIndex, colIndex, tube, "盒内样本重复，相同的样本编码。"]);
@@ -274,6 +276,8 @@
                             }
                         }
                     });
+
+
                 });
 
                 if (errorPos.length){
@@ -834,11 +838,13 @@
 
                 var boxCols = +box.frozenBoxTypeColumns;
                 var boxRows = +box.frozenBoxTypeRows;
+                var columns = [];
+                var rows = [];
 
                 // 生成列头和行头信息
-                var columns = new Array(boxCols);
+                columns = new Array(boxCols);
                 columns = _.map(columns, function(e,i){return i+1+''});
-                var rows = new Array(boxRows);
+                rows = new Array(boxRows);
                 rows = _.map(rows, function(e,i){
                     i = i >= 8 ? i+1 : i;
                     return String.fromCharCode("A".charCodeAt(0) + i);
@@ -847,6 +853,8 @@
                 // 修改表格的行列信息
                 var tableCtrl = _getTableCtrl();
                 var tableSettings = _getSettings();
+                tableSettings.rowHeaders = [];
+                tableSettings.colHeaders = [];
                 tableSettings.minCols = boxCols;
                 tableSettings.minRows = boxRows;
                 tableSettings.rowHeaders = rows;
@@ -855,7 +863,7 @@
                 _changeTubeColumnWidth(tableCtrl, tableSettings);
 
                 if (!tubes || !tubes.length){
-                    tableCtrl.clear();
+                    _clearData();
                 } else {
                     // 生成空表格数据
                     var gridData = new Array(boxRows);
@@ -875,6 +883,8 @@
                         gridData[pos.row][pos.col] = _.cloneDeep(t);
                     });
                     vm.api.gridData = _.cloneDeep(gridData);
+                    vm.api.columnHeaders = [];
+                    vm.api.rowHeaders = [];
                     vm.api.columnHeaders = columns;
                     vm.api.rowHeaders = rows;
                     tableCtrl.loadData(gridData);
@@ -1033,7 +1043,9 @@
             }
             // 获取表格中的所有有样本code数据
             function _getTubesData(){
+                console.log(JSON.stringify(_getGridData()));
                 var gridData = _.flattenDeep(_getGridData());
+                console.log(gridData);
                 var tubes = [];
                 _.forEach(gridData,function (tube) {
                     if(tube.sampleCode || tube.sampleTempCode){

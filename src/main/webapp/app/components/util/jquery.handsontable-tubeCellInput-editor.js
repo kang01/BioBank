@@ -93,7 +93,7 @@
 
             var that = this;
             var value = this.getInputElement().value;
-            var data = _.cloneDeep(this.originalValue);
+            var data = _.cloneDeep(this.originalValue) || {};
             if(data){
                 data.sampleCode = value;
             }

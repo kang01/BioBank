@@ -408,6 +408,10 @@
                                 tube1.sampleTypeId = data.sampleTypeId;
                                 tube1.sampleClassificationId = data.sampleClassificationId;
                                 tube1.memo = data.memo;
+                                tube1.tag1 = data.tag1;
+                                tube1.tag2 = data.tag2;
+                                tube1.tag3 = data.tag3;
+                                tube1.tag4 = data.tag4;
                             }
                         })
                     });

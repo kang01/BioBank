@@ -130,7 +130,7 @@
                 _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
                 _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"});
                 vm.sampleTypeOptions.unshift({id:"null",sampleTypeName:"全部"});
-                vm.sampleTypeOptions.pop();
+                // vm.sampleTypeOptions.pop();
 
                 if(!vm.sampleRequirement.sampleTypeId){
                     vm.sampleRequirement.sampleTypeId = vm.sampleTypeOptions[0].id;

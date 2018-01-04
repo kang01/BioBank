@@ -404,6 +404,7 @@
                     //统计样本
                     vm.sampleCount = vm.htInstance.api.sampleCount();
                     vm.flagStatus = false;
+                    vm.checkedFlag = false;
                     vm.changeStatus();
                 }
                 vm.box.transhipTubeDTOS = tubes;
@@ -455,8 +456,11 @@
                 return data;
             }).error(function (data) {
                 toastr.error(data.message);
-                var errorSampleArray = JSON.parse(data.params[0]);
-                vm.htInstance.api.errorData(errorSampleArray);
+                if(data.params.length){
+                    var errorSampleArray = JSON.parse(data.params[0]);
+                    vm.htInstance.api.errorData(errorSampleArray);
+
+                }
                 return data;
             });
         }

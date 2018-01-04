@@ -489,11 +489,12 @@
 
             // 当表格数据发生改变时，触发这个响应
             function _onTubeCellChanging(changes, source){
-                console.log("_onTubeCellChanging", arguments)
+                console.log("_onTubeCellChanging", arguments);
+
                 if (source != "edit" || !changes[0]){
                     return;
                 }
-
+                var settings = _getSettings();
                 var tableCtrl = _getTableCtrl();
                 var row = changes[0][0];
                 var col = changes[0][1];
@@ -508,7 +509,7 @@
                     // 新建样本
                     var tube = {};
                     if (newValue.sampleCode && newValue.sampleCode.length){
-                        tube = _buildNewTubeData($scope.dataBox, newValue.sampleCode, vm.api.rowHeaders[row], vm.api.columnHeaders[col]);
+                        tube = _buildNewTubeData($scope.dataBox, newValue.sampleCode, settings.rowHeaders[row], settings.colHeaders[col]);
                     }
                     newValue = tube;
                     changes[0][3] = newValue;
@@ -606,7 +607,7 @@
                 // 设置单元格样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
                 switch (value.status + ""){
                     case "3001":
-                        $(td).removeClass("error-tube-color empty-tube-color empty-hole-color");
+                        $(td).removeClass("error-tube-color empty-tube-color empty-hole-color suspicious-tube-color");
                         break;
                     case "3002":
                         $(td).addClass("empty-tube-color");
@@ -617,8 +618,11 @@
                     case "3004":
                         $(td).addClass("error-tube-color");
                         break;
+                    case "3006":
+                        $(td).addClass("suspicious-tube-color");
+                        break;
                     default:
-                        $(td).removeClass("error-tube-color empty-tube-color empty-hole-color");
+                        $(td).removeClass("error-tube-color empty-tube-color empty-hole-color suspicious-tube-color");
                         break;
                 }
 
@@ -729,6 +733,9 @@
                             tube.status = "3003";
                             break;
                         case "3003":
+                            tube.status = "3006";
+                            break;
+                        case "3006":
                             tube.status = "3004";
                             break;
                         case "3004":
@@ -838,13 +845,11 @@
 
                 var boxCols = +box.frozenBoxTypeColumns;
                 var boxRows = +box.frozenBoxTypeRows;
-                var columns = [];
-                var rows = [];
 
                 // 生成列头和行头信息
-                columns = new Array(boxCols);
+                var columns = new Array(boxCols);
                 columns = _.map(columns, function(e,i){return i+1+''});
-                rows = new Array(boxRows);
+                var rows = new Array(boxRows);
                 rows = _.map(rows, function(e,i){
                     i = i >= 8 ? i+1 : i;
                     return String.fromCharCode("A".charCodeAt(0) + i);
@@ -853,8 +858,6 @@
                 // 修改表格的行列信息
                 var tableCtrl = _getTableCtrl();
                 var tableSettings = _getSettings();
-                tableSettings.rowHeaders = [];
-                tableSettings.colHeaders = [];
                 tableSettings.minCols = boxCols;
                 tableSettings.minRows = boxRows;
                 tableSettings.rowHeaders = rows;
@@ -883,8 +886,6 @@
                         gridData[pos.row][pos.col] = _.cloneDeep(t);
                     });
                     vm.api.gridData = _.cloneDeep(gridData);
-                    vm.api.columnHeaders = [];
-                    vm.api.rowHeaders = [];
                     vm.api.columnHeaders = columns;
                     vm.api.rowHeaders = rows;
                     tableCtrl.loadData(gridData);
@@ -899,26 +900,26 @@
             }
             //清空Table
             function _clearData() {
-                vm.api.columnHeaders = [];
-                vm.api.rowHeaders = [];
-                vm.api.gridData = [];
-                vm.api.selectedTubes = [];
-                vm.api.selectedTubeElements = [];
-                vm.api.splitInformation = [];
+
+                var settings = _getSettings();
                 var frozenTubeArray = [];
-                // initFrozenTube();
-                // function initFrozenTube(row,col) {
-                //
-                // }
-                for(var i = 0; i < 10; i++){
+
+                for(var i = 0; i < settings.rowHeaders.length; i++){
                     frozenTubeArray[i] = [];
-                    for(var j = 0;j < 10; j++){
+                    for(var j = 0;j < settings.colHeaders.length; j++){
                         frozenTubeArray[i][j] = "";
                     }
                 }
                 var tableCtrl = _getTableCtrl();
                 tableCtrl.loadData(frozenTubeArray);
                 tableCtrl.render();
+
+                vm.api.columnHeaders = [];
+                vm.api.rowHeaders = [];
+                vm.api.gridData = [];
+                vm.api.selectedTubes = [];
+                vm.api.selectedTubeElements = [];
+                vm.api.splitInformation = [];
             }
             //错误的样本，闪烁
             function _errorData(errorSampleArray) {
@@ -1043,9 +1044,7 @@
             }
             // 获取表格中的所有有样本code数据
             function _getTubesData(){
-                console.log(JSON.stringify(_getGridData()));
                 var gridData = _.flattenDeep(_getGridData());
-                console.log(gridData);
                 var tubes = [];
                 _.forEach(gridData,function (tube) {
                     if(tube.sampleCode || tube.sampleTempCode){

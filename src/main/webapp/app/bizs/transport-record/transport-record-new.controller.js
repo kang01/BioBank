@@ -687,6 +687,9 @@
                             cellData.status = 3003;
                         }
                         if(tubeStatus == 3003){
+                            cellData.status = 3006;
+                        }
+                        if(tubeStatus == 3006){
                             cellData.status = 3004;
                         }
                         if(tubeStatus == 3004){
@@ -877,9 +880,17 @@
                     // td.style.backgroundColor = '#ffffff';
                     // td.style.color = '#ffffff';
                 }
+                //可疑
+                if(sampleStatus == 3006){
+                    $(td).removeClass("empty-hole-color");
+                    $(td).addClass("suspicious-tube-color");
+                    // td.style.background = '';
+                    // td.style.backgroundColor = '#ffffff';
+                    // td.style.color = '#ffffff';
+                }
                 //异常
                 if(sampleStatus == 3004){
-                    $(td).removeClass("empty-hole-color");
+                    $(td).removeClass("suspicious-tube-color");
                     $(td).addClass("error-tube-color");
                     // td.style.backgroundColor = 'red';
                     // td.style.border = '3px solid red;margin:-3px';

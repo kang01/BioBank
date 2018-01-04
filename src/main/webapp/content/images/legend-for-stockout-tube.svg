@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 21.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 1063 50" style="enable-background:new 0 0 1063 50;" xml:space="preserve">
+	 viewBox="0 0 1277 50" style="enable-background:new 0 0 1277 50;" xml:space="preserve">
 <style type="text/css">
 	.st0{fill:#FFFFFF;stroke:#00820C;stroke-width:3;stroke-miterlimit:10;}
 	.st1{font-family:'AdobeSongStd-Light-GBpc-EUC-H';}
 	.st2{font-size:17px;}
-	.st3{fill:#FFFFFF;stroke:#000000;stroke-width:3;stroke-miterlimit:10;}
-	.st4{font-size:24px;}
-	.st5{fill:#FF0000;}
-	.st6{fill:#FF0000;stroke:#000000;stroke-miterlimit:10;}
-	.st7{fill:#00820C;}
-	.st8{font-family:'MicrosoftYaHei-Bold';}
-	.st9{font-size:28px;}
-	.st10{fill:none;stroke:#FFFFFF;}
-	.st11{font-size:48px;}
+	.st3{font-size:24px;}
+	.st4{fill:#00820C;}
+	.st5{font-family:'MicrosoftYaHei-Bold';}
+	.st6{font-size:28px;}
+	.st7{fill:none;stroke:#FFFFFF;}
+	.st8{fill:#FF0000;}
+	.st9{font-size:48px;}
+	.st10{fill:#FFFFFF;stroke:#000000;stroke-width:3;stroke-miterlimit:10;}
+	.st11{fill:#FF0000;stroke:#000000;stroke-miterlimit:10;}
+	.st12{fill:url(#SVGID_1_);stroke:#000000;stroke-miterlimit:10;}
 </style>
 <g>
 	<path class="st0" d="M97.5,42.5h-83c-2.8,0-5-2.3-5-5v-25c0-2.8,2.3-5,5-5h83c2.8,0,5,2.3,5,5v25C102.5,40.3,100.3,42.5,97.5,42.5z
@@ -27,33 +28,44 @@
 	<text transform="matrix(1 0 0 1 227.3662 31.4365)" class="st1 st2">12345678</text>
 </g>
 <g>
-	<path class="st3" d="M733.5,42.5h-83c-2.8,0-5-2.3-5-5v-25c0-2.8,2.3-5,5-5h83c2.8,0,5,2.3,5,5v25
-		C738.5,40.3,736.3,42.5,733.5,42.5z"/>
-	<text transform="matrix(1 0 0 1 652.3662 31.4365)" class="st1 st2">12345678</text>
-</g>
-<g>
 	<path class="st0" d="M520.5,42.5h-83c-2.8,0-5-2.3-5-5v-25c0-2.8,2.3-5,5-5h83c2.8,0,5,2.3,5,5v25
 		C525.5,40.3,523.3,42.5,520.5,42.5z"/>
 	<text transform="matrix(1 0 0 1 440.3662 30.4365)" class="st1 st2">12345678</text>
 </g>
-<text transform="matrix(1 0 0 1 109.0425 34.9438)" class="st1 st4">出库样本</text>
-<text transform="matrix(1 0 0 1 323.0425 34.9438)" class="st1 st4">已扫码</text>
-<text transform="matrix(1 0 0 1 535.0425 34.9438)" class="st1 st4">撤销出库</text>
-<text transform="matrix(1 0 0 1 746.0425 34.9438)" class="st1 st4">异常样本</text>
+<text transform="matrix(1 0 0 1 109.0425 34.9438)" class="st1 st3">出库样本</text>
+<text transform="matrix(1 0 0 1 323.0425 34.9438)" class="st1 st3">已扫码</text>
+<text transform="matrix(1 0 0 1 535.0425 34.9438)" class="st1 st3">撤销出库</text>
 <g>
-	<path class="st3" d="M943.5,42.5h-83c-2.8,0-5-2.3-5-5v-25c0-2.8,2.3-5,5-5h83c2.8,0,5,2.3,5,5v25
-		C948.5,40.3,946.3,42.5,943.5,42.5z"/>
-	<text transform="matrix(1 0 0 1 862.3662 31.4365)" class="st1 st2">12345678</text>
-</g>
-<text transform="matrix(1 0 0 1 955.0425 34.9438)" class="st1 st4">批注样本</text>
-<polyline class="st5" points="937,8.9 947,8.9 947,18.9 "/>
-<circle class="st6" cx="726.3" cy="31.4" r="8"/>
-<g>
-	<text transform="matrix(1 0 0 1 247 35.4584)" class="st7 st8 st9">99</text>
-	<text transform="matrix(1 0 0 1 247 35.4584)" class="st10 st8 st9">99</text>
+	<text transform="matrix(1 0 0 1 247 35.4584)" class="st4 st5 st6">99</text>
+	<text transform="matrix(1 0 0 1 247 35.4584)" class="st7 st5 st6">99</text>
 </g>
 <g>
-	<text transform="matrix(1 0 0 1 461 40.4365)" class="st5 st8 st11">×</text>
-	<text transform="matrix(1 0 0 1 461 40.4365)" class="st10 st8 st11">×</text>
+	<text transform="matrix(1 0 0 1 461 40.4365)" class="st8 st5 st9">×</text>
+	<text transform="matrix(1 0 0 1 461 40.4365)" class="st7 st5 st9">×</text>
 </g>
+<g>
+	<path class="st10" d="M947.7,42.5h-83c-2.8,0-5-2.3-5-5v-25c0-2.8,2.3-5,5-5h83c2.8,0,5,2.3,5,5v25
+		C952.7,40.3,950.5,42.5,947.7,42.5z"/>
+	<text transform="matrix(1 0 0 1 866.5414 31.4365)" class="st1 st2">12345678</text>
+</g>
+<text transform="matrix(1 0 0 1 958.7175 34.9438)" class="st1 st3">问题样本</text>
+<g>
+	<path class="st10" d="M1157.7,42.5h-83c-2.8,0-5-2.3-5-5v-25c0-2.8,2.3-5,5-5h83c2.8,0,5,2.3,5,5v25
+		C1162.7,40.3,1160.5,42.5,1157.7,42.5z"/>
+	<text transform="matrix(1 0 0 1 1076.5414 31.4365)" class="st1 st2">12345678</text>
+</g>
+<text transform="matrix(1 0 0 1 1169.2177 34.9438)" class="st1 st3">批注样本</text>
+<polyline class="st8" points="1151.2,8.9 1161.2,8.9 1161.2,18.9 "/>
+<circle class="st11" cx="940.5" cy="31.4" r="8"/>
+<g>
+	<path class="st10" d="M732.4,42.5h-83c-2.8,0-5-2.3-5-5v-25c0-2.8,2.3-5,5-5h83c2.8,0,5,2.3,5,5v25
+		C737.4,40.3,735.2,42.5,732.4,42.5z"/>
+	<text transform="matrix(1 0 0 1 651.27 31.4365)" class="st1 st2">12345678</text>
+</g>
+<text transform="matrix(1 0 0 1 748.2175 34.9438)" class="st1 st3">可疑样本</text>
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="717.2037" y1="31.4" x2="733.2037" y2="31.4">
+	<stop  offset="0.4653" style="stop-color:#FFFFFF"/>
+	<stop  offset="0.495" style="stop-color:#FF0000"/>
+</linearGradient>
+<circle class="st12" cx="725.2" cy="31.4" r="8"/>
 </svg>

@@ -1225,6 +1225,10 @@
                             tube1.sampleTypeId = tube.sampleTypeId;
                             tube1.sampleClassificationId = tube.sampleClassificationId;
                             tube1.memo = tube.memo;
+                            tube1.tag1 = tube.tag1;
+                            tube1.tag2 = tube.tag2;
+                            tube1.tag3 = tube.tag3;
+                            tube1.tag4 = tube.tag4;
                         }
                     })
                 });

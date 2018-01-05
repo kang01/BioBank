@@ -8,6 +8,7 @@ import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutReqFrozenTubeService;
 import org.fwoxford.service.dto.StockOutReqFrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
+import org.fwoxford.service.dto.response.FrozenBoxForStockOutDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenTubeForPlan;
 import org.fwoxford.service.mapper.StockOutReqFrozenTubeMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -37,13 +38,18 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
     private final StockOutReqFrozenTubeMapper stockOutReqFrozenTubeMapper;
 
     @Autowired
-    private FrozenBoxRepository frozenBoxRepository;
+    FrozenBoxRepository frozenBoxRepository;
 
     @Autowired
-    private FrozenTubeRepository frozenTubeRepository;
+    FrozenTubeRepository frozenTubeRepository;
 
     @Autowired
-    private StockOutApplyProjectRepository stockOutApplyProjectRepository;
+    StockOutApplyProjectRepository stockOutApplyProjectRepository;
+
+    @Autowired
+    StockOutPlanRepository stockOutPlanRepository;
+    @Autowired
+    StockOutApplyRepository stockOutApplyRepository;
 
     public StockOutReqFrozenTubeServiceImpl(StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository, StockOutReqFrozenTubeMapper stockOutReqFrozenTubeMapper) {
         this.stockOutReqFrozenTubeRepository = stockOutReqFrozenTubeRepository;
@@ -522,13 +528,118 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
     }
 
     /**
-     * 撤销出库计划样本
+     * 出库计划样本撤销
      * @param frozenTubeDTOS
+     * @param planId
      * @return
      */
     @Override
-    public List<StockOutFrozenTubeForPlan> repealStockOutFrozenTube(List<StockOutFrozenTubeForPlan> frozenTubeDTOS) {
+    public List<StockOutFrozenTubeForPlan> repealStockOutFrozenTube(List<StockOutFrozenTubeForPlan> frozenTubeDTOS, Long planId) {
+        StockOutPlan stockOutPlan = stockOutPlanRepository.findById(planId);
+        if(stockOutPlan == null){
+            throw new BankServiceException("出库计划不存在！");
+        }
+        if(!stockOutPlan.getStatus().equals(Constants.STOCK_OUT_PLAN_PENDING)){
+            throw new BankServiceException("出库计划已经不在进行中的状态，不能撤销样本！");
+        }
 
-        return null;
+        List<Long> frozenTubeIds = new ArrayList<>();
+        for(StockOutFrozenTubeForPlan tube :frozenTubeDTOS){
+            frozenTubeIds.add(tube.getId());
+            if(StringUtils.isEmpty(tube.getRepealReason())){
+                throw new BankServiceException("撤销原因不能为空！");
+            }
+        }
+        //需求样本撤销
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByIdIn(frozenTubeIds);
+        for(StockOutReqFrozenTube stockOutReqFrozenTube : stockOutReqFrozenTubes){
+            for(StockOutFrozenTubeForPlan tube :frozenTubeDTOS) {
+                if(tube.getId().equals(stockOutReqFrozenTube.getId())){
+                    stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+                    stockOutReqFrozenTube.setRepealReason(tube.getRepealReason());
+                }
+            }
+        }
+        stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+
+        this.updateStockOutPlanAndStockOutApplyForRepealStockOutSample(stockOutPlan);
+        return frozenTubeDTOS;
+    }
+
+    public void updateStockOutPlanAndStockOutApplyForRepealStockOutSample(StockOutPlan stockOutPlan) {
+
+        StockOutApply stockOutApply = stockOutPlan.getStockOutApply();
+        List<String> statusList_ = new ArrayList<>();
+        statusList_.add(Constants.STOCK_OUT_SAMPLE_IN_USE);
+        statusList_.add(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
+        statusList_.add(Constants.STOCK_OUT_SAMPLE_COMPLETED);
+        Long countOfStockOutFrozenTubeForApply = stockOutReqFrozenTubeRepository.countUnCompleteSampleByStockOutApplyAndStatusIn(stockOutApply.getId(),statusList_);
+        stockOutApply.countOfStockSample(countOfStockOutFrozenTubeForApply.intValue());
+        stockOutApplyRepository.save(stockOutApply);
+
+        Long countOfUnStockOutFrozenTubeForApply = stockOutReqFrozenTubeRepository.countUnCompleteSampleByStockOutApplyAndStatusIn(stockOutApply.getId(),new ArrayList<String>(){{add(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);add(Constants.STOCK_OUT_SAMPLE_IN_USE);}});
+        stockOutPlan.countOfStockOutPlanSample(countOfStockOutFrozenTubeForApply.intValue());
+        //如果计划出库样本量为0 ，任务状态为已撤销
+        //如果未出库样本量为0，则状态为已完成
+        if(countOfStockOutFrozenTubeForApply.intValue() == 0){
+            stockOutPlan.setStatus(Constants.STOCK_OUT_PLAN_REPEAL);
+        }
+        if(countOfUnStockOutFrozenTubeForApply.intValue()==0){
+            stockOutPlan.setStatus(Constants.STOCK_OUT_PLAN_COMPLETED);
+        }
+
+        stockOutPlanRepository.save(stockOutPlan);
+    }
+
+    /**
+     * 撤销出库计划冻存盒
+     * @param frozenBoxDTOS
+     * @param planId
+     * @return
+     */
+    @Override
+    public List<StockOutFrozenTubeForPlan> repealStockOutPlanFrozenTubeForBox(List<StockOutFrozenTubeForPlan> frozenBoxDTOS, Long planId) {
+        StockOutPlan stockOutPlan = stockOutPlanRepository.findById(planId);
+        if(stockOutPlan == null){
+            throw new BankServiceException("出库计划不存在！");
+        }
+        if(!stockOutPlan.getStatus().equals(Constants.STOCK_OUT_PLAN_PENDING)){
+            throw new BankServiceException("出库计划已经不在进行中的状态，不能撤销样本！");
+        }
+
+        for(StockOutFrozenTubeForPlan tube :frozenBoxDTOS){
+            if(StringUtils.isEmpty(tube.getRepealReason())){
+                throw new BankServiceException("撤销原因不能为空！");
+            }
+            if(StringUtils.isEmpty(tube.getStockOutRequirementId())){
+                throw new BankServiceException("出库需求ID不能为空！");
+            }
+            if(tube.getId() == null){
+                throw new BankServiceException("出库冻存盒ID不能为空！");
+            }
+        }
+        //需求样本撤销
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = new ArrayList<>();
+        Map<Long,List<StockOutFrozenTubeForPlan>> stockOutBoxGroupByRequirement = frozenBoxDTOS.stream().collect(Collectors.groupingBy(s->s.getStockOutRequirementId()));
+        for(Long requirementId : stockOutBoxGroupByRequirement.keySet()){
+            List<StockOutFrozenTubeForPlan> stockOutBoxGroupByRequirementEach = stockOutBoxGroupByRequirement.get(requirementId);
+            List<Long> frozenBoxId = stockOutBoxGroupByRequirementEach.stream().map(s->s.getId()).collect(Collectors.toList());
+            List<StockOutReqFrozenTube> stockOutReqFrozenTubeList = stockOutReqFrozenTubeRepository.findAllByStockOutRequirementIdInAndFrozenBoxIdIn(
+                new ArrayList<Long>(){{add(requirementId);}},frozenBoxId);
+            stockOutReqFrozenTubes.addAll(stockOutReqFrozenTubeList);
+        }
+        //需求样本撤销
+        for(StockOutReqFrozenTube stockOutReqFrozenTube : stockOutReqFrozenTubes){
+            for(StockOutFrozenTubeForPlan tube :frozenBoxDTOS) {
+                if(tube.getId().equals(stockOutReqFrozenTube.getFrozenBox().getId())){
+                    stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+                    stockOutReqFrozenTube.setRepealReason(tube.getRepealReason());
+                }
+            }
+        }
+        stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+
+        this.updateStockOutPlanAndStockOutApplyForRepealStockOutSample(stockOutPlan);
+        return frozenBoxDTOS;
     }
 }

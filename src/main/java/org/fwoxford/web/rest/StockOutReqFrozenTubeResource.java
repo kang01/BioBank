@@ -136,29 +136,29 @@ public class StockOutReqFrozenTubeResource {
      * @return
      * @throws URISyntaxException
      */
-    @PutMapping("/stock-out-req-frozen-tubes/repeal/samples")
+    @PutMapping("/stock-out-req-frozen-tubes/repeal/samples/plan/{planId}")
     @Timed
-    public ResponseEntity<List<StockOutFrozenTubeForPlan>> repealStockOutTaskFrozenTube(@Valid @RequestBody List<StockOutFrozenTubeForPlan> frozenTubeDTOS) throws URISyntaxException {
-        log.debug("REST request to repeal StockOutTaskFrozenTube : {}", frozenTubeDTOS);
-        List<StockOutFrozenTubeForPlan> result = stockOutReqFrozenTubeService.repealStockOutFrozenTube(frozenTubeDTOS);
+    public ResponseEntity<List<StockOutFrozenTubeForPlan>> repealStockOutPlanFrozenTube(@Valid @RequestBody List<StockOutFrozenTubeForPlan> frozenTubeDTOS,@PathVariable Long planId) throws URISyntaxException {
+        log.debug("REST request to repeal repealStockOutPlanFrozenTube : {}", frozenTubeDTOS);
+        List<StockOutFrozenTubeForPlan> result = stockOutReqFrozenTubeService.repealStockOutFrozenTube(frozenTubeDTOS,planId);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, frozenTubeDTOS.toString()))
             .body(result);
     }
 
-//    /**
-//     * 撤销出库保存
-//     * @param frozenTubeDTOS
-//     * @return
-//     * @throws URISyntaxException
-//     */
-//    @PutMapping("/stock-out-req-frozen-tubes/repeal/frozenBoxes")
-//    @Timed
-//    public ResponseEntity<List<FrozenBoxForStockOutDataTableEntity>> repealStockOutTaskFrozenTube(@Valid @RequestBody List<StockOutFrozenTubeForPlan> frozenTubeDTOS, @PathVariable Long taskId) throws URISyntaxException {
-//        log.debug("REST request to repeal StockOutTaskFrozenTube : {}", frozenTubeDTOS);
-//        List<StockOutFrozenTubeForPlan> result = stockOutReqFrozenTubeService.repealStockOutTaskFrozenTube(frozenTubeDTOS,taskId);
-//        return ResponseEntity.ok()
-//            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, frozenTubeDTOS.toString()))
-//            .body(result);
-//    }
+    /**
+     * 撤销计划出库冻存盒
+     * @param frozenBoxDTOS
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-req-frozen-tubes/repeal/frozenBoxes/plan/{planId}")
+    @Timed
+    public ResponseEntity<List<StockOutFrozenTubeForPlan>> repealStockOutPlanFrozenTubeForBox(@Valid @RequestBody List<StockOutFrozenTubeForPlan> frozenBoxDTOS, @PathVariable Long planId) throws URISyntaxException {
+        log.debug("REST request to repeal StockOutTaskFrozenTube : {}", frozenBoxDTOS);
+        List<StockOutFrozenTubeForPlan> result = stockOutReqFrozenTubeService.repealStockOutPlanFrozenTubeForBox(frozenBoxDTOS,planId);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, frozenBoxDTOS.toString()))
+            .body(result);
+    }
 }

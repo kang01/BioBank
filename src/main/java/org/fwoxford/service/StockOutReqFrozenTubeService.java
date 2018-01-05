@@ -1,10 +1,10 @@
 package org.fwoxford.service;
 
 import net.sf.json.JSONObject;
-import org.fwoxford.domain.StockOutRequiredSample;
 import org.fwoxford.domain.StockOutRequirement;
 import org.fwoxford.service.dto.StockOutReqFrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
+import org.fwoxford.service.dto.response.FrozenBoxForStockOutDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenTubeForPlan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,7 +66,15 @@ public interface StockOutReqFrozenTubeService {
     /**
      * 撤销出库计划样本
      * @param frozenTubeDTOS
+     * @param planId
      * @return
      */
-    List<StockOutFrozenTubeForPlan> repealStockOutFrozenTube(List<StockOutFrozenTubeForPlan> frozenTubeDTOS);
+    List<StockOutFrozenTubeForPlan> repealStockOutFrozenTube(List<StockOutFrozenTubeForPlan> frozenTubeDTOS, Long planId);
+
+    /**
+     * 撤销出库计划冻存盒
+     * @param frozenBoxDTOS
+     * @param planId
+     */
+    List<StockOutFrozenTubeForPlan> repealStockOutPlanFrozenTubeForBox(List<StockOutFrozenTubeForPlan> frozenBoxDTOS, Long planId);
 }

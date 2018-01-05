@@ -17,6 +17,7 @@ public class StockOutFrozenTubeForPlan {
      * 撤销原因
      */
     private String repealReason;
+    private Long stockOutRequirementId;
     public Long getId() {
         return id;
     }
@@ -95,5 +96,13 @@ public class StockOutFrozenTubeForPlan {
 
     public void setRepealReason(String repealReason) {
         this.repealReason = repealReason;
+    }
+
+    public Long getStockOutRequirementId() {
+        return stockOutRequirementId;
+    }
+
+    public void setStockOutRequirementId(Long stockOutRequirementId) {
+        this.stockOutRequirementId = stockOutRequirementId;
     }
 }

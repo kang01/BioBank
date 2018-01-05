@@ -499,13 +499,7 @@ public class TranshipServiceImpl implements TranshipService{
 
             throw new BankServiceException("归还已不在进行中状态，不能修改记录！",transhipDTO.toString());
         }
-        if(transhipDTO.getStockOutApplyId()==null){
-            throw new BankServiceException("申请ID不能为空！");
-        }
-        StockOutApply stockOutApply = stockOutApplyRepository.findOne(transhipDTO.getStockOutApplyId());
-        if(stockOutApply == null ||(stockOutApply!=null&&!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVED))){
-            throw new BankServiceException("申请无效！");
-        }
+
         if(transhipDTO.getCheckTypeId()!=null){
             CheckType checkType = checkTypeRepository.findByIdAndStatus(transhipDTO.getCheckTypeId(),Constants.VALID);
             if(checkType == null){

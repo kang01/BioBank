@@ -978,10 +978,18 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             StockInTubeForSave.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             StockInTubeForSave.setTubeColumns(tubeDTO.getTubeColumns());
             StockInTubeForSave.setTubeRows(tubeDTO.getTubeRows());
+            StockInTubeForSave.setTag1(tubeDTO.getTag1());
+            StockInTubeForSave.setTag2(tubeDTO.getTag2());
+            StockInTubeForSave.setTag3(tubeDTO.getTag3());
+            StockInTubeForSave.setTag4(tubeDTO.getTag4());
             //盒内新增样本可以编辑样本本身和入库冻存管
             //如果是出库再回来，此时只能修改入库管信息，不能修改样本信息，样本信息只有在入库完成时可以编辑
             if(tubeDTO.getFrozenTubeState()==null||(tubeDTO.getFrozenTubeState()!=null&&(tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)||tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)))){
-                FrozenTube tube= createNewFrozenTube(StockInTubeForSave,frozenBox);
+                FrozenTube tube= frozenTubeMapper.stockInTubeToFrozenTube(StockInTubeForSave);
+                tube.frozenTubeState(Constants.FROZEN_BOX_STOCKING);
+                tube.setId(StockInTubeForSave.getFrozenTube()!=null?StockInTubeForSave.getFrozenTube().getId():null);
+                tube.setFrozenBox(frozenBox);
+                tube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
                 stockInTube = stockInTubeMapper.frozenTubeToStockInTube(tube,stockInBox);
                 stockInTube.setId(tubeDTO.getId());
             }
@@ -1082,37 +1090,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
         }
         return repeatSampleList;
-    }
-
-    /**
-     * 创建入库盒----创建冻存管
-     * @param stockInTubeForSave
-     * @param frozenBox
-     * @return
-     */
-    public FrozenTube createNewFrozenTube(StockInTube stockInTubeForSave,FrozenBox frozenBox) {
-        //保存冻存管
-        FrozenTube tube = new FrozenTube().projectCode(stockInTubeForSave.getProjectCode()).projectSiteCode(stockInTubeForSave.getProjectSiteCode())
-            .sampleCode(stockInTubeForSave.getSampleCode()).sampleTempCode(stockInTubeForSave.getSampleTempCode())
-            .frozenTubeTypeCode(stockInTubeForSave.getFrozenTubeTypeCode())
-            .frozenTubeTypeName(stockInTubeForSave.getFrozenTubeTypeName())
-            .sampleTypeCode(stockInTubeForSave.getSampleTypeCode())
-            .sampleTypeName(stockInTubeForSave.getSampleTypeName())
-            .sampleUsedTimesMost(stockInTubeForSave.getSampleUsedTimesMost())
-            .sampleUsedTimes(0)
-            .frozenTubeVolumns(stockInTubeForSave.getFrozenTubeVolumns())
-            .frozenTubeVolumnsUnit(stockInTubeForSave.getFrozenTubeVolumnsUnit())
-            .tubeRows(stockInTubeForSave.getTubeRows())
-            .tubeColumns(stockInTubeForSave.getTubeColumns())
-            .status(stockInTubeForSave.getStatus()).memo(stockInTubeForSave.getMemo())
-            .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenTubeType(stockInTubeForSave.getFrozenTubeType())
-            .sampleType(stockInTubeForSave.getSampleType())
-            .sampleClassification(stockInTubeForSave.getSampleClassification())
-            .project(stockInTubeForSave.getProject())
-            .projectSite(stockInTubeForSave.getProjectSite()).frozenBox(frozenBox).frozenTubeState(Constants.FROZEN_BOX_STOCKING);
-        tube.setId(stockInTubeForSave.getFrozenTube()!=null?stockInTubeForSave.getFrozenTube().getId():null);
-        frozenTubeRepository.save(tube);
-        return tube;
     }
     /**
      * 创建入库盒----根据盒子的项目和项目点，创建入库管的项目和项目点

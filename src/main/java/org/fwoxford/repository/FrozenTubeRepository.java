@@ -179,8 +179,8 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query("select t from FrozenTube t where (t.sampleCode in ?1 or t.sampleTempCode in ?1) and t.projectCode=?2 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"')")
     List<FrozenTube> findBySampleCodeInAndProjectCode(List<String> sampleCodeStr,String projectCode );
 
-    @Query("select t from FrozenTube t where t.frozenBoxCode in ?1 and  t.status not in (?2,"+Constants.FROZEN_TUBE_DESTROY+")")
-    List<FrozenTube> findByFrozenBoxCodeInAndStatusNot(List<String> boxCodeStr, String status);
+    @Query("select t from FrozenTube t where t.frozenBoxCode in ?1 and t.frozenTubeState = '"+Constants.FROZEN_BOX_STOCKED+"' and  t.status not in (?2,"+Constants.FROZEN_TUBE_DESTROY+")")
+    List<FrozenTube> findByFrozenBoxCodeInAndStatusNotForInStocked(List<String> boxCodeStr, String status);
 
     @Query(value = "select t.sample_temp_code,count(t.sample_temp_code) as noo from frozen_tube t " +
         " where t.frozen_box_id in ?1 and t.status!='"+Constants.INVALID+"' and t.sample_code is null " +

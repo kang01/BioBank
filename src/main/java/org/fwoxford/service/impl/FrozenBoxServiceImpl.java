@@ -712,7 +712,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         List<FrozenTube> frozenTubeList = new ArrayList<>();
         if(boxCodeStr!=null&&boxCodeStr.size()>0){
             stockInTubeList = stockInTubeRepository.findByFrozenBoxCodeInAndStockInCode(boxCodeStr, stockInCode);
-            frozenTubeList = frozenTubeRepository.findByFrozenBoxCodeInAndStatusNot(boxCodeStr,Constants.INVALID);
+            frozenTubeList = frozenTubeRepository.findByFrozenBoxCodeInAndStatusNotForInStocked(boxCodeStr,Constants.INVALID);
         }
         Map<String, List<StockInTube>> stockInTubeMapGroupByFrozenBoxCode = stockInTubeList.stream().collect(Collectors.groupingBy(s -> s.getFrozenBoxCode()));
         Map<String, List<FrozenTube>> frozenTubeMapGroupByFrozenBoxCode = frozenTubeList.stream().collect(Collectors.groupingBy(s -> s.getFrozenBoxCode()));
@@ -1025,13 +1025,13 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
 
         String status = frozenBox.getStatus();
-        if(!status.equals(Constants.FROZEN_BOX_STOCKING)&&!status.equals(Constants.FROZEN_BOX_STOCKED)
-            &&!status.equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&&!status.equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
+        if(!status.equals(Constants.FROZEN_BOX_STOCKING)&&!status.equals(Constants.FROZEN_BOX_STOCKED)){
             throw new BankServiceException("冻存盒"+frozenBoxCode+"状态为"+Constants.FROZEN_BOX_STATUS_MAP.get(status)+"，不能用于分装！");
         }
         //判断冻存盒状态，如果是已入库，判断盒内样本是否已满，如果满了，提示错误
         //如果是待入库，判断是否在该入库单内，如果是判断在本次入库单内，盒内样本是否已满
-        if(status.equals(Constants.FROZEN_BOX_STOCKING)||(frozenBox.getLockFlag()!=null&&frozenBox.getLockFlag().equals(Constants.FROZEN_BOX_LOCKED_FOR_SPLIT))){
+        if(status.equals(Constants.FROZEN_BOX_STOCKING)||(frozenBox.getLockFlag()!=null
+            &&frozenBox.getLockFlag().equals(Constants.FROZEN_BOX_LOCKED_FOR_SPLIT))){
             StockInBox stockInBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBoxCode);
             if(stockInBox == null){
                 throw new BankServiceException("冻存盒"+frozenBoxCode+"被其他入库单锁定，不能用于分装！");

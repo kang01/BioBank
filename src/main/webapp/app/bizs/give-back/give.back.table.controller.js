@@ -166,7 +166,7 @@
                     '   <i class="fa fa-eye"></i>' +
                     '</button>&nbsp;';
             }else{
-                html = '<button type="button" class="btn btn-default btn-xs" ui-sref="give-back-detail({giveBackId:'+ full.id +',applyCode:\''+full.applyCode+'\'})">' +
+                html = '<button type="button" class="btn btn-default btn-xs" ui-sref="give-back-detail({giveBackId:'+ full.id +'})">' +
                     '   <i class="fa fa-edit"></i>' +
                     '</button>&nbsp;';
             }

@@ -833,6 +833,7 @@
             //================输出接口==================//
             // 给Table加载数据
             function _loadData(box, tubes){
+                _errorSampleArray = [];
                 $scope.dataBox = box;
                 $scope.dataTubes = tubes;
 

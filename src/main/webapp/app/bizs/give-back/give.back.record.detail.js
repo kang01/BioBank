@@ -409,31 +409,32 @@
                 }
                 vm.box.transhipTubeDTOS = tubes;
                 boxList.push(vm.box);
-                var isValidTubeDataFlag = vm.htInstance.api.validTubeDataSampleCountOrSampleCode(_startTubes);
-                if(!isValidTubeDataFlag){
-                    _modalInstance = $uibModal.open({
-                        animation: true,
-                        templateUrl: 'app/bizs/common/prompt-modal.html',
-                        size: 'sm',
-                        controller: 'PromptModalController',
-                        controllerAs: 'vm',
-                        backdrop:'static',
-                        resolve: {
-                            items: function () {
-                                return {
-                                    status:'6'
-                                };
-                            }
-                        }
-                    });
-                    _modalInstance.result.then(function () {
-                        _editSaveBox(callback,boxList,tr,oData);
-                    }, function () {
-
-                    });
-                }else{
-                    _editSaveBox(callback,boxList);
-                }
+                // var isValidTubeDataFlag = vm.htInstance.api.validTubeDataSampleCountOrSampleCode(_startTubes);
+                // if(!isValidTubeDataFlag){
+                //     _modalInstance = $uibModal.open({
+                //         animation: true,
+                //         templateUrl: 'app/bizs/common/prompt-modal.html',
+                //         size: 'sm',
+                //         controller: 'PromptModalController',
+                //         controllerAs: 'vm',
+                //         backdrop:'static',
+                //         resolve: {
+                //             items: function () {
+                //                 return {
+                //                     status:'6'
+                //                 };
+                //             }
+                //         }
+                //     });
+                //     _modalInstance.result.then(function () {
+                //         _editSaveBox(callback,boxList,tr,oData);
+                //     }, function () {
+                //
+                //     });
+                // }else{
+                //
+                // }
+                _editSaveBox(callback,boxList);
             }else{
                 callback();
             }

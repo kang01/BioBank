@@ -8,6 +8,7 @@ import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutReqFrozenTubeService;
 import org.fwoxford.service.dto.StockOutReqFrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
+import org.fwoxford.service.dto.response.StockOutFrozenTubeForPlan;
 import org.fwoxford.service.mapper.StockOutReqFrozenTubeMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
@@ -518,5 +519,16 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubeList);
         }
         return status;
+    }
+
+    /**
+     * 撤销出库计划样本
+     * @param frozenTubeDTOS
+     * @return
+     */
+    @Override
+    public List<StockOutFrozenTubeForPlan> repealStockOutFrozenTube(List<StockOutFrozenTubeForPlan> frozenTubeDTOS) {
+
+        return null;
     }
 }

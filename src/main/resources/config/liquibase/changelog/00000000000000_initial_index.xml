@@ -99,4 +99,16 @@
             CREATE INDEX pk_status_type_for_frozen_tube ON frozen_tube (status);
         </sql>
     </changeSet>
+
+
+    <changeSet id="22222222222222-11" author="jhipster" dbms="h2,postgresql,oracle">
+        <sql>
+            <!--删除表 frozen_tube 索引-->
+            DROP INDEX pk_status_type_for_frozen_tube;
+            DROP INDEX pk_gp_frozen_box_for_sample;
+            DROP INDEX pk_check_for_frozen_tube;
+            DROP INDEX pk_state_for_frozen_tube;
+            DROP INDEX pk_status_for_frozen_box;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

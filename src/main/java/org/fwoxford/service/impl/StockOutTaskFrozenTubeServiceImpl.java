@@ -112,36 +112,50 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
     }
 
     @Override
-    public List<FrozenTubeResponse> abnormalStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS) {
+    public List<FrozenTubeResponse> abnormalStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId) {
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = getStockOutReqFrozenTubes(frozenTubeDTOS,taskId);
         List<FrozenTube> frozenTubeList = new ArrayList<>();
-        for(FrozenTubeResponse tube :frozenTubeDTOS){
-            if(tube.getId() == null){
-                continue;
+        for(StockOutReqFrozenTube stockOutReqFrozenTube: stockOutReqFrozenTubes){
+            for(FrozenTubeResponse tube :frozenTubeDTOS) {
+                if(tube.getId().equals(stockOutReqFrozenTube.getFrozenTube().getId())){
+                    stockOutReqFrozenTube.setStatus(Constants.FROZEN_TUBE_ABNORMAL);
+                    stockOutReqFrozenTube.setMemo(tube.getMemo());
+                    FrozenTube frozenTube = stockOutReqFrozenTube.getFrozenTube();
+                    frozenTube.setStatus(Constants.FROZEN_TUBE_ABNORMAL);
+                    frozenTube.setMemo(tube.getMemo());
+                    frozenTubeList.add(frozenTube);
+                }
             }
-            FrozenTube frozenTube = frozenTubeRepository.findOne(tube.getId());
-            if(frozenTube == null){
-                continue;
-            }
-            frozenTube.setStatus(Constants.FROZEN_TUBE_ABNORMAL);
-            frozenTube.setMemo(tube.getMemo());
-            frozenTubeList.add(frozenTube);
         }
+        stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
         frozenTubeRepository.save(frozenTubeList);
         return frozenTubeDTOS;
     }
 
-    @Override
-    public List<FrozenTubeResponse> repealStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId) {
-        StockOutTask stockOutTask = stockOutTaskRepository.findOne(taskId);
-        if(stockOutTask == null ){
-            throw new BankServiceException("出库任务查询失败！");
-        }
+    private List<StockOutReqFrozenTube> getStockOutReqFrozenTubes(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId) {
         List<Long> frozenTubeIds = new ArrayList<>();
         for(FrozenTubeResponse tube :frozenTubeDTOS){
             frozenTubeIds.add(tube.getId());
         }
         //需求样本撤销
         List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(taskId,frozenTubeIds,Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+        return stockOutReqFrozenTubes;
+    }
+
+    /**
+     * 撤销出库样本
+     * @param frozenTubeDTOS
+     * @param taskId
+     * @return
+     */
+    @Override
+    public List<FrozenTubeResponse> repealStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId) {
+        StockOutTask stockOutTask = stockOutTaskRepository.findOne(taskId);
+        if(stockOutTask == null ){
+            throw new BankServiceException("出库任务查询失败！");
+        }
+        //需求样本撤销
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = getStockOutReqFrozenTubes(frozenTubeDTOS,taskId);
         for(StockOutReqFrozenTube stockOutReqFrozenTube: stockOutReqFrozenTubes){
             for(FrozenTubeResponse tube :frozenTubeDTOS) {
                 if(tube.getId().equals(stockOutReqFrozenTube.getFrozenTube().getId())){
@@ -155,21 +169,68 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
         return frozenTubeDTOS;
     }
 
+    /**
+     * 出库样本增加批注
+     * @param frozenTubeDTOS
+     * @param taskId
+     * @return
+     */
     @Override
-    public List<FrozenTubeResponse> noteStockOutTaskFrozenTube( List<FrozenTubeResponse> frozenTubeDTOS) {
-
-        List<FrozenTube> frozenTubeList = new ArrayList<>();
-        for(FrozenTubeResponse tube :frozenTubeDTOS){
-            if(tube.getId() == null){
-                continue;
-            }
-            FrozenTube frozenTube = frozenTubeRepository.findOne(tube.getId());
-            if(frozenTube == null){
-                continue;
-            }
-            frozenTube.setMemo(tube.getMemo());
-            frozenTubeList.add(frozenTube);
+    public List<FrozenTubeResponse> noteStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId) {
+        StockOutTask stockOutTask = stockOutTaskRepository.findOne(taskId);
+        if(stockOutTask == null ){
+            throw new BankServiceException("出库任务查询失败！");
         }
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = getStockOutReqFrozenTubes(frozenTubeDTOS,taskId);
+        List<FrozenTube> frozenTubeList = new ArrayList<>();
+        for(StockOutReqFrozenTube stockOutReqFrozenTube: stockOutReqFrozenTubes){
+            for(FrozenTubeResponse tube :frozenTubeDTOS) {
+                if(tube.getId().equals(stockOutReqFrozenTube.getFrozenTube().getId())){
+                    stockOutReqFrozenTube.setMemo(tube.getMemo());
+                    FrozenTube frozenTube = stockOutReqFrozenTube.getFrozenTube();
+                    frozenTube.setMemo(tube.getMemo());
+                    frozenTubeList.add(frozenTube);
+                }
+            }
+        }
+        stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+        frozenTubeRepository.save(frozenTubeList);
+        return frozenTubeDTOS;
+    }
+
+    /**
+     * 出库样本增加标签
+     * @param frozenTubeDTOS
+     * @param taskId
+     * @return
+     */
+    @Override
+    public List<FrozenTubeResponse> tagStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId) {
+        StockOutTask stockOutTask = stockOutTaskRepository.findOne(taskId);
+        if(stockOutTask == null ){
+            throw new BankServiceException("出库任务查询失败！");
+        }
+        //需求样本撤销
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = getStockOutReqFrozenTubes(frozenTubeDTOS,taskId);
+        List<FrozenTube> frozenTubeList = new ArrayList<>();
+        for(StockOutReqFrozenTube stockOutReqFrozenTube: stockOutReqFrozenTubes){
+            for(FrozenTubeResponse tube :frozenTubeDTOS) {
+                if(tube.getId().equals(stockOutReqFrozenTube.getFrozenTube().getId())){
+                    stockOutReqFrozenTube.setMemo(tube.getMemo());
+                    FrozenTube frozenTube = stockOutReqFrozenTube.getFrozenTube();
+                    frozenTube.setTag1(tube.getTag1());
+                    frozenTube.setTag2(tube.getTag2());
+                    frozenTube.setTag3(tube.getTag3());
+                    frozenTube.setTag4(tube.getTag4());
+                    frozenTubeList.add(frozenTube);
+                    stockOutReqFrozenTube.setTag1(tube.getTag1());
+                    stockOutReqFrozenTube.setTag2(tube.getTag2());
+                    stockOutReqFrozenTube.setTag3(tube.getTag3());
+                    stockOutReqFrozenTube.setTag4(tube.getTag4());
+                }
+            }
+        }
+        stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
         frozenTubeRepository.save(frozenTubeList);
         return frozenTubeDTOS;
     }

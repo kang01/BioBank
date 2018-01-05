@@ -134,7 +134,7 @@ public class StockOutFrozenTubeServiceImpl implements StockOutFrozenTubeService{
             if(tubeS == null){
                 continue;
             }
-            tube.setId(tubeS.getId());
+            tube.setId(s.getId());
             tube.setSampleTypeName(tubeS.getSampleTypeName());
             tube.setStatus(tubeS.getStatus());
             tube.setAge(tubeS.getAge());

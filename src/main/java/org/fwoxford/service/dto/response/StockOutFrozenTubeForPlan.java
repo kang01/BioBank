@@ -13,7 +13,10 @@ public class StockOutFrozenTubeForPlan {
     private Integer age;
     private Long sampleUsedTimes;
     private String memo;
-
+    /**
+     * 撤销原因
+     */
+    private String repealReason;
     public Long getId() {
         return id;
     }
@@ -84,5 +87,13 @@ public class StockOutFrozenTubeForPlan {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getRepealReason() {
+        return repealReason;
+    }
+
+    public void setRepealReason(String repealReason) {
+        this.repealReason = repealReason;
     }
 }

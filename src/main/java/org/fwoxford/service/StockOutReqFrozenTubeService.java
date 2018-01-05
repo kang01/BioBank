@@ -5,6 +5,7 @@ import org.fwoxford.domain.StockOutRequiredSample;
 import org.fwoxford.domain.StockOutRequirement;
 import org.fwoxford.service.dto.StockOutReqFrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
+import org.fwoxford.service.dto.response.StockOutFrozenTubeForPlan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -61,4 +62,11 @@ public interface StockOutReqFrozenTubeService {
      * @return
      */
     String checkStockOutSampleByAppointedSampleOrAppointedBox(List<JSONObject> jsonArray, StockOutRequirement stockOutRequirement);
+
+    /**
+     * 撤销出库计划样本
+     * @param frozenTubeDTOS
+     * @return
+     */
+    List<StockOutFrozenTubeForPlan> repealStockOutFrozenTube(List<StockOutFrozenTubeForPlan> frozenTubeDTOS);
 }

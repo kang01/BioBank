@@ -3,6 +3,7 @@ package org.fwoxford.service.dto.response;
 import org.fwoxford.domain.FrozenTubeType;
 import org.fwoxford.domain.SampleClassification;
 import org.fwoxford.domain.SampleType;
+import org.fwoxford.service.dto.FrozenTubeLabelDTO;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -10,7 +11,7 @@ import javax.validation.constraints.Size;
 /**
  * Created by gengluying on 2017/3/22.
  */
-public class FrozenTubeResponse {
+public class FrozenTubeResponse extends FrozenTubeLabelDTO{
     /**
      * 冻存管ID
      */

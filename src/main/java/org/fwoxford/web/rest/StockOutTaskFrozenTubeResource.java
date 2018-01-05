@@ -137,11 +137,11 @@ public class StockOutTaskFrozenTubeResource {
      * @return
      * @throws URISyntaxException
      */
-    @PutMapping("/stock-out-task-frozen-tubes/abnormal")
+    @PutMapping("/stock-out-task-frozen-tubes/abnormal/task/{taskId}")
     @Timed
-    public ResponseEntity<List<FrozenTubeResponse>> abnormalStockOutTaskFrozenTube(@Valid @RequestBody List<FrozenTubeResponse> frozenTubeDTOS) throws URISyntaxException {
+    public ResponseEntity<List<FrozenTubeResponse>> abnormalStockOutTaskFrozenTube(@Valid @RequestBody List<FrozenTubeResponse> frozenTubeDTOS,@PathVariable Long taskId) throws URISyntaxException {
         log.debug("REST request to abnormal StockOutTaskFrozenTube : {}", frozenTubeDTOS);
-        List<FrozenTubeResponse> result = stockOutTaskFrozenTubeService.abnormalStockOutTaskFrozenTube(frozenTubeDTOS);
+        List<FrozenTubeResponse> result = stockOutTaskFrozenTubeService.abnormalStockOutTaskFrozenTube(frozenTubeDTOS,taskId);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, frozenTubeDTOS.toString()))
             .body(result);
@@ -167,11 +167,27 @@ public class StockOutTaskFrozenTubeResource {
      * @return
      * @throws URISyntaxException
      */
-    @PutMapping("/stock-out-task-frozen-tubes/note")
+    @PutMapping("/stock-out-task-frozen-tubes/note/task/{taskId}")
     @Timed
-    public ResponseEntity< List<FrozenTubeResponse>> noteStockOutTaskFrozenTube(@Valid @RequestBody List<FrozenTubeResponse> frozenTubeDTOS) throws URISyntaxException {
+    public ResponseEntity< List<FrozenTubeResponse>> noteStockOutTaskFrozenTube(@Valid @RequestBody List<FrozenTubeResponse> frozenTubeDTOS ,@PathVariable Long taskId) throws URISyntaxException {
         log.debug("REST request to note StockOutTaskFrozenTube : {}", frozenTubeDTOS);
-        List<FrozenTubeResponse> result = stockOutTaskFrozenTubeService.noteStockOutTaskFrozenTube(frozenTubeDTOS);
+        List<FrozenTubeResponse> result = stockOutTaskFrozenTubeService.noteStockOutTaskFrozenTube(frozenTubeDTOS,taskId);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, frozenTubeDTOS.toString()))
+            .body(result);
+    }
+
+    /**
+     * 出库样本增加标签
+     * @param frozenTubeDTOS
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-task-frozen-tubes/tag/task/{taskId}")
+    @Timed
+    public ResponseEntity< List<FrozenTubeResponse>> tagStockOutTaskFrozenTube(@Valid @RequestBody List<FrozenTubeResponse> frozenTubeDTOS,@PathVariable Long taskId) throws URISyntaxException {
+        log.debug("REST request to note StockOutTaskFrozenTube : {}", frozenTubeDTOS);
+        List<FrozenTubeResponse> result = stockOutTaskFrozenTubeService.tagStockOutTaskFrozenTube(frozenTubeDTOS,taskId);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, frozenTubeDTOS.toString()))
             .body(result);

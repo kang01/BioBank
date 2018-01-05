@@ -41,10 +41,35 @@ public interface StockOutTaskFrozenTubeService {
      *  @param id the id of the entity
      */
     void delete(Long id);
-
-    List<FrozenTubeResponse> abnormalStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS);
+    /**
+     *  出库样本增加异常状态
+     * @param frozenTubeDTOS
+     * @param taskId
+     * @return
+     */
+    List<FrozenTubeResponse> abnormalStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId);
+    /**
+     *  撤销出库样本
+     * @param frozenTubeDTOS
+     * @return
+     */
 
     List<FrozenTubeResponse> repealStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId);
 
-    List<FrozenTubeResponse> noteStockOutTaskFrozenTube( List<FrozenTubeResponse> frozenTubeDTOS);
+    /**
+     *  出库样本增加批注
+     * @param frozenTubeDTOS
+     * @param taskId
+     * @return
+     */
+
+    List<FrozenTubeResponse> noteStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId);
+
+    /**
+     * 出库样本增加标签
+     * @param frozenTubeDTOS
+     * @param taskId
+     * @return
+     */
+    List<FrozenTubeResponse> tagStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId);
 }

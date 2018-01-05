@@ -6680,14 +6680,27 @@ public class ImportSampleDataTest {
         projectSampleClassRepository.save(projectSampleClass1);
     }
 
+    @Autowired
+    CheckTypeRepository checkTypeRepository;
 
     @Test
     public void  tesss(){
 
-        for(int i=1;i<=96;i++){
-            Map map = getPos(i);
-            System.out.print(map);
-        }
+//        for(int i=1;i<=96;i++){
+//            Map map = getPos(i);
+//            System.out.print(map);
+//        }
+        List<CheckType> checkTypes = new ArrayList<>();
+        CheckType checkType = new CheckType().checkTypeCode("MY").checkTypeName("免疫").status(Constants.VALID);
+        CheckType checkType1 = new CheckType().checkTypeCode("DNA").checkTypeName("DNA提取").status(Constants.VALID);
+
+        CheckType checkType2= new CheckType().checkTypeCode("XPJC").checkTypeName("芯片检测").status(Constants.VALID);
+        CheckType checkType3= new CheckType().checkTypeCode("SH").checkTypeName("生化").status(Constants.VALID);
+        CheckType checkType4= new CheckType().checkTypeCode("TH").checkTypeName("糖化血红蛋白").status(Constants.VALID);
+        CheckType checkType5 = new CheckType().checkTypeCode("QT").checkTypeName("其它").status(Constants.VALID);
+        checkTypes.add(checkType);checkTypes.add(checkType1);checkTypes.add(checkType2);checkTypes.add(checkType3);
+        checkTypes.add(checkType4);checkTypes.add(checkType5);
+        checkTypeRepository.save(checkTypes) ;
     }
 
     private Map getPos(int i) {
@@ -6704,4 +6717,5 @@ public class ImportSampleDataTest {
         map.put("tubeColumns",tubeColumns);
         return map;
     }
+
 }

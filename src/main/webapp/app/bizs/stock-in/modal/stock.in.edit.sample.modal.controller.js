@@ -35,6 +35,7 @@
         vm.entity.sampleTypeCode = items.sampleTypeCode;
         vm.entity.sampleTypeName = items.sampleTypeName;
 
+
         //冻存管状态
         vm.tubeStatusOptions = MasterData.frozenTubeStatus;
         _.remove(vm.tubeStatusOptions,{id:"3005"});
@@ -56,6 +57,8 @@
             vm.entity.sampleClassificationId = sampleSelectedArray[0].sampleClassificationId;
             vm.entity.sampleClassificationCode = sampleSelectedArray[0].sampleClassificationCode;
             vm.entity.sampleClassificationName = sampleSelectedArray[0].sampleClassificationName;
+
+            vm.entity.frozenTubeId = sampleSelectedArray[0].frozenTubeId;
 
         }
 

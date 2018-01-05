@@ -38,9 +38,10 @@
         ])
         .run(run);
 
-    run.$inject = ['stateHandler', 'translationHandler','Auth'];
+    run.$inject = ['stateHandler', 'translationHandler', 'globalEventHandler','Auth'];
 
-    function run(stateHandler, translationHandler,Auth) {
+    function run(stateHandler, translationHandler, globalEventHandler, Auth) {
+        globalEventHandler.initialize();
         stateHandler.initialize();
         translationHandler.initialize();
     }

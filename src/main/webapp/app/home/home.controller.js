@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$scope', 'Principal', 'LoginService', '$state','$uibModal','TranshipNewEmptyService','toastr','RequirementService','GiveBackService'];
+    HomeController.$inject = ['$scope', 'Principal', 'LoginService', '$state','$uibModal','TranshipNewEmptyService','toastr','RequirementService','GiveBackService','$interval'];
 
-    function HomeController ($scope, Principal, LoginService, $state,$uibModal,TranshipNewEmptyService,toastr,RequirementService,GiveBackService) {
+    function HomeController ($scope, Principal, LoginService, $state,$uibModal,TranshipNewEmptyService,toastr,RequirementService,GiveBackService, $interval) {
         var vm = this;
 
         vm.account = null;
@@ -123,5 +123,23 @@
         vm.close = function () {
             vm.isActive = false;
         }
+
+        var inputValue = "";
+        var clearTimer = null;
+        $scope.$on("bbis:global:keyup", function(handler, $event){
+            if (clearTimer){
+                $interval.cancel(clearTimer);
+                clearTimer = null;
+            }
+            if ($event.keyCode != 13){
+                inputValue += String.fromCharCode($event.keyCode);
+                clearTimer = $interval(function(){
+                    inputValue = "";
+                }, 50);
+                return;
+            }
+            toastr.error(inputValue);
+            inputValue = "";
+        });
     }
 })();

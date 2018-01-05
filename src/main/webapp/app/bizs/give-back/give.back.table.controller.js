@@ -32,11 +32,6 @@
                 width:"120"
             },
             {
-                name:"applyCode",
-                title:"出库申请单",
-                width:"120"
-            },
-            {
                 name:"projectCode",
                 title:"项目编码",
                 width:"80"
@@ -96,7 +91,7 @@
             })
             .withOption('createdRow', function (row, data, dataIndex) {
                 var giveBackStatus = MasterData.getStatus(data.transhipState);
-                $('td:eq(8)', row).html(giveBackStatus);
+                $('td:eq(7)', row).html(giveBackStatus);
                 $compile(angular.element(row).contents())($scope);
             })
             .withColumnFilter(_createColumnFilters());
@@ -187,7 +182,6 @@
                     {type: 'text',bRegex: true,bSmart: true},
                     {type: 'text',bRegex: true,bSmart: true},
                     {type: 'text',bRegex: true,bSmart: true},
-                    {type: 'text',bRegex: true,bSmart: true},
                     {
                         type: 'select',
                         // bRegex: true,
@@ -207,7 +201,7 @@
 
             return filters;
         }
-        //添加申请单号的归还详情
+        //添加归还
         function _add() {
             var modalInstance = $uibModal.open({
                 animation: true,

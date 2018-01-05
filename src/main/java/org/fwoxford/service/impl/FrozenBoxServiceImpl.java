@@ -588,7 +588,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         for (StockInBox inBox : stockInBoxes) {
             FrozenBox boxIn = inBox.getFrozenBox();
             if (boxIn.getFrozenBoxTypeCode().equals(frozenBox.getFrozenBoxTypeCode())
-                && boxIn.getId() != frozenBox.getId() && boxIn.getIsSplit().equals(Constants.NO)) {
+                && boxIn.getId() != frozenBox.getId() &&( boxIn.getIsSplit()!=null&& boxIn.getIsSplit().equals(Constants.NO))) {
                 Long countOfSampleOriginal = frozenTubeRepository.countByFrozenBoxCodeAndFrozenTubeState(boxIn.getFrozenBoxCode(), Constants.FROZEN_BOX_STOCKED);
                 Long countOfSampleCurrent = stockInTubeRepository.countByFrozenBoxCodeAndStockInCode(boxIn.getFrozenBoxCode(), stockInCode);
                 String columns = boxIn.getFrozenBoxTypeColumns() != null ? boxIn.getFrozenBoxTypeColumns() : new String("0");

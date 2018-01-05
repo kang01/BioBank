@@ -560,6 +560,8 @@
                 vm.box.stockInFrozenTubeList = [];
             }
             vm.box.countOfSample = vm.box.stockInFrozenTubeList.length;
+            vm.box.frozenBoxTypeColumns = vm.box.frozenBoxType.frozenBoxTypeColumns;
+            vm.box.frozenBoxTypeRows = vm.box.frozenBoxType.frozenBoxTypeRows;
             $uibModalInstance.close(vm.box);
 
         };

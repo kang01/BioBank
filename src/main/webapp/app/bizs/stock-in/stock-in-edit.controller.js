@@ -1860,12 +1860,14 @@
                     }
                 }
                 notEmptyTubeLength = notEmptyTubes.length;
+                if(notEmptyTubes.length){
+                    _.forEach(vm.stockInBox,function (tube) {
+                        if(tube.frozenBoxCode == notEmptyTubes[0].frozenBoxCode){
+                            tube.countOfSample = notEmptyTubeLength;
+                        }
+                    });
+                }
 
-                _.forEach(vm.stockInBox,function (tube) {
-                    if(tube.frozenBoxCode == notEmptyTubes[0].frozenBoxCode){
-                        tube.countOfSample = notEmptyTubeLength;
-                    }
-                });
             }
             // 更新新增盒子的入库盒子ID
             function _fnUpdateBoxListId(data) {

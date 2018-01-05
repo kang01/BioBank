@@ -733,6 +733,9 @@ public class TranshipServiceImpl implements TranshipService{
                         add(Constants.INVALID);
                     }});
             List<FrozenTube> frozenTubes = new ArrayList<FrozenTube>();
+            if(transhipTubes == null || transhipTubes.size() == 0){
+                throw new BankServiceException("冻存盒"+frozenBox.getFrozenBoxCode()+"内无样本，不能执行接收完成！");
+            }
             for (TranshipTube transhipTube : transhipTubes) {
                 transhipTube.setFrozenTubeState(Constants.FROZEN_BOX_TRANSHIP_COMPLETE);
                 FrozenTube frozenTube = transhipTubeMapper.transhipTubeToFrozenTube(transhipTube);

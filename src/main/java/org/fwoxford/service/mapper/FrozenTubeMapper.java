@@ -270,6 +270,10 @@ public interface FrozenTubeMapper {
             .project(stockInTube.getProject())
             .projectSite(stockInTube.getProjectSite()).frozenBox(stockInTube.getStockInBox().getFrozenBox())
             .frozenTubeState(Constants.FROZEN_BOX_STOCKED);
+        frozenTube.setTag1(stockInTube.getTag1());
+        frozenTube.setTag2(stockInTube.getTag2());
+        frozenTube.setTag3(stockInTube.getTag3());
+        frozenTube.setTag4(stockInTube.getTag4());
         return frozenTube;
     }
 }

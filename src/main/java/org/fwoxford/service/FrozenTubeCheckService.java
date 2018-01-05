@@ -56,7 +56,7 @@ public class FrozenTubeCheckService {
             if(frozenTube != null){
                 if(frozenTube.getSampleClassification()!=null&&tube.getSampleClassification()!=null){//有分类
                     //新增时，分类相同不能保存
-                    if(frozenTube.getId()==null&&frozenTube.getSampleClassification().getId()==tube.getSampleClassification().getId()){
+                    if(frozenTube.getId()==null&&frozenTube.getSampleClassification().getId().equals(tube.getSampleClassification().getId())){
                         frozenTubeListForCheckRepeat.add(frozenTube);
                     }
                     //修改时，分类相同，ID不同，不能保存
@@ -99,7 +99,7 @@ public class FrozenTubeCheckService {
         for (TranshipTubeDTO tubeDTO : transhipTubeDTOS) {
             for (FrozenTube tube : frozenTubeList) {
                 if (tubeDTO.getSampleCode().equals(tube.getSampleCode()) && tubeDTO.getSampleTypeCode().equals(tube.getSampleTypeCode())) {
-                    if ((tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId() != null && tubeDTO.getFrozenTubeId() == tube.getId()))) {
+                    if ((tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId() != null && tubeDTO.getFrozenTubeId().equals(tube.getId())))) {
                         if (!tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)) {
                             if (!repeatSampleList.contains(tubeDTO)) {
                                 repeatSampleList.add(tubeDTO);
@@ -116,7 +116,7 @@ public class FrozenTubeCheckService {
         for(TranshipTubeDTO tubeDTO :transhipTubeDTOS){
             for(TranshipTube tube : transhipTubes){
                 if(tubeDTO.getSampleCode().equals(tube.getSampleCode())&& tubeDTO.getSampleTypeCode().equals(tube.getSampleTypeCode())){
-                    if (tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId()!=null && tubeDTO.getFrozenTubeId()== tube.getFrozenTube().getId())){
+                    if (tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId()!=null && tubeDTO.getFrozenTubeId().equals(tube.getFrozenTube().getId()))){
                         if(!repeatSampleList.contains(tubeDTO)){
                             repeatSampleList.add(tubeDTO);
                         }

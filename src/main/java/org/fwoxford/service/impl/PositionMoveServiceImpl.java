@@ -233,7 +233,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         if(positionMoveDTO.getOperatorId1() == null || positionMoveDTO.getOperatorId2()==null){
             throw new BankServiceException("操作人不能为空！");
         }
-        if(positionMoveDTO.getOperatorId1() == positionMoveDTO.getOperatorId2()){
+        if(positionMoveDTO.getOperatorId1().equals( positionMoveDTO.getOperatorId2())){
             throw new BankServiceException("操作人不能为同一个人！");
         }
         if(positionMoveDTO.getPassword1() == null || positionMoveDTO.getPassword2()==null){

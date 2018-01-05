@@ -305,16 +305,13 @@
                     $(".transport-boxes").empty();
                     createBoxDom(vm.boxList)
                 }else{
-                    //盒号长度大于3时，开始搜索
-                    if(vm.boxCode.length > 3){
-                        $(".transport-boxes").empty();
-                        var box = _.filter(vm.boxList,function (data) {
-                            if(_.startsWith(data.frozenBoxCode, vm.boxCode)){
-                                return data;
-                            }
-                        });
-                        createBoxDom(box)
-                    }
+                    $(".transport-boxes").empty();
+                    var box = _.filter(vm.boxList,function (data) {
+                        if(_.startsWith(data.frozenBoxCode, vm.boxCode)){
+                            return data;
+                        }
+                    });
+                    createBoxDom(box)
 
                 }
 

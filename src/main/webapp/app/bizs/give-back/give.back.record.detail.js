@@ -594,7 +594,8 @@
                 {
                     name:"frozenBoxCode",
                     title:"冻存盒号",
-                    renderWith:_fnRowBoxCodeRender
+                    renderWith:_fnRowBoxCodeRender,
+                    notSortable:true
 
 
                 }
@@ -602,7 +603,7 @@
             ];
             var dom = "<'row mt-10'<'col-xs-12 text-left pl-25' f> <'col-xs-1 text-right mb-5' > r> t <'row mt-0'<'col-xs-6'i> <'col-xs-6'p>>";
             vm.boxColumns = BioBankDataTable.buildDTColumn(columns);
-            vm.boxOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING","410",null,dom,null,1)
+            vm.boxOptions = BioBankDataTable.buildDTOption("BASIC,SEARCHING","410",null,dom)
                 .withOption('rowCallback', rowCallback);
 
             function _fnRowBoxCodeRender(data, type, full, meta) {
@@ -633,6 +634,9 @@
                 if(vm.box.frozenBoxCode){
                     var tubes = vm.htInstance.api.getTubesData();
                     vm.box.transhipTubeDTOS = tubes;
+                    _.forEach(vm.box.transhipTubeDTOS,function (tube) {
+                        delete  tube.stockOutStatus
+                    })
                 }
                 var _endBoxStr = JSON.stringify(vm.box);
 

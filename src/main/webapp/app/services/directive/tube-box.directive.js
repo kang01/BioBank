@@ -696,7 +696,7 @@
 
                         var code = (tube.sampleCode||"") + (tube.sampleTempCode||"");
                         if (!_.trim(code).length){
-                            // selectedTubeElements.push(cell);
+                            selectedTubeElements.push(cell);
                             continue;
                         } else {
                             selectedTubes.push(tube);
@@ -1222,14 +1222,27 @@
                             if(selectedData.length == 1){
                                 tube1.sampleCode = tube.sampleCode;
                             }
-                            tube1.sampleVolumns = tube.sampleVolumns;
+                            if(tube.sampleVolumns){
+                                tube1.sampleVolumns = tube.sampleVolumns;
+                            }
+
                             tube1.sampleTypeId = tube.sampleTypeId;
                             tube1.sampleClassificationId = tube.sampleClassificationId;
-                            tube1.memo = tube.memo;
-                            tube1.tag1 = tube.tag1;
-                            tube1.tag2 = tube.tag2;
-                            tube1.tag3 = tube.tag3;
-                            tube1.tag4 = tube.tag4;
+                            if(tube.memo){
+                                tube1.memo = tube.memo;
+                            }
+                            if(tube.tag1){
+                                tube1.tag1 = tube.tag1;
+                            }
+                            if(tube.tag2){
+                                tube1.tag2 = tube.tag2;
+                            }
+                            if(tube.tag3){
+                                tube1.tag3 = tube.tag3;
+                            }
+                            if(tube.tag4){
+                                tube1.tag4 = tube.tag4;
+                            }
                         }
                     })
                 });
@@ -1253,7 +1266,8 @@
                     toastr.error("原盒中的管子不能移位。");
                     return false;
                 }
-
+                tableCtrl.getCellMeta(srcPos.row, srcPos.col).comment = {};
+                tableCtrl.getCellMeta(desPos.row, desPos.col).comment = {};
                 tableCtrl.setDataAtCell(srcPos.row, srcPos.col, {}, "auto");
                 tableCtrl.setDataAtCell(desPos.row, desPos.col, {}, "auto");
                 if (!_isEmptyTubeCell(tubeA)){

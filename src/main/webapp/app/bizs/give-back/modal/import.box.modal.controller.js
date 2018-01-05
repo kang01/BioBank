@@ -105,6 +105,7 @@
             };
             vm.boxCodeConfig.onItemRemove = function (value) {
                 _.remove(_boxList,{frozenBoxCode:value});
+                vm.errorLen = 0;
             };
         }
         //盒子table详情
@@ -273,7 +274,8 @@
                     box.columnsInShelf = "";
                     box.rowsInShelf = "";
                 });
-                GiveBackService.saveBox(_giveBackId,_boxList).success(function (data) {
+                var _boxList1 = _.reverse(_boxList);
+                GiveBackService.saveBox(_giveBackId,_boxList1).success(function (data) {
                     toastr.success("保存成功!");
                     blockUI.stop();
                     if (typeof callback === "function"){

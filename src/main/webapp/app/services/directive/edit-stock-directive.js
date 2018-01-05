@@ -23,7 +23,7 @@
                 editFlag: "=",
                 showFlag: "="
             },
-            templateUrl: 'app/bizs/stock-in/template/edit-stockInBox-template.html',
+            templateUrl: 'app/services/directive/template/edit-stockInBox-template.html',
             link: function(scope, elem, attrs){
 
                 // elem.html($compile(scope.compile)(scope))
@@ -275,8 +275,8 @@
                                     if(vm.singleMultipleFlag == "single"){
                                         modalInstance = $uibModal.open({
                                             animation: true,
-                                            templateUrl: 'app/bizs/stock-in/modal/stock-in-add-sample-modal.html',
-                                            controller: 'StockInAddSampleModal',
+                                            templateUrl: 'app/bizs/stock-in/modal/stock-in-edit-sample-modal.html',
+                                            controller: 'StockInEditSampleModal',
                                             backdrop:'static',
                                             controllerAs: 'vm',
                                             size:'lg',
@@ -316,6 +316,10 @@
                                                             vm.frozenTubeArray[i][j].sampleTypeName = tubes[k].sampleTypeName;
                                                             vm.frozenTubeArray[i][j].backColor = tubes[k].backColor;
                                                             vm.frozenTubeArray[i][j].sampleVolumns = tubes[k].sampleVolumns;
+                                                            vm.frozenTubeArray[i][j].tag1 = tubes[k].tag1;
+                                                            vm.frozenTubeArray[i][j].tag2 = tubes[k].tag2;
+                                                            vm.frozenTubeArray[i][j].tag3 = tubes[k].tag3;
+                                                            vm.frozenTubeArray[i][j].tag4 = tubes[k].tag4;
                                                             if(tubes[k].sampleClassificationId){
                                                                 vm.frozenTubeArray[i][j].sampleClassificationId = tubes[k].sampleClassificationId;
                                                                 vm.frozenTubeArray[i][j].sampleClassificationName = tubes[k].sampleClassificationName;
@@ -944,8 +948,8 @@
             var selectedData = _.uniq(aRemarkArray);
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/modal/stock-in-add-sample-modal.html',
-                controller: 'StockInAddSampleModal',
+                templateUrl: 'app/bizs/stock-in/modal/stock-in-edit-sample-modal.html',
+                controller: 'StockInEditSampleModal',
                 backdrop:'static',
                 controllerAs: 'vm',
                 size:'lg',
@@ -984,6 +988,10 @@
                                 vm.frozenTubeArray[i][j].sampleTypeName = tubes[0].sampleTypeName;
                                 vm.frozenTubeArray[i][j].backColor = tubes[0].backColor;
                                 vm.frozenTubeArray[i][j].sampleVolumns = tubes[0].sampleVolumns;
+                                vm.frozenTubeArray[i][j].tag1 = tubes[0].tag1;
+                                vm.frozenTubeArray[i][j].tag2 = tubes[0].tag2;
+                                vm.frozenTubeArray[i][j].tag3 = tubes[0].tag3;
+                                vm.frozenTubeArray[i][j].tag4 = tubes[0].tag4;
                                 if(tubes[0].sampleClassificationId){
                                     vm.frozenTubeArray[i][j].sampleClassificationId = tubes[0].sampleClassificationId;
                                     vm.frozenTubeArray[i][j].sampleClassificationName = tubes[0].sampleClassificationName;
@@ -1000,6 +1008,10 @@
                                     vm.frozenTubeArray[i][j].sampleTypeName = tubes[k].sampleTypeName;
                                     vm.frozenTubeArray[i][j].backColor = tubes[k].backColor;
                                     vm.frozenTubeArray[i][j].sampleVolumns = tubes[k].sampleVolumns;
+                                    vm.frozenTubeArray[i][j].tag1 = tubes[k].tag1;
+                                    vm.frozenTubeArray[i][j].tag2 = tubes[k].tag2;
+                                    vm.frozenTubeArray[i][j].tag3 = tubes[k].tag3;
+                                    vm.frozenTubeArray[i][j].tag4 = tubes[k].tag4;
                                     if(tubes[k].sampleClassificationId){
                                         vm.frozenTubeArray[i][j].sampleClassificationId = tubes[k].sampleClassificationId;
                                         vm.frozenTubeArray[i][j].sampleClassificationName = tubes[k].sampleClassificationName;

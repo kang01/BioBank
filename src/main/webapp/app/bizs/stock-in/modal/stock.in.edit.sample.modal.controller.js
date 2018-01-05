@@ -6,11 +6,11 @@
 
     angular
         .module('bioBankApp')
-        .controller('StockInAddSampleModal', StockInAddSampleModal);
+        .controller('StockInEditSampleModal', StockInEditSampleModal);
 
-    StockInAddSampleModal.$inject = ['$uibModalInstance','items','toastr','SampleTypeService','ProjectService','ProjectSitesByProjectIdService','MasterData','StockInInputService','DTColumnBuilder','BioBankDataTable'];
+    StockInEditSampleModal.$inject = ['$uibModalInstance','items','toastr','SampleTypeService','ProjectService','ProjectSitesByProjectIdService','MasterData','StockInInputService','DTColumnBuilder','BioBankDataTable','BioBankSelectize'];
 
-    function StockInAddSampleModal($uibModalInstance,items,toastr,SampleTypeService,ProjectService,ProjectSitesByProjectIdService,MasterData,StockInInputService,DTColumnBuilder,BioBankDataTable) {
+    function StockInEditSampleModal($uibModalInstance,items,toastr,SampleTypeService,ProjectService,ProjectSitesByProjectIdService,MasterData,StockInInputService,DTColumnBuilder,BioBankDataTable,BioBankSelectize) {
         var vm = this;
         //库里已有的样本
         vm.tubes = items.tubes;
@@ -37,7 +37,7 @@
 
         //冻存管状态
         vm.tubeStatusOptions = MasterData.frozenTubeStatus;
-
+        _.remove(vm.tubeStatusOptions,{id:"3005"});
         vm.entity.status = vm.tubeStatusOptions[0].id;
         //单次录入
         if(vm.singleMultipleFlag == 'single' && sampleSelectedArray.length){
@@ -282,6 +282,40 @@
 
                 }
             };
+
+            //标签
+            var _tagSelectize = {
+                create : true,
+                persist:false,
+                clearMaxItemFlag : true
+            };
+            vm.TagConfig = BioBankSelectize.buildSettings(_tagSelectize);
+            if(sampleSelectedArray.length == 1){
+                vm.TagConfig.onInitialize = function (initialize) {
+                    var tagSelectize = initialize;
+                    var tagOption = [];
+                    var tags = [];
+                    var tags1 = [];
+                    var tags2 = [];
+                    tags1.push(sampleSelectedArray[0].tag1);
+                    tags1.push(sampleSelectedArray[0].tag2);
+                    tags1.push(sampleSelectedArray[0].tag3);
+                    if(sampleSelectedArray[0].tag4){
+                        tags2 = _.split(sampleSelectedArray[0].tag4, ',');
+                    }
+                    tags = _.concat(tags1, tags2);
+                    _.forEach(tags,function (tag) {
+                        var obj = {};
+                        obj.text = tag;
+                        obj.value =tag;
+                        tagOption.push(obj);
+                    });
+
+                    tagSelectize.addOption(tagOption);
+                    tagSelectize.setValue(tags);
+                }
+            }
+
         }
         _init();
         //查询库存中同一项目下有的样本，盒子id是为了不验证本盒子中的样本
@@ -341,30 +375,42 @@
         function onError() {
 
         }
+        //标签
+        function _updateTagsData() {
+            var tags1 = [];
+            var tags2 = [];
+
+            _.forEach(vm.tags,function (tag,i) {
+                if(i < 3){
+                    tags1.push(tag);
+                }else{
+                    tags2.push(tag);
+                }
+            });
+            _.forEach(tags1,function (tag,i) {
+                if(tag){
+                    var index = i+1;
+                    vm.entity["tag"+index] = tag;
+                }
+            });
+            if(tags2.length){
+                vm.entity.tag4 = _.join(tags2,",");
+            }
+
+        }
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
-            // if(vm.entity.sampleTypeCode != "98" || vm.entity.sampleTypeCode != "97"){
-            //     if(tube){
-            //         if(vm.sampleTypeId != tube.sampleTypeId){
-            //             toastr.error("不同样本类型不能被选择！");
-            //             return;
-            //         }else{
-            //             if(vm.entity.sampleClassificationId){
-            //                 if(vm.sampleClassificationId != tube.sampleClassificationId){
-            //                     toastr.error("不同样本分类不能被选择！");
-            //                     return;
-            //                 }
-            //             }
-            //
-            //         }
-            //     }
-            // }
+            _updateTagsData();
             _.forEach(sampleSelectedArray, function(sample) {
                 sample.sampleVolumns = vm.entity.sampleVolumns;
                 sample.memo = vm.entity.memo;
                 sample.status = vm.entity.status;
+                sample.tag1 = vm.entity.tag1;
+                sample.tag2 = vm.entity.tag2;
+                sample.tag3 = vm.entity.tag3;
+                sample.tag4 = vm.entity.tag4;
             });
             var array = [];
             if(vm.singleMultipleFlag === 'single'){

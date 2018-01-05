@@ -764,6 +764,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         List<TranshipTubeDTO> stockOutTubeDTO = new ArrayList<>();
         //验证数据
         transhipBoxDTOS.forEach(s->{
+            if(s.getIsSplit() == null){
+                s.setIsSplit(Constants.NO);
+            }
              //验证设备，区域，架子，盒类型，样本类型，样本分类的必填
             checkTranshipBox(s,projectSampleClasses);
             //构造转运冻存盒的设备，区域，架子，盒类型，样本类型，样本分类

@@ -866,7 +866,7 @@
                         }
 
                     }
-                    TaskService.fnNote(vm.aRemarkArray).success(function (data) {
+                    TaskService.fnNote(vm.taskId,vm.aRemarkArray).success(function (data) {
                         vm.aRemarkArray = [];
                         var tableCtrl = _getSampleDetailsTableCtrl();
                         tableCtrl.loadData(vm.tubes);
@@ -921,7 +921,7 @@
                         vm.aRemarkArray[i].status = "3004";
                     }
                 }
-                TaskService.abnormal(vm.aRemarkArray).success(function (data) {
+                TaskService.abnormal(vm.taskId,vm.aRemarkArray).success(function (data) {
                     vm.aRemarkArray = [];
                     var tableCtrl = _getSampleDetailsTableCtrl();
                     tableCtrl.loadData(vm.tubes);

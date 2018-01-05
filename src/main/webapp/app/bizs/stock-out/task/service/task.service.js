@@ -75,8 +75,9 @@
         function _saveTempBoxes(taskId,param) {
             return $http.post('api/stock-out-frozen-boxes/task/'+taskId,param);
         }
-        function _fnAbnormal(param) {
-            return $http.put('api/stock-out-task-frozen-tubes/abnormal',param);
+        function _fnAbnormal(taskId,param) {
+            // return $http.put('api/stock-out-task-frozen-tubes/abnormal',param);
+            return $http.put('api/stock-out-task-frozen-tubes/abnormal/task/'+taskId,param);
         }
         function _fnRepeal(taskId,param) {
             return $http.put('api/stock-out-task-frozen-tubes/repeal/task/'+taskId,param);
@@ -84,8 +85,8 @@
         function _repealBox(taskId,param) {
             return $http.put('api/stock-out-frozen-boxes/repealStockOutBoxs/task/'+taskId,param);
         }
-        function _fnNote(param) {
-            return $http.put('api/stock-out-task-frozen-tubes/note',param);
+        function _fnNote(taskId,param) {
+            return $http.put('api/stock-out-task-frozen-tubes/note/task/'+taskId,param);
         }
         function _fnOutputNote(param) {
             return $http.put('api/stock-out-frozen-boxes/note',param);

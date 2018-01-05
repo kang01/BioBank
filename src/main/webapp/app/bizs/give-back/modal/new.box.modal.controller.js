@@ -12,7 +12,9 @@
     function NewBoxModalController($scope,$uibModalInstance,$q,toastr,items,MasterMethod,GiveBackService,SupportRackType,FrozenBoxTypesService,SampleTypeService,StockInInputService,AreasByEquipmentIdService,SupportacksByAreaIdService) {
 
         var vm = this;
-        vm.box = {};
+        vm.box = {
+            isSplit:0
+        };
         vm.equipmentOptions = items.equipmentOptions;
         var _projectId = items.projectId;
         var _giveBackId = items.giveBackId;

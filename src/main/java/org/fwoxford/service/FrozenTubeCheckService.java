@@ -99,7 +99,7 @@ public class FrozenTubeCheckService {
         for (TranshipTubeDTO tubeDTO : transhipTubeDTOS) {
             for (FrozenTube tube : frozenTubeList) {
                 if (tubeDTO.getSampleCode().equals(tube.getSampleCode()) && tubeDTO.getSampleTypeCode().equals(tube.getSampleTypeCode())) {
-                    if ((tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId() != null && tubeDTO.getFrozenTubeId().equals(tube.getId())))) {
+                    if ((tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId() != null && !tubeDTO.getFrozenTubeId().equals(tube.getId())))) {
                         if (!tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)) {
                             if (!repeatSampleList.contains(tubeDTO)) {
                                 repeatSampleList.add(tubeDTO);
@@ -116,7 +116,7 @@ public class FrozenTubeCheckService {
         for(TranshipTubeDTO tubeDTO :transhipTubeDTOS){
             for(TranshipTube tube : transhipTubes){
                 if(tubeDTO.getSampleCode().equals(tube.getSampleCode())&& tubeDTO.getSampleTypeCode().equals(tube.getSampleTypeCode())){
-                    if (tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId()!=null && tubeDTO.getFrozenTubeId().equals(tube.getFrozenTube().getId()))){
+                    if (tubeDTO.getFrozenTubeId() == null || (tubeDTO.getFrozenTubeId()!=null && !tubeDTO.getFrozenTubeId().equals(tube.getFrozenTube().getId()))){
                         if(!repeatSampleList.contains(tubeDTO)){
                             repeatSampleList.add(tubeDTO);
                         }

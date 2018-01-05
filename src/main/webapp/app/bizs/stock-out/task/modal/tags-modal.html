@@ -1,0 +1,21 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
+    <h3 class="modal-title" id="modal-title">标签
+    </h3>
+</div>
+<div class="modal-body tags-modal-body" id="modal-body ">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>标签</label>
+                <selectize config="vm.TagConfig"
+                           ng-model="vm.tags"
+                ></selectize>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="!vm.tags.length">确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+</div>

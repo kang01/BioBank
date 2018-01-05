@@ -1272,7 +1272,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
             TranshipTubeDTO transhipTubeDTO = new TranshipTubeDTO();
 
-            FrozenTube frozenTube = frozenTubeList.stream().filter(d->d.getSampleCode().equals(parentSampleCode)).findFirst().orElse(null);
+            FrozenTube frozenTube = frozenTubeList.stream().filter(d->d.getSampleCode().equals(parentSampleCode)&&d.getSampleTypeCode().equals("W")).findFirst().orElse(null);
 
             if(sampleTypeCode.equals("DNA")){
                 if(StringUtils.isEmpty(parentSampleCode) || StringUtils.isEmpty(sampleCode)

@@ -29,6 +29,8 @@
             saveTempBoxes:_saveTempBoxes,
             //异常
             abnormal:_fnAbnormal,
+            //添加tags
+            addTags:_addTags,
             //撤销申请
             repeal:_fnRepeal,
             //盒子撤销
@@ -78,6 +80,9 @@
         function _fnAbnormal(taskId,param) {
             // return $http.put('api/stock-out-task-frozen-tubes/abnormal',param);
             return $http.put('api/stock-out-task-frozen-tubes/abnormal/task/'+taskId,param);
+        }
+        function _addTags(taskId,param) {
+            return $http.put('api/stock-out-task-frozen-tubes/tag/task/'+taskId,param);
         }
         function _fnRepeal(taskId,param) {
             return $http.put('api/stock-out-task-frozen-tubes/repeal/task/'+taskId,param);

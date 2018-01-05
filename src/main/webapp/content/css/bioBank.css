@@ -832,7 +832,7 @@ tr.shown td .details-control {
 .stock-out-task-scan {
     display: inline-block;
     vertical-align: middle;
-    width: 198px;
+    width: 176px;
 }
 .stock-out-task-scan .input-group-addon{
     padding: 6px 10px;
@@ -1356,7 +1356,9 @@ ul.rating {
     cursor: not-allowed;
     outline: none;
 }
-
+.tags-modal-body .selectize-control .selectize-input{
+    height: 200px;
+}
 /*转运查看中的盒子*/
 .transport-box {
     border: 1px solid #ccc;

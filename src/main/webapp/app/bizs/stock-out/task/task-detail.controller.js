@@ -46,6 +46,8 @@
         vm.repealBox = _repealBox;
         //异常
         vm.abnormal = _fnAbnormal;
+
+        vm.addBoxTags = _addBoxTags;
         //1未出库样本、2已出库样本批注
         vm.commentModal = _fnCommentModal;
         //冻存管装盒原盒出库 1.装盒 2.原盒
@@ -383,6 +385,7 @@
             settings.colHeaders = colHeaders;
             tableCtrl.updateSettings(settings);
             tableCtrl.loadData(tubesInTable);
+            tableCtrl.deselectCell();
         }
         var orderIndex = 0;
         // 创建一个对象用于管子Table的控件
@@ -411,6 +414,10 @@
                 tube.status = tubeInBox.status;
                 tube.memo = tubeInBox.memo;
                 tube.repealReason = tubeInBox.repealReason;
+                tube.tag1 = tubeInBox.tag1;
+                tube.tag2 = tubeInBox.tag2;
+                tube.tag3 = tubeInBox.tag3;
+                tube.tag4 = tubeInBox.tag4;
             }
 
             if(vm.boxInTubes.length){
@@ -445,8 +452,8 @@
             vm.aRemarkArray = [];
             vm.sampleDetailsTableSettings = {
                 // 点击表格外部时，表格内选项仍然能够选中
-                outsideClickDeselectsCache: true,
-                outsideClickDeselects: true,
+                outsideClickDeselectsCache: false,
+                outsideClickDeselects: false,
 
                 // 表格内单元格只能单选
                 multiSelect: true,
@@ -528,6 +535,20 @@
                 }
                 if(tube.repealReason && tube.repealReason != " "){
                     txt = tube.repealReason + "\t\n" +tube.memo;
+                }else{
+                    tube.repealReason = "";
+                }
+                if(tube.tag1){
+                    txt = "tag1:"+tube.tag1 + "\t\n" + tube.repealReason + "\t\n" +tube.memo
+                }
+                if(tube.tag2){
+                    txt = "tag1:"+tube.tag1 + "\t\n" + "tag2:" + tube.tag2 + "\t\n" + tube.repealReason + "\t\n" +tube.memo
+                }
+                if(tube.tag3){
+                    txt = "tag1:"+tube.tag1 + "\t\n"+"tag2:"+ +tube.tag2 + "\t\n" +"tag3:"+ tube.tag3 + "\t\n" + tube.repealReason + "\t\n" +tube.memo
+                }
+                if(tube.tag4){
+                    txt = "tag1:"+tube.tag1 + "\t\n"+"tag2:"+ +tube.tag2 + "\t\n" +"tag3:"+ tube.tag3 + "\t\n" + "tag4:"+ tube.tag4 + "\t\n" + tube.repealReason + "\t\n" +tube.memo
                 }
                 if(txt){
                     cellProperties.comment = {value:txt};
@@ -769,10 +790,12 @@
                     toastr.success("申请撤销样本成功!");
                     _fnLoadTubes(boxCode);
                     vm.box.frozenBoxCode =boxCode;
+
                 });
                 vm.aRemarkArray = [];
                 var tableCtrl = _getSampleDetailsTableCtrl();
                 tableCtrl.loadData(vm.tubes);
+                tableCtrl.deselectCell();
             });
         }
         //整盒撤销
@@ -870,6 +893,7 @@
                         vm.aRemarkArray = [];
                         var tableCtrl = _getSampleDetailsTableCtrl();
                         tableCtrl.loadData(vm.tubes);
+                        tableCtrl.deselectCell();
                     }).error(function (data) {
                         toastr.error(data.message);
                     });
@@ -925,6 +949,57 @@
                     vm.aRemarkArray = [];
                     var tableCtrl = _getSampleDetailsTableCtrl();
                     tableCtrl.loadData(vm.tubes);
+                    tableCtrl.deselectCell();
+                }).error(function (data) {
+                    toastr.error(data.message);
+                });
+
+            });
+        }
+        //添加标签
+        function _addBoxTags() {
+            if(!vm.aRemarkArray.length){
+                toastr.error("请选择样本!");
+                return;
+            }
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/task/modal/tags-modal.html',
+                controller: 'TagsModalController',
+                controllerAs: 'vm',
+                size: 'md',
+                backdrop:'static',
+                resolve: {
+                    items: function () {
+                        return {
+                            selectSampleData:vm.aRemarkArray
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (entity) {
+                for(var i = 0; i < vm.aRemarkArray.length; i++){
+                    if(vm.aRemarkArray[i].sampleCode || vm.aRemarkArray[i].sampleTempCode){
+                        if(entity.tag1){
+                            vm.aRemarkArray[i].tag1 = entity.tag1;
+                        }
+                        if(entity.tag2){
+                            vm.aRemarkArray[i].tag2 = entity.tag2;
+                        }
+                        if(entity.tag3){
+                            vm.aRemarkArray[i].tag3 = entity.tag3;
+                        }
+                        if(entity.tag4){
+                            vm.aRemarkArray[i].tag4 = entity.tag4;
+                        }
+                    }
+                }
+                TaskService.addTags(vm.taskId,vm.aRemarkArray).success(function (data) {
+                    vm.aRemarkArray = [];
+                    var tableCtrl = _getSampleDetailsTableCtrl();
+                    tableCtrl.loadData(vm.tubes);
+                    tableCtrl.deselectCell();
                 }).error(function (data) {
                     toastr.error(data.message);
                 });

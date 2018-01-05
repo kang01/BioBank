@@ -113,14 +113,15 @@
 
                             </div>
                         </div>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.selectTempBox()"    >选择临时盒</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.selectTempBox()"    >临时盒</button>
                         <!--<button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(2)" ng-disabled="!vm.boxInTubes.length" ng-if="vm.boxInFullFlag"  >原盒出库</button>-->
                         <!--<button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(1)" ng-disabled="!vm.boxInTubes.length || !vm.tempBoxObj.frozenBoxCode">装盒出库</button>-->
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(2)"  ng-if="vm.boxInFullFlag"  >原盒出库</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.nextBox()"   >下一盒</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(2)"  ng-if="vm.boxInFullFlag"  >原盒出库</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(1)" ng-disabled="!vm.boxInTubes.length || !vm.tempBoxObj.frozenBoxCode" >装盒出库</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealModal()" ng-disabled="!vm.frozenTubeDTOS.length">撤销申请</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealBox()" ng-disabled="!vm.frozenTubeDTOS.length">整盒撤销</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.addBoxTags()" ng-disabled="!vm.frozenTubeDTOS.length">标签</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()" ng-disabled="!vm.frozenTubeDTOS.length">异常</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.commentModal(1)" ng-disabled="!vm.frozenTubeDTOS.length">批注</button>
 

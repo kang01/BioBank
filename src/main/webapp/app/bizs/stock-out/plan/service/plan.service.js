@@ -32,7 +32,11 @@
             //任务详情
             queryTaskBoxesDes:_queryTaskBoxesDes,
             //删除任务
-            delTask:_delTask
+            delTask:_delTask,
+            //撤销盒子
+            repealBox:_repealBox,
+            //撤销盒子
+            repealTube:_repealTube
         };
         function _queryPlanList(data,oSettings) {
             return $http.post('api/res/stock-out-plans',JSON.stringify(data));
@@ -69,6 +73,12 @@
         }
         function _delTask(taskId) {
             return $http.delete('api/stock-out-tasks/'+taskId);
+        }
+        function _repealTube(planId,param) {
+            return $http.put('api/stock-out-req-frozen-tubes/repeal/samples/plan/'+planId,param);
+        }
+        function _repealBox(planId,param) {
+            return $http.put('api/stock-out-req-frozen-tubes/repeal/frozenBoxes/plan/'+planId,param);
         }
         return service;
     }

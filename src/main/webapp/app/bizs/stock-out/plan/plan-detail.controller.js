@@ -37,6 +37,7 @@
         vm.selectedLen = 0;
 
 
+
         //查看出库任务列表详情
         vm.taskDescModal = _fnTaskDescModal;
         //删除任务
@@ -119,18 +120,22 @@
             vm.selected = {};
             vm.selectAll = false;
 
+            vm.selectedTube = {};
+            vm.selectAllTube = false;
+            vm.toggleAllTube = _toggleAllTube;
+            vm.toggleOneTube = _toggleOneTube;
             // 处理盒子选中状态
             vm.toggleAll = function (selectAll, selectedItems) {
                 selectedItems = vm.selected;
                 selectAll = vm.selectAll;
-                // var boxIdArray = [];
+                // var _boxIdArray = [];
                 for (var id in selectedItems) {
-                    // boxIdArray.push(id);
+                    // _boxIdArray.push(id);
                     if (selectedItems.hasOwnProperty(id)) {
                         selectedItems[id] = selectAll;
                     }
                 }
-                // vm.strBoxIds = _.join(boxIdArray,",");
+                // vm.strBoxIds = _.join(_boxIdArray,",");
                 //
                 if(!selectAll){
                     //全部不选中
@@ -212,6 +217,11 @@
                         className: 'btn btn-primary btn-sm ml-10 position-relative',
                         key: '2',
                         action: _fnViewPlanDetail
+                    },{
+                        text: '撤销',
+                        className: 'btn btn-primary btn-sm ml-10',
+                        key: '1',
+                        action: _onRepealBoxHandler
                     }
                 ])
                 .withOption('rowCallback', rowCallback)
@@ -258,23 +268,55 @@
 
                 return frozenBoxCode;
             }
-
+            var tubeTitleHtmT = '<input type="checkbox" ng-model="vm.selectAllTube" ng-click="vm.toggleAllTube(vm.selectAllTube,vm.selectedTube)">';
             //管子列表
-            vm.tubeOptions = BioBankDataTable.buildDTOption("BASIC", 300)
+            vm.tubeOptions = BioBankDataTable.buildDTOption("BASIC", 300,5)
                 .withOption('createdRow', function(row, data, dataIndex) {
                     var status = MasterData.getStatus(data.status);
-                    $('td:eq(1)', row).html(status);
+                    $('td:eq(2)', row).html(status);
                     $compile(angular.element(row).contents())($scope);
-                });
+                })
+                .withOption('headerCallback', function(header) {
+                    $compile(angular.element(header).contents())($scope);
+                })
+                .withButtons([
+                    {
+                        text: '撤销',
+                        className: 'btn btn-primary btn-sm ml-10',
+                        key: '1',
+                        action: _onRepealTubeHandler
+                    }
+                ]);
             vm.tubeColumns = [
+                DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(tubeTitleHtmT).withOption('searchable',false).notSortable().renderWith(_tubeRowSelectorRender),
                 DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "100"),
                 DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
                 DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60"),
-                DTColumnBuilder.newColumn('sampleClassificationName').withTitle('样本分类').withOption("width", "90"),
-                DTColumnBuilder.newColumn('memo').withTitle('批注'),
-                DTColumnBuilder.newColumn('id').notVisible()
+                DTColumnBuilder.newColumn('sampleClassificationName').withTitle('样本分类').withOption("width", "120"),
+                DTColumnBuilder.newColumn('memo').withTitle('批注')
             ];
-
+            function _tubeRowSelectorRender(data, type, full, meta) {
+                vm.selectedTube[full.id] = false;
+                return '<input type="checkbox" ng-model="vm.selectedTube[' + full.id + ']" ng-click="vm.toggleOneTube(vm.selectedTube)">';
+            }
+            function _toggleAllTube(selectAll, selectedItems) {
+                for (var id in selectedItems) {
+                    if (selectedItems.hasOwnProperty(id)) {
+                        selectedItems[id] = selectAll;
+                    }
+                }
+            }
+            function _toggleOneTube(selectedItems) {
+                for (var id in selectedItems) {
+                    if (selectedItems.hasOwnProperty(id)) {
+                        if(!selectedItems[id]) {
+                            vm.selectAllTube = false;
+                            return;
+                        }
+                    }
+                }
+                vm.selectAllTube = true;
+            }
             vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
             vm.selectedColumns = [
                 DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('冻存盒编码').withOption("width", "130").renderWith(_fnRowRender),
@@ -382,10 +424,12 @@
         }
         //获取管子信息
         function _loadTubes(boxId) {
+
             if(_requirementIdStr){
                 PlanService.queryPlanTubes(_requirementIdStr,boxId).success(function (data) {
                     vm.tubeData = data;
                     vm.tubeOptions.withOption('data', data);
+                    vm.selectAllTube = false;
                 });
             }
 
@@ -444,6 +488,116 @@
 
             });
 
+        }
+        //撤销计划 status:1:盒子 2:样本
+        function _onRepealBoxHandler() {
+            var boxIdArray = _.compact(_.split(vm.strBoxIds, ','));
+            if(!boxIdArray.length){
+                toastr.error("请选择撤销的冻存盒！");
+                return;
+            }
+            _repealPlan(1);
+        }
+        var _tubeIds = [];
+        function _onRepealTubeHandler() {
+            _tubeIds = [];
+            for(var id in vm.selectedTube){
+                if (vm.selectedTube.hasOwnProperty(id)) {
+                    if(vm.selectedTube[id]) {
+                        _tubeIds.push(id);
+                    }
+                }
+            }
+            if(!_tubeIds.length){
+                toastr.error("请选择撤销的冻存样本！");
+                return;
+            }
+            _repealPlan(2);
+        }
+        function _repealPlan(status) {
+
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/common/prompt-content-modal.html',
+                controller: 'PromptContentModalController',
+                controllerAs:'vm',
+                size:'md',
+                backdrop:'static',
+                resolve: {
+                    items: function () {
+                        return {
+                            status:"1"
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (repealReason) {
+                if(status == 1){
+                    _repealBox(repealReason);
+                }else{
+                    _repealTube(repealReason);
+                }
+
+
+            });
+        }
+        function _repealBox(repealReason) {
+            var repealArray = [];
+            var boxIdArray = _.split(vm.strBoxIds, ',');
+            _.forEach(vm.boxData,function (box) {
+                _.forEach(boxIdArray,function (boxId) {
+                    if(box.id == boxId){
+                        var obj = {};
+                        obj.id = box.id;
+                        obj.repealReason = repealReason;
+                        obj.stockOutRequirementId = box.stockOutRequirementId;
+                        repealArray.push(obj);
+                    }
+                })
+            });
+            PlanService.repealBox(_planId,repealArray).success(function (data) {
+                _.forEach(boxIdArray,function (boxId) {
+                    _.remove(vm.boxData,{id:+boxId});
+                });
+                toastr.success("撤销成功！");
+                vm.dtOptions.withOption('data',vm.boxData);
+                vm.tubeOptions.withOption('data', []);
+                _clearData();
+            });
+        }
+        function _repealTube(repealReason) {
+            var repealArray = [];
+            _.forEach(vm.tubeData,function (tube) {
+                _.forEach(_tubeIds,function (tubeId) {
+                    if(tube.id == tubeId){
+                        var obj = {};
+                        obj.id = tube.id;
+                        obj.repealReason = repealReason;
+                        repealArray.push(obj);
+                    }
+                })
+            });
+            PlanService.repealTube(_planId,repealArray).success(function (data) {
+                _.forEach(_tubeIds,function (tubeId) {
+                    _.remove(vm.tubeData,{id:+tubeId});
+                });
+                toastr.success("撤销成功！");
+                vm.tubeOptions.withOption('data', vm.tubeData);
+                _tubeIds = [];
+                vm.selectAllTube = false;
+                _queryPlanBoxes();
+            });
+        }
+        function _clearData(){
+            //id串
+            vm.strBoxIds = "";
+            //右侧导航栏
+            vm.checkedPlanFlag = false;
+            //全选
+            vm.selectAll = false;
+            //清空购物车里的数据
+            _clearSelectedBox();
         }
         //选中冻存盒列表
         function _fnSelectBoxData(index) {

@@ -138,7 +138,7 @@
                 }, 50);
                 return;
             }
-            toastr.error(inputValue);
+            // toastr.error(inputValue);
             inputValue = "";
         });
     }

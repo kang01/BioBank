@@ -1,5 +1,5 @@
 <div style="position: fixed;top:-30px;">
-    <textarea  type="text" rows="1"  ng-model="vm.sampleCode" id="focusTextarea" ng-blur="vm.onScanCodeBlur()"></textarea>
+    <textarea  type="text" rows="1"  ng-model="vm.sampleCode"  ng-blur="vm.onScanCodeBlur()"></textarea>
 </div>
 <form class="form-horizontal" name="myForm" novalidate>
     <div class="pull-left">
@@ -229,10 +229,10 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-2" style="width: 122px;">
                         <h4>归还盒详情</h4>
                     </div>
-                    <div class="col-md-3 pl-0 pr-0">
+                    <div class="col-md-3 pl-0 pr-0" style="width: 310px">
                         <ul class="list-inline" style="margin-top: 9px">
                             <li><span>正常</span>
                                 <span>{{vm.sampleCount.normalCount}}</span></li>
@@ -251,12 +251,12 @@
                         </ul>
                     </div>
                     <!--vm.scanCheckTube()-->
-                    <div class="col-md-7 text-right" style="height: 38px;line-height: 35px">
-                        <div  class="stock-out-task-scan" ng-if="vm.checkedFlag" style="width: 150px;margin-top: 3px">
+                    <div class="col-md-7 text-right" style="height: 38px;line-height: 35px;float: right;">
+                        <div  class="stock-out-task-scan" ng-if="vm.checkedFlag" style="width: 150px;margin-top: 7px">
                             <div class="input-group">
-                                <input type="text" class="form-control" ng-model="vm.sampleCode" ng-blur="vm.onScanCodeBlur()">
+                                <input type="text" class="form-control" ng-model="vm.sampleCode" ng-blur="vm.onScanCodeBlur()" id="focusTextarea" style="height:26px;">
                                 <div class="input-group-addon btn-xs" ng-click="vm.onScanHandler()"
-                                     ng-class="{true:'btn-primary',false:''}[vm.scanFlag]" ng-model="vm.scanFlag" uib-btn-checkbox >
+                                     ng-class="{true:'btn-primary',false:''}[vm.scanFlag]" ng-model="vm.scanFlag" uib-btn-checkbox  style="height: 26px;padding: 0 8px;">
                                     <i class="fa fa-qrcode"></i>
                                 </div>
                             </div>

@@ -44,6 +44,8 @@
 
         // var _projectCode = $stateParams.projectCode;
         var _giveBackId = $stateParams.giveBackId;
+        //扫码的样本
+        var _scanTubes = [];
 
         //归还单信息数据
         _queryGiveBackInfo();
@@ -279,18 +281,37 @@
         };
         //扫码核对
         vm.scanCheckTube = function () {
-            // vm.checkedFlag = true;
+            vm.scanFlag = true;
+            _scanIdentifying();
+
+        };
+        //扫码标识
+        function _scanIdentifying() {
             var tubes = vm.htInstance.api.getTubesData();
             if(vm.checkedFlag){
                 tubes[0].stockOutStatus = 1;
                 tubes[tubes.length-1].stockOutStatus = 1;
+                vm.onScanHandler();
             }else{
                 tubes[0].stockOutStatus = null;
                 tubes[tubes.length-1].stockOutStatus = null;
+                tubes[0].scanCodeFlag = null;
+                tubes[tubes.length-1].scanCodeFlag = null;
+                _scanTubes = [];
             }
+            //把已经扫码过的标识 出来
+            if(_scanTubes.length){
+                _.forEach(tubes,function (tube) {
+                    _.forEach(_scanTubes,function (scanTube) {
+                        if (tube.sampleCode == scanTube.sampleCode) {
+                            tube.scanCodeFlag = true;
+                        }
+                    });
+                });
 
+            }
             vm.htInstance.api.loadData(vm.box, tubes);
-        };
+        }
         //扫码验证
         vm.onScanHandler = function () {
             $("#focusTextarea").focus();
@@ -317,6 +338,7 @@
             };
             vm.htInstance.api.editTube(obj);
         };
+        //扫码
         function _scanCode() {
             if (!vm.sampleCode) {
                 return;
@@ -330,19 +352,30 @@
             var scanCodeTubes = _.find(checkedTubes, {"sampleCode": sampleCode});
 
             if (!scanCodeTubes) {
+                vm.sampleCode = "";
                 setTimeout(function(){
                     toastr.error("编码错误，请重新扫码!");
+
                 },100);
                 return;
             }
+            //已扫码的样本
             _.forEach(tubes,function (tube) {
                 if(sampleCode == tube.sampleCode){
                     tube.scanCodeFlag = true;
+
                 }
 
             });
+            _.forEach(tubes,function (tube) {
+                if(tube.scanCodeFlag == true){
+                    _scanTubes.push(tube);
+                }
+            });
             vm.sampleCode = "";
+            $scope.$apply();
             vm.htInstance.api.loadData(vm.box, tubes);
+
         }
         //保存归还记录基本信息
         function _saveGiveBackRecord(callback) {
@@ -626,7 +659,6 @@
                         _changeRowStyle(tr,oData);
                         _queryBoxDetail(oData.id);
                     }
-
                 });
             }
             //切换盒子
@@ -635,7 +667,8 @@
                     var tubes = vm.htInstance.api.getTubesData();
                     vm.box.transhipTubeDTOS = tubes;
                     _.forEach(vm.box.transhipTubeDTOS,function (tube) {
-                        delete  tube.stockOutStatus
+                        delete  tube.stockOutStatus;
+                        delete  tube.scanCodeFlag;
                     })
                 }
                 var _endBoxStr = JSON.stringify(vm.box);
@@ -783,6 +816,11 @@
                 vm.box.transhipTubeDTOS =  _.sortBy(vm.box.transhipTubeDTOS, ["tubeRows", function(o){return +o.tubeColumns}]);
                 _startTubes = vm.box.transhipTubeDTOS;
                 _startBoxStr = JSON.stringify(vm.box);
+                //核对扫码
+                if(vm.checkedFlag){
+                    _scanIdentifying()
+                }
+
             });
         }
         //获取申请单中的项目编码

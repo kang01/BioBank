@@ -1,5 +1,5 @@
 <div style="position: fixed;top:-30px;">
-    <textarea  type="text" rows="1"  ng-model="vm.sampleCode" id="focusTextarea" ng-blur="vm.scanCodeBlur()"></textarea>
+    <textarea  type="text" rows="1"  ng-model="vm.sampleCode"  ng-blur="vm.scanCodeBlur()"></textarea>
 </div>
 <div>
     <div class="row m-0">
@@ -100,7 +100,7 @@
                     <div class="col-md-11 pr-0 pl-0 text-right">
                         <div  class="stock-out-task-scan">
                             <div class="input-group">
-                                <input type="text" class="form-control" ng-model="vm.sampleCode" >
+                                <input type="text" class="form-control" ng-model="vm.sampleCode" id="focusTextarea" ng-blur="vm.scanCodeBlur()">
                                 <div class="input-group-addon btn-sm" ng-click="vm.scanClick()"
                                      ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus" uib-btn-checkbox >
                                     <i class="fa fa-qrcode"></i>

@@ -30,6 +30,10 @@
         vm.shelfTypes = [];
         // 需要保存的盒子上架信息
         vm.putInShelfBoxes = {};
+        //相同的盒子
+        var _sameBoxes = [];
+        var arrayBoxes = [];
+        var _arrayBoxes = [];
 
         _loadInitializeDataFromServer(items.boxIds);
         _initPageEvents();
@@ -175,7 +179,7 @@
                     }
 
                     // 创建架子定位列表的定位数据
-                    var arrayBoxes = [];
+
                     var emptyPos = null;
                     // 先列
                     for(var i = 0; i < countOfCols; ++i){
@@ -185,8 +189,14 @@
                             var pos = {columnsInShelf: String.fromCharCode(charCode + i), rowsInShelf: j+1+""};
                             // 从已入库的盒子中查询架子中该位置的盒子
                             var boxesInShelf = _.filter(boxes, pos);
+
                             if (boxesInShelf.length){
                                 arrayBoxes[j][i] = boxesInShelf[0];
+                                var len = _.filter(vm.frozenBoxes,{id:arrayBoxes[j][i].frozenBoxId}).length;
+                                if(len){
+                                    arrayBoxes[j][i].isEmpty = true;
+                                    arrayBoxes[j][i].isSame = true;
+                                }
                             } else {
                                 var boxesPos = vm.putInShelfBoxes[shelf.id];
                                 // 从已上架的盒子中查询架子中该位置的盒子
@@ -227,6 +237,7 @@
                     settings.columns = columns;
 
                     // 更新架子定位列表并选中第一个空位置
+                    _arrayBoxes = angular.copy(arrayBoxes);
                     tableCtrl.loadData(arrayBoxes);
                     if (emptyPos){
                         // tableCtrl.selectCell(0, 0);
@@ -370,9 +381,10 @@
                 }
 
                 var cellProperties = {};
-                var cellData = hot.getDataAtCell(row, col);
+                var cellData = hot.getDataAtCell(row, col) || {};
                 cellProperties.isEmpty = true;
-                if (cellData && cellData.frozenBoxId) {
+                var len = _.filter(vm.frozenBoxes,{id:cellData.frozenBoxId}).length;
+                if (cellData && cellData.frozenBoxId && !len) {
                     // 单元格有数据，并且有冻存盒ID，表示该单元格在库里有位置
                     // 该单元格不能被使用
                     cellProperties.isEmpty = false;
@@ -473,6 +485,7 @@
             var startEmptyPos = tableCtrl.getSelected();
             var cellRow = startEmptyPos[0];
             var cellCol = startEmptyPos[1];
+            // console.log(vm.selectedBox);
 
             for(var i in vm.selectedBox){
 
@@ -489,14 +502,18 @@
                     for (; cellCol < countOfCols && !box.isPutInShelf; ++cellCol){
                         for(; cellRow < countOfRows && !box.isPutInShelf; ++cellRow){
                             var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
-                            if (cellData && cellData.isEmpty){
+                            if (cellData && cellData.isEmpty ){
                                 // 单元格为空可以上架
                                 // 标记盒子已经上架
-                                vm.selectedBox[i] = false;
+                                // vm.selectedBox[i] = false;
                                 box.isPutInShelf = true;
                                 cellData.frozenBoxCode = box.frozenBoxCode;
                                 cellData.isEmpty = false;
-
+                                if(cellData.frozenBoxCode == i){
+                                    cellData.isSame = false;
+                                    _sameBoxes = [];
+                                    _sameBoxes.push(cellData);
+                                }
                                 // 记录盒子的上架信息
                                 boxes[box.frozenBoxCode] = {
                                     frozenBoxId: box.frozenBoxId,
@@ -520,10 +537,35 @@
                         cellRow = 0;
                     }
 
+
+
+                }
+
+            }
+
+            var boxData = tableCtrl.getData();
+            for(var j in vm.selectedBox){
+                if (vm.selectedBox[j]){
+                    for(var m =0; m< boxData.length; m++){
+                        for(var n =0; n < boxData[m].length; n++){
+                            if(j == boxData[m][n].frozenBoxCode && boxData[m][n].isSame){
+                                // if(boxData[m][n].isSame){
+                                boxData[m][n] = {};
+                                // }
+                            }
+                            if (boxData[m][n] && boxData[m][n].isEmpty){
+                                vm.selectedBox[j] = false;
+                            }
+
+                        }
+                    }
                 }
             }
 
-            tableCtrl.render();
+
+
+            tableCtrl.loadData(boxData);
+            // tableCtrl.render();
             vm.dtBoxesListInstance.rerender();
         }
         function _rollback(){
@@ -543,13 +585,22 @@
                         cellData.frozenBoxId = null;
                         cellData.frozenBoxCode = "";
                         cellData.isEmpty = true;
+                        if(_sameBoxes.length){
+                            _.forEach(_sameBoxes,function (sameBox) {
+                                if(sameBox.id == shelfId){
+                                    cellData = sameBox;
+                                }
+                            })
+                        }
+
                     }
 
                     delete boxes[code];
                 }
             }
 
-            tableCtrl.render();
+            tableCtrl.loadData(_arrayBoxes);
+            // tableCtrl.render();
             vm.dtBoxesListInstance.rerender();
         }
         // 保存盒子上架的位置

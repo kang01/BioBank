@@ -35,6 +35,7 @@
         var _selectedBox = [];
         //选中的冻存盒数量
         vm.selectedLen = 0;
+        var _boxId;
 
 
 
@@ -424,7 +425,7 @@
         }
         //获取管子信息
         function _loadTubes(boxId) {
-
+            _boxId = boxId;
             if(_requirementIdStr){
                 PlanService.queryPlanTubes(_requirementIdStr,boxId).success(function (data) {
                     vm.tubeData = data;
@@ -586,7 +587,16 @@
                 vm.tubeOptions.withOption('data', vm.tubeData);
                 _tubeIds = [];
                 vm.selectAllTube = false;
-                _queryPlanBoxes();
+                // _queryPlanBoxes();
+                _.forEach(vm.boxData,function (box) {
+                    if(box.id == _boxId){
+                        box.countOfSample -= repealArray.length;
+                    }
+                    if(box.countOfSample == 0){
+                        _.remove(vm.boxData,{id:box.id});
+                    }
+                });
+                vm.dtOptions.withOption('data',vm.boxData);
             });
         }
         function _clearData(){

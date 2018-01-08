@@ -123,7 +123,7 @@
             function drawTube(box,status) {
                 var rowCount = box.frozenBoxTypeRows;
                 var colCount = box.frozenBoxTypeColumns;
-                var $boxBody = $("<div class='transport-box-body'/>");
+                var $boxBody = $("<div class='transport-box-body'style='color:"+box.frontColor+"'/>");
                 var $li;
                 for(var i = 0; i < rowCount;i++){
                     var rowIndex = String.fromCharCode('A'.charCodeAt(0) + i);
@@ -167,6 +167,10 @@
                                     case '3004':
                                         //问题
                                         $li.addClass("error-tube-color");
+                                        break;
+                                    case '3006':
+                                        //问题
+                                        $li.addClass("suspicious-tube-color");
                                         break;
                                 }
                                 $tubeStatus.appendTo($li);

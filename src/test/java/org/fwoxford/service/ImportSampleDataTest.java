@@ -6651,13 +6651,13 @@ public class ImportSampleDataTest {
     @Test
     public void createSampleTypeDNA(){
         SampleType sampleType = new SampleType().sampleTypeCode("DNA").sampleTypeName("DNA")
-                .status("0001").isMixed(0).frontColor("black").backColor("rgb(35,129,209)");
+                .status("0001").isMixed(0).frontColor("white").backColor("rgb(10,112,158)");
         sampleTypeRepository.save(sampleType);
         SampleClassification sampleClassification = new SampleClassification().sampleClassificationCode("DNA")
                 .sampleClassificationName("DNA")
                 .status("0001")
-                .backColor("rgb(35,129,209)")
-                .frontColor("black");
+                .backColor("rgb(10,112,158)")
+                .frontColor("white");
         sampleClassificationRepository.save(sampleClassification);
         Project project = projectRepository.findByProjectCode("0029");
 

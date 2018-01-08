@@ -87,7 +87,7 @@
     <changeSet id="22222222222222-9" author="jhipster" dbms="h2,postgresql,oracle">
         <sql>
             <!--表 tranship_tube 索引-->
-            CREATE INDEX pk_box_status_for_tranship_tube ON tranship_tube (tranship_box_id,status);
+            CREATE INDEX pk_boxStatus_for_transhipTube ON tranship_tube (tranship_box_id,status);
         </sql>
     </changeSet>
 
@@ -96,7 +96,6 @@
             <!--表 frozen_tube 索引-->
             CREATE INDEX pk_project_for_frozen_tube ON frozen_tube (project_code);
             CREATE INDEX pk_sample_type_for_frozen_tube ON frozen_tube (sample_type_id);
-            CREATE INDEX pk_status_type_for_frozen_tube ON frozen_tube (status);
         </sql>
     </changeSet>
 
@@ -104,11 +103,17 @@
     <changeSet id="22222222222222-11" author="jhipster" dbms="h2,postgresql,oracle">
         <sql>
             <!--删除表 frozen_tube 索引-->
-            DROP INDEX pk_status_type_for_frozen_tube;
             DROP INDEX pk_gp_frozen_box_for_sample;
             DROP INDEX pk_check_for_frozen_tube;
             DROP INDEX pk_state_for_frozen_tube;
             DROP INDEX pk_status_for_frozen_box;
+        </sql>
+    </changeSet>
+
+    <changeSet id="22222222222222-12" author="jhipster" dbms="h2,postgresql,oracle">
+        <!-- 表 stock_out_req_frozen_tube 索引-->
+        <sql>
+            CREATE INDEX pk_box_for_out_tube ON stock_out_req_frozen_tube (stock_out_frozen_box_id);
         </sql>
     </changeSet>
 </databaseChangeLog>

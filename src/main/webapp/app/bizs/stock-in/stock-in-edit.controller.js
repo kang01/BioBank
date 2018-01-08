@@ -941,6 +941,9 @@
                 }else{
                     td.style.backgroundColor = value.backColor;
                 }
+                if (value.frontColor){
+                    td.style.color = value.frontColor;
+                }
                 //样本类型
                 // if(value.sampleClassificationId){
                 //     SampleService.changeSampleType(value.sampleClassificationId,td,vm.projectSampleTypeOptions,1);
@@ -1169,6 +1172,7 @@
                 sampleTypeName: box.sampleType.sampleTypeName,
                 backColorForClass:box.backColorForClass,
                 backColor:box.backColor,
+                frontColor:box.frontColor,
                 frozenBoxId: box.id,
                 frozenBoxCode: box.frozenBoxCode,
                 status: null,
